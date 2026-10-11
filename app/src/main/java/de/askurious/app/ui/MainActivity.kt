@@ -64,6 +64,7 @@ import androidx.lifecycle.lifecycleScope
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import de.askurious.app.R
+import de.askurious.app.data.AnswerQueue
 import de.askurious.app.data.Api
 import de.askurious.app.data.ApiError
 import de.askurious.app.data.Study
@@ -91,6 +92,14 @@ class MainActivity : ComponentActivity() {
     private var linkCode by mutableStateOf<String?>(null)
     private var studies by mutableStateOf<List<Study>>(emptyList())
 
+    /** Answers waiting to be sent, per study code (AnswerQueue); read again with [studies]. */
+    private var waiting by mutableStateOf<Map<String, Int>>(emptyMap())
+
+    private fun reload() {
+        studies = StudyStore(this).all()
+        waiting = AnswerQueue(this).all().groupingBy { it.study }.eachCount()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -105,10 +114,10 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        studies = StudyStore(this).all()
+        reload()
         lifecycleScope.launch {
             Sync.all(this@MainActivity)
-            studies = StudyStore(this@MainActivity).all()
+            reload()
         }
     }
 
@@ -226,14 +235,17 @@ class MainActivity : ComponentActivity() {
                     "left" -> Text(stringResource(if (study.leavePending) R.string.left_pending else R.string.left))
                     else -> Text(stringResource(R.string.ended))
                 }
+                val n = waiting[study.code] ?: 0
+                if (n > 0) Text(pluralStringResource(R.plurals.answers_waiting, n, n), style = MaterialTheme.typography.bodySmall)
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     if (study.status == "active" || study.status == "pending") {
                         TextButton(onClick = { confirmLeave = true }) { Text(stringResource(R.string.leave_study)) }
                     } else if (!study.leavePending) {
                         // a leave not yet told to the server keeps the study, so that the next sync can send it
                         TextButton(onClick = {
-                            StudyStore(context).remove(study.code)
-                            studies = StudyStore(context).all()
+                            // with its queued answers and kept pages: the participant takes the study off the phone
+                            Sync.forget(context, study.code)
+                            reload()
                         }) { Text(stringResource(R.string.remove_from_list)) }
                     }
                     // every study still holds its secret, so its answers can be deleted, also after the end
@@ -253,7 +265,7 @@ class MainActivity : ComponentActivity() {
                         confirmLeave = false
                         scope.launch {
                             Sync.leave(context, study)
-                            studies = StudyStore(context).all()
+                            reload()
                         }
                     }) { Text(stringResource(R.string.leave_study)) }
                 },
@@ -275,7 +287,7 @@ class MainActivity : ComponentActivity() {
                                 // the study stays: its secret is the only way to try again
                                 eraseError = getString(if (e.key == "offline") R.string.offline else R.string.error)
                             }
-                            studies = StudyStore(context).all()
+                            reload()
                         }
                     }) { Text(stringResource(R.string.erase), color = MaterialTheme.colorScheme.error) }
                 },

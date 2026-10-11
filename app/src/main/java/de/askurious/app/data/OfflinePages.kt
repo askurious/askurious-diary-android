@@ -1,0 +1,220 @@
+package de.askurious.app.data
+
+import android.content.Context
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
+import org.json.JSONArray
+import org.json.JSONObject
+import java.io.File
+import java.net.URI
+import java.security.MessageDigest
+
+/**
+ * The pages of modules that can be answered without a connection ([Module.offline]), with the files they need
+ * (/static/ and /media/ paths: style sheet, participant.js, images). Kept in the app's files directory, which goes
+ * into no backup and to no new phone (res/xml/data_extraction_rules.xml excludes the domain "file").
+ *
+ * pages/<study>_<module>.json holds {html, version, files, fetched}; files/<hash> holds one file of the server and
+ * files/<hash>.type its content type. Files are shared by all pages (they are the same for everybody) and deleted
+ * when no page names them any more.
+ */
+class OfflinePages(context: Context) {
+    private val root = File(context.applicationContext.filesDir, "offline")
+    private val pages = File(root, "pages")
+    private val files = File(root, "files")
+
+    /** A kept page: [files] are the server paths it needs, [fetched] the time it was last checked with the server. */
+    data class Page(val html: String, val version: String, val files: List<String>, val fetched: Long)
+
+    fun page(study: String, module: String): Page? {
+        val f = pageFile(study, module)
+        if (!f.exists()) return null
+        return runCatching {
+            val o = JSONObject(f.readText())
+            val list = o.optJSONArray("files") ?: JSONArray()
+            Page(o.getString("html"), o.optString("version"), (0 until list.length()).map { list.getString(it) }, o.optLong("fetched"))
+        }.getOrNull()
+    }
+
+    /** A page counts only with all its files: without participant.js the answers would go nowhere. */
+    fun usable(study: String, module: String): Page? = page(study, module)?.takeIf { p -> p.files.all { has(it) } }
+
+    /** The kept file of server [path] and its content type, null when it is not kept. */
+    fun file(path: String): Pair<File, String>? {
+        val f = File(files, hash(path))
+        if (!f.exists()) return null
+        val type = File(files, hash(path) + ".type").takeIf { it.exists() }?.readText()?.ifBlank { null } ?: guessType(path)
+        return f to type
+    }
+
+    fun drop(study: String, module: String) {
+        pageFile(study, module).delete()
+    }
+
+    /** Deletes all pages of [study] and the files no other page needs. */
+    fun dropStudy(study: String) {
+        pages.listFiles()?.filter { it.name.startsWith(hash(study) + "_") }?.forEach { it.delete() }
+        prune()
+    }
+
+    private fun has(path: String) = File(files, hash(path)).exists()
+
+    private fun pageFile(study: String, module: String) = File(pages, "${hash(study)}_${hash(module)}.json")
+
+    private fun save(study: String, module: String, page: Page) {
+        pages.mkdirs()
+        val o = JSONObject().put("html", page.html).put("version", page.version)
+            .put("files", JSONArray(page.files)).put("fetched", page.fetched)
+        write(pageFile(study, module), o.toString().toByteArray())
+    }
+
+    private fun keepFile(path: String, bytes: ByteArray, type: String?) {
+        files.mkdirs()
+        write(File(files, hash(path)), bytes)
+        write(File(files, hash(path) + ".type"), (type ?: guessType(path)).toByteArray())
+    }
+
+    /** Written beside and renamed, so a page or file is never read half written. */
+    private fun write(target: File, bytes: ByteArray) {
+        val tmp = File(target.parentFile, target.name + ".tmp")
+        tmp.writeBytes(bytes)
+        if (!tmp.renameTo(target)) {
+            target.delete()
+            tmp.renameTo(target)
+        }
+    }
+
+    /** Deletes the files no kept page names. */
+    private fun prune() {
+        val needed = pages.listFiles()?.filter { it.name.endsWith(".json") }?.flatMap { f ->
+            runCatching {
+                val list = JSONObject(f.readText()).optJSONArray("files") ?: JSONArray()
+                (0 until list.length()).map { hash(list.getString(it)) }
+            }.getOrDefault(emptyList())
+        }?.toSet() ?: emptySet()
+        files.listFiles()?.forEach { f ->
+            if (f.name.substringBefore('.') !in needed) f.delete()
+        }
+    }
+
+    /**
+     * Brings the kept pages of [study] up to date: fetches the page of every offline module of a running study
+     * (at most every [REFRESH_MS], at once when it or one of its files is missing), downloads the files it names
+     * that are not kept yet, and drops the pages of modules no longer offline. Errors are swallowed: the pages are
+     * a fallback, and the next sync tries again.
+     */
+    suspend fun refresh(study: Study) = lock.withLock {
+        withContext(Dispatchers.IO) {
+            val wanted = if (study.running) study.modules.filter { it.offline }.map { it.key }.toSet() else emptySet()
+            pages.listFiles()?.filter { f ->
+                f.name.startsWith(hash(study.code) + "_") && wanted.none { f.name == pageFile(study.code, it).name }
+            }?.forEach { it.delete() }
+            val now = System.currentTimeMillis()
+            for (key in wanted) {
+                val kept = page(study.code, key)
+                if (kept != null && kept.files.all { has(it) } && now - kept.fetched in 0 until REFRESH_MS) continue
+                try {
+                    fetch(study, key, kept, now)
+                } catch (e: ApiError) {
+                    if (e.status == 400 || e.status == 404) drop(study.code, key)
+                } catch (e: java.io.IOException) {
+                    // storage full or similar: the old page (if any) stays
+                }
+            }
+            prune()
+        }
+    }
+
+    private suspend fun fetch(study: Study, module: String, kept: Page?, now: Long) {
+        val r = Api.offlinePage(study.secret, module)
+        if (!r.optBoolean("offline", false)) {
+            drop(study.code, module)
+            return
+        }
+        val html = r.optString("html")
+        val version = r.optString("version")
+        if (html.isBlank()) return
+        val needed = LinkedHashSet<String>()
+        for (path in resourcePaths(html)) {
+            needed += path
+            if (!has(path)) {
+                val (bytes, type) = Api.download(path)
+                keepFile(path, bytes, type)
+            }
+            // a style sheet names its fonts and images itself
+            if (path.substringBefore('?').endsWith(".css")) {
+                val css = file(path)?.first?.readText().orEmpty()
+                for (inner in cssPaths(css, path)) {
+                    needed += inner
+                    if (!has(inner)) {
+                        val (bytes, type) = Api.download(inner)
+                        keepFile(inner, bytes, type)
+                    }
+                }
+            }
+        }
+        // the same page as before: only the time of the check changes
+        if (kept != null && kept.version == version && kept.html == html) {
+            save(study.code, module, kept.copy(files = needed.toList(), fetched = now))
+        } else {
+            save(study.code, module, Page(html, version, needed.toList(), now))
+        }
+    }
+
+    companion object {
+        /** How often a kept page is checked with the server: often enough that a changed questionnaire is seen soon. */
+        private const val REFRESH_MS = 15L * 60 * 1000
+
+        private val lock = Mutex()
+
+        private val ATTR = Regex("""\b(?:src|href)\s*=\s*(["'])(/[^"']*)\1""", RegexOption.IGNORE_CASE)
+        private val CSS_URL = Regex("""url\(\s*(["']?)([^"')]+)\1\s*\)""", RegexOption.IGNORE_CASE)
+
+        /** Whether [path] is a server file the offline page may load: /static/ and /media/, nothing else. */
+        fun servable(path: String): Boolean =
+            (path.startsWith("/static/") || path.startsWith("/media/")) && !path.contains("..")
+
+        /**
+         * The server files an HTML page names in src and href attributes with an absolute path (/static/...,
+         * /media/...), in order and without duplicates; &amp; in a query is read as &.
+         */
+        fun resourcePaths(html: String): List<String> =
+            ATTR.findAll(html).map { it.groupValues[2].replace("&amp;", "&") }
+                .filter { !it.startsWith("//") && servable(it) }.distinct().toList()
+
+        /** The server files a style sheet at [cssPath] names with url(...), relative paths resolved against it. */
+        fun cssPaths(css: String, cssPath: String): List<String> =
+            CSS_URL.findAll(css).mapNotNull { m ->
+                val ref = m.groupValues[2].trim()
+                when {
+                    ref.startsWith("data:") || ref.startsWith("#") || ref.startsWith("//") || ref.contains("://") -> null
+                    ref.startsWith("/") -> ref
+                    else -> runCatching { URI("http://h" + cssPath.substringBefore('?')).resolve(ref).let { u ->
+                        u.rawPath + (u.rawQuery?.let { "?$it" } ?: "")
+                    } }.getOrNull()
+                }
+            }.filter { servable(it) }.distinct().toList()
+
+        fun guessType(path: String): String = when (path.substringBefore('?').substringAfterLast('.').lowercase()) {
+            "css" -> "text/css"
+            "js", "mjs" -> "text/javascript"
+            "svg" -> "image/svg+xml"
+            "png" -> "image/png"
+            "jpg", "jpeg" -> "image/jpeg"
+            "gif" -> "image/gif"
+            "webp" -> "image/webp"
+            "woff2" -> "font/woff2"
+            "woff" -> "font/woff"
+            "ttf" -> "font/ttf"
+            "json" -> "application/json"
+            "mp3" -> "audio/mpeg"
+            "mp4" -> "video/mp4"
+            else -> "application/octet-stream"
+        }
+
+        private fun hash(s: String): String =
+            MessageDigest.getInstance("SHA-256").digest(s.toByteArray()).joinToString("") { "%02x".format(it) }.take(24)
+    }
+}

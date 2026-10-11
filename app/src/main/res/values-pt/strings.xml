@@ -70,4 +70,12 @@
     <string name="about_oss_intro">A aplicação utiliza estas bibliotecas, todas sob a Apache License 2.0:</string>
     <string name="show_licence">Mostrar o texto da licença</string>
     <string name="hide_licence">Ocultar o texto da licença</string>
+    <string name="notif_reminder">Lembrete: ainda tem uma pergunta curta à sua espera</string>
+    <string name="offline_saved">Guardado. As suas respostas serão enviadas assim que o telemóvel tiver ligação.</string>
+    <plurals name="answers_waiting">
+        <item quantity="one">%d resposta à espera de envio</item>
+        <item quantity="many">%d respostas à espera de envio</item>
+        <item quantity="other">%d respostas à espera de envio</item>
+    </plurals>
+    <string name="about_offline">Se um estudo permitir responder sem ligação, a aplicação guarda também as páginas do questionário dessas perguntas e, até serem enviadas, as respostas dadas sem ligação; as respostas que não puderem ser enviadas no prazo de 7 dias são eliminadas.</string>
 </resources>

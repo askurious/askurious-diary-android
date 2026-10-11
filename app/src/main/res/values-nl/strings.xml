@@ -66,4 +66,11 @@
     <string name="about_oss_intro">De app gebruikt deze bibliotheken, elk onder de Apache License 2.0:</string>
     <string name="show_licence">Licentietekst tonen</string>
     <string name="hide_licence">Licentietekst verbergen</string>
+    <string name="notif_reminder">Herinnering: er wacht nog een korte vraag</string>
+    <string name="offline_saved">Opgeslagen. Uw antwoorden worden verstuurd zodra de telefoon verbinding heeft.</string>
+    <plurals name="answers_waiting">
+        <item quantity="one">%d antwoord wacht op verzending</item>
+        <item quantity="other">%d antwoorden wachten op verzending</item>
+    </plurals>
+    <string name="about_offline">Als een onderzoek antwoorden zonder verbinding toestaat, bewaart de app ook de vragenlijstpagina’s van die vragen en, totdat ze verstuurd zijn, de antwoorden die zonder verbinding zijn gegeven; antwoorden die niet binnen 7 dagen konden worden verstuurd, worden verwijderd.</string>
 </resources>

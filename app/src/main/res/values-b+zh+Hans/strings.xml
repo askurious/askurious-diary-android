@@ -62,4 +62,10 @@
     <string name="about_oss_intro">本应用使用以下库，均采用 Apache License 2.0 许可：</string>
     <string name="show_licence">显示许可文本</string>
     <string name="hide_licence">隐藏许可文本</string>
+    <string name="notif_reminder">提醒：还有一个简短的问题等待您回答</string>
+    <string name="offline_saved">已保存。手机一旦联网，您的回答就会被发送。</string>
+    <plurals name="answers_waiting">
+        <item quantity="other">%d 个回答等待发送</item>
+    </plurals>
+    <string name="about_offline">如果某项研究允许在无网络连接时回答，本应用还会保存这些问题的问卷页面，以及在发送之前于无网络连接时所作的回答；7 天内未能发送的回答将被删除。</string>
 </resources>

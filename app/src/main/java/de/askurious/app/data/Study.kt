@@ -24,6 +24,10 @@ data class Module(
     val dayTo: Int,
     /** the text of the notification; blank = the default text */
     val notify: String,
+    /** minutes after the prompt for a second notification if it was not opened; 0 = none (fixed modules only) */
+    val reminder: Int = 0,
+    /** the module can be answered without a connection: the app keeps its page (OfflinePages) */
+    val offline: Boolean = false,
 )
 
 /** One enrolment of this device in a diary study. [secret] is the only key to it; the server keeps its hash. */
@@ -111,6 +115,8 @@ data class Study(
                 dayFrom = days?.optInt(0, 1) ?: 1,
                 dayTo = days?.optInt(1, Int.MAX_VALUE) ?: Int.MAX_VALUE,
                 notify = o.optString("notify"),
+                reminder = if (trigger is Trigger.Fixed) o.optInt("reminder", 0).coerceAtLeast(0) else 0,
+                offline = o.optBoolean("offline", false),
             )
         }
 
@@ -123,6 +129,7 @@ data class Study(
             }
             return JSONObject().put("key", m.key).put("name", m.name).put("trigger", t).put("expires", m.expires)
                 .put("days", JSONArray(listOf(m.dayFrom, m.dayTo))).put("notify", m.notify)
+                .put("reminder", m.reminder).put("offline", m.offline)
         }
     }
 }
