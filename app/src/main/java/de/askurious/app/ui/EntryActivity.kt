@@ -3,15 +3,16 @@ package de.askurious.app.ui
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
 import android.webkit.WebResourceRequest
+import android.webkit.WebStorage
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import de.askurious.app.R
 import de.askurious.app.data.Api
@@ -40,11 +42,17 @@ import de.askurious.app.data.Sync
 import de.askurious.app.schedule.Alarms
 import de.askurious.app.schedule.Prompt
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
 
 /**
  * One entry: asks the server for a one-time address of the module and shows the participant pages of Askurious
  * in a WebView. The questionnaire itself is the web page; the app adds nothing to it. The end page calls
  * AskuriousApp.done() (participant/end.html in app mode), and the activity closes.
+ *
+ * The WebView's cookies and web storage are shared by the whole app. Each entry starts with them empty, so the
+ * session cookie of one study never travels with the entry of another and the server cannot link two studies on
+ * one phone.
  */
 class EntryActivity : ComponentActivity() {
     private var url by mutableStateOf<String?>(null)
@@ -53,6 +61,7 @@ class EntryActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         val code = intent.getStringExtra(EXTRA_STUDY) ?: return finish()
         val module = intent.getStringExtra(EXTRA_MODULE) ?: return finish()
         val due = intent.getLongExtra(EXTRA_DUE, 0L).takeIf { it > 0 }
@@ -63,7 +72,9 @@ class EntryActivity : ComponentActivity() {
         if (savedInstanceState == null || url == null) {
             lifecycleScope.launch {
                 try {
-                    url = Api.absolute(Api.entry(study.secret, module, due, notified))
+                    val address = Api.absolute(Api.entry(study.secret, module, due, notified))
+                    clearWebState()
+                    url = address
                 } catch (e: ApiError) {
                     error = when (e.key) {
                         "expired" -> getString(R.string.expired)
@@ -80,6 +91,14 @@ class EntryActivity : ComponentActivity() {
                 EntryScreen(study.title)
             }
         }
+    }
+
+    /** Empties the cookies and the web storage of the WebView; returns when the cookies are gone. */
+    private suspend fun clearWebState() {
+        val cookies = CookieManager.getInstance()
+        suspendCancellableCoroutine { cont -> cookies.removeAllCookies { cont.resume(Unit) } }
+        cookies.flush()
+        WebStorage.getInstance().deleteAllData()
     }
 
     private fun finished() {
@@ -119,8 +138,10 @@ class EntryActivity : ComponentActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     private fun webView(ctx: Context, start: String): WebView {
         CookieManager.getInstance().setAcceptCookie(true)
-        val host = Uri.parse(start).host
+        val host = start.toUri().host
         return WebView(ctx).apply {
+            // nothing of an earlier entry (another study) is taken from the cache
+            clearCache(true)
             settings.javaScriptEnabled = true
             settings.domStorageEnabled = true
             settings.userAgentString = settings.userAgentString + " AskuriousDiary/1"

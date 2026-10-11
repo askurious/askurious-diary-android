@@ -11,8 +11,15 @@ import java.net.URLEncoder
 import java.time.ZoneId
 import java.util.Locale
 
-/** What a call can end in, besides success: the server's error key ("expired", "limit", "unknown", ...) or no network. */
-class ApiError(val key: String, val status: Int = 0) : Exception(key)
+/**
+ * What a call can end in, besides success: the server's error key ("expired", "limit", "unknown", "unauthorised",
+ * ...) or no network ("offline", [status] 0). A 401 means the server does not know the secret (study deleted);
+ * a 429 is the rate limit and says nothing about the study.
+ */
+class ApiError(val key: String, val status: Int = 0) : Exception(key) {
+    /** Worth trying again later: no network, the rate limit, or a fault of the server. */
+    val transient: Boolean get() = key == "offline" || status == 429 || status >= 500
+}
 
 /**
  * The diary API of Askurious (app/diary_api.py on the server), version 1. No account: a study is reached with the
@@ -46,6 +53,12 @@ object Api {
     }
 
     suspend fun leave(secret: String): JSONObject = call("POST", "$BASE/leave", JSONObject(), secret)
+
+    /**
+     * Deletes all answers of this person in this study and the person itself, at the researchers too; afterwards
+     * the server no longer knows the secret (401).
+     */
+    suspend fun erase(secret: String): JSONObject = call("POST", "$BASE/erase", JSONObject(), secret)
 
     /**
      * The address of an entry as the server sent it. A debug build keeps only its path and puts it under its own

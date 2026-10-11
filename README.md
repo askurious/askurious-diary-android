@@ -9,6 +9,11 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
 - **No account.**
   Joining returns a random secret per study; the app keeps it in its private storage (no backup) and sends it as a bearer token.
   The server keeps only its hash, and the app sends no device id, so two studies on one phone cannot be linked.
+  Nothing of the app goes into cloud backups or to a new phone (`allowBackup="false"`, `res/xml/data_extraction_rules.xml`).
+- **No shared cookies.**
+  Each entry starts with empty WebView cookies, web storage and cache (`EntryActivity`), so the session cookie of one study never travels with the entry of another.
+- **Lock screen.**
+  Notifications are private: the lock screen shows only "Askurious – A short question is waiting", never the title of the study or the researchers' notification text.
 - **Thin shell.**
   The questionnaire pages are the participant pages of Askurious in a WebView (`EntryActivity`), opened with a one-time address per entry.
   The app itself does the study list, joining, the schedule, the notifications and the sync.
@@ -16,6 +21,17 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   `Schedule.kt` computes the prompts of the fixed modules in local time; the server computes the same times for the export (`diary.prompts`).
   One exact alarm at a time (`Alarms.kt`), set again after a reboot, an update, or a change of time or time zone.
   No push service: `SyncWorker` fetches each study every 6 hours.
+- **Server answers.**
+  A 401 (`unauthorised`: the server does not know the secret, study deleted) ends a study only if it keeps coming for more than three days (`Study.unauthorised`); any answer of the server clears it.
+  429 (`limit`) and 5xx never change a study.
+  Leaving without a connection marks the study as left at once and sends `/leave` at the next sync (`leavePending`).
+- **Deleting answers.**
+  "Delete my answers" on every study card calls `POST /api/diary/v1/erase`: the server deletes all answers of this person in this study and the person; the app then removes the study.
+- **Languages.**
+  The survey languages of Askurious: English, German, Spanish, French, Italian, Dutch, Polish, European Portuguese, Russian, Turkish, Simplified Chinese and Arabic (right to left), formal address where the language has it.
+  `res/xml/locales_config.xml` lists them for the per-app language setting (Android 13+).
+- **About the app.**
+  The (i) in the top bar: what the app stores, the privacy statement (https://askurious.de/privacy#tagebuch), the copyright and the licences of the libraries.
 
 ## Build and run
 
@@ -26,7 +42,9 @@ export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
 ./gradlew testDebugUnitTest assembleDebug
 ```
 
-Toolchain: Gradle 9.5.1, AGP 9.3.3 (with the compatibility flags of the upgrade assistant in gradle.properties), Kotlin 2.2.20, compileSdk 34.
+Toolchain: Gradle 9.5.1, AGP 9.3.3 (with the compatibility flags of the upgrade assistant in gradle.properties, still `android.newDsl=false`), Kotlin 2.2.20, compileSdk and targetSdk 36, minSdk 26.
+A release build is shrunk with R8 (`proguard-rules.pro` keeps the WebView bridge `EntryActivity.Bridge`).
+Checks: `./gradlew testDebugUnitTest lintDebug`.
 
 A **debug build** talks to `http://localhost:5060`, the Flask server on the computer (`.venv/bin/python run.py` in the Askurious repository).
 Run `adb reverse tcp:5060 tcp:5060` once per start of the emulator, so that its `localhost:5060` is the computer's: the server answers only under `localhost` while it runs with the development key.
@@ -41,10 +59,17 @@ A **release build** talks to `https://ask.askurious.de`, the participants' addre
 
 ## App Links
 
-The QR code holds `https://ask.askurious.de/j/<code>`.
+The QR code holds `https://ask.askurious.de/j/<code>`; only the participants' address `ask.askurious.de` is an App Link host (it serves `/j/` and `/.well-known/assetlinks.json`), not `askurious.de`.
+Test join codes have one hyphen (`k7qm2x-t3f9a`); the app keeps it.
 For the phone to open the app directly, the server must answer `/.well-known/assetlinks.json` with the SHA-256 fingerprint of the signing key: set `DIARY_APP_FINGERPRINTS` on the server (`keytool -list -v -keystore <keystore>`).
 Without it the link opens the join page in the browser, which shows the join code.
 
 ## Not yet
 
-Random prompts within time windows, reminders, an exit part, offline answers, iOS (concept, section 10).
+Random prompts within time windows, reminders, an exit part, offline answers, a release signing configuration, iOS (concept, section 10).
+
+## Licence
+
+© 2026 Philipp Brauner, RWTH Aachen University.
+No open-source licence has been chosen for the code yet; until then all rights are reserved (`LICENSE`).
+The libraries and their licences: `THIRD_PARTY_NOTICES.md`.

@@ -36,8 +36,25 @@ data class Study(
     val firstDay: LocalDate?,
     val lastDay: LocalDate?,
     val modules: List<Module>,
+    /**
+     * Epoch milliseconds of the first 401 in a row from the server (secret unknown), null while the server knows
+     * the secret. Kept only on the device; see [unauthorised].
+     */
+    val unauthorisedSince: Long? = null,
+    /** The participant left while the server could not be reached: the app tells it at the next sync. */
+    val leavePending: Boolean = false,
 ) {
     val running get() = status == "active"
+
+    /**
+     * The study after a 401 at [now]. One 401 does not end a study: a server restored from a backup or a passing
+     * fault must not cost a participant the rest of the study. Only when the server keeps answering 401 for more
+     * than [UNAUTHORISED_GRACE_MS] (the researchers deleted the study) is it marked "ended".
+     */
+    fun unauthorised(now: Long): Study {
+        val since = unauthorisedSince ?: now
+        return copy(unauthorisedSince = since, status = if (now - since > UNAUTHORISED_GRACE_MS) "ended" else status)
+    }
 
     fun dayIndex(date: LocalDate): Int? =
         firstDay?.let { (date.toEpochDay() - it.toEpochDay()).toInt() + 1 }
@@ -49,9 +66,17 @@ data class Study(
         .put("first_day", firstDay?.toString() ?: JSONObject.NULL)
         .put("last_day", lastDay?.toString() ?: JSONObject.NULL)
         .put("modules", JSONArray(modules.map { moduleJson(it) }))
+        .put("unauthorised_since", unauthorisedSince ?: JSONObject.NULL)
+        .put("leave_pending", leavePending)
 
     companion object {
-        /** Reads the study as the server sends it (POST /api/diary/v1/study) or as stored on the device. */
+        /** How long the server may answer 401 before the app takes the study as deleted: three days. */
+        const val UNAUTHORISED_GRACE_MS = 3L * 24 * 3600 * 1000
+
+        /**
+         * Reads the study as the server sends it (POST /api/diary/v1/study) or as stored on the device; the server
+         * sends neither "unauthorised_since" nor "leave_pending", so a fresh copy starts without them.
+         */
         fun fromJson(o: JSONObject, secret: String = o.optString("secret")): Study = Study(
             code = o.getString("code"),
             secret = secret,
@@ -61,6 +86,8 @@ data class Study(
             lastDay = o.optStringOrNull("last_day")?.let(LocalDate::parse),
             modules = o.optJSONArray("modules")?.let { arr -> (0 until arr.length()).map { module(arr.getJSONObject(it)) } }
                 ?: emptyList(),
+            unauthorisedSince = if (o.isNull("unauthorised_since")) null else o.optLong("unauthorised_since"),
+            leavePending = o.optBoolean("leave_pending", false),
         )
 
         private fun module(o: JSONObject): Module {

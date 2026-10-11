@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Askurious</string>
+    <string name="my_studies">我的研究</string>
+    <string name="no_studies">您尚未参加任何日记研究。请扫描研究的二维码或输入加入码。</string>
+    <string name="join_study">加入研究</string>
+    <string name="join_code">加入码</string>
+    <string name="scan_qr">扫描二维码</string>
+    <string name="look_up">查找</string>
+    <string name="join">加入</string>
+    <string name="cancel">取消</string>
+    <string name="back">返回</string>
+    <string name="close">关闭</string>
+    <plurals name="study_days">
+        <item quantity="other">时长：%d 天</item>
+    </plurals>
+    <string name="study_modules">您将被问到的内容</string>
+    <plurals name="fixed_per_day">
+        <item quantity="other">%1$s：每天 %2$d 次</item>
+    </plurals>
+    <plurals name="fixed_per_week">
+        <item quantity="other">%1$s：每周 %2$d 次</item>
+    </plurals>
+    <string name="self_module">%1$s：随时均可</string>
+    <plurals name="about_minutes">
+        <item quantity="other">每天约 %d 分钟</item>
+    </plurals>
+    <string name="join_privacy">加入时将打开该研究的知情同意书。本应用不保存姓名、电子邮件地址或电话号码，该研究也无法看到您参加的其他研究。</string>
+    <string name="continue_entry">继续填写第一份问卷</string>
+    <string name="day_of">第 %1$d 天，共 %2$d 天</string>
+    <string name="starts_on">开始日期：%1$s</string>
+    <string name="next_prompt">下一个问题：%1$s</string>
+    <string name="finished">已完成，非常感谢！</string>
+    <string name="left">您已退出此研究。</string>
+    <string name="left_pending">您已退出此研究。一旦有网络连接，本应用将通知研究人员。</string>
+    <string name="ended">研究人员已结束此研究。</string>
+    <string name="leave_study">退出研究</string>
+    <string name="leave_confirm">要退出此研究吗？您将不再收到问题。除非您通过“删除我的回答”将其删除，否则您的回答将保留在研究人员处。</string>
+    <string name="remove_from_list">从列表中移除</string>
+    <string name="erase_answers">删除我的回答</string>
+    <string name="erase_confirm">要删除您在此研究中的全部回答吗？这些回答在研究人员处也会被删除，且无法恢复。随后该研究将从本应用中移除。</string>
+    <string name="erase">删除</string>
+    <string name="notif_channel">您的研究中的问题</string>
+    <string name="notif_default">有一个简短的问题等待您回答</string>
+    <string name="allow_notifications">请允许通知，否则本应用无法在合适的时刻向您提问。</string>
+    <string name="allow_exact">请允许“闹钟和提醒”，以便问题准时送达。</string>
+    <string name="allow">允许</string>
+    <string name="expired">此问题已过期。下一个问题很快就会到来。</string>
+    <string name="limit">今天此项报告的次数已达上限。</string>
+    <string name="not_found">没有使用此代码的研究。</string>
+    <string name="closed">此研究不再接受新的参与者。</string>
+    <string name="offline">无网络连接。请重试。</string>
+    <string name="error">出现问题。请重试。</string>
+    <string name="about">关于本应用</string>
+    <string name="version">版本 %1$s</string>
+    <string name="about_privacy_title">隐私</string>
+    <string name="about_stores">本应用在此手机上只保存您的研究列表及其时间安排，并为每项研究保存一个随机密钥：这是访问您在该研究中所作回答的唯一凭证。本应用没有账户，不发送设备 ID、姓名、电子邮件地址或电话号码。这些内容都不会进入备份，也不会转移到新手机。</string>
+    <string name="privacy_statement">隐私声明</string>
+    <string name="about_licence_title">许可</string>
+    <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University。保留所有权利。</string>
+    <string name="about_oss_title">开源软件</string>
+    <string name="about_oss_intro">本应用使用以下库，均采用 Apache License 2.0 许可：</string>
+    <string name="show_licence">显示许可文本</string>
+    <string name="hide_licence">隐藏许可文本</string>
+</resources>

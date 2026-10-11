@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Askurious</string>
+    <string name="my_studies">Мои исследования</string>
+    <string name="no_studies">Вы пока не участвуете ни в одном дневниковом исследовании. Отсканируйте QR-код исследования или введите его код участия.</string>
+    <string name="join_study">Присоединиться к исследованию</string>
+    <string name="join_code">Код участия</string>
+    <string name="scan_qr">Сканировать QR-код</string>
+    <string name="look_up">Найти</string>
+    <string name="join">Присоединиться</string>
+    <string name="cancel">Отмена</string>
+    <string name="back">Назад</string>
+    <string name="close">Закрыть</string>
+    <plurals name="study_days">
+        <item quantity="one">Продолжительность: %d день</item>
+        <item quantity="few">Продолжительность: %d дня</item>
+        <item quantity="many">Продолжительность: %d дней</item>
+        <item quantity="other">Продолжительность: %d дня</item>
+    </plurals>
+    <string name="study_modules">О чём Вас будут спрашивать</string>
+    <plurals name="fixed_per_day">
+        <item quantity="one">%1$s: %2$d раз в день</item>
+        <item quantity="few">%1$s: %2$d раза в день</item>
+        <item quantity="many">%1$s: %2$d раз в день</item>
+        <item quantity="other">%1$s: %2$d раза в день</item>
+    </plurals>
+    <plurals name="fixed_per_week">
+        <item quantity="one">%1$s: %2$d раз в неделю</item>
+        <item quantity="few">%1$s: %2$d раза в неделю</item>
+        <item quantity="many">%1$s: %2$d раз в неделю</item>
+        <item quantity="other">%1$s: %2$d раза в неделю</item>
+    </plurals>
+    <string name="self_module">%1$s: когда захотите</string>
+    <plurals name="about_minutes">
+        <item quantity="one">Около %d минуты в день</item>
+        <item quantity="few">Около %d минут в день</item>
+        <item quantity="many">Около %d минут в день</item>
+        <item quantity="other">Около %d минуты в день</item>
+    </plurals>
+    <string name="join_privacy">При присоединении откроется форма согласия исследования. Приложение не сохраняет ни имени, ни адреса электронной почты, ни номера телефона, а исследование не видит другие Ваши исследования.</string>
+    <string name="continue_entry">Продолжить первую анкету</string>
+    <string name="day_of">День %1$d из %2$d</string>
+    <string name="starts_on">Начало: %1$s</string>
+    <string name="next_prompt">Следующий вопрос: %1$s</string>
+    <string name="finished">Завершено, большое спасибо!</string>
+    <string name="left">Вы вышли из этого исследования.</string>
+    <string name="left_pending">Вы вышли из этого исследования. Приложение сообщит об этом исследователям, как только появится соединение.</string>
+    <string name="ended">Исследователи завершили это исследование.</string>
+    <string name="leave_study">Выйти из исследования</string>
+    <string name="leave_confirm">Выйти из этого исследования? Вы больше не будете получать вопросы. Ваши ответы останутся у исследователей, если Вы не удалите их кнопкой «Удалить мои ответы».</string>
+    <string name="remove_from_list">Убрать из списка</string>
+    <string name="erase_answers">Удалить мои ответы</string>
+    <string name="erase_confirm">Удалить все Ваши ответы в этом исследовании? Они будут удалены и у исследователей, восстановить их будет невозможно. После этого исследование исчезнет из приложения.</string>
+    <string name="erase">Удалить</string>
+    <string name="notif_channel">Вопросы Ваших исследований</string>
+    <string name="notif_default">Вас ждёт короткий вопрос</string>
+    <string name="allow_notifications">Разрешите уведомления, иначе приложение не сможет задать вопрос в нужный момент.</string>
+    <string name="allow_exact">Разрешите «Будильники и напоминания», чтобы вопросы приходили вовремя.</string>
+    <string name="allow">Разрешить</string>
+    <string name="expired">Время ответа на этот вопрос истекло. Следующий скоро придёт.</string>
+    <string name="limit">На сегодня достигнут лимит для этого отчёта.</string>
+    <string name="not_found">Исследование с таким кодом не найдено.</string>
+    <string name="closed">Это исследование не принимает новых участников.</string>
+    <string name="offline">Нет соединения. Попробуйте ещё раз.</string>
+    <string name="error">Что-то пошло не так. Попробуйте ещё раз.</string>
+    <string name="about">О приложении</string>
+    <string name="version">Версия %1$s</string>
+    <string name="about_privacy_title">Конфиденциальность</string>
+    <string name="about_stores">Приложение хранит на этом телефоне только список Ваших исследований с их расписанием и для каждого исследования случайный секрет — единственный ключ к Вашим ответам в нём. У приложения нет учётной записи, и оно не отправляет ни идентификатор устройства, ни имя, ни адрес электронной почты, ни номер телефона. Ничего из этого не попадает в резервные копии или на новый телефон.</string>
+    <string name="privacy_statement">Политика конфиденциальности</string>
+    <string name="about_licence_title">Лицензия</string>
+    <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Все права защищены.</string>
+    <string name="about_oss_title">Программы с открытым исходным кодом</string>
+    <string name="about_oss_intro">Приложение использует следующие библиотеки, все по лицензии Apache License 2.0:</string>
+    <string name="show_licence">Показать текст лицензии</string>
+    <string name="hide_licence">Скрыть текст лицензии</string>
+</resources>

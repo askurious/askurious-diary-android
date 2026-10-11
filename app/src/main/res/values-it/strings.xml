@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Askurious</string>
+    <string name="my_studies">I miei studi</string>
+    <string name="no_studies">Non partecipa ancora a nessuno studio con diario. Scansioni il codice QR di uno studio o inserisca il suo codice di accesso.</string>
+    <string name="join_study">Partecipa a uno studio</string>
+    <string name="join_code">Codice di accesso</string>
+    <string name="scan_qr">Scansiona codice QR</string>
+    <string name="look_up">Cerca</string>
+    <string name="join">Partecipa</string>
+    <string name="cancel">Annulla</string>
+    <string name="back">Indietro</string>
+    <string name="close">Chiudi</string>
+    <plurals name="study_days">
+        <item quantity="one">Durata: %d giorno</item>
+        <item quantity="many">Durata: %d giorni</item>
+        <item quantity="other">Durata: %d giorni</item>
+    </plurals>
+    <string name="study_modules">Che cosa Le verrà chiesto</string>
+    <plurals name="fixed_per_day">
+        <item quantity="one">%1$s: %2$d volta al giorno</item>
+        <item quantity="many">%1$s: %2$d volte al giorno</item>
+        <item quantity="other">%1$s: %2$d volte al giorno</item>
+    </plurals>
+    <plurals name="fixed_per_week">
+        <item quantity="one">%1$s: %2$d volta a settimana</item>
+        <item quantity="many">%1$s: %2$d volte a settimana</item>
+        <item quantity="other">%1$s: %2$d volte a settimana</item>
+    </plurals>
+    <string name="self_module">%1$s: quando vuole</string>
+    <plurals name="about_minutes">
+        <item quantity="one">Circa %d minuto al giorno</item>
+        <item quantity="many">Circa %d minuti al giorno</item>
+        <item quantity="other">Circa %d minuti al giorno</item>
+    </plurals>
+    <string name="join_privacy">Partecipando si apre il modulo di consenso dello studio. L’app non salva nomi, indirizzi e-mail o numeri di telefono, e lo studio non vede i Suoi altri studi.</string>
+    <string name="continue_entry">Continua il primo questionario</string>
+    <string name="day_of">Giorno %1$d di %2$d</string>
+    <string name="starts_on">Inizia il %1$s</string>
+    <string name="next_prompt">Prossima domanda: %1$s</string>
+    <string name="finished">Concluso, grazie mille!</string>
+    <string name="left">Ha lasciato questo studio.</string>
+    <string name="left_pending">Ha lasciato questo studio. L’app lo comunicherà al gruppo di ricerca non appena sarà disponibile una connessione.</string>
+    <string name="ended">Il gruppo di ricerca ha concluso questo studio.</string>
+    <string name="leave_study">Lascia lo studio</string>
+    <string name="leave_confirm">Lasciare questo studio? Non riceverà più domande. Le Sue risposte restano al gruppo di ricerca, a meno che non le cancelli con «Cancella le mie risposte».</string>
+    <string name="remove_from_list">Rimuovi dall’elenco</string>
+    <string name="erase_answers">Cancella le mie risposte</string>
+    <string name="erase_confirm">Cancellare tutte le Sue risposte a questo studio? Verranno cancellate anche presso il gruppo di ricerca e non potranno essere recuperate. Lo studio verrà poi rimosso dall’app.</string>
+    <string name="erase">Cancella</string>
+    <string name="notif_channel">Domande dei Suoi studi</string>
+    <string name="notif_default">C’è una breve domanda per Lei</string>
+    <string name="allow_notifications">Consenta le notifiche, altrimenti l’app non può farLe domande al momento giusto.</string>
+    <string name="allow_exact">Consenta «Sveglie e promemoria» affinché le domande arrivino puntuali.</string>
+    <string name="allow">Consenti</string>
+    <string name="expired">Questa domanda è scaduta. La prossima arriverà presto.</string>
+    <string name="limit">Ha raggiunto il limite di oggi per questa segnalazione.</string>
+    <string name="not_found">Nessuno studio con questo codice.</string>
+    <string name="closed">Questo studio non accetta nuovi partecipanti.</string>
+    <string name="offline">Nessuna connessione. Riprovi.</string>
+    <string name="error">Si è verificato un errore. Riprovi.</string>
+    <string name="about">Informazioni sull’app</string>
+    <string name="version">Versione %1$s</string>
+    <string name="about_privacy_title">Privacy</string>
+    <string name="about_stores">Su questo telefono l’app conserva solo l’elenco dei Suoi studi con i relativi calendari e, per ogni studio, un segreto casuale: l’unica chiave per le Sue risposte in quello studio. Non ha account e non invia alcun ID del dispositivo, nome, indirizzo e-mail o numero di telefono. Nulla di tutto ciò finisce nei backup o su un nuovo telefono.</string>
+    <string name="privacy_statement">Informativa sulla privacy</string>
+    <string name="about_licence_title">Licenza</string>
+    <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Tutti i diritti riservati.</string>
+    <string name="about_oss_title">Software open source</string>
+    <string name="about_oss_intro">L’app utilizza queste librerie, tutte con Apache License 2.0:</string>
+    <string name="show_licence">Mostra il testo della licenza</string>
+    <string name="hide_licence">Nascondi il testo della licenza</string>
+</resources>

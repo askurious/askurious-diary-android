@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Askurious</string>
+    <string name="my_studies">Mes études</string>
+    <string name="no_studies">Vous ne participez encore à aucune étude de journal de bord. Scannez le code QR d’une étude ou saisissez son code d’accès.</string>
+    <string name="join_study">Rejoindre une étude</string>
+    <string name="join_code">Code d’accès</string>
+    <string name="scan_qr">Scanner le code QR</string>
+    <string name="look_up">Rechercher</string>
+    <string name="join">Rejoindre</string>
+    <string name="cancel">Annuler</string>
+    <string name="back">Retour</string>
+    <string name="close">Fermer</string>
+    <plurals name="study_days">
+        <item quantity="one">Durée : %d jour</item>
+        <item quantity="many">Durée : %d jours</item>
+        <item quantity="other">Durée : %d jours</item>
+    </plurals>
+    <string name="study_modules">Ce qui vous sera demandé</string>
+    <plurals name="fixed_per_day">
+        <item quantity="one">%1$s : %2$d fois par jour</item>
+        <item quantity="many">%1$s : %2$d fois par jour</item>
+        <item quantity="other">%1$s : %2$d fois par jour</item>
+    </plurals>
+    <plurals name="fixed_per_week">
+        <item quantity="one">%1$s : %2$d fois par semaine</item>
+        <item quantity="many">%1$s : %2$d fois par semaine</item>
+        <item quantity="other">%1$s : %2$d fois par semaine</item>
+    </plurals>
+    <string name="self_module">%1$s : quand vous le souhaitez</string>
+    <plurals name="about_minutes">
+        <item quantity="one">Environ %d minute par jour</item>
+        <item quantity="many">Environ %d minutes par jour</item>
+        <item quantity="other">Environ %d minutes par jour</item>
+    </plurals>
+    <string name="join_privacy">En rejoignant l’étude, vous ouvrez son formulaire de consentement. L’application n’enregistre ni nom, ni adresse e-mail, ni numéro de téléphone, et l’étude ne voit pas vos autres études.</string>
+    <string name="continue_entry">Reprendre le premier questionnaire</string>
+    <string name="day_of">Jour %1$d sur %2$d</string>
+    <string name="starts_on">Commence le %1$s</string>
+    <string name="next_prompt">Prochaine question : %1$s</string>
+    <string name="finished">Terminé, merci beaucoup !</string>
+    <string name="left">Vous avez quitté cette étude.</string>
+    <string name="left_pending">Vous avez quitté cette étude. L’application en informera l’équipe de recherche dès qu’une connexion sera disponible.</string>
+    <string name="ended">L’équipe de recherche a mis fin à cette étude.</string>
+    <string name="leave_study">Quitter l’étude</string>
+    <string name="leave_confirm">Quitter cette étude ? Vous ne recevrez plus de questions. Vos réponses restent auprès de l’équipe de recherche, sauf si vous les supprimez avec « Supprimer mes réponses ».</string>
+    <string name="remove_from_list">Retirer de la liste</string>
+    <string name="erase_answers">Supprimer mes réponses</string>
+    <string name="erase_confirm">Supprimer toutes vos réponses à cette étude ? Elles seront aussi supprimées auprès de l’équipe de recherche et ne pourront pas être restaurées. L’étude disparaîtra ensuite de l’application.</string>
+    <string name="erase">Supprimer</string>
+    <string name="notif_channel">Questions de vos études</string>
+    <string name="notif_default">Une courte question vous attend</string>
+    <string name="allow_notifications">Autorisez les notifications, sinon l’application ne peut pas vous interroger au bon moment.</string>
+    <string name="allow_exact">Autorisez « Alarmes et rappels » pour que les questions arrivent à l’heure.</string>
+    <string name="allow">Autoriser</string>
+    <string name="expired">Cette question a expiré. La prochaine arrivera bientôt.</string>
+    <string name="limit">Vous avez atteint la limite d’aujourd’hui pour cette saisie.</string>
+    <string name="not_found">Aucune étude avec ce code.</string>
+    <string name="closed">Cette étude n’accepte plus de nouveaux participants.</string>
+    <string name="offline">Pas de connexion. Veuillez réessayer.</string>
+    <string name="error">Une erreur s’est produite. Veuillez réessayer.</string>
+    <string name="about">À propos de l’application</string>
+    <string name="version">Version %1$s</string>
+    <string name="about_privacy_title">Confidentialité</string>
+    <string name="about_stores">Sur ce téléphone, l’application conserve uniquement la liste de vos études avec leurs calendriers et, pour chaque étude, un secret aléatoire : la seule clé de vos réponses à cette étude. Elle n’a pas de compte et n’envoie ni identifiant de l’appareil, ni nom, ni adresse e-mail, ni numéro de téléphone. Rien de tout cela n’est sauvegardé ni transféré vers un nouveau téléphone.</string>
+    <string name="privacy_statement">Déclaration de confidentialité</string>
+    <string name="about_licence_title">Licence</string>
+    <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Tous droits réservés.</string>
+    <string name="about_oss_title">Logiciels open source</string>
+    <string name="about_oss_intro">L’application utilise les bibliothèques suivantes, toutes sous Apache License 2.0 :</string>
+    <string name="show_licence">Afficher le texte de la licence</string>
+    <string name="hide_licence">Masquer le texte de la licence</string>
+</resources>

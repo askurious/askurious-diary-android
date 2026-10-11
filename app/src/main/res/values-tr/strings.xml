@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Askurious</string>
+    <string name="my_studies">Çalışmalarım</string>
+    <string name="no_studies">Henüz bir günlük çalışmasına katılmıyorsunuz. Bir çalışmanın QR kodunu tarayın veya katılım kodunu girin.</string>
+    <string name="join_study">Çalışmaya katıl</string>
+    <string name="join_code">Katılım kodu</string>
+    <string name="scan_qr">QR kodu tara</string>
+    <string name="look_up">Ara</string>
+    <string name="join">Katıl</string>
+    <string name="cancel">İptal</string>
+    <string name="back">Geri</string>
+    <string name="close">Kapat</string>
+    <plurals name="study_days">
+        <item quantity="one">Süre: %d gün</item>
+        <item quantity="other">Süre: %d gün</item>
+    </plurals>
+    <string name="study_modules">Size sorulacaklar</string>
+    <plurals name="fixed_per_day">
+        <item quantity="one">%1$s: günde %2$d kez</item>
+        <item quantity="other">%1$s: günde %2$d kez</item>
+    </plurals>
+    <plurals name="fixed_per_week">
+        <item quantity="one">%1$s: haftada %2$d kez</item>
+        <item quantity="other">%1$s: haftada %2$d kez</item>
+    </plurals>
+    <string name="self_module">%1$s: istediğiniz zaman</string>
+    <plurals name="about_minutes">
+        <item quantity="one">Günde yaklaşık %d dakika</item>
+        <item quantity="other">Günde yaklaşık %d dakika</item>
+    </plurals>
+    <string name="join_privacy">Katıldığınızda çalışmanın onam formu açılır. Uygulama ad, e-posta adresi veya telefon numarası kaydetmez ve çalışma diğer çalışmalarınızı göremez.</string>
+    <string name="continue_entry">İlk ankete devam et</string>
+    <string name="day_of">Gün %1$d / %2$d</string>
+    <string name="starts_on">Başlangıç: %1$s</string>
+    <string name="next_prompt">Sonraki soru: %1$s</string>
+    <string name="finished">Tamamlandı, çok teşekkür ederiz!</string>
+    <string name="left">Bu çalışmadan ayrıldınız.</string>
+    <string name="left_pending">Bu çalışmadan ayrıldınız. Uygulama, bağlantı kurulur kurulmaz bunu araştırmacılara bildirecek.</string>
+    <string name="ended">Araştırmacılar bu çalışmayı sonlandırdı.</string>
+    <string name="leave_study">Çalışmadan ayrıl</string>
+    <string name="leave_confirm">Bu çalışmadan ayrılmak istiyor musunuz? Artık soru almayacaksınız. Yanıtlarınız, “Yanıtlarımı sil” ile silmediğiniz sürece araştırmacılarda kalır.</string>
+    <string name="remove_from_list">Listeden kaldır</string>
+    <string name="erase_answers">Yanıtlarımı sil</string>
+    <string name="erase_confirm">Bu çalışmadaki tüm yanıtlarınız silinsin mi? Yanıtlar araştırmacılarda da silinir ve geri getirilemez. Ardından çalışma uygulamadan kaldırılır.</string>
+    <string name="erase">Sil</string>
+    <string name="notif_channel">Çalışmalarınızın soruları</string>
+    <string name="notif_default">Kısa bir soru sizi bekliyor</string>
+    <string name="allow_notifications">Bildirimlere izin verin, aksi halde uygulama size doğru anda soru soramaz.</string>
+    <string name="allow_exact">Soruların zamanında gelmesi için “Alarmlar ve hatırlatıcılar” iznini verin.</string>
+    <string name="allow">İzin ver</string>
+    <string name="expired">Bu sorunun süresi doldu. Bir sonraki yakında gelecek.</string>
+    <string name="limit">Bu bildirim için bugünkü sınıra ulaştınız.</string>
+    <string name="not_found">Bu koda sahip bir çalışma yok.</string>
+    <string name="closed">Bu çalışma yeni katılımcı kabul etmiyor.</string>
+    <string name="offline">Bağlantı yok. Lütfen tekrar deneyin.</string>
+    <string name="error">Bir sorun oluştu. Lütfen tekrar deneyin.</string>
+    <string name="about">Uygulama hakkında</string>
+    <string name="version">Sürüm %1$s</string>
+    <string name="about_privacy_title">Gizlilik</string>
+    <string name="about_stores">Uygulama bu telefonda yalnızca çalışmalarınızın listesini ve programlarını, her çalışma için de rastgele bir gizli anahtarı saklar: Bu anahtar, o çalışmadaki yanıtlarınıza ulaşmanın tek yoludur. Uygulamanın hesabı yoktur ve cihaz kimliği, ad, e-posta adresi veya telefon numarası göndermez. Bunların hiçbiri yedeklere veya yeni bir telefona aktarılmaz.</string>
+    <string name="privacy_statement">Gizlilik bildirimi</string>
+    <string name="about_licence_title">Lisans</string>
+    <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Tüm hakları saklıdır.</string>
+    <string name="about_oss_title">Açık kaynak yazılım</string>
+    <string name="about_oss_intro">Uygulama, her biri Apache License 2.0 kapsamında olan şu kütüphaneleri kullanır:</string>
+    <string name="show_licence">Lisans metnini göster</string>
+    <string name="hide_licence">Lisans metnini gizle</string>
+</resources>

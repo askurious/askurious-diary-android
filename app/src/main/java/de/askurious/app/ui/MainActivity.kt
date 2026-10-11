@@ -3,18 +3,19 @@ package de.askurious.app.ui
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,12 +23,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -47,10 +53,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
@@ -78,25 +87,13 @@ fun DiaryTheme(content: @Composable () -> Unit) {
     MaterialTheme(colorScheme = scheme, content = content)
 }
 
-/** The join code in a join link (https://askurious.de/j/<code>, askurious://join/<code>) or as typed. */
-fun joinCode(text: String): String? {
-    val t = text.trim()
-    if (t.isEmpty()) return null
-    val uri = Uri.parse(t)
-    val code = when {
-        uri.scheme == "askurious" -> uri.lastPathSegment ?: uri.host
-        uri.scheme?.startsWith("http") == true -> uri.pathSegments.let { s -> s.getOrNull(s.indexOf("j") + 1) }
-        else -> t
-    }
-    return code?.replace(" ", "")?.ifBlank { null }
-}
-
 class MainActivity : ComponentActivity() {
     private var linkCode by mutableStateOf<String?>(null)
     private var studies by mutableStateOf<List<Study>>(emptyList())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         linkCode = intent?.data?.let { joinCode(it.toString()) }
         setContent { DiaryTheme { App() } }
     }
@@ -118,18 +115,22 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun App() {
         val code = linkCode
-        if (code != null) {
-            JoinScreen(initial = code, onDone = { linkCode = null; studies = StudyStore(this).all() })
-        } else {
-            var joining by remember { mutableStateOf(false) }
-            if (joining) JoinScreen(initial = "", onDone = { joining = false; studies = StudyStore(this).all() })
-            else HomeScreen(onJoin = { joining = true })
+        var joining by remember { mutableStateOf(false) }
+        var about by remember { mutableStateOf(false) }
+        when {
+            code != null -> JoinScreen(initial = code, onDone = { linkCode = null; studies = StudyStore(this).all() })
+            joining -> JoinScreen(initial = "", onDone = { joining = false; studies = StudyStore(this).all() })
+            about -> {
+                BackHandler { about = false }
+                AboutScreen(onBack = { about = false })
+            }
+            else -> HomeScreen(onJoin = { joining = true }, onAbout = { about = true })
         }
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    private fun HomeScreen(onJoin: () -> Unit) {
+    private fun HomeScreen(onJoin: () -> Unit, onAbout: () -> Unit) {
         val context = LocalContext.current
         var askNotify by remember { mutableStateOf(false) }
         val notifyLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { askNotify = false }
@@ -140,6 +141,7 @@ class MainActivity : ComponentActivity() {
         Scaffold(topBar = {
             TopAppBar(title = { Text(stringResource(R.string.my_studies)) }, actions = {
                 TextButton(onClick = onJoin) { Text(stringResource(R.string.join_study)) }
+                IconButton(onClick = onAbout) { Icon(Icons.Outlined.Info, contentDescription = stringResource(R.string.about)) }
             })
         }) { pad ->
             LazyColumn(
@@ -148,13 +150,15 @@ class MainActivity : ComponentActivity() {
             ) {
                 if (askNotify) item {
                     Notice(stringResource(R.string.allow_notifications)) {
-                        notifyLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            notifyLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        }
                     }
                 }
                 if (studies.any { it.running } && !Alarms.canExact(context)) item {
                     Notice(stringResource(R.string.allow_exact)) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                            startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, Uri.parse("package:$packageName")))
+                            startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, "package:$packageName".toUri()))
                         }
                     }
                 }
@@ -180,11 +184,14 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @OptIn(ExperimentalLayoutApi::class)
     @Composable
     private fun StudyCard(study: Study) {
         val context = LocalContext.current
         val scope = rememberCoroutineScope()
         var confirmLeave by remember { mutableStateOf(false) }
+        var confirmErase by remember { mutableStateOf(false) }
+        var eraseError by remember { mutableStateOf<String?>(null) }
         val today = LocalDate.now()
         val fmt = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
         Card(Modifier.fillMaxWidth()) {
@@ -216,19 +223,25 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                     "finished" -> Text(stringResource(R.string.finished))
-                    "left" -> Text(stringResource(R.string.left))
+                    "left" -> Text(stringResource(if (study.leavePending) R.string.left_pending else R.string.left))
                     else -> Text(stringResource(R.string.ended))
                 }
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     if (study.status == "active" || study.status == "pending") {
                         TextButton(onClick = { confirmLeave = true }) { Text(stringResource(R.string.leave_study)) }
-                    } else {
+                    } else if (!study.leavePending) {
+                        // a leave not yet told to the server keeps the study, so that the next sync can send it
                         TextButton(onClick = {
                             StudyStore(context).remove(study.code)
                             studies = StudyStore(context).all()
                         }) { Text(stringResource(R.string.remove_from_list)) }
                     }
+                    // every study still holds its secret, so its answers can be deleted, also after the end
+                    TextButton(onClick = { eraseError = null; confirmErase = true }) {
+                        Text(stringResource(R.string.erase_answers), color = MaterialTheme.colorScheme.error)
+                    }
                 }
+                eraseError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
             }
         }
         if (confirmLeave) {
@@ -239,14 +252,34 @@ class MainActivity : ComponentActivity() {
                     TextButton(onClick = {
                         confirmLeave = false
                         scope.launch {
-                            runCatching { Api.leave(study.secret) }
-                            StudyStore(context).put(study.copy(status = "left"))
-                            Alarms.rearm(context)
+                            Sync.leave(context, study)
                             studies = StudyStore(context).all()
                         }
                     }) { Text(stringResource(R.string.leave_study)) }
                 },
                 dismissButton = { TextButton(onClick = { confirmLeave = false }) { Text(stringResource(R.string.cancel)) } },
+            )
+        }
+        if (confirmErase) {
+            AlertDialog(
+                onDismissRequest = { confirmErase = false },
+                title = { Text(stringResource(R.string.erase_answers)) },
+                text = { Text(stringResource(R.string.erase_confirm)) },
+                confirmButton = {
+                    TextButton(onClick = {
+                        confirmErase = false
+                        scope.launch {
+                            try {
+                                Sync.erase(context, study)
+                            } catch (e: ApiError) {
+                                // the study stays: its secret is the only way to try again
+                                eraseError = getString(if (e.key == "offline") R.string.offline else R.string.error)
+                            }
+                            studies = StudyStore(context).all()
+                        }
+                    }) { Text(stringResource(R.string.erase), color = MaterialTheme.colorScheme.error) }
+                },
+                dismissButton = { TextButton(onClick = { confirmErase = false }) { Text(stringResource(R.string.cancel)) } },
             )
         }
     }
@@ -284,6 +317,7 @@ class MainActivity : ComponentActivity() {
         }
 
         val scanner = rememberLauncherForActivityResult(ScanContract()) { result -> result.contents?.let { lookUp(it) } }
+        BackHandler(onBack = onDone)
         LaunchedEffect(initial) { if (initial.isNotBlank()) lookUp(initial) }
 
         Scaffold(topBar = {
@@ -298,15 +332,21 @@ class MainActivity : ComponentActivity() {
                         scanner.launch(ScanOptions().setDesiredBarcodeFormats(ScanOptions.QR_CODE).setBeepEnabled(false).setPrompt(""))
                     }) { Text(stringResource(R.string.scan_qr)) }
                     OutlinedTextField(
+                        // lowercase only; the hyphen of a test code (k7qm2x-t3f9a) stays, joinCode removes spaces
                         value = code, onValueChange = { code = it.lowercase() },
                         label = { Text(stringResource(R.string.join_code)) }, singleLine = true,
-                        keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.None),
+                        keyboardOptions = KeyboardOptions(
+                            capitalization = KeyboardCapitalization.None,
+                            autoCorrectEnabled = false,
+                            keyboardType = KeyboardType.Ascii,
+                        ),
                     )
                     Button(onClick = { lookUp(code) }, enabled = !busy && code.isNotBlank()) { Text(stringResource(R.string.look_up)) }
                 } else {
                     Text(i.optString("title"), style = MaterialTheme.typography.titleLarge)
                     i.optString("description").takeIf { it.isNotBlank() }?.let { Text(it) }
-                    Text(stringResource(R.string.study_days, i.optInt("period_days")))
+                    val days = i.optInt("period_days")
+                    Text(pluralStringResource(R.plurals.study_days, days, days))
                     val modules = i.optJSONArray("modules")
                     if (modules != null && modules.length() > 0) {
                         Text(stringResource(R.string.study_modules), style = MaterialTheme.typography.titleSmall)
@@ -316,13 +356,16 @@ class MainActivity : ComponentActivity() {
                             Text(
                                 when {
                                     m.optString("trigger") == "self" -> stringResource(R.string.self_module, name)
-                                    m.optDouble("per_day", 0.0) >= 1 -> stringResource(R.string.fixed_per_day, name, m.optDouble("per_day").toInt())
-                                    else -> stringResource(R.string.fixed_per_week, name, m.optInt("per_week"))
+                                    m.optDouble("per_day", 0.0) >= 1 -> m.optDouble("per_day").toInt().let { n ->
+                                        pluralStringResource(R.plurals.fixed_per_day, n, name, n)
+                                    }
+                                    else -> m.optInt("per_week").let { n -> pluralStringResource(R.plurals.fixed_per_week, n, name, n) }
                                 }
                             )
                         }
                     }
-                    if (i.optInt("minutes") > 0) Text(stringResource(R.string.about_minutes, i.optInt("minutes")))
+                    val minutes = i.optInt("minutes")
+                    if (minutes > 0) Text(pluralStringResource(R.plurals.about_minutes, minutes, minutes))
                     Text(stringResource(R.string.join_privacy), style = MaterialTheme.typography.bodySmall)
                     Button(enabled = !busy, onClick = {
                         busy = true
