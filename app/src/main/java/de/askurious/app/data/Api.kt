@@ -45,12 +45,60 @@ object Api {
     /**
      * A one-time address for one entry: [module] is a module key, or "entry" for the first questionnaire.
      * [due] and [notified]: epoch milliseconds of the prompt; null for an entry the participant started.
+     * [reminded]: the participant opened it from the reminder notification.
      */
-    suspend fun entry(secret: String, module: String, due: Long?, notified: Long?): String {
+    suspend fun entry(secret: String, module: String, due: Long?, notified: Long?, reminded: Boolean = false): String {
         val body = JSONObject().put("module", module).put("tz", ZoneId.systemDefault().id)
             .put("due", due ?: JSONObject.NULL).put("notified", notified ?: JSONObject.NULL)
+        if (reminded) body.put("reminded", true)
         return call("POST", "$BASE/entry", body, secret).getString("url")
     }
+
+    /**
+     * The page of [module] for answering without a connection: {"offline": false}, or {"offline": true, "html",
+     * "version"}. The html is the participant page with absolute paths (/static/..., /media/...).
+     */
+    suspend fun offlinePage(secret: String, module: String): JSONObject =
+        call("POST", "$BASE/offline/${URLEncoder.encode(module, "UTF-8")}", JSONObject(), secret)
+
+    /** Sends one answer given without a connection (AnswerQueue.Item); see [AnswerQueue.fate] for the errors. */
+    suspend fun offlineAnswer(secret: String, item: AnswerQueue.Item): JSONObject =
+        call("POST", "$BASE/offline", item.body(), secret)
+
+    /**
+     * A file of the server (a /static/ or /media/ path) with its content type, for pages kept for answering
+     * without a connection. No secret: these files are the same for everybody. At most [MAX_FILE] bytes.
+     */
+    suspend fun download(path: String): Pair<ByteArray, String?> = withContext(Dispatchers.IO) {
+        val conn = (URL(baseUrl + path).openConnection() as HttpURLConnection).apply {
+            connectTimeout = 15_000
+            readTimeout = 30_000
+        }
+        try {
+            val code = conn.responseCode
+            if (code !in 200..299) throw ApiError("error", code)
+            if (conn.contentLengthLong > MAX_FILE) throw ApiError("error", code)
+            val bytes = conn.inputStream.use { input ->
+                val out = java.io.ByteArrayOutputStream()
+                val buf = ByteArray(16 * 1024)
+                while (true) {
+                    val n = input.read(buf)
+                    if (n < 0) break
+                    out.write(buf, 0, n)
+                    if (out.size() > MAX_FILE) throw ApiError("error", code)
+                }
+                out.toByteArray()
+            }
+            bytes to conn.contentType
+        } catch (e: IOException) {
+            throw ApiError("offline")
+        } finally {
+            conn.disconnect()
+        }
+    }
+
+    /** The largest file kept for an offline page: a video does not belong on the phone without being asked. */
+    private const val MAX_FILE = 10L * 1024 * 1024
 
     suspend fun leave(secret: String): JSONObject = call("POST", "$BASE/leave", JSONObject(), secret)
 

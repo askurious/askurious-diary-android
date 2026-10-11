@@ -74,4 +74,13 @@
     <string name="about_oss_intro">Приложение использует следующие библиотеки, все по лицензии Apache License 2.0:</string>
     <string name="show_licence">Показать текст лицензии</string>
     <string name="hide_licence">Скрыть текст лицензии</string>
+    <string name="notif_reminder">Напоминание: Вас всё ещё ждёт короткий вопрос</string>
+    <string name="offline_saved">Сохранено. Ваши ответы будут отправлены, как только у телефона появится соединение.</string>
+    <plurals name="answers_waiting">
+        <item quantity="one">%d ответ ожидает отправки</item>
+        <item quantity="few">%d ответа ожидают отправки</item>
+        <item quantity="many">%d ответов ожидают отправки</item>
+        <item quantity="other">%d ответа ожидают отправки</item>
+    </plurals>
+    <string name="about_offline">Если исследование позволяет отвечать без соединения, приложение также хранит страницы анкеты для этих вопросов и, до их отправки, ответы, данные без соединения; ответы, которые не удалось отправить в течение 7 дней, удаляются.</string>
 </resources>

@@ -66,4 +66,11 @@
     <string name="about_oss_intro">The app uses these libraries, each under the Apache License 2.0:</string>
     <string name="show_licence">Show licence text</string>
     <string name="hide_licence">Hide licence text</string>
+    <string name="notif_reminder">Reminder: a short question is still waiting</string>
+    <string name="offline_saved">Saved. Your answers will be sent as soon as the phone has a connection.</string>
+    <plurals name="answers_waiting">
+        <item quantity="one">%d answer waiting to be sent</item>
+        <item quantity="other">%d answers waiting to be sent</item>
+    </plurals>
+    <string name="about_offline">If a study lets you answer without a connection, the app also keeps the questionnaire pages of those questions and, until they are sent, the answers you gave without a connection; answers that could not be sent within 7 days are deleted.</string>
 </resources>

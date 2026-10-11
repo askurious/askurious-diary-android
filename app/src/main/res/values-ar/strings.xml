@@ -82,4 +82,15 @@
     <string name="about_oss_intro">يستخدم التطبيق المكتبات التالية، وجميعها مرخّصة بموجب Apache License 2.0:</string>
     <string name="show_licence">عرض نص الترخيص</string>
     <string name="hide_licence">إخفاء نص الترخيص</string>
+    <string name="notif_reminder">تذكير: لا يزال سؤال قصير بانتظارك</string>
+    <string name="offline_saved">تم الحفظ. ستُرسل إجاباتك بمجرد اتصال الهاتف بالإنترنت.</string>
+    <plurals name="answers_waiting">
+        <item quantity="zero">لا توجد إجابات بانتظار الإرسال</item>
+        <item quantity="one">إجابة واحدة بانتظار الإرسال</item>
+        <item quantity="two">إجابتان بانتظار الإرسال</item>
+        <item quantity="few">%d إجابات بانتظار الإرسال</item>
+        <item quantity="many">%d إجابة بانتظار الإرسال</item>
+        <item quantity="other">%d إجابة بانتظار الإرسال</item>
+    </plurals>
+    <string name="about_offline">إذا كانت الدراسة تسمح بالإجابة دون اتصال، يحفظ التطبيق أيضًا صفحات الاستبيان لتلك الأسئلة، والإجابات المقدَّمة دون اتصال إلى أن تُرسل؛ وتُحذف الإجابات التي تعذّر إرسالها خلال 7 أيام.</string>
 </resources>

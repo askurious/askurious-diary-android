@@ -70,4 +70,12 @@
     <string name="about_oss_intro">L’application utilise les bibliothèques suivantes, toutes sous Apache License 2.0 :</string>
     <string name="show_licence">Afficher le texte de la licence</string>
     <string name="hide_licence">Masquer le texte de la licence</string>
+    <string name="notif_reminder">Rappel : une courte question vous attend toujours</string>
+    <string name="offline_saved">Enregistré. Vos réponses seront envoyées dès que le téléphone aura une connexion.</string>
+    <plurals name="answers_waiting">
+        <item quantity="one">%d réponse en attente d’envoi</item>
+        <item quantity="many">%d réponses en attente d’envoi</item>
+        <item quantity="other">%d réponses en attente d’envoi</item>
+    </plurals>
+    <string name="about_offline">Si une étude permet de répondre sans connexion, l’application conserve aussi les pages du questionnaire de ces questions et, jusqu’à leur envoi, les réponses données sans connexion ; les réponses qui n’ont pas pu être envoyées dans un délai de 7 jours sont supprimées.</string>
 </resources>

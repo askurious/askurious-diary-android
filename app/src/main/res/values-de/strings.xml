@@ -66,4 +66,11 @@
     <string name="about_oss_intro">Die App nutzt diese Bibliotheken, jeweils unter der Apache License 2.0:</string>
     <string name="show_licence">Lizenztext anzeigen</string>
     <string name="hide_licence">Lizenztext ausblenden</string>
+    <string name="notif_reminder">Erinnerung: Eine kurze Frage wartet noch</string>
+    <string name="offline_saved">Gespeichert. Ihre Antworten werden gesendet, sobald das Telefon eine Verbindung hat.</string>
+    <plurals name="answers_waiting">
+        <item quantity="one">%d Antwort wartet auf das Senden</item>
+        <item quantity="other">%d Antworten warten auf das Senden</item>
+    </plurals>
+    <string name="about_offline">Wenn eine Studie Antworten ohne Verbindung erlaubt, speichert die App auch die Fragebogenseiten dieser Fragen und, bis sie gesendet sind, die ohne Verbindung gegebenen Antworten; Antworten, die nicht innerhalb von 7 Tagen gesendet werden konnten, werden gelöscht.</string>
 </resources>

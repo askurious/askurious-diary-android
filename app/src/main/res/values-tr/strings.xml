@@ -66,4 +66,11 @@
     <string name="about_oss_intro">Uygulama, her biri Apache License 2.0 kapsamında olan şu kütüphaneleri kullanır:</string>
     <string name="show_licence">Lisans metnini göster</string>
     <string name="hide_licence">Lisans metnini gizle</string>
+    <string name="notif_reminder">Hatırlatma: Kısa bir soru hâlâ sizi bekliyor</string>
+    <string name="offline_saved">Kaydedildi. Yanıtlarınız telefon bağlantı kurar kurmaz gönderilecek.</string>
+    <plurals name="answers_waiting">
+        <item quantity="one">%d yanıt gönderilmeyi bekliyor</item>
+        <item quantity="other">%d yanıt gönderilmeyi bekliyor</item>
+    </plurals>
+    <string name="about_offline">Bir çalışma bağlantı olmadan yanıt vermeye izin veriyorsa uygulama bu soruların anket sayfalarını ve gönderilene kadar bağlantı olmadan verilen yanıtları da saklar; 7 gün içinde gönderilemeyen yanıtlar silinir.</string>
 </resources>

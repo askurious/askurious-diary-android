@@ -4,6 +4,7 @@ import de.askurious.app.data.Module
 import de.askurious.app.data.Study
 import de.askurious.app.data.Trigger
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Test
 import java.time.Instant
 import java.time.LocalDate
@@ -19,8 +20,9 @@ class ScheduleTest {
         firstDay = LocalDate.of(2026, 10, 24), lastDay = LocalDate.of(2026, 10, 26), modules = modules.toList(),
     )
 
-    private fun fixed(key: String, vararg times: String, weekdays: Set<Int> = (1..7).toSet(), from: Int = 1) = Module(
+    private fun fixed(key: String, vararg times: String, weekdays: Set<Int> = (1..7).toSet(), from: Int = 1, reminder: Int = 0) = Module(
         key, key, Trigger.Fixed(times.map(LocalTime::parse), weekdays), expires = 60, dayFrom = from, dayTo = Int.MAX_VALUE, notify = "",
+        reminder = reminder,
     )
 
     @Test
@@ -46,5 +48,37 @@ class ScheduleTest {
         val next = Schedule.next(listOf(a, b, a.copy(code = "gone", status = "left")), Instant.parse("2026-10-24T08:00:00Z"), berlin)
         assertEquals(setOf("abc", "def"), next.map { it.study }.toSet())
         assertEquals(Instant.parse("2026-10-25T08:00:00Z").toEpochMilli(), next.first().due)
+    }
+
+    @Test
+    fun remindersRingTheirMinutesAfterThePromptAndKeepItsId() {
+        val s = study(fixed("m1", "09:00", reminder = 20), fixed("m2", "12:00"))
+        val r = Schedule.reminders(s, Instant.parse("2026-10-24T00:00:00Z"), Instant.parse("2026-10-25T00:00:00Z"), berlin)
+        // 24 Oct 2026 09:00 in Berlin is 07:00Z; only m1 has a reminder
+        assertEquals(listOf("2026-10-24T07:20:00Z"), r.map { Instant.ofEpochMilli(it.remindAt!!).toString() })
+        val prompt = Schedule.prompts(s, Instant.parse("2026-10-24T00:00:00Z"), Instant.parse("2026-10-25T00:00:00Z"), berlin).first()
+        assertEquals(prompt.id, r.first().id)
+    }
+
+    @Test
+    fun aReminderOfAPromptBeforeTheWindowIsFound() {
+        // the prompt at 07:00Z lies before the window, its reminder at 07:20Z inside it
+        val s = study(fixed("m1", "09:00", reminder = 20))
+        val r = Schedule.reminders(s, Instant.parse("2026-10-24T07:10:00Z"), Instant.parse("2026-10-24T08:00:00Z"), berlin)
+        assertEquals(1, r.size)
+        assertEquals(Instant.parse("2026-10-24T07:00:00Z").toEpochMilli(), r.first().due)
+    }
+
+    @Test
+    fun nextMomentIsTheEarlierOfPromptAndReminder() {
+        val s = study(fixed("m1", "09:00", "18:00", reminder = 30))
+        // after the 09:00 prompt (07:00Z): its reminder at 07:30Z comes before the 18:00 prompt
+        assertEquals(Instant.parse("2026-10-24T07:30:00Z").toEpochMilli(), Schedule.nextMoment(listOf(s), Instant.parse("2026-10-24T07:05:00Z"), berlin))
+        // after that reminder: the next prompt
+        assertEquals(Instant.parse("2026-10-24T16:00:00Z").toEpochMilli(), Schedule.nextMoment(listOf(s), Instant.parse("2026-10-24T07:30:00Z"), berlin))
+        // without reminders it is the next prompt, as before
+        val plain = study(fixed("m1", "09:00", "18:00"))
+        assertEquals(Instant.parse("2026-10-24T16:00:00Z").toEpochMilli(), Schedule.nextMoment(listOf(plain), Instant.parse("2026-10-24T07:05:00Z"), berlin))
+        assertNull(Schedule.nextMoment(listOf(s.copy(status = "left")), Instant.parse("2026-10-24T07:05:00Z"), berlin))
     }
 }

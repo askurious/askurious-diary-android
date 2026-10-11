@@ -70,4 +70,12 @@
     <string name="about_oss_intro">L’app utilizza queste librerie, tutte con Apache License 2.0:</string>
     <string name="show_licence">Mostra il testo della licenza</string>
     <string name="hide_licence">Nascondi il testo della licenza</string>
+    <string name="notif_reminder">Promemoria: c’è ancora una breve domanda per Lei</string>
+    <string name="offline_saved">Salvato. Le Sue risposte verranno inviate non appena il telefono avrà una connessione.</string>
+    <plurals name="answers_waiting">
+        <item quantity="one">%d risposta in attesa di invio</item>
+        <item quantity="many">%d risposte in attesa di invio</item>
+        <item quantity="other">%d risposte in attesa di invio</item>
+    </plurals>
+    <string name="about_offline">Se uno studio consente di rispondere senza connessione, l’app conserva anche le pagine del questionario di quelle domande e, finché non vengono inviate, le risposte date senza connessione; le risposte che non è stato possibile inviare entro 7 giorni vengono eliminate.</string>
 </resources>
