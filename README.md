@@ -41,6 +41,21 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   The next sync, and a one-time WorkManager job that waits for a connection, sends it with `POST /offline`; the study card shows how many answers are waiting.
   An answer leaves the queue when the server stored it or refused it for good (answered already, questionnaire changed, expired, unknown, secret unknown); without a network, at 429 or 5xx it stays.
   The entry part is always answered online.
+- **Paused by the researchers.**
+  `POST /study` may answer `"status": "paused"`: the card says "Paused by the researchers", there are no prompts or reminders, and the self-started modules are hidden; leaving stays possible.
+  `"pauses": [["2026-10-25", "2026-10-27"], ["2026-11-02", null]]` lists the paused days (local dates, both included; `null` = still paused): no prompt, fixed or random, on those days, also after the person is active again (`Study.pausedOn`, `Schedule.prompts`).
+  `"ended"` can also mean the researchers ended this person's study early; the card says the same "The researchers have ended this study".
+- **Exit questionnaire.**
+  `"exit": {"name", "open", "until"}` (or `null`): the server sets `open` after the person's study period is over (finished or ended), until `until`, and only while it is not answered.
+  While it is open the card shows a button with its name (default "Final questionnaire"), which opens the entry with `POST /entry {"module": "exit"}` (no `due`; always online, never from a kept page).
+  One notification at 10:00 local time on the day after `last_day` (`Schedule.exitAt`), or at the next sync if that moment has passed and it is still open; `PromptLog` remembers that it was notified (or opened from the card), so it comes only once.
+  A finished or ended study with an exit questionnaire is synced until it is answered or `until` has passed (`Sync.wanted`); once answered the server sends `open: false` and the button goes.
+- **Fast-forward test persons.**
+  `"clock": {"t0", "factor"}` (or `null`) marks a test person for whom one study day passes in 24 h / `factor` of real time (×144: 10 minutes).
+  Everything the app computes for such a study is in the virtual time v = t0 + (real − t0) · factor (`Clock.virtual`, `Study.now`, `Study.today`): dates, first and last day, day index, fixed and random prompt times, quiet hours, weekdays, expiry and reminder minutes, the exit notification, and "Next question" and "Day x of n" on the card; the zone stays the phone's.
+  The one alarm rings at the real moment t0 + (v − t0) / factor, rounded up (`Clock.real`, `Prompt.ring`).
+  Every time sent to the server (`due`, `notified`, offline `started` and `completed`) is virtual epoch milliseconds.
+  The card shows a small "Fast-forward ×144" badge. Studies without a clock are unchanged.
 - **Server answers.**
   A 401 (`unauthorised`: the server does not know the secret, study deleted) ends a study only if it keeps coming for more than three days (`Study.unauthorised`); any answer of the server clears it.
   429 (`limit`) and 5xx never change a study.
@@ -49,7 +64,7 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   "Delete my answers" on every study card calls `POST /api/diary/v1/erase`: the server deletes all answers of this person in this study and the person; the app then removes the study.
   Deleting or removing a study from the list also deletes its queued answers, its kept pages and the log of its prompts.
 - **What stays on the phone.**
-  The studies with their secrets, the seed of the random prompts and the quiet hours; the log of the prompts of the last three days (notified, opened); the kept pages of offline modules while the study runs (dropped when it ends, is left, or the module is no longer offline); answers given without a connection until they are sent, at most 7 days after the page was opened (the server takes them no later), then they are dropped unsent.
+  The studies with their secrets, the seed of the random prompts, the quiet hours, the pauses, the exit questionnaire and a fast-forward clock; the log of the prompts of the last three days (notified, opened) and whether the exit questionnaire was notified; the kept pages of offline modules while the study runs (dropped when it ends, is left, or the module is no longer offline); answers given without a connection until they are sent, at most 7 days after the page was opened (the server takes them no later), then they are dropped unsent.
   All of it in the app's private storage, in no backup.
 - **Languages.**
   The survey languages of Askurious: English, German, Spanish, French, Italian, Dutch, Polish, European Portuguese, Russian, Turkish, Simplified Chinese and Arabic (right to left), formal address where the language has it.
@@ -84,13 +99,13 @@ A **release build** talks to `https://ask.askurious.de`, the participants' addre
 ## App Links
 
 The QR code holds `https://ask.askurious.de/j/<code>`; only the participants' address `ask.askurious.de` is an App Link host (it serves `/j/` and `/.well-known/assetlinks.json`), not `askurious.de`.
-Test join codes have one hyphen (`k7qm2x-t3f9a`); the app keeps it.
+Test join codes (`k7qm2x-t3f9a`, five characters after the hyphen) and personal invitation codes (`k7qm2x-a8c3d9ef`, eight lowercase letters or digits) have one hyphen; the app keeps it.
 For the phone to open the app directly, the server must answer `/.well-known/assetlinks.json` with the SHA-256 fingerprint of the signing key: set `DIARY_APP_FINGERPRINTS` on the server (`keytool -list -v -keystore <keystore>`).
 Without it the link opens the join page in the browser, which shows the join code.
 
 ## Not yet
 
-An exit part, the entry part without a connection, a release signing configuration, iOS (concept, section 10).
+The entry part without a connection, a release signing configuration, iOS (concept, section 10).
 
 ## Licence
 

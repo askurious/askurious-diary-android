@@ -40,6 +40,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -80,7 +81,6 @@ import de.askurious.app.schedule.Schedule
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.time.Instant
-import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -208,11 +208,22 @@ class MainActivity : ComponentActivity() {
         var confirmErase by remember { mutableStateOf(false) }
         var eraseError by remember { mutableStateOf<String?>(null) }
         var editQuiet by remember { mutableStateOf(false) }
-        val today = LocalDate.now()
+        // the study's date and time: virtual for a fast-forward person
+        val today = study.today()
         val fmt = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
         Card(Modifier.fillMaxWidth()) {
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text(study.title, style = MaterialTheme.typography.titleMedium)
+                study.clock?.let { clock ->
+                    Surface(color = MaterialTheme.colorScheme.tertiaryContainer, shape = MaterialTheme.shapes.small) {
+                        Text(
+                            stringResource(R.string.fast_forward, clock.factor),
+                            Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer,
+                        )
+                    }
+                }
                 when (study.status) {
                     "pending" -> Button(onClick = { startActivity(EntryActivity.intent(context, study.code, "entry")) }) {
                         Text(stringResource(R.string.continue_entry))
@@ -227,6 +238,7 @@ class MainActivity : ComponentActivity() {
                             Text(stringResource(R.string.day_of, day, total))
                         }
                         Schedule.next(listOf(study), Instant.now()).firstOrNull()?.let {
+                            // shown in the study's time, like the day
                             Text(stringResource(R.string.next_prompt, Instant.ofEpochMilli(it.due).atZone(ZoneId.systemDefault()).format(fmt)))
                         }
                         if (study.hasRandom) {
@@ -246,9 +258,21 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     }
+                    "paused" -> Text(stringResource(R.string.paused))
                     "finished" -> Text(stringResource(R.string.finished))
                     "left" -> Text(stringResource(if (study.leavePending) R.string.left_pending else R.string.left))
                     else -> Text(stringResource(R.string.ended))
+                }
+                study.exit?.takeIf { it.open }?.let { exit ->
+                    Button(onClick = { startActivity(EntryActivity.intent(context, study.code, EntryActivity.EXIT)) }) {
+                        Text(exit.name.ifBlank { stringResource(R.string.exit_default) })
+                    }
+                    exit.until?.let {
+                        Text(
+                            stringResource(R.string.exit_until, it.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))),
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                    }
                 }
                 val n = waiting[study.code] ?: 0
                 if (n > 0) Text(pluralStringResource(R.plurals.answers_waiting, n, n), style = MaterialTheme.typography.bodySmall)
@@ -256,7 +280,7 @@ class MainActivity : ComponentActivity() {
                     if (study.running && study.hasRandom) {
                         TextButton(onClick = { editQuiet = true }) { Text(stringResource(R.string.quiet_change)) }
                     }
-                    if (study.status == "active" || study.status == "pending") {
+                    if (study.status == "active" || study.status == "pending" || study.status == "paused") {
                         TextButton(onClick = { confirmLeave = true }) { Text(stringResource(R.string.leave_study)) }
                     } else if (!study.leavePending) {
                         // a leave not yet told to the server keeps the study, so that the next sync can send it

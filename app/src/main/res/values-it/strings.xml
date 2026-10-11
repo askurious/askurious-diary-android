@@ -99,4 +99,9 @@
         <item quantity="many">%1$s: %2$d volte a settimana a orari casuali</item>
         <item quantity="other">%1$s: %2$d volte a settimana a orari casuali</item>
     </plurals>
+    <string name="paused">Messo in pausa dal gruppo di ricerca</string>
+    <string name="fast_forward">Tempo accelerato ×%1$d</string>
+    <string name="exit_default">Questionario finale</string>
+    <string name="exit_until">Disponibile fino al %1$s</string>
+    <string name="notif_exit">Il periodo dello studio è terminato. La preghiamo di compilare: %1$s</string>
 </resources>

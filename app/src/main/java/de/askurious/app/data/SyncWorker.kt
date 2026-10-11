@@ -63,6 +63,8 @@ object Sync {
         val pending = StudyStore(context).get(study.code)?.quietPending
         if (pending != null && pending != sent) fresh = fresh.copy(quietPending = pending)
         StudyStore(context).update(fresh)
+        // an exit questionnaire that opened after its moment (or whose moment passed while the phone was off)
+        Alarms.notifyExits(context)
         Alarms.rearm(context)
         // the pages for answering without a connection; only while the study is still on the phone
         if (StudyStore(context).get(fresh.code) != null) OfflinePages(context).refresh(fresh)
@@ -77,7 +79,7 @@ object Sync {
     suspend fun setQuiet(context: Context, study: Study, quiet: Quiet?) {
         val store = StudyStore(context)
         val current = store.get(study.code) ?: return
-        val from = java.time.LocalDate.now().plusDays(1)
+        val from = current.today().plusDays(1)
         store.update(current.copy(quietPending = QuietFrom(from, quiet)))
         Alarms.rearm(context)
         try {
@@ -142,7 +144,8 @@ object Sync {
         val queue = AnswerQueue(context)
         var kept = false
         for (item in queue.of(study.code)) {
-            if (AnswerQueue.tooOld(item, System.currentTimeMillis())) {
+            // "started" is in the study's time (virtual for a fast-forward person)
+            if (AnswerQueue.tooOld(item, study.now())) {
                 queue.remove(item.id)
                 continue
             }
@@ -165,18 +168,32 @@ object Sync {
     }
 
     /**
-     * Sends the queued answers, fetches all studies that are not over and sends pending leaves; returns true when
-     * the network was missing or an answer or a leave could not be sent yet (SyncWorker then tries again).
+     * Whether a sync of [study] can bring news: it is not over (pending, active, paused), or it is over (finished,
+     * ended) with an exit questionnaire that may still open or is open: until its last day, as long as it is open or
+     * was neither notified nor opened ([exitNotified]).
+     */
+    fun wanted(study: Study, exitNotified: Boolean): Boolean {
+        if (study.status == "pending" || study.status == "active" || study.status == "paused") return true
+        if (study.status != "finished" && study.status != "ended") return false
+        val exit = study.exit ?: return false
+        if (exit.until != null && study.today().isAfter(exit.until)) return false
+        return exit.open || !exitNotified
+    }
+
+    /**
+     * Sends the queued answers, fetches all studies that can bring news ([wanted]) and sends pending leaves; returns
+     * true when the network was missing or an answer or a leave could not be sent yet (SyncWorker then tries again).
      * The answers go first: those given before leaving belong to the study.
      */
     suspend fun all(context: Context): Boolean {
         var offline = false
+        val exits = PromptLog(context).exits()
         for (s in StudyStore(context).all()) {
             if (!send(context, s)) offline = true
             try {
                 when {
                     s.leavePending -> if (!leave(context, s)) offline = true
-                    s.status == "pending" || s.status == "active" -> one(context, s)
+                    wanted(s, s.code in exits) -> one(context, s)
                 }
             } catch (e: ApiError) {
                 if (e.key == "offline") offline = true

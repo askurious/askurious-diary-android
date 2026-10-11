@@ -106,4 +106,9 @@
         <item quantity="many">%1$s: %2$d razy w tygodniu o losowych porach</item>
         <item quantity="other">%1$s: %2$d razy w tygodniu o losowych porach</item>
     </plurals>
+    <string name="paused">Wstrzymane przez zespół badawczy</string>
+    <string name="fast_forward">Przyspieszenie ×%1$d</string>
+    <string name="exit_default">Ankieta końcowa</string>
+    <string name="exit_until">Dostępna do %1$s</string>
+    <string name="notif_exit">Okres badania dobiegł końca. Prosimy wypełnić: %1$s</string>
 </resources>

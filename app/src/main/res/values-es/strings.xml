@@ -99,4 +99,9 @@
         <item quantity="many">%1$s: %2$d veces a la semana a horas aleatorias</item>
         <item quantity="other">%1$s: %2$d veces a la semana a horas aleatorias</item>
     </plurals>
+    <string name="paused">Pausado por el equipo de investigación</string>
+    <string name="fast_forward">Avance rápido ×%1$d</string>
+    <string name="exit_default">Cuestionario final</string>
+    <string name="exit_until">Disponible hasta el %1$s</string>
+    <string name="notif_exit">El periodo del estudio ha terminado. Por favor, responda: %1$s</string>
 </resources>
