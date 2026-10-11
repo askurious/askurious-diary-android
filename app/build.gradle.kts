@@ -15,13 +15,14 @@ android {
         versionCode = 1
         versionName = "0.1"
         // the participants' address of Askurious (app/hosts.py: the diary API answers there); a debug build talks to
-        // the Flask server on the host machine (emulator alias)
+        // the Flask server on the computer through `adb reverse tcp:5060 tcp:5060` (the server answers only under
+        // localhost while it runs with the development key)
         buildConfigField("String", "BASE_URL", "\"https://ask.askurious.de\"")
     }
 
     buildTypes {
         debug {
-            buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:5060\"")
+            buildConfigField("String", "BASE_URL", "\"http://localhost:5060\"")
         }
         release {
             isMinifyEnabled = false

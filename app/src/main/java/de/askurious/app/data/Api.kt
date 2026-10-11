@@ -48,8 +48,8 @@ object Api {
     suspend fun leave(secret: String): JSONObject = call("POST", "$BASE/leave", JSONObject(), secret)
 
     /**
-     * The address of an entry as the server sent it. A debug build keeps only its path: the server names itself with
-     * its configured address (localhost), which the emulator reaches as 10.0.2.2.
+     * The address of an entry as the server sent it. A debug build keeps only its path and puts it under its own
+     * BASE_URL: the server may name itself with another port or name than the one adb reverse leads to.
      */
     fun absolute(url: String): String {
         if (!url.startsWith("http")) return baseUrl + url
