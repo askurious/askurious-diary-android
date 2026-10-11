@@ -26,7 +26,7 @@ export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
 ./gradlew testDebugUnitTest assembleDebug
 ```
 
-Toolchain as in the ExperienceSampling project next to this one: Gradle 9.5.1, AGP 8.13.2, Kotlin 2.2.20, compileSdk 34.
+Toolchain: Gradle 9.5.1, AGP 9.3.3 (with the compatibility flags of the upgrade assistant in gradle.properties), Kotlin 2.2.20, compileSdk 34.
 
 A **debug build** talks to `http://localhost:5060`, the Flask server on the computer (`.venv/bin/python run.py` in the Askurious repository).
 Run `adb reverse tcp:5060 tcp:5060` once per start of the emulator, so that its `localhost:5060` is the computer's: the server answers only under `localhost` while it runs with the development key.
