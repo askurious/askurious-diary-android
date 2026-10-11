@@ -36,7 +36,7 @@ A **release build** talks to `https://ask.askurious.de`, the participants' addre
 1. In Askurious: My surveys › + Diary survey; check the tab "Schedule"; start data collection.
 2. In the app: Join study › type the join code from the tab "Schedule".
 3. Answer the entry part; the study shows "Starts on …" (or "Day 1 of 14" with the start "on the day of the entry part").
-4. To see a prompt at once, set a module's time to a minute from now and press the refresh button of the app (or wait for the sync).
+4. To see a prompt at once, set a module's time to a few minutes from now and bring the app to the front again (it syncs whenever it opens).
 
 ## App Links
 
