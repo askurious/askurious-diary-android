@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Askurious</string>
+    <string name="my_studies">My studies</string>
+    <string name="no_studies">You are not taking part in a diary study yet. Scan the QR code of a study or type its join code.</string>
+    <string name="join_study">Join study</string>
+    <string name="join_code">Join code</string>
+    <string name="scan_qr">Scan QR code</string>
+    <string name="look_up">Look up</string>
+    <string name="join">Join</string>
+    <string name="cancel">Cancel</string>
+    <string name="back">Back</string>
+    <string name="close">Close</string>
+    <string name="study_days">Duration: %1$d days</string>
+    <string name="study_modules">What you will be asked</string>
+    <string name="fixed_per_day">%1$s: %2$d× a day</string>
+    <string name="fixed_per_week">%1$s: %2$d× a week</string>
+    <string name="self_module">%1$s: whenever you like</string>
+    <string name="about_minutes">About %1$d minutes a day</string>
+    <string name="join_privacy">Joining opens the consent form of the study. The app stores no name, e-mail address or phone number, and the study cannot see your other studies.</string>
+    <string name="continue_entry">Continue the first questionnaire</string>
+    <string name="day_of">Day %1$d of %2$d</string>
+    <string name="starts_on">Starts on %1$s</string>
+    <string name="next_prompt">Next question: %1$s</string>
+    <string name="finished">Finished, thank you!</string>
+    <string name="left">You left this study.</string>
+    <string name="ended">The researchers have ended this study.</string>
+    <string name="leave_study">Leave study</string>
+    <string name="leave_confirm">Leave this study? You will get no more questions. Your answers stay with the researchers unless you delete them with your deletion code.</string>
+    <string name="remove_from_list">Remove from list</string>
+    <string name="sync_now">Refresh</string>
+    <string name="notif_channel">Questions of your studies</string>
+    <string name="notif_default">%1$s: a short question is waiting</string>
+    <string name="allow_notifications">Allow notifications, otherwise the app cannot ask you at the right moment.</string>
+    <string name="allow_exact">Allow \"Alarms &amp; reminders\" so that questions arrive on time.</string>
+    <string name="allow">Allow</string>
+    <string name="expired">This question has expired. The next one will come.</string>
+    <string name="limit">You have reached today\'s limit for this report.</string>
+    <string name="not_found">No study with this code.</string>
+    <string name="closed">This study takes no new participants.</string>
+    <string name="offline">No connection. Please try again.</string>
+    <string name="error">Something went wrong. Please try again.</string>
+</resources>

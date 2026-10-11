@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="my_studies">Meine Studien</string>
+    <string name="no_studies">Sie nehmen noch an keiner Tagebuchstudie teil. Scannen Sie den QR-Code einer Studie oder geben Sie ihren Beitrittscode ein.</string>
+    <string name="join_study">Studie beitreten</string>
+    <string name="join_code">Beitrittscode</string>
+    <string name="scan_qr">QR-Code scannen</string>
+    <string name="look_up">Suchen</string>
+    <string name="join">Beitreten</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="back">Zurück</string>
+    <string name="close">Schließen</string>
+    <string name="study_days">Dauer: %1$d Tage</string>
+    <string name="study_modules">Was Sie gefragt werden</string>
+    <string name="fixed_per_day">%1$s: %2$d× am Tag</string>
+    <string name="fixed_per_week">%1$s: %2$d× in der Woche</string>
+    <string name="self_module">%1$s: wann immer Sie möchten</string>
+    <string name="about_minutes">Etwa %1$d Minuten am Tag</string>
+    <string name="join_privacy">Beim Beitritt öffnet sich die Einwilligung der Studie. Die App speichert keinen Namen, keine E-Mail-Adresse und keine Telefonnummer, und die Studie sieht Ihre anderen Studien nicht.</string>
+    <string name="continue_entry">Ersten Fragebogen fortsetzen</string>
+    <string name="day_of">Tag %1$d von %2$d</string>
+    <string name="starts_on">Beginnt am %1$s</string>
+    <string name="next_prompt">Nächste Frage: %1$s</string>
+    <string name="finished">Abgeschlossen, vielen Dank!</string>
+    <string name="left">Sie haben diese Studie verlassen.</string>
+    <string name="ended">Die Forschenden haben diese Studie beendet.</string>
+    <string name="leave_study">Studie verlassen</string>
+    <string name="leave_confirm">Diese Studie verlassen? Sie bekommen keine Fragen mehr. Ihre Antworten bleiben bei den Forschenden, außer Sie löschen sie mit Ihrem Löschcode.</string>
+    <string name="remove_from_list">Aus der Liste entfernen</string>
+    <string name="sync_now">Aktualisieren</string>
+    <string name="notif_channel">Fragen Ihrer Studien</string>
+    <string name="notif_default">%1$s: Eine kurze Frage wartet</string>
+    <string name="allow_notifications">Erlauben Sie Benachrichtigungen, sonst kann die App Sie nicht im richtigen Moment fragen.</string>
+    <string name="allow_exact">Erlauben Sie „Wecker und Erinnerungen“, damit Fragen pünktlich kommen.</string>
+    <string name="allow">Erlauben</string>
+    <string name="expired">Diese Frage ist abgelaufen. Die nächste kommt bestimmt.</string>
+    <string name="limit">Für heute haben Sie die Höchstzahl dieser Meldung erreicht.</string>
+    <string name="not_found">Keine Studie mit diesem Code.</string>
+    <string name="closed">Diese Studie nimmt keine neuen Teilnehmenden auf.</string>
+    <string name="offline">Keine Verbindung. Bitte versuchen Sie es noch einmal.</string>
+    <string name="error">Etwas ist schiefgegangen. Bitte versuchen Sie es noch einmal.</string>
+</resources>
