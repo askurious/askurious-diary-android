@@ -1,6 +1,7 @@
 package de.askurious.app.ui
 
 import android.Manifest
+import android.app.TimePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -15,6 +16,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -50,6 +52,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -67,6 +70,7 @@ import de.askurious.app.R
 import de.askurious.app.data.AnswerQueue
 import de.askurious.app.data.Api
 import de.askurious.app.data.ApiError
+import de.askurious.app.data.Quiet
 import de.askurious.app.data.Study
 import de.askurious.app.data.StudyStore
 import de.askurious.app.data.Sync
@@ -77,9 +81,11 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import java.util.Locale
 
 @Composable
 fun DiaryTheme(content: @Composable () -> Unit) {
@@ -201,6 +207,7 @@ class MainActivity : ComponentActivity() {
         var confirmLeave by remember { mutableStateOf(false) }
         var confirmErase by remember { mutableStateOf(false) }
         var eraseError by remember { mutableStateOf<String?>(null) }
+        var editQuiet by remember { mutableStateOf(false) }
         val today = LocalDate.now()
         val fmt = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
         Card(Modifier.fillMaxWidth()) {
@@ -222,6 +229,14 @@ class MainActivity : ComponentActivity() {
                         Schedule.next(listOf(study), Instant.now()).firstOrNull()?.let {
                             Text(stringResource(R.string.next_prompt, Instant.ofEpochMilli(it.due).atZone(ZoneId.systemDefault()).format(fmt)))
                         }
+                        if (study.hasRandom) {
+                            val quietNow = study.quietOn(today)
+                            val quietNext = study.quietOn(today.plusDays(1))
+                            Text(stringResource(R.string.quiet_now, quietText(quietNow)), style = MaterialTheme.typography.bodySmall)
+                            if (quietNext != quietNow) {
+                                Text(stringResource(R.string.quiet_from_tomorrow, quietText(quietNext)), style = MaterialTheme.typography.bodySmall)
+                            }
+                        }
                         val dayNow = day ?: 0
                         for (m in study.modules) {
                             val t = m.trigger as? Trigger.Self ?: continue
@@ -238,6 +253,9 @@ class MainActivity : ComponentActivity() {
                 val n = waiting[study.code] ?: 0
                 if (n > 0) Text(pluralStringResource(R.plurals.answers_waiting, n, n), style = MaterialTheme.typography.bodySmall)
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    if (study.running && study.hasRandom) {
+                        TextButton(onClick = { editQuiet = true }) { Text(stringResource(R.string.quiet_change)) }
+                    }
                     if (study.status == "active" || study.status == "pending") {
                         TextButton(onClick = { confirmLeave = true }) { Text(stringResource(R.string.leave_study)) }
                     } else if (!study.leavePending) {
@@ -255,6 +273,20 @@ class MainActivity : ComponentActivity() {
                 }
                 eraseError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
             }
+        }
+        if (editQuiet) {
+            QuietDialog(
+                // the dialog starts from the quiet hours that will count from tomorrow, the first day a change reaches
+                initial = study.quietOn(today.plusDays(1)),
+                onDismiss = { editQuiet = false },
+                onSave = { quiet ->
+                    editQuiet = false
+                    scope.launch {
+                        Sync.setQuiet(context, study, quiet)
+                        reload()
+                    }
+                },
+            )
         }
         if (confirmLeave) {
             AlertDialog(
@@ -294,6 +326,57 @@ class MainActivity : ComponentActivity() {
                 dismissButton = { TextButton(onClick = { confirmErase = false }) { Text(stringResource(R.string.cancel)) } },
             )
         }
+    }
+
+    /** "22:00–07:00" in the phone's time format, or "none". */
+    @Composable
+    private fun quietText(quiet: Quiet?): String =
+        if (quiet == null) stringResource(R.string.quiet_none) else "${timeText(quiet.start)}–${timeText(quiet.end)}"
+
+    private fun timeText(hhmm: String): String =
+        LocalTime.parse(hhmm).format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
+
+    /**
+     * The quiet hours of a study: from and to (the phone's time pickers) or none. They keep the random prompts out
+     * of that time from tomorrow on; the fixed times of the researchers stay as they are.
+     */
+    @Composable
+    private fun QuietDialog(initial: Quiet?, onDismiss: () -> Unit, onSave: (Quiet?) -> Unit) {
+        val context = LocalContext.current
+        var start by remember { mutableStateOf(initial?.start ?: "22:00") }
+        var end by remember { mutableStateOf(initial?.end ?: "07:00") }
+
+        fun pick(value: String, set: (String) -> Unit) {
+            val t = LocalTime.parse(value)
+            TimePickerDialog(
+                context, { _, h, m -> set("%02d:%02d".format(Locale.ROOT, h, m)) }, t.hour, t.minute,
+                android.text.format.DateFormat.is24HourFormat(context),
+            ).show()
+        }
+
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            title = { Text(stringResource(R.string.quiet_title)) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text(stringResource(R.string.quiet_hint))
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(stringResource(R.string.quiet_from))
+                        OutlinedButton(onClick = { pick(start) { start = it } }) { Text(timeText(start)) }
+                        Text(stringResource(R.string.quiet_to))
+                        OutlinedButton(onClick = { pick(end) { end = it } }) { Text(timeText(end)) }
+                    }
+                }
+            },
+            // the same time twice is no quiet time at all (the server takes it so): stored as none
+            confirmButton = { TextButton(onClick = { onSave(if (start == end) null else Quiet(start, end)) }) { Text(stringResource(R.string.save)) } },
+            dismissButton = {
+                Row {
+                    TextButton(onClick = { onSave(null) }) { Text(stringResource(R.string.quiet_none_button)) }
+                    TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) }
+                }
+            },
+        )
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -368,6 +451,10 @@ class MainActivity : ComponentActivity() {
                             Text(
                                 when {
                                     m.optString("trigger") == "self" -> stringResource(R.string.self_module, name)
+                                    m.optString("trigger") == "random" && m.optDouble("per_day", 0.0) >= 1 ->
+                                        Math.round(m.optDouble("per_day")).toInt().let { n -> pluralStringResource(R.plurals.random_per_day, n, name, n) }
+                                    m.optString("trigger") == "random" ->
+                                        m.optInt("per_week").let { n -> pluralStringResource(R.plurals.random_per_week, n, name, n) }
                                     m.optDouble("per_day", 0.0) >= 1 -> m.optDouble("per_day").toInt().let { n ->
                                         pluralStringResource(R.plurals.fixed_per_day, n, name, n)
                                     }

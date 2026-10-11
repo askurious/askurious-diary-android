@@ -83,4 +83,27 @@
         <item quantity="other">%d ответа ожидают отправки</item>
     </plurals>
     <string name="about_offline">Если исследование позволяет отвечать без соединения, приложение также хранит страницы анкеты для этих вопросов и, до их отправки, ответы, данные без соединения; ответы, которые не удалось отправить в течение 7 дней, удаляются.</string>
+    <string name="quiet_title">Время тишины</string>
+    <string name="quiet_now">Время тишины: %1$s</string>
+    <string name="quiet_from_tomorrow">С завтрашнего дня: %1$s</string>
+    <string name="quiet_none">нет</string>
+    <string name="quiet_none_button">Нет</string>
+    <string name="quiet_change">Время тишины</string>
+    <string name="quiet_hint">В Ваше время тишины не приходят вопросы в случайное время. Изменение действует с завтрашнего дня и только для вопросов в случайное время, но не для вопросов в фиксированное время.</string>
+    <string name="quiet_from">С</string>
+    <string name="quiet_to">до</string>
+    <string name="save">Сохранить</string>
+    <string name="about_quiet">Если Вы задаёте время тишины для исследования, приложение хранит его и отправляет на сервер исследования, чтобы в это время не приходили вопросы в случайное время.</string>
+    <plurals name="random_per_day">
+        <item quantity="one">%1$s: %2$d раз в день в случайное время</item>
+        <item quantity="few">%1$s: %2$d раза в день в случайное время</item>
+        <item quantity="many">%1$s: %2$d раз в день в случайное время</item>
+        <item quantity="other">%1$s: %2$d раза в день в случайное время</item>
+    </plurals>
+    <plurals name="random_per_week">
+        <item quantity="one">%1$s: %2$d раз в неделю в случайное время</item>
+        <item quantity="few">%1$s: %2$d раза в неделю в случайное время</item>
+        <item quantity="many">%1$s: %2$d раз в неделю в случайное время</item>
+        <item quantity="other">%1$s: %2$d раза в неделю в случайное время</item>
+    </plurals>
 </resources>

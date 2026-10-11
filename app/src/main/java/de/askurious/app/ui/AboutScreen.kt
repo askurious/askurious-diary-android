@@ -73,6 +73,7 @@ fun AboutScreen(onBack: () -> Unit) {
             Text(stringResource(R.string.about_privacy_title), style = MaterialTheme.typography.titleMedium)
             Text(stringResource(R.string.about_stores))
             Text(stringResource(R.string.about_offline))
+            Text(stringResource(R.string.about_quiet))
             OutlinedButton(onClick = {
                 // a phone without a browser: nothing to open
                 runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, privacyUrl().toUri())) }

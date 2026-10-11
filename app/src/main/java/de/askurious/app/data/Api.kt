@@ -38,9 +38,16 @@ object Api {
     suspend fun enrol(code: String): JSONObject =
         call("POST", "$BASE/enrol", JSONObject().put("code", code).put("lang", lang()))
 
-    /** The study as it stands now: status, study period, modules. Also tells the server the time zone. */
-    suspend fun study(secret: String): JSONObject =
-        call("POST", "$BASE/study", JSONObject().put("tz", ZoneId.systemDefault().id).put("lang", lang()), secret)
+    /**
+     * The study as it stands now: status, study period, modules, the seed and the history of the quiet hours. Also
+     * tells the server the time zone, and [quiet] when the participant changed the quiet hours (the server keeps
+     * the change from the person's next day on).
+     */
+    suspend fun study(secret: String, quiet: QuietFrom? = null): JSONObject {
+        val body = JSONObject().put("tz", ZoneId.systemDefault().id).put("lang", lang())
+        if (quiet != null) body.put("quiet", quiet.quiet?.toJson() ?: JSONObject.NULL)
+        return call("POST", "$BASE/study", body, secret)
+    }
 
     /**
      * A one-time address for one entry: [module] is a module key, or "entry" for the first questionnaire.

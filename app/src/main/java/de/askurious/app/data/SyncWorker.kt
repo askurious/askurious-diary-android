@@ -47,21 +47,44 @@ class SyncWorker(context: Context, params: WorkerParameters) : CoroutineWorker(c
 
 object Sync {
     /**
-     * Fetches one study and stores it. A 401 (secret unknown) ends the study only when it keeps coming
-     * ([Study.unauthorised]); any answer of the server clears it. Other errors (offline, 429, 5xx) change nothing
-     * and are thrown.
+     * Fetches one study and stores it, sending quiet hours the server has not confirmed yet
+     * ([Study.quietPending]); from then on the server's history counts. A 401 (secret unknown) ends the study only
+     * when it keeps coming ([Study.unauthorised]); any answer of the server clears it. Other errors (offline, 429,
+     * 5xx) change nothing and are thrown.
      */
     suspend fun one(context: Context, study: Study): Study {
-        val fresh = try {
-            Study.fromJson(Api.study(study.secret), study.secret)
+        val sent = study.quietPending
+        var fresh = try {
+            Study.fromJson(Api.study(study.secret, sent), study.secret)
         } catch (e: ApiError) {
             if (e.status == 401) study.unauthorised(System.currentTimeMillis()) else throw e
         }
+        // quiet hours changed again while the call ran stay pending for the next sync (after a 401 they stay anyway)
+        val pending = StudyStore(context).get(study.code)?.quietPending
+        if (pending != null && pending != sent) fresh = fresh.copy(quietPending = pending)
         StudyStore(context).update(fresh)
         Alarms.rearm(context)
         // the pages for answering without a connection; only while the study is still on the phone
         if (StudyStore(context).get(fresh.code) != null) OfflinePages(context).refresh(fresh)
         return fresh
+    }
+
+    /**
+     * Sets the quiet hours of [study] to [quiet] (null: none): kept as pending at once, valid from tomorrow (the
+     * server's rule), and sent with a sync; without a connection the next sync sends them. The server's answer then
+     * says from which day they count.
+     */
+    suspend fun setQuiet(context: Context, study: Study, quiet: Quiet?) {
+        val store = StudyStore(context)
+        val current = store.get(study.code) ?: return
+        val from = java.time.LocalDate.now().plusDays(1)
+        store.update(current.copy(quietPending = QuietFrom(from, quiet)))
+        Alarms.rearm(context)
+        try {
+            store.get(study.code)?.let { one(context, it) }
+        } catch (e: ApiError) {
+            SyncWorker.sendSoon(context)
+        }
     }
 
     /**

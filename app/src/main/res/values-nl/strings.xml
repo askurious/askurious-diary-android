@@ -73,4 +73,23 @@
         <item quantity="other">%d antwoorden wachten op verzending</item>
     </plurals>
     <string name="about_offline">Als een onderzoek antwoorden zonder verbinding toestaat, bewaart de app ook de vragenlijstpagina’s van die vragen en, totdat ze verstuurd zijn, de antwoorden die zonder verbinding zijn gegeven; antwoorden die niet binnen 7 dagen konden worden verstuurd, worden verwijderd.</string>
+    <string name="quiet_title">Rusttijden</string>
+    <string name="quiet_now">Rusttijden: %1$s</string>
+    <string name="quiet_from_tomorrow">Vanaf morgen: %1$s</string>
+    <string name="quiet_none">geen</string>
+    <string name="quiet_none_button">Geen</string>
+    <string name="quiet_change">Rusttijden</string>
+    <string name="quiet_hint">Tijdens uw rusttijden komt er geen vraag op een willekeurig tijdstip. Een wijziging geldt vanaf morgen en alleen voor de vragen op willekeurige tijdstippen, niet voor die op vaste tijden.</string>
+    <string name="quiet_from">Van</string>
+    <string name="quiet_to">tot</string>
+    <string name="save">Opslaan</string>
+    <string name="about_quiet">Als u voor een onderzoek rusttijden instelt, bewaart de app ze en stuurt ze naar de server van het onderzoek, zodat er in die tijd geen vraag op een willekeurig tijdstip komt.</string>
+    <plurals name="random_per_day">
+        <item quantity="one">%1$s: %2$d× per dag op willekeurige tijdstippen</item>
+        <item quantity="other">%1$s: %2$d× per dag op willekeurige tijdstippen</item>
+    </plurals>
+    <plurals name="random_per_week">
+        <item quantity="one">%1$s: %2$d× per week op willekeurige tijdstippen</item>
+        <item quantity="other">%1$s: %2$d× per week op willekeurige tijdstippen</item>
+    </plurals>
 </resources>

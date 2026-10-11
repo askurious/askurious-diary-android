@@ -21,9 +21,10 @@ data class Prompt(val study: String, val module: String, val due: Long, val expi
 }
 
 /**
- * The prompts of the fixed modules, computed on the device in local time (so a change of time zone or daylight
- * saving time moves them with the person). The server computes the same list from the same definition for the
- * export (app/diary.py, prompts()).
+ * The prompts of the fixed and random modules, computed on the device in local time (so a change of time zone or
+ * daylight saving time moves them with the person). The server computes the same list from the same definition for
+ * the export and to check that a prompt was due (app/diary.py, prompts()). A random module draws its times per day
+ * from the person's seed and the quiet hours valid on that day (RandomTimes, Study.quietOn).
  */
 object Schedule {
     /** The prompts of [study] with a due time in [from, until), in zone [zone], ordered by time. */
@@ -37,9 +38,14 @@ object Schedule {
         while (!date.isAfter(end)) {
             val day = study.dayIndex(date)!!
             for (m in study.modules) {
-                val t = m.trigger as? Trigger.Fixed ?: continue
-                if (day < m.dayFrom || day > m.dayTo || date.dayOfWeek.value !in t.weekdays) continue
-                for (time in t.times) {
+                if (day < m.dayFrom || day > m.dayTo) continue
+                val times = when (val t = m.trigger) {
+                    is Trigger.Fixed -> if (date.dayOfWeek.value in t.weekdays) t.times else continue
+                    is Trigger.Random ->
+                        if (date.dayOfWeek.value in t.weekdays) RandomTimes.times(study.seed, m.key, date, t, study.quietOn(date)) else continue
+                    is Trigger.Self -> continue
+                }
+                for (time in times) {
                     val due = ZonedDateTime.of(date, time, zone).toInstant()
                     if (!due.isBefore(from) && due.isBefore(until)) out += Prompt(study.code, m.key, due.toEpochMilli(), m.expires, m.reminder)
                 }
@@ -62,7 +68,7 @@ object Schedule {
      * prompt up to [Module.reminder] minutes earlier, so the prompts are looked for that much before [from].
      */
     fun reminders(study: Study, from: Instant, until: Instant, zone: ZoneId = ZoneId.systemDefault()): List<Prompt> {
-        val longest = study.modules.filter { it.trigger is Trigger.Fixed }.maxOfOrNull { it.reminder } ?: 0
+        val longest = study.modules.filter { it.trigger.prompted }.maxOfOrNull { it.reminder } ?: 0
         if (longest <= 0) return emptyList()
         val lo = from.toEpochMilli()
         val hi = until.toEpochMilli()

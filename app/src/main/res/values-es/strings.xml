@@ -78,4 +78,25 @@
         <item quantity="other">%d respuestas pendientes de envío</item>
     </plurals>
     <string name="about_offline">Si un estudio permite responder sin conexión, la aplicación guarda también las páginas del cuestionario de esas preguntas y, hasta que se envíen, las respuestas dadas sin conexión; las respuestas que no hayan podido enviarse en 7 días se eliminan.</string>
+    <string name="quiet_title">Horas de descanso</string>
+    <string name="quiet_now">Horas de descanso: %1$s</string>
+    <string name="quiet_from_tomorrow">A partir de mañana: %1$s</string>
+    <string name="quiet_none">ninguna</string>
+    <string name="quiet_none_button">Ninguna</string>
+    <string name="quiet_change">Horas de descanso</string>
+    <string name="quiet_hint">Durante sus horas de descanso no llega ninguna pregunta a horas aleatorias. Un cambio se aplica a partir de mañana y solo a las preguntas a horas aleatorias, no a las de horas fijas.</string>
+    <string name="quiet_from">De</string>
+    <string name="quiet_to">a</string>
+    <string name="save">Guardar</string>
+    <string name="about_quiet">Si usted establece horas de descanso para un estudio, la aplicación las guarda y las envía al servidor del estudio, para que durante ese tiempo no llegue ninguna pregunta a horas aleatorias.</string>
+    <plurals name="random_per_day">
+        <item quantity="one">%1$s: %2$d vez al día a horas aleatorias</item>
+        <item quantity="many">%1$s: %2$d veces al día a horas aleatorias</item>
+        <item quantity="other">%1$s: %2$d veces al día a horas aleatorias</item>
+    </plurals>
+    <plurals name="random_per_week">
+        <item quantity="one">%1$s: %2$d vez a la semana a horas aleatorias</item>
+        <item quantity="many">%1$s: %2$d veces a la semana a horas aleatorias</item>
+        <item quantity="other">%1$s: %2$d veces a la semana a horas aleatorias</item>
+    </plurals>
 </resources>

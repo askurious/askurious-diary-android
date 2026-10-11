@@ -73,4 +73,23 @@
         <item quantity="other">%d Antworten warten auf das Senden</item>
     </plurals>
     <string name="about_offline">Wenn eine Studie Antworten ohne Verbindung erlaubt, speichert die App auch die Fragebogenseiten dieser Fragen und, bis sie gesendet sind, die ohne Verbindung gegebenen Antworten; Antworten, die nicht innerhalb von 7 Tagen gesendet werden konnten, werden gelöscht.</string>
+    <string name="quiet_title">Ruhezeiten</string>
+    <string name="quiet_now">Ruhezeiten: %1$s</string>
+    <string name="quiet_from_tomorrow">Ab morgen: %1$s</string>
+    <string name="quiet_none">keine</string>
+    <string name="quiet_none_button">Keine</string>
+    <string name="quiet_change">Ruhezeiten</string>
+    <string name="quiet_hint">In Ihren Ruhezeiten kommt keine Frage zu zufälligen Zeiten. Eine Änderung gilt ab morgen und nur für die Fragen zu zufälligen Zeiten, nicht für die zu festen Zeiten.</string>
+    <string name="quiet_from">Von</string>
+    <string name="quiet_to">bis</string>
+    <string name="save">Speichern</string>
+    <string name="about_quiet">Wenn Sie für eine Studie Ruhezeiten festlegen, speichert die App sie und sendet sie an den Server der Studie, damit in dieser Zeit keine Frage zu zufälligen Zeiten kommt.</string>
+    <plurals name="random_per_day">
+        <item quantity="one">%1$s: %2$d× am Tag zu zufälligen Zeiten</item>
+        <item quantity="other">%1$s: %2$d× am Tag zu zufälligen Zeiten</item>
+    </plurals>
+    <plurals name="random_per_week">
+        <item quantity="one">%1$s: %2$d× in der Woche zu zufälligen Zeiten</item>
+        <item quantity="other">%1$s: %2$d× in der Woche zu zufälligen Zeiten</item>
+    </plurals>
 </resources>

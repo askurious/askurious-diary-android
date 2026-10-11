@@ -18,11 +18,20 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   The questionnaire pages are the participant pages of Askurious in a WebView (`EntryActivity`), opened with a one-time address per entry.
   The app itself does the study list, joining, the schedule, the notifications and the sync.
 - **Schedule on the phone.**
-  `Schedule.kt` computes the prompts of the fixed modules in local time; the server computes the same times for the export (`diary.prompts`).
+  `Schedule.kt` computes the prompts of the fixed and random modules in local time; the server computes the same times for the export and to check that a prompt was due (`diary.prompts`).
   One exact alarm at a time (`Alarms.kt`), set again after a reboot, an update, or a change of time or time zone.
   No push service: `SyncWorker` fetches each study every 6 hours.
+- **Random prompts.**
+  A module with the trigger `{"t": "random", "per_day", "windows", "min_gap", "weekdays"}` is prompted like a fixed one (notification, expiry, reminder, answering without a connection), but its times are drawn per person and day (`RandomTimes.kt`): SplitMix64 over a state from the person's `seed` (sent by `POST /study`), the module key (FNV-1a 64) and the day, in unsigned 64-bit arithmetic, bit for bit the server's `diary.random_times`.
+  The free minutes of the day (the windows without the quiet hours) are cut into `per_day` equal slots, each draws one minute at least `min_gap`/2 from its edges.
+  All times are local times of that calendar day: a window 20:00–02:00 gives early-morning times of the same day.
+  `app/src/test/resources/diary_random_vectors.json` is the server's `tests/diary_random_vectors.json`, unchanged; `RandomTimesTest` checks every case.
+- **Quiet hours.**
+  A running study with a random module shows its quiet hours on the study card ("Quiet hours", from/to or none); they keep the random prompts out of that time, never the fixed ones.
+  `POST /study` sends a change (`"quiet": ["22:00", "07:00"]` or `null`), the server keeps it from the person's next day on and answers with the whole history (`"quiet": [{"from", "q"}]`); the app uses exactly that history, the entry of the last `from` on or before a day (`QuietFrom.on`, the server's `quiet_on`).
+  Without a connection the change waits as `quietPending` (valid from the day after it was set, by the server's rule) and goes with the next sync.
 - **Reminder.**
-  A fixed module with `reminder` > 0 gets a second notification that many minutes after the prompt, from the same one alarm (`Schedule.nextMoment` takes the earlier of the next prompt and the next reminder).
+  A fixed or random module with `reminder` > 0 gets a second notification that many minutes after the prompt, from the same one alarm (`Schedule.nextMoment` takes the earlier of the next prompt and the next reminder).
   It is posted only if the prompt is still open and was neither opened nor answered without a connection (`PromptLog`, a list of the prompts of the last three days on the phone), under the prompt's notification id (it replaces the first one) and with the same neutral lock-screen version ("Reminder: a short question is still waiting").
   Tapping it sends `"reminded": true` with the entry, and the time of the first notification as `notified`.
 - **Answering without a connection.**
@@ -40,7 +49,7 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   "Delete my answers" on every study card calls `POST /api/diary/v1/erase`: the server deletes all answers of this person in this study and the person; the app then removes the study.
   Deleting or removing a study from the list also deletes its queued answers, its kept pages and the log of its prompts.
 - **What stays on the phone.**
-  The studies with their secrets; the log of the prompts of the last three days (notified, opened); the kept pages of offline modules while the study runs (dropped when it ends, is left, or the module is no longer offline); answers given without a connection until they are sent, at most 7 days after the page was opened (the server takes them no later), then they are dropped unsent.
+  The studies with their secrets, the seed of the random prompts and the quiet hours; the log of the prompts of the last three days (notified, opened); the kept pages of offline modules while the study runs (dropped when it ends, is left, or the module is no longer offline); answers given without a connection until they are sent, at most 7 days after the page was opened (the server takes them no later), then they are dropped unsent.
   All of it in the app's private storage, in no backup.
 - **Languages.**
   The survey languages of Askurious: English, German, Spanish, French, Italian, Dutch, Polish, European Portuguese, Russian, Turkish, Simplified Chinese and Arabic (right to left), formal address where the language has it.
@@ -81,7 +90,7 @@ Without it the link opens the join page in the browser, which shows the join cod
 
 ## Not yet
 
-Random prompts within time windows, an exit part, the entry part without a connection, a release signing configuration, iOS (concept, section 10).
+An exit part, the entry part without a connection, a release signing configuration, iOS (concept, section 10).
 
 ## Licence
 
