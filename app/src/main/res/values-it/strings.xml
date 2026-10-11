@@ -78,4 +78,25 @@
         <item quantity="other">%d risposte in attesa di invio</item>
     </plurals>
     <string name="about_offline">Se uno studio consente di rispondere senza connessione, l’app conserva anche le pagine del questionario di quelle domande e, finché non vengono inviate, le risposte date senza connessione; le risposte che non è stato possibile inviare entro 7 giorni vengono eliminate.</string>
+    <string name="quiet_title">Orari di riposo</string>
+    <string name="quiet_now">Orari di riposo: %1$s</string>
+    <string name="quiet_from_tomorrow">Da domani: %1$s</string>
+    <string name="quiet_none">nessuno</string>
+    <string name="quiet_none_button">Nessuno</string>
+    <string name="quiet_change">Orari di riposo</string>
+    <string name="quiet_hint">Durante i Suoi orari di riposo non arriva nessuna domanda a orari casuali. Una modifica vale da domani e solo per le domande a orari casuali, non per quelle a orari fissi.</string>
+    <string name="quiet_from">Dalle</string>
+    <string name="quiet_to">alle</string>
+    <string name="save">Salva</string>
+    <string name="about_quiet">Se imposta degli orari di riposo per uno studio, l’app li conserva e li invia al server dello studio, affinché in quel periodo non arrivi nessuna domanda a orari casuali.</string>
+    <plurals name="random_per_day">
+        <item quantity="one">%1$s: %2$d volta al giorno a orari casuali</item>
+        <item quantity="many">%1$s: %2$d volte al giorno a orari casuali</item>
+        <item quantity="other">%1$s: %2$d volte al giorno a orari casuali</item>
+    </plurals>
+    <plurals name="random_per_week">
+        <item quantity="one">%1$s: %2$d volta a settimana a orari casuali</item>
+        <item quantity="many">%1$s: %2$d volte a settimana a orari casuali</item>
+        <item quantity="other">%1$s: %2$d volte a settimana a orari casuali</item>
+    </plurals>
 </resources>

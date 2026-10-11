@@ -78,4 +78,25 @@
         <item quantity="other">%d réponses en attente d’envoi</item>
     </plurals>
     <string name="about_offline">Si une étude permet de répondre sans connexion, l’application conserve aussi les pages du questionnaire de ces questions et, jusqu’à leur envoi, les réponses données sans connexion ; les réponses qui n’ont pas pu être envoyées dans un délai de 7 jours sont supprimées.</string>
+    <string name="quiet_title">Heures de tranquillité</string>
+    <string name="quiet_now">Heures de tranquillité : %1$s</string>
+    <string name="quiet_from_tomorrow">À partir de demain : %1$s</string>
+    <string name="quiet_none">aucune</string>
+    <string name="quiet_none_button">Aucune</string>
+    <string name="quiet_change">Heures de tranquillité</string>
+    <string name="quiet_hint">Pendant vos heures de tranquillité, aucune question à heure aléatoire ne vous parvient. Une modification s’applique à partir de demain et uniquement aux questions à heures aléatoires, pas à celles à heures fixes.</string>
+    <string name="quiet_from">De</string>
+    <string name="quiet_to">à</string>
+    <string name="save">Enregistrer</string>
+    <string name="about_quiet">Si vous définissez des heures de tranquillité pour une étude, l’application les conserve et les envoie au serveur de l’étude, afin qu’aucune question à heure aléatoire ne vous parvienne pendant ce temps.</string>
+    <plurals name="random_per_day">
+        <item quantity="one">%1$s : %2$d fois par jour à des heures aléatoires</item>
+        <item quantity="many">%1$s : %2$d fois par jour à des heures aléatoires</item>
+        <item quantity="other">%1$s : %2$d fois par jour à des heures aléatoires</item>
+    </plurals>
+    <plurals name="random_per_week">
+        <item quantity="one">%1$s : %2$d fois par semaine à des heures aléatoires</item>
+        <item quantity="many">%1$s : %2$d fois par semaine à des heures aléatoires</item>
+        <item quantity="other">%1$s : %2$d fois par semaine à des heures aléatoires</item>
+    </plurals>
 </resources>

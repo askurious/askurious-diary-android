@@ -93,4 +93,31 @@
         <item quantity="other">%d إجابة بانتظار الإرسال</item>
     </plurals>
     <string name="about_offline">إذا كانت الدراسة تسمح بالإجابة دون اتصال، يحفظ التطبيق أيضًا صفحات الاستبيان لتلك الأسئلة، والإجابات المقدَّمة دون اتصال إلى أن تُرسل؛ وتُحذف الإجابات التي تعذّر إرسالها خلال 7 أيام.</string>
+    <string name="quiet_title">أوقات الهدوء</string>
+    <string name="quiet_now">أوقات الهدوء: %1$s</string>
+    <string name="quiet_from_tomorrow">ابتداءً من الغد: %1$s</string>
+    <string name="quiet_none">لا يوجد</string>
+    <string name="quiet_none_button">لا يوجد</string>
+    <string name="quiet_change">أوقات الهدوء</string>
+    <string name="quiet_hint">لا تصلك أي أسئلة في أوقات عشوائية خلال أوقات الهدوء. يسري التغيير ابتداءً من الغد، وعلى الأسئلة في أوقات عشوائية فقط، لا على الأسئلة في أوقات ثابتة.</string>
+    <string name="quiet_from">من</string>
+    <string name="quiet_to">إلى</string>
+    <string name="save">حفظ</string>
+    <string name="about_quiet">إذا حددت أوقات هدوء لدراسة ما، يحفظها التطبيق ويرسلها إلى خادم الدراسة، حتى لا تصلك أي أسئلة في أوقات عشوائية خلالها.</string>
+    <plurals name="random_per_day">
+        <item quantity="zero">%1$s: %2$d مرة يوميًا في أوقات عشوائية</item>
+        <item quantity="one">%1$s: %2$d مرة يوميًا في أوقات عشوائية</item>
+        <item quantity="two">%1$s: %2$d مرة يوميًا في أوقات عشوائية</item>
+        <item quantity="few">%1$s: %2$d مرات يوميًا في أوقات عشوائية</item>
+        <item quantity="many">%1$s: %2$d مرة يوميًا في أوقات عشوائية</item>
+        <item quantity="other">%1$s: %2$d مرة يوميًا في أوقات عشوائية</item>
+    </plurals>
+    <plurals name="random_per_week">
+        <item quantity="zero">%1$s: %2$d مرة أسبوعيًا في أوقات عشوائية</item>
+        <item quantity="one">%1$s: %2$d مرة أسبوعيًا في أوقات عشوائية</item>
+        <item quantity="two">%1$s: %2$d مرة أسبوعيًا في أوقات عشوائية</item>
+        <item quantity="few">%1$s: %2$d مرات أسبوعيًا في أوقات عشوائية</item>
+        <item quantity="many">%1$s: %2$d مرة أسبوعيًا في أوقات عشوائية</item>
+        <item quantity="other">%1$s: %2$d مرة أسبوعيًا في أوقات عشوائية</item>
+    </plurals>
 </resources>

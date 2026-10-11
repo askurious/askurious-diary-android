@@ -136,7 +136,7 @@ class EntryActivity : ComponentActivity() {
         val page = OfflinePages(this).usable(study.code, module) ?: return null
         val now = System.currentTimeMillis()
         when (val t = m.trigger) {
-            is Trigger.Fixed -> {
+            is Trigger.Fixed, is Trigger.Random -> {
                 if (due == null) return null
                 if (!Schedule.open(m, due, now)) {
                     error = getString(R.string.expired)

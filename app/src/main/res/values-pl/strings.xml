@@ -83,4 +83,27 @@
         <item quantity="other">%d odpowiedzi czeka na wysłanie</item>
     </plurals>
     <string name="about_offline">Jeśli badanie pozwala odpowiadać bez połączenia, aplikacja przechowuje też strony kwestionariusza tych pytań oraz – do czasu wysłania – odpowiedzi udzielone bez połączenia; odpowiedzi, których nie udało się wysłać w ciągu 7 dni, są usuwane.</string>
+    <string name="quiet_title">Godziny ciszy</string>
+    <string name="quiet_now">Godziny ciszy: %1$s</string>
+    <string name="quiet_from_tomorrow">Od jutra: %1$s</string>
+    <string name="quiet_none">brak</string>
+    <string name="quiet_none_button">Brak</string>
+    <string name="quiet_change">Godziny ciszy</string>
+    <string name="quiet_hint">W godzinach ciszy nie pojawia się żadne pytanie o losowej porze. Zmiana obowiązuje od jutra i tylko dla pytań o losowych porach, nie dla pytań o stałych godzinach.</string>
+    <string name="quiet_from">Od</string>
+    <string name="quiet_to">do</string>
+    <string name="save">Zapisz</string>
+    <string name="about_quiet">Jeśli dla badania zostaną ustawione godziny ciszy, aplikacja przechowuje je i wysyła na serwer badania, aby w tym czasie nie pojawiło się żadne pytanie o losowej porze.</string>
+    <plurals name="random_per_day">
+        <item quantity="one">%1$s: %2$d raz dziennie o losowych porach</item>
+        <item quantity="few">%1$s: %2$d razy dziennie o losowych porach</item>
+        <item quantity="many">%1$s: %2$d razy dziennie o losowych porach</item>
+        <item quantity="other">%1$s: %2$d razy dziennie o losowych porach</item>
+    </plurals>
+    <plurals name="random_per_week">
+        <item quantity="one">%1$s: %2$d raz w tygodniu o losowych porach</item>
+        <item quantity="few">%1$s: %2$d razy w tygodniu o losowych porach</item>
+        <item quantity="many">%1$s: %2$d razy w tygodniu o losowych porach</item>
+        <item quantity="other">%1$s: %2$d razy w tygodniu o losowych porach</item>
+    </plurals>
 </resources>

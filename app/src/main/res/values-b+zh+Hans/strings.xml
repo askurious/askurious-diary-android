@@ -68,4 +68,21 @@
         <item quantity="other">%d 个回答等待发送</item>
     </plurals>
     <string name="about_offline">如果某项研究允许在无网络连接时回答，本应用还会保存这些问题的问卷页面，以及在发送之前于无网络连接时所作的回答；7 天内未能发送的回答将被删除。</string>
+    <string name="quiet_title">免打扰时段</string>
+    <string name="quiet_now">免打扰时段：%1$s</string>
+    <string name="quiet_from_tomorrow">自明天起：%1$s</string>
+    <string name="quiet_none">无</string>
+    <string name="quiet_none_button">无</string>
+    <string name="quiet_change">免打扰时段</string>
+    <string name="quiet_hint">在您的免打扰时段内，不会收到随机时间的问题。更改自明天起生效，且仅适用于随机时间的问题，不适用于固定时间的问题。</string>
+    <string name="quiet_from">从</string>
+    <string name="quiet_to">至</string>
+    <string name="save">保存</string>
+    <string name="about_quiet">如果您为某项研究设置了免打扰时段，本应用会保存该时段并将其发送到该研究的服务器，以免在此期间收到随机时间的问题。</string>
+    <plurals name="random_per_day">
+        <item quantity="other">%1$s：每天 %2$d 次，时间随机</item>
+    </plurals>
+    <plurals name="random_per_week">
+        <item quantity="other">%1$s：每周 %2$d 次，时间随机</item>
+    </plurals>
 </resources>

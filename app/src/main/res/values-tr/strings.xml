@@ -73,4 +73,23 @@
         <item quantity="other">%d yanıt gönderilmeyi bekliyor</item>
     </plurals>
     <string name="about_offline">Bir çalışma bağlantı olmadan yanıt vermeye izin veriyorsa uygulama bu soruların anket sayfalarını ve gönderilene kadar bağlantı olmadan verilen yanıtları da saklar; 7 gün içinde gönderilemeyen yanıtlar silinir.</string>
+    <string name="quiet_title">Sessiz saatler</string>
+    <string name="quiet_now">Sessiz saatler: %1$s</string>
+    <string name="quiet_from_tomorrow">Yarından itibaren: %1$s</string>
+    <string name="quiet_none">yok</string>
+    <string name="quiet_none_button">Yok</string>
+    <string name="quiet_change">Sessiz saatler</string>
+    <string name="quiet_hint">Sessiz saatlerinizde rastgele zamanlı soru gelmez. Bir değişiklik yarından itibaren ve yalnızca rastgele zamanlı sorular için geçerlidir, sabit saatli sorular için geçerli değildir.</string>
+    <string name="quiet_from">Başlangıç</string>
+    <string name="quiet_to">Bitiş</string>
+    <string name="save">Kaydet</string>
+    <string name="about_quiet">Bir çalışma için sessiz saatler belirlerseniz uygulama bunları saklar ve çalışmanın sunucusuna gönderir; böylece bu süre içinde rastgele zamanlı soru gelmez.</string>
+    <plurals name="random_per_day">
+        <item quantity="one">%1$s: günde %2$d kez, rastgele saatlerde</item>
+        <item quantity="other">%1$s: günde %2$d kez, rastgele saatlerde</item>
+    </plurals>
+    <plurals name="random_per_week">
+        <item quantity="one">%1$s: haftada %2$d kez, rastgele saatlerde</item>
+        <item quantity="other">%1$s: haftada %2$d kez, rastgele saatlerde</item>
+    </plurals>
 </resources>

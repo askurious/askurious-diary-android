@@ -73,4 +73,23 @@
         <item quantity="other">%d answers waiting to be sent</item>
     </plurals>
     <string name="about_offline">If a study lets you answer without a connection, the app also keeps the questionnaire pages of those questions and, until they are sent, the answers you gave without a connection; answers that could not be sent within 7 days are deleted.</string>
+    <string name="quiet_title">Quiet hours</string>
+    <string name="quiet_now">Quiet hours: %1$s</string>
+    <string name="quiet_from_tomorrow">From tomorrow: %1$s</string>
+    <string name="quiet_none">none</string>
+    <string name="quiet_none_button">None</string>
+    <string name="quiet_change">Quiet hours</string>
+    <string name="quiet_hint">No question at a random time comes during your quiet hours. A change applies from tomorrow and only to the questions at random times, not to those at fixed times.</string>
+    <string name="quiet_from">From</string>
+    <string name="quiet_to">to</string>
+    <string name="save">Save</string>
+    <string name="about_quiet">If you set quiet hours for a study, the app keeps them and sends them to the server of the study, so that no question at a random time comes during them.</string>
+    <plurals name="random_per_day">
+        <item quantity="one">%1$s: %2$d× a day at random times</item>
+        <item quantity="other">%1$s: %2$d× a day at random times</item>
+    </plurals>
+    <plurals name="random_per_week">
+        <item quantity="one">%1$s: %2$d× a week at random times</item>
+        <item quantity="other">%1$s: %2$d× a week at random times</item>
+    </plurals>
 </resources>
