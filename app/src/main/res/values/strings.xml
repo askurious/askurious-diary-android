@@ -11,12 +11,24 @@
     <string name="cancel">Cancel</string>
     <string name="back">Back</string>
     <string name="close">Close</string>
-    <string name="study_days">Duration: %1$d days</string>
+    <plurals name="study_days">
+        <item quantity="one">Duration: %d day</item>
+        <item quantity="other">Duration: %d days</item>
+    </plurals>
     <string name="study_modules">What you will be asked</string>
-    <string name="fixed_per_day">%1$s: %2$d× a day</string>
-    <string name="fixed_per_week">%1$s: %2$d× a week</string>
+    <plurals name="fixed_per_day">
+        <item quantity="one">%1$s: %2$d× a day</item>
+        <item quantity="other">%1$s: %2$d× a day</item>
+    </plurals>
+    <plurals name="fixed_per_week">
+        <item quantity="one">%1$s: %2$d× a week</item>
+        <item quantity="other">%1$s: %2$d× a week</item>
+    </plurals>
     <string name="self_module">%1$s: whenever you like</string>
-    <string name="about_minutes">About %1$d minutes a day</string>
+    <plurals name="about_minutes">
+        <item quantity="one">About %d minute a day</item>
+        <item quantity="other">About %d minutes a day</item>
+    </plurals>
     <string name="join_privacy">Joining opens the consent form of the study. The app stores no name, e-mail address or phone number, and the study cannot see your other studies.</string>
     <string name="continue_entry">Continue the first questionnaire</string>
     <string name="day_of">Day %1$d of %2$d</string>
@@ -24,13 +36,16 @@
     <string name="next_prompt">Next question: %1$s</string>
     <string name="finished">Finished, thank you!</string>
     <string name="left">You left this study.</string>
+    <string name="left_pending">You left this study. The app will tell the researchers as soon as it has a connection.</string>
     <string name="ended">The researchers have ended this study.</string>
     <string name="leave_study">Leave study</string>
-    <string name="leave_confirm">Leave this study? You will get no more questions. Your answers stay with the researchers unless you delete them with your deletion code.</string>
+    <string name="leave_confirm">Leave this study? You will get no more questions. Your answers stay with the researchers unless you delete them with \"Delete my answers\".</string>
     <string name="remove_from_list">Remove from list</string>
-    <string name="sync_now">Refresh</string>
+    <string name="erase_answers">Delete my answers</string>
+    <string name="erase_confirm">Delete all your answers in this study? They are deleted at the researchers too and cannot be restored. The study is then removed from the app.</string>
+    <string name="erase">Delete</string>
     <string name="notif_channel">Questions of your studies</string>
-    <string name="notif_default">%1$s: a short question is waiting</string>
+    <string name="notif_default">A short question is waiting</string>
     <string name="allow_notifications">Allow notifications, otherwise the app cannot ask you at the right moment.</string>
     <string name="allow_exact">Allow \"Alarms &amp; reminders\" so that questions arrive on time.</string>
     <string name="allow">Allow</string>
@@ -40,4 +55,15 @@
     <string name="closed">This study takes no new participants.</string>
     <string name="offline">No connection. Please try again.</string>
     <string name="error">Something went wrong. Please try again.</string>
+    <string name="about">About the app</string>
+    <string name="version">Version %1$s</string>
+    <string name="about_privacy_title">Privacy</string>
+    <string name="about_stores">The app keeps on this phone only the list of your studies with their schedules and, for each study, a random secret: the only key to your answers there. It has no account and sends no device ID, name, e-mail address or phone number. Nothing of it goes into backups or to a new phone.</string>
+    <string name="privacy_statement">Privacy statement</string>
+    <string name="about_licence_title">Licence</string>
+    <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. All rights reserved.</string>
+    <string name="about_oss_title">Open-source software</string>
+    <string name="about_oss_intro">The app uses these libraries, each under the Apache License 2.0:</string>
+    <string name="show_licence">Show licence text</string>
+    <string name="hide_licence">Hide licence text</string>
 </resources>

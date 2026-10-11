@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Askurious</string>
+    <string name="my_studies">Moje badania</string>
+    <string name="no_studies">Brak udziału w badaniu dzienniczkowym. Aby dołączyć, prosimy zeskanować kod QR badania lub wpisać jego kod dołączenia.</string>
+    <string name="join_study">Dołącz do badania</string>
+    <string name="join_code">Kod dołączenia</string>
+    <string name="scan_qr">Zeskanuj kod QR</string>
+    <string name="look_up">Szukaj</string>
+    <string name="join">Dołącz</string>
+    <string name="cancel">Anuluj</string>
+    <string name="back">Wstecz</string>
+    <string name="close">Zamknij</string>
+    <plurals name="study_days">
+        <item quantity="one">Czas trwania: %d dzień</item>
+        <item quantity="few">Czas trwania: %d dni</item>
+        <item quantity="many">Czas trwania: %d dni</item>
+        <item quantity="other">Czas trwania: %d dnia</item>
+    </plurals>
+    <string name="study_modules">Czego dotyczą pytania</string>
+    <plurals name="fixed_per_day">
+        <item quantity="one">%1$s: %2$d raz dziennie</item>
+        <item quantity="few">%1$s: %2$d razy dziennie</item>
+        <item quantity="many">%1$s: %2$d razy dziennie</item>
+        <item quantity="other">%1$s: %2$d razy dziennie</item>
+    </plurals>
+    <plurals name="fixed_per_week">
+        <item quantity="one">%1$s: %2$d raz w tygodniu</item>
+        <item quantity="few">%1$s: %2$d razy w tygodniu</item>
+        <item quantity="many">%1$s: %2$d razy w tygodniu</item>
+        <item quantity="other">%1$s: %2$d razy w tygodniu</item>
+    </plurals>
+    <string name="self_module">%1$s: w dowolnym momencie</string>
+    <plurals name="about_minutes">
+        <item quantity="one">Około %d minuty dziennie</item>
+        <item quantity="few">Około %d minut dziennie</item>
+        <item quantity="many">Około %d minut dziennie</item>
+        <item quantity="other">Około %d minuty dziennie</item>
+    </plurals>
+    <string name="join_privacy">Dołączenie otwiera formularz zgody badania. Aplikacja nie zapisuje imienia ani nazwiska, adresu e-mail ani numeru telefonu, a badanie nie widzi innych badań na tym telefonie.</string>
+    <string name="continue_entry">Kontynuuj pierwszy kwestionariusz</string>
+    <string name="day_of">Dzień %1$d z %2$d</string>
+    <string name="starts_on">Początek: %1$s</string>
+    <string name="next_prompt">Następne pytanie: %1$s</string>
+    <string name="finished">Zakończono, dziękujemy!</string>
+    <string name="left">Zrezygnowano z udziału w tym badaniu.</string>
+    <string name="left_pending">Zrezygnowano z udziału w tym badaniu. Aplikacja poinformuje o tym zespół badawczy, gdy tylko będzie połączenie.</string>
+    <string name="ended">Zespół badawczy zakończył to badanie.</string>
+    <string name="leave_study">Zrezygnuj z badania</string>
+    <string name="leave_confirm">Zrezygnować z tego badania? Nie będzie już kolejnych pytań. Odpowiedzi pozostaną u zespołu badawczego, chyba że zostaną usunięte przyciskiem „Usuń moje odpowiedzi”.</string>
+    <string name="remove_from_list">Usuń z listy</string>
+    <string name="erase_answers">Usuń moje odpowiedzi</string>
+    <string name="erase_confirm">Usunąć wszystkie odpowiedzi w tym badaniu? Zostaną usunięte również u zespołu badawczego i nie będzie można ich przywrócić. Badanie zniknie następnie z aplikacji.</string>
+    <string name="erase">Usuń</string>
+    <string name="notif_channel">Pytania z badań</string>
+    <string name="notif_default">Czeka krótkie pytanie</string>
+    <string name="allow_notifications">Prosimy zezwolić na powiadomienia, w przeciwnym razie aplikacja nie może zadawać pytań we właściwym momencie.</string>
+    <string name="allow_exact">Prosimy zezwolić na „Alarmy i przypomnienia”, aby pytania przychodziły na czas.</string>
+    <string name="allow">Zezwól</string>
+    <string name="expired">To pytanie wygasło. Wkrótce pojawi się następne.</string>
+    <string name="limit">Osiągnięto dzisiejszy limit dla tego zgłoszenia.</string>
+    <string name="not_found">Brak badania o tym kodzie.</string>
+    <string name="closed">To badanie nie przyjmuje nowych uczestników.</string>
+    <string name="offline">Brak połączenia. Prosimy spróbować ponownie.</string>
+    <string name="error">Coś poszło nie tak. Prosimy spróbować ponownie.</string>
+    <string name="about">O aplikacji</string>
+    <string name="version">Wersja %1$s</string>
+    <string name="about_privacy_title">Prywatność</string>
+    <string name="about_stores">Aplikacja przechowuje na tym telefonie tylko listę badań wraz z ich harmonogramami oraz dla każdego badania losowy sekret – jedyny klucz do udzielonych w nim odpowiedzi. Nie ma konta i nie wysyła identyfikatora urządzenia, imienia, adresu e-mail ani numeru telefonu. Nic z tego nie trafia do kopii zapasowych ani na nowy telefon.</string>
+    <string name="privacy_statement">Informacja o ochronie danych</string>
+    <string name="about_licence_title">Licencja</string>
+    <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Wszelkie prawa zastrzeżone.</string>
+    <string name="about_oss_title">Oprogramowanie open source</string>
+    <string name="about_oss_intro">Aplikacja korzysta z następujących bibliotek, każdej na licencji Apache License 2.0:</string>
+    <string name="show_licence">Pokaż tekst licencji</string>
+    <string name="hide_licence">Ukryj tekst licencji</string>
+</resources>

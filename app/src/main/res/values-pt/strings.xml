@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Askurious</string>
+    <string name="my_studies">Os meus estudos</string>
+    <string name="no_studies">Ainda não participa em nenhum estudo de diário. Leia o código QR de um estudo ou introduza o respetivo código de participação.</string>
+    <string name="join_study">Participar num estudo</string>
+    <string name="join_code">Código de participação</string>
+    <string name="scan_qr">Ler código QR</string>
+    <string name="look_up">Procurar</string>
+    <string name="join">Participar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="back">Voltar</string>
+    <string name="close">Fechar</string>
+    <plurals name="study_days">
+        <item quantity="one">Duração: %d dia</item>
+        <item quantity="many">Duração: %d dias</item>
+        <item quantity="other">Duração: %d dias</item>
+    </plurals>
+    <string name="study_modules">O que lhe vai ser perguntado</string>
+    <plurals name="fixed_per_day">
+        <item quantity="one">%1$s: %2$d vez por dia</item>
+        <item quantity="many">%1$s: %2$d vezes por dia</item>
+        <item quantity="other">%1$s: %2$d vezes por dia</item>
+    </plurals>
+    <plurals name="fixed_per_week">
+        <item quantity="one">%1$s: %2$d vez por semana</item>
+        <item quantity="many">%1$s: %2$d vezes por semana</item>
+        <item quantity="other">%1$s: %2$d vezes por semana</item>
+    </plurals>
+    <string name="self_module">%1$s: sempre que quiser</string>
+    <plurals name="about_minutes">
+        <item quantity="one">Cerca de %d minuto por dia</item>
+        <item quantity="many">Cerca de %d minutos por dia</item>
+        <item quantity="other">Cerca de %d minutos por dia</item>
+    </plurals>
+    <string name="join_privacy">Ao participar, abre-se o formulário de consentimento do estudo. A aplicação não guarda nenhum nome, endereço de e-mail ou número de telefone, e o estudo não vê os seus outros estudos.</string>
+    <string name="continue_entry">Continuar o primeiro questionário</string>
+    <string name="day_of">Dia %1$d de %2$d</string>
+    <string name="starts_on">Começa a %1$s</string>
+    <string name="next_prompt">Próxima pergunta: %1$s</string>
+    <string name="finished">Concluído, muito obrigado!</string>
+    <string name="left">Saiu deste estudo.</string>
+    <string name="left_pending">Saiu deste estudo. A aplicação informará a equipa de investigação assim que houver ligação.</string>
+    <string name="ended">A equipa de investigação terminou este estudo.</string>
+    <string name="leave_study">Sair do estudo</string>
+    <string name="leave_confirm">Sair deste estudo? Não receberá mais perguntas. As suas respostas ficam com a equipa de investigação, a não ser que as apague com «Apagar as minhas respostas».</string>
+    <string name="remove_from_list">Remover da lista</string>
+    <string name="erase_answers">Apagar as minhas respostas</string>
+    <string name="erase_confirm">Apagar todas as suas respostas neste estudo? Também são apagadas junto da equipa de investigação e não podem ser recuperadas. Depois, o estudo desaparece da aplicação.</string>
+    <string name="erase">Apagar</string>
+    <string name="notif_channel">Perguntas dos seus estudos</string>
+    <string name="notif_default">Tem uma pergunta curta à sua espera</string>
+    <string name="allow_notifications">Permita as notificações; caso contrário, a aplicação não lhe pode perguntar no momento certo.</string>
+    <string name="allow_exact">Permita «Alarmes e lembretes» para que as perguntas cheguem a horas.</string>
+    <string name="allow">Permitir</string>
+    <string name="expired">Esta pergunta expirou. A próxima chegará em breve.</string>
+    <string name="limit">Atingiu o limite de hoje para este registo.</string>
+    <string name="not_found">Não existe nenhum estudo com este código.</string>
+    <string name="closed">Este estudo não aceita novos participantes.</string>
+    <string name="offline">Sem ligação. Tente novamente.</string>
+    <string name="error">Algo correu mal. Tente novamente.</string>
+    <string name="about">Acerca da aplicação</string>
+    <string name="version">Versão %1$s</string>
+    <string name="about_privacy_title">Privacidade</string>
+    <string name="about_stores">Neste telemóvel, a aplicação guarda apenas a lista dos seus estudos com os respetivos horários e, para cada estudo, um segredo aleatório: a única chave para as suas respostas nesse estudo. Não tem conta e não envia nenhum ID do dispositivo, nome, endereço de e-mail ou número de telefone. Nada disto vai para cópias de segurança nem para um novo telemóvel.</string>
+    <string name="privacy_statement">Política de privacidade</string>
+    <string name="about_licence_title">Licença</string>
+    <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Todos os direitos reservados.</string>
+    <string name="about_oss_title">Software de código aberto</string>
+    <string name="about_oss_intro">A aplicação utiliza estas bibliotecas, todas sob a Apache License 2.0:</string>
+    <string name="show_licence">Mostrar o texto da licença</string>
+    <string name="hide_licence">Ocultar o texto da licença</string>
+</resources>
