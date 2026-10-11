@@ -94,7 +94,7 @@
     </plurals>
     <string name="paused">Von den Forschenden pausiert</string>
     <string name="fast_forward">Zeitraffer ×%1$d</string>
-    <string name="exit_default">Abschluss-Fragebogen</string>
+    <string name="exit_default">Abschlussbefragung</string>
     <string name="exit_until">Offen bis %1$s</string>
     <string name="notif_exit">Der Studienzeitraum ist vorbei. Bitte beantworten Sie noch: %1$s</string>
 </resources>
