@@ -24,6 +24,14 @@ class JoinCodeTest {
     }
 
     @Test
+    fun personalInvitationCodesKeepTheirEightCharacters() {
+        assertEquals("k7qm2x-a8c3d9ef", joinCode("k7qm2x-a8c3d9ef"))
+        assertEquals("k7qm2x-a8c3d9ef", joinCode(" K7QM2X-A8C3 D9EF "))
+        assertEquals("k7qm2x-a8c3d9ef", joinCode("https://ask.askurious.de/j/k7qm2x-a8c3d9ef"))
+        assertEquals("k7qm2x-a8c3d9ef", joinCode("askurious://join/k7qm2x-a8c3d9ef"))
+    }
+
+    @Test
     fun appLinks() {
         assertEquals("k7qm2x", joinCode("askurious://join/k7qm2x"))
         assertEquals("k7qm2x-t3f9a", joinCode("askurious://join/k7qm2x-t3f9a"))

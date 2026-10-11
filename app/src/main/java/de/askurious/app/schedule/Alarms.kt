@@ -20,13 +20,16 @@ import de.askurious.app.data.Module
 import de.askurious.app.data.PromptLog
 import de.askurious.app.data.Study
 import de.askurious.app.data.StudyStore
+import de.askurious.app.data.SyncWorker
 import de.askurious.app.ui.EntryActivity
 import java.time.Instant
 
 /**
- * One alarm at a time: the earliest next prompt or reminder over all studies (Schedule.nextMoment). When it rings,
- * PromptReceiver posts the notifications of that moment and sets the next alarm. Any change (sync, joining,
- * leaving, boot, time zone) calls [rearm], which computes the next moment again from the stored studies.
+ * One alarm at a time: the earliest next prompt, reminder or exit notification over all studies
+ * (Schedule.nextMoment). When it rings, PromptReceiver posts the notifications of that moment and sets the next
+ * alarm. Any change (sync, joining, leaving, boot, time zone) calls [rearm], which computes the next moment again
+ * from the stored studies. The alarm rings in real time; for a fast-forward person (Study.clock) the moment is the
+ * real one of the virtual prompt time, and everything sent to the server is virtual.
  */
 object Alarms {
     const val CHANNEL = "prompts"
@@ -41,7 +44,7 @@ object Alarms {
         val am = context.getSystemService(AlarmManager::class.java)
         val pending = alarmIntent(context, 0L)
         am.cancel(pending)
-        val next = Schedule.nextMoment(StudyStore(context).all(), Instant.now()) ?: return
+        val next = Schedule.nextMoment(StudyStore(context).all(), Instant.now(), exitNotified = PromptLog(context).exits()) ?: return
         val pi = alarmIntent(context, next)
         try {
             if (canExact(context)) am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, next, pi)
@@ -65,37 +68,100 @@ object Alarms {
         context.getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
     }
 
+    private fun mayPost(context: Context): Boolean =
+        Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+
     /**
-     * Posts the notifications of the moment [at]: the prompts due then and the reminders of earlier prompts that
-     * ring then. The time it really happened goes with the entry.
+     * Posts the notifications of the real moment [at]: the prompts due then and the reminders of earlier prompts
+     * that ring then, and an exit notification that is due. The time it really happened (the study's time) goes
+     * with the entry.
      */
     fun notify(context: Context, at: Long) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
-        ) return
+        if (!mayPost(context)) return
         val store = StudyStore(context)
         val log = PromptLog(context)
         val queue = AnswerQueue(context)
-        val now = System.currentTimeMillis()
-        val from = Instant.ofEpochMilli(at)
-        val until = Instant.ofEpochMilli(at + 1)
         val studies = store.all()
-        for (p in studies.flatMap { Schedule.prompts(it, from, until) }) {
-            val study = studies.firstOrNull { it.code == p.study } ?: continue
-            val module = study.modules.firstOrNull { it.key == p.module } ?: continue
-            if (!Schedule.open(module, p.due, now)) continue
-            post(context, study, module, p, notified = now, reminder = false)
-            log.notified(study.code, module.key, p.due, now)
+        for (study in studies) {
+            // the study's times that ring at the real moment [at]: (time(at - 1), time(at)]; for real time just [at]
+            val from = Instant.ofEpochMilli(study.now(at - 1) + 1)
+            val until = Instant.ofEpochMilli(study.now(at) + 1)
+            val now = study.now()
+            for (p in Schedule.prompts(study, from, until)) {
+                val module = study.modules.firstOrNull { it.key == p.module } ?: continue
+                if (!Schedule.open(module, p.due, now)) continue
+                post(context, study, module, p, notified = now, reminder = false)
+                log.notified(study.code, module.key, p.due, now)
+            }
+            for (p in Schedule.reminders(study, from, until)) {
+                val module = study.modules.firstOrNull { it.key == p.module } ?: continue
+                // only for a prompt still open that the participant has not opened, nor answered without a connection
+                if (!Schedule.open(module, p.due, now)) continue
+                if (log.isOpened(study.code, module.key, p.due) || queue.has(study.code, module.key, p.due)) continue
+                // the entry keeps the time of the first notification; without one (not posted) the reminder's own
+                post(context, study, module, p, notified = log.notifiedAt(study.code, module.key, p.due) ?: now, reminder = true)
+            }
         }
-        for (p in studies.flatMap { Schedule.reminders(it, from, until) }) {
-            val study = studies.firstOrNull { it.code == p.study } ?: continue
-            val module = study.modules.firstOrNull { it.key == p.module } ?: continue
-            // only for a prompt still open that the participant has not opened, nor answered without a connection
-            if (!Schedule.open(module, p.due, now)) continue
-            if (log.isOpened(study.code, module.key, p.due) || queue.has(study.code, module.key, p.due)) continue
-            // the entry keeps the time of the first notification; without one (not posted) the reminder's own
-            post(context, study, module, p, notified = log.notifiedAt(study.code, module.key, p.due) ?: now, reminder = true)
+        notifyExits(context)
+        // an exit moment has passed but the phone does not know the questionnaire is open: a sync finds out, and
+        // posts it then (Sync.one)
+        val real = System.currentTimeMillis()
+        val notified = log.exits()
+        if (studies.any { s ->
+                s.code !in notified && s.exit?.open == false && Schedule.exitAt(s)?.let { s.now(real) >= it } == true
+            }
+        ) SyncWorker.sendSoon(context)
+    }
+
+    /**
+     * Posts the exit notification of every study for which it is due (Schedule.exitDue): once per study, when its
+     * exit questionnaire is open and its moment has passed. Called when the alarm rings and after every sync.
+     */
+    fun notifyExits(context: Context) {
+        if (!mayPost(context)) return
+        val log = PromptLog(context)
+        val notified = log.exits()
+        val now = System.currentTimeMillis()
+        for (study in StudyStore(context).all()) {
+            val exit = study.exit ?: continue
+            if (!Schedule.exitDue(study, now, study.code in notified)) continue
+            val id = "${study.code}|exit".hashCode()
+            val tap = PendingIntent.getActivity(
+                context, id, EntryActivity.intent(context, study.code, EntryActivity.EXIT),
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+            )
+            val text = context.getString(R.string.notif_exit, exit.name.ifBlank { context.getString(R.string.exit_default) })
+            val n = builder(context, study.title, text, context.getString(R.string.notif_default)).setContentIntent(tap).build()
+            try {
+                NotificationManagerCompat.from(context).notify(id, n)
+                log.exitNotified(study.code)
+            } catch (e: SecurityException) {
+                // the permission was taken away after mayPost() checked it: nothing to post
+            }
         }
+    }
+
+    /**
+     * A notification of [title] with [text]; the lock screen shows only [neutral] under the app's name: neither the
+     * title of the study nor the researchers' text (which may name the topic) is seen by someone else looking at the
+     * phone.
+     */
+    private fun builder(context: Context, title: String, text: String, neutral: String): NotificationCompat.Builder {
+        val public = NotificationCompat.Builder(context, CHANNEL)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentTitle(context.getString(R.string.app_name))
+            .setContentText(neutral)
+            .build()
+        return NotificationCompat.Builder(context, CHANNEL)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentTitle(title)
+            .setContentText(text)
+            .setAutoCancel(true)
+            .setCategory(NotificationCompat.CATEGORY_REMINDER)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+            .setPublicVersion(public)
     }
 
     /**
@@ -103,7 +169,6 @@ object Alarms {
      * second one. Tapping opens the entry; [reminder] goes with it to the server ("reminded").
      */
     private fun post(context: Context, study: Study, module: Module, p: Prompt, notified: Long, reminder: Boolean) {
-        val now = System.currentTimeMillis()
         val tap = PendingIntent.getActivity(
             context, p.id,
             EntryActivity.intent(context, study.code, module.key, p.due, notified, reminded = reminder),
@@ -111,24 +176,10 @@ object Alarms {
         )
         val neutral = context.getString(if (reminder) R.string.notif_reminder else R.string.notif_default)
         val text = if (reminder) neutral else module.notify.ifBlank { neutral }
-        // the lock screen shows only this neutral version: neither the title of the study nor the researchers'
-        // text (which may name the topic) is seen by someone else looking at the phone
-        val public = NotificationCompat.Builder(context, CHANNEL)
-            .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle(context.getString(R.string.app_name))
-            .setContentText(neutral)
-            .build()
-        val n = NotificationCompat.Builder(context, CHANNEL)
-            .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle(study.title)
-            .setContentText(text)
+        // the notification goes when the prompt expires: at the real moment of its (study's time) expiry
+        val n = builder(context, study.title, text, neutral)
             .setContentIntent(tap)
-            .setAutoCancel(true)
-            .setCategory(NotificationCompat.CATEGORY_REMINDER)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
-            .setPublicVersion(public)
-            .apply { if (module.expires > 0) setTimeoutAfter(p.due + module.expires * 60_000L - now) }
+            .apply { if (module.expires > 0) setTimeoutAfter(study.realAt(p.due + module.expires * 60_000L) - System.currentTimeMillis()) }
             .build()
         try {
             NotificationManagerCompat.from(context).notify(p.id, n)

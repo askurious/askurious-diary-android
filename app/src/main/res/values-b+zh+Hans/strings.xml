@@ -85,4 +85,9 @@
     <plurals name="random_per_week">
         <item quantity="other">%1$s：每周 %2$d 次，时间随机</item>
     </plurals>
+    <string name="paused">研究人员已暂停</string>
+    <string name="fast_forward">快进 ×%1$d</string>
+    <string name="exit_default">结束问卷</string>
+    <string name="exit_until">开放至 %1$s</string>
+    <string name="notif_exit">研究期已结束。请填写：%1$s</string>
 </resources>

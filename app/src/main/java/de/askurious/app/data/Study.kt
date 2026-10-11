@@ -2,8 +2,10 @@ package de.askurious.app.data
 
 import org.json.JSONArray
 import org.json.JSONObject
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.ZoneId
 
 /**
  * When a module is due: at fixed times on some weekdays, at random times within time windows, or whenever the
@@ -93,12 +95,29 @@ data class Module(
     val offline: Boolean = false,
 )
 
+/**
+ * The exit questionnaire of a study (server: "exit" of POST /study). [open]: it can be answered now; the server sets
+ * it after the person's study period ended (finished or ended) until [until], and only while it is not answered.
+ */
+data class Exit(val name: String, val open: Boolean, val until: LocalDate?) {
+    fun toJson(): JSONObject = JSONObject().put("name", name).put("open", open).put("until", until?.toString() ?: JSONObject.NULL)
+
+    companion object {
+        fun fromJson(o: JSONObject?): Exit? = o?.let {
+            Exit(it.optString("name"), it.optBoolean("open", false), it.optStringOrNull("until")?.let { d -> runCatching { LocalDate.parse(d) }.getOrNull() })
+        }
+    }
+}
+
 /** One enrolment of this device in a diary study. [secret] is the only key to it; the server keeps its hash. */
 data class Study(
     val code: String,
     val secret: String,
     val title: String,
-    /** pending (first questionnaire not done) | active | finished | left | ended */
+    /**
+     * pending (first questionnaire not done) | active | paused (by the researchers) | finished | left | ended (by the
+     * researchers, also early for this person)
+     */
     val status: String,
     val firstDay: LocalDate?,
     val lastDay: LocalDate?,
@@ -119,8 +138,33 @@ data class Study(
      * sync. Until then the app takes them as valid from [QuietFrom.from], the day after they were set.
      */
     val quietPending: QuietFrom? = null,
+    /**
+     * The pauses the researchers set for this person: from and to (local dates, both included; to null = still
+     * paused). No prompt on these days, also after the person is active again.
+     */
+    val pauses: List<Pair<LocalDate, LocalDate?>> = emptyList(),
+    /** The exit questionnaire, null when the study has none. */
+    val exit: Exit? = null,
+    /** The clock of a fast-forward test person, null for real time. */
+    val clock: Clock? = null,
 ) {
     val running get() = status == "active"
+
+    /** The study's time (epoch milliseconds) at the real moment [real]: virtual for a fast-forward person. */
+    fun now(real: Long = System.currentTimeMillis()): Long = clock?.virtual(real) ?: real
+
+    /** The study's time at the real [real] as an Instant. */
+    fun at(real: Instant): Instant = if (clock == null) real else Instant.ofEpochMilli(clock.virtual(real.toEpochMilli()))
+
+    /** The real moment at which the study's time reaches [time] (epoch milliseconds). */
+    fun realAt(time: Long): Long = clock?.real(time) ?: time
+
+    /** The study's date today, in [zone]. */
+    fun today(zone: ZoneId = ZoneId.systemDefault(), real: Long = System.currentTimeMillis()): LocalDate =
+        Instant.ofEpochMilli(now(real)).atZone(zone).toLocalDate()
+
+    /** Whether [day] lies in a pause of the researchers: no prompts on it. */
+    fun pausedOn(day: LocalDate): Boolean = pauses.any { (from, to) -> !day.isBefore(from) && (to == null || !day.isAfter(to)) }
 
     /** The quiet history the schedule uses: the server's, with a change not yet confirmed added by its rule. */
     val quietHistory: List<QuietFrom>
@@ -157,6 +201,9 @@ data class Study(
         .put("seed", seed)
         .put("quiet", JSONArray(quiet.map { it.toJson() }))
         .put("quiet_pending", quietPending?.toJson() ?: JSONObject.NULL)
+        .put("pauses", JSONArray(pauses.map { (from, to) -> JSONArray(listOf(from.toString(), to?.toString() ?: JSONObject.NULL)) }))
+        .put("exit", exit?.toJson() ?: JSONObject.NULL)
+        .put("clock", clock?.toJson() ?: JSONObject.NULL)
 
     companion object {
         /** How long the server may answer 401 before the app takes the study as deleted: three days. */
@@ -164,7 +211,8 @@ data class Study(
 
         /**
          * Reads the study as the server sends it (POST /api/diary/v1/study) or as stored on the device; the server
-         * sends neither "unauthorised_since", "leave_pending" nor "quiet_pending", so a fresh copy starts without them.
+         * sends neither "unauthorised_since", "leave_pending" nor "quiet_pending", so a fresh copy starts without them;
+         * "pauses", "exit" and "clock" have the same shape in both.
          */
         fun fromJson(o: JSONObject, secret: String = o.optString("secret")): Study = Study(
             code = o.getString("code"),
@@ -182,7 +230,19 @@ data class Study(
                 (0 until arr.length()).mapNotNull { k -> arr.optJSONObject(k)?.let(QuietFrom::fromJson) }
             } ?: emptyList(),
             quietPending = o.optJSONObject("quiet_pending")?.let(QuietFrom::fromJson),
+            pauses = o.optJSONArray("pauses")?.let { arr -> (0 until arr.length()).mapNotNull { k -> pause(arr.optJSONArray(k)) } }
+                ?: emptyList(),
+            exit = Exit.fromJson(o.optJSONObject("exit")),
+            clock = Clock.fromJson(o.optJSONObject("clock")),
         )
+
+        /** ["YYYY-MM-DD", "YYYY-MM-DD" or null]; anything else is no pause. */
+        private fun pause(a: JSONArray?): Pair<LocalDate, LocalDate?>? {
+            if (a == null || a.length() < 1) return null
+            val from = runCatching { LocalDate.parse(a.getString(0)) }.getOrNull() ?: return null
+            val to = if (a.length() < 2 || a.isNull(1)) null else runCatching { LocalDate.parse(a.getString(1)) }.getOrNull() ?: return null
+            return from to to
+        }
 
         private fun module(o: JSONObject): Module {
             val t = o.getJSONObject("trigger")

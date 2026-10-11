@@ -91,6 +91,11 @@ class EntryActivity : ComponentActivity() {
             // opened: the reminder of this prompt stays silent
             PromptLog(this).opened(code, module, due)
         }
+        if (module == EXIT) {
+            Alarms.cancel(this, "$code|exit".hashCode())
+            // opened: no exit notification any more (the server closes it once answered)
+            PromptLog(this).exitNotified(code)
+        }
 
         val study = StudyStore(this).get(code) ?: return finish()
         if (savedInstanceState == null || (url == null && offline == null)) {
@@ -103,7 +108,7 @@ class EntryActivity : ComponentActivity() {
                     val kept = if (e.key == "offline") keptPage(study, module, due) else null
                     if (kept != null) {
                         clearWebState()
-                        offlineStarted = System.currentTimeMillis()
+                        offlineStarted = study.now()
                         offline = kept
                     } else {
                         error = when (e.key) {
@@ -128,13 +133,14 @@ class EntryActivity : ComponentActivity() {
      * The kept page for answering [module] without a connection, if it may be answered now: a prompt still open,
      * or a self-started module under its daily limit (counting the answers waiting to be sent; those sent today
      * the phone does not know, the server checks them when the answer arrives). Sets [error] when the prompt has
-     * expired or the limit is reached.
+     * expired or the limit is reached. Times are the study's (virtual for a fast-forward person). The entry part and
+     * the exit questionnaire are always answered online.
      */
     private fun keptPage(study: Study, module: String, due: Long?): OfflinePages.Page? {
-        if (module == "entry" || !study.running) return null
+        if (module == "entry" || module == EXIT || !study.running) return null
         val m = study.modules.firstOrNull { it.key == module && it.offline } ?: return null
         val page = OfflinePages(this).usable(study.code, module) ?: return null
-        val now = System.currentTimeMillis()
+        val now = study.now()
         when (val t = m.trigger) {
             is Trigger.Fixed, is Trigger.Random -> {
                 if (due == null) return null
@@ -183,8 +189,9 @@ class EntryActivity : ComponentActivity() {
         val module = intent.getStringExtra(EXTRA_MODULE) ?: return
         val due = intent.getLongExtra(EXTRA_DUE, 0L).takeIf { it > 0 }
         val notified = intent.getLongExtra(EXTRA_NOTIFIED, 0L).takeIf { it > 0 }
+        val completed = StudyStore(this).get(code)?.now() ?: System.currentTimeMillis()
         done = true
-        AnswerQueue(this).add(code, module, due, notified, offlineStarted, System.currentTimeMillis(), page.version, form)
+        AnswerQueue(this).add(code, module, due, notified, offlineStarted, completed, page.version, form)
         SyncWorker.sendSoon(this)
         saved = true
     }
@@ -302,6 +309,9 @@ class EntryActivity : ComponentActivity() {
         private const val EXTRA_DUE = "due"
         private const val EXTRA_NOTIFIED = "notified"
         private const val EXTRA_REMINDED = "reminded"
+
+        /** The module key of the exit questionnaire (POST /entry {"module": "exit"}, without due). */
+        const val EXIT = "exit"
 
         fun intent(
             context: Context, study: String, module: String, due: Long? = null, notified: Long? = null, reminded: Boolean = false,

@@ -92,4 +92,9 @@
         <item quantity="one">%1$s: haftada %2$d kez, rastgele saatlerde</item>
         <item quantity="other">%1$s: haftada %2$d kez, rastgele saatlerde</item>
     </plurals>
+    <string name="paused">Araştırmacılar tarafından duraklatıldı</string>
+    <string name="fast_forward">Hızlandırılmış ×%1$d</string>
+    <string name="exit_default">Son anket</string>
+    <string name="exit_until">%1$s tarihine kadar açık</string>
+    <string name="notif_exit">Çalışma süresi sona erdi. Lütfen şunu yanıtlayın: %1$s</string>
 </resources>

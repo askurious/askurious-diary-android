@@ -106,4 +106,9 @@
         <item quantity="many">%1$s: %2$d раз в неделю в случайное время</item>
         <item quantity="other">%1$s: %2$d раза в неделю в случайное время</item>
     </plurals>
+    <string name="paused">Приостановлено исследователями</string>
+    <string name="fast_forward">Ускорение ×%1$d</string>
+    <string name="exit_default">Заключительная анкета</string>
+    <string name="exit_until">Доступна до %1$s</string>
+    <string name="notif_exit">Период исследования завершён. Пожалуйста, заполните: %1$s</string>
 </resources>

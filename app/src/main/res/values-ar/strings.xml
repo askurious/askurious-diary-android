@@ -120,4 +120,9 @@
         <item quantity="many">%1$s: %2$d مرة أسبوعيًا في أوقات عشوائية</item>
         <item quantity="other">%1$s: %2$d مرة أسبوعيًا في أوقات عشوائية</item>
     </plurals>
+    <string name="paused">أوقف الباحثون هذه الدراسة مؤقتًا</string>
+    <string name="fast_forward">تسريع ×%1$d</string>
+    <string name="exit_default">الاستبيان الختامي</string>
+    <string name="exit_until">متاح حتى %1$s</string>
+    <string name="notif_exit">انتهت فترة الدراسة. يُرجى الإجابة عن: %1$s</string>
 </resources>
