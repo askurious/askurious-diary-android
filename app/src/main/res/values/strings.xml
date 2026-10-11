@@ -94,7 +94,7 @@
     </plurals>
     <string name="paused">Paused by the researchers</string>
     <string name="fast_forward">Fast-forward ×%1$d</string>
-    <string name="exit_default">Final questionnaire</string>
+    <string name="exit_default">Final survey</string>
     <string name="exit_until">Open until %1$s</string>
     <string name="notif_exit">The study period is over. Please answer: %1$s</string>
 </resources>

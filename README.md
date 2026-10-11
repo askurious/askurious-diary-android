@@ -47,7 +47,7 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   `"ended"` can also mean the researchers ended this person's study early; the card says the same "The researchers have ended this study".
 - **Exit questionnaire.**
   `"exit": {"name", "open", "until"}` (or `null`): the server sets `open` after the person's study period is over (finished or ended), until `until`, and only while it is not answered.
-  While it is open the card shows a button with its name (default "Final questionnaire"), which opens the entry with `POST /entry {"module": "exit"}` (no `due`; always online, never from a kept page).
+  While it is open the card shows a button with its name (default "Final survey", German "Abschlussbefragung"), which opens the entry with `POST /entry {"module": "exit"}` (no `due`; always online, never from a kept page).
   One notification at 10:00 local time on the day after `last_day` (`Schedule.exitAt`), or at the next sync if that moment has passed and it is still open; `PromptLog` remembers that it was notified (or opened from the card), so it comes only once.
   A finished or ended study with an exit questionnaire is synced until it is answered or `until` has passed (`Sync.wanted`); once answered the server sends `open: false` and the button goes.
 - **Fast-forward test persons.**
