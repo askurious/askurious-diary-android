@@ -28,7 +28,7 @@ export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
 
 Toolchain as in the ExperienceSampling project next to this one: Gradle 9.5.1, AGP 8.13.2, Kotlin 2.2.20, compileSdk 34.
 
-A **debug build** talks to `http://10.0.2.2:5000`, the Flask server on the host machine as the emulator sees it (`.venv/bin/python run.py` in the Askurious repository).
+A **debug build** talks to `http://10.0.2.2:5060`, the Flask server on the host machine as the emulator sees it (`.venv/bin/python run.py` in the Askurious repository).
 A **release build** talks to `https://ask.askurious.de`, the participants' address.
 
 ## Trying it on the emulator
