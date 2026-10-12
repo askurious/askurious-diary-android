@@ -68,7 +68,7 @@ fun AboutScreen(onBack: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(stringResource(R.string.app_name), style = MaterialTheme.typography.titleLarge)
-            Text(stringResource(R.string.version, BuildConfig.VERSION_NAME), style = MaterialTheme.typography.bodySmall)
+            Text(buildInfo { v, t -> context.getString(R.string.build_info, v, t) }, style = MaterialTheme.typography.bodySmall)
 
             Text(stringResource(R.string.about_privacy_title), style = MaterialTheme.typography.titleMedium)
             Text(stringResource(R.string.about_stores))

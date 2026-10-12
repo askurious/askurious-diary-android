@@ -63,6 +63,8 @@
     <string name="error">Algo correu mal. Tente novamente.</string>
     <string name="about">Acerca da aplicação</string>
     <string name="version">Versão %1$s</string>
+    <!-- the footer: version and when this APK was built, so one sees which version runs -->
+    <string name="build_info" formatted="true">Versão %1$s · compilada %2$s</string>
     <string name="about_privacy_title">Privacidade</string>
     <string name="about_stores">Neste telemóvel, a aplicação guarda apenas a lista dos seus estudos com os respetivos horários e, para cada estudo, um segredo aleatório: a única chave para as suas respostas nesse estudo. Não tem conta e não envia nenhum ID do dispositivo, nome, endereço de e-mail ou número de telefone. Nada disto vai para cópias de segurança nem para um novo telemóvel.</string>
     <string name="privacy_statement">Política de privacidade</string>

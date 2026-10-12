@@ -75,6 +75,8 @@
     <string name="error">حدث خطأ ما. يُرجى المحاولة مرة أخرى.</string>
     <string name="about">حول التطبيق</string>
     <string name="version">الإصدار %1$s</string>
+    <!-- the footer: version and when this APK was built, so one sees which version runs -->
+    <string name="build_info" formatted="true">الإصدار %1$s · بُني في %2$s</string>
     <string name="about_privacy_title">الخصوصية</string>
     <string name="about_stores">لا يحفظ التطبيق على هذا الهاتف سوى قائمة دراساتك مع مواعيدها، ولكل دراسة سرًّا عشوائيًا هو المفتاح الوحيد لإجاباتك فيها. لا يوجد حساب، ولا يرسل التطبيق أي معرّف للجهاز أو اسم أو عنوان بريد إلكتروني أو رقم هاتف. ولا يُنقل أي من ذلك إلى النسخ الاحتياطية أو إلى هاتف جديد.</string>
     <string name="privacy_statement">بيان الخصوصية</string>

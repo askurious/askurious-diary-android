@@ -67,6 +67,8 @@
     <string name="error">Coś poszło nie tak. Prosimy spróbować ponownie.</string>
     <string name="about">O aplikacji</string>
     <string name="version">Wersja %1$s</string>
+    <!-- the footer: version and when this APK was built, so one sees which version runs -->
+    <string name="build_info" formatted="true">Wersja %1$s · zbudowana %2$s</string>
     <string name="about_privacy_title">Prywatność</string>
     <string name="about_stores">Aplikacja przechowuje na tym telefonie tylko listę badań wraz z ich harmonogramami oraz dla każdego badania losowy sekret – jedyny klucz do udzielonych w nim odpowiedzi. Nie ma konta i nie wysyła identyfikatora urządzenia, imienia, adresu e-mail ani numeru telefonu. Nic z tego nie trafia do kopii zapasowych ani na nowy telefon.</string>
     <string name="privacy_statement">Informacja o ochronie danych</string>

@@ -67,6 +67,8 @@
     <string name="error">Что-то пошло не так. Попробуйте ещё раз.</string>
     <string name="about">О приложении</string>
     <string name="version">Версия %1$s</string>
+    <!-- the footer: version and when this APK was built, so one sees which version runs -->
+    <string name="build_info" formatted="true">Версия %1$s · сборка %2$s</string>
     <string name="about_privacy_title">Конфиденциальность</string>
     <string name="about_stores">Приложение хранит на этом телефоне только список Ваших исследований с их расписанием и для каждого исследования случайный секрет — единственный ключ к Вашим ответам в нём. У приложения нет учётной записи, и оно не отправляет ни идентификатор устройства, ни имя, ни адрес электронной почты, ни номер телефона. Ничего из этого не попадает в резервные копии или на новый телефон.</string>
     <string name="privacy_statement">Политика конфиденциальности</string>

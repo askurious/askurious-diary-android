@@ -59,6 +59,8 @@
     <string name="error">Bir sorun oluştu. Lütfen tekrar deneyin.</string>
     <string name="about">Uygulama hakkında</string>
     <string name="version">Sürüm %1$s</string>
+    <!-- the footer: version and when this APK was built, so one sees which version runs -->
+    <string name="build_info" formatted="true">Sürüm %1$s · derleme %2$s</string>
     <string name="about_privacy_title">Gizlilik</string>
     <string name="about_stores">Uygulama bu telefonda yalnızca çalışmalarınızın listesini ve programlarını, her çalışma için de rastgele bir gizli anahtarı saklar: Bu anahtar, o çalışmadaki yanıtlarınıza ulaşmanın tek yoludur. Uygulamanın hesabı yoktur ve cihaz kimliği, ad, e-posta adresi veya telefon numarası göndermez. Bunların hiçbiri yedeklere veya yeni bir telefona aktarılmaz.</string>
     <string name="privacy_statement">Gizlilik bildirimi</string>

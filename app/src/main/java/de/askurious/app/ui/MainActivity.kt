@@ -70,6 +70,8 @@ import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import de.askurious.app.R
 import de.askurious.app.data.AnswerQueue
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import de.askurious.app.BuildConfig
 import de.askurious.app.data.Api
 import de.askurious.app.data.ApiError
@@ -176,7 +178,7 @@ class MainActivity : ComponentActivity() {
                 ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         }
         Scaffold(topBar = {
-            TopAppBar(title = { Text(stringResource(R.string.my_studies)) }, actions = {
+            TopAppBar(title = { Logo() }, actions = {
                 TextButton(onClick = onJoin) { Text(stringResource(R.string.join_study)) }
                 IconButton(onClick = onAbout) { Icon(Icons.Outlined.Info, contentDescription = stringResource(R.string.about)) }
             })
@@ -185,6 +187,12 @@ class MainActivity : ComponentActivity() {
                 Modifier.padding(pad).fillMaxSize().padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
+                item {
+                    Text(
+                        stringResource(R.string.my_studies), style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(top = 4.dp).semantics { heading() },
+                    )
+                }
                 if (askNotify) item {
                     Notice(stringResource(R.string.allow_notifications)) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -212,6 +220,15 @@ class MainActivity : ComponentActivity() {
                     }
                 }
                 items(studies, key = { it.code }) { StudyCard(it) }
+                item {
+                    // which version runs on this phone (version, build time; server of a debug build)
+                    Text(
+                        buildInfo { v, t -> getString(R.string.build_info, v, t) },
+                        Modifier.fillMaxWidth().padding(vertical = 16.dp),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
         }
     }
@@ -459,7 +476,8 @@ class MainActivity : ComponentActivity() {
             "unknown" -> getString(R.string.not_found)
             "closed" -> getString(R.string.closed)
             "offline" -> getString(R.string.offline)
-            else -> getString(R.string.error)
+            // with the HTTP status: a 404 of a web server in between is told apart from an error of Askurious
+            else -> getString(R.string.error) + if (e.status > 0) " (${e.status})" else ""
         }
 
         fun lookUp(c: String) {

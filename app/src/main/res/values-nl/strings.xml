@@ -59,6 +59,8 @@
     <string name="error">Er is iets misgegaan. Probeer het opnieuw.</string>
     <string name="about">Over de app</string>
     <string name="version">Versie %1$s</string>
+    <!-- the footer: version and when this APK was built, so one sees which version runs -->
+    <string name="build_info" formatted="true">Versie %1$s · gebouwd %2$s</string>
     <string name="about_privacy_title">Privacy</string>
     <string name="about_stores">De app bewaart op deze telefoon alleen de lijst van uw onderzoeken met hun schema’s en, per onderzoek, een willekeurig geheim: de enige sleutel tot uw antwoorden in dat onderzoek. De app heeft geen account en verstuurt geen apparaat-ID, naam, e-mailadres of telefoonnummer. Niets hiervan komt in back-ups of op een nieuwe telefoon.</string>
     <string name="privacy_statement">Privacyverklaring</string>

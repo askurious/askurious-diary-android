@@ -16,10 +16,13 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "0.1"
-        // the participants' address of Askurious (app/hosts.py: the diary API answers there); a debug build talks to
+        // the server of a join code typed by hand (a QR code names its own server): the main address of Askurious, where
+        // the diary studies run for now (server: config DIARY_ON_MAIN_ADDRESS, 2026-10-12); a debug build talks to
         // the Flask server on the computer through `adb reverse tcp:5060 tcp:5060` (the server answers only under
         // localhost while it runs with the development key)
-        buildConfigField("String", "BASE_URL", "\"https://ask.askurious.de\"")
+        buildConfigField("String", "BASE_URL", "\"https://askurious.de\"")
+        // when this APK was built (epoch milliseconds), shown in the footer of the app: which version runs on a phone
+        buildConfigField("long", "BUILD_TIME", "${System.currentTimeMillis()}L")
     }
 
     buildTypes {
