@@ -135,4 +135,10 @@
     <string name="clock_off">ساعة هذا الهاتف غير مضبوطة. ستُرسل الإجابات المقدَّمة دون اتصال بمجرد ضبط التاريخ والوقت بشكل صحيح.</string>
     <string name="rejoin_confirm">أنت مشارك بالفعل في هذه الدراسة على هذا الهاتف. الانضمام مجددًا يبدأ مشاركة جديدة: لن يعود بالإمكان حذف إجاباتك السابقة من التطبيق. تُرسل الإجابات المنتظرة من المشاركة السابقة أولًا إن أمكن، وإلا تُحذف. لحذف إجاباتك السابقة، ألغِ واستخدم «حذف إجاباتي» في بطاقة الدراسة.</string>
     <string name="rejoin">الانضمام مجددًا</string>
+    <string name="allow_in_settings">السماح من الإعدادات</string>
+    <string name="notifications_off">الإشعارات متوقفة – لن تصلك أي أسئلة</string>
+    <string name="remove">إزالة</string>
+    <string name="remove_title">إزالة «%1$s»؟</string>
+    <string name="remove_confirm">ستُزال الدراسة من هذا الهاتف. بعد ذلك لن تتمكن من حذف إجاباتك عبر التطبيق.</string>
+    <string name="remove_exit_open">الاستبيان الختامي لهذه الدراسة لا يزال مفتوحًا.</string>
 </resources>

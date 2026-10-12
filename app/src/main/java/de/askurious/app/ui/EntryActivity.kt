@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
@@ -95,6 +96,8 @@ class EntryActivity : ComponentActivity() {
         enableEdgeToEdge()
         // the answers are nobody else's business: no screenshots, no picture in the list of recent apps
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+        // the entry is listed in "Recents", so that it survives a switch to another app (audit A5); without a picture
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) setRecentsScreenshotEnabled(false)
         // turning the phone does not recreate the activity (android:configChanges); anything else that does (the
         // system took the app's memory, a change of language) keeps what was answered already
         if (savedInstanceState != null) {

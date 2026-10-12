@@ -107,4 +107,10 @@
     <string name="clock_off">The clock of this phone is wrong. Answers given without a connection will be sent once the date and time are set correctly.</string>
     <string name="rejoin_confirm">You already take part in this study on this phone. Joining again starts a new participation: your earlier answers can then no longer be deleted in the app. Answers of the earlier participation still waiting are sent first if possible, otherwise discarded. To delete your earlier answers, cancel and use \"Delete my answers\" on the study card.</string>
     <string name="rejoin">Join again</string>
+    <string name="allow_in_settings">Allow in settings</string>
+    <string name="notifications_off">Notifications off – you will not get any questions</string>
+    <string name="remove">Remove</string>
+    <string name="remove_title">Remove “%1$s”?</string>
+    <string name="remove_confirm">The study is removed from this phone. Afterwards you can no longer delete your answers through the app.</string>
+    <string name="remove_exit_open">The final survey of this study is still open.</string>
 </resources>

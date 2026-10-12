@@ -12,11 +12,16 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   Nothing of the app goes into cloud backups or to a new phone (`allowBackup="false"`, `res/xml/data_extraction_rules.xml`).
 - **No shared cookies.**
   Each entry starts with empty WebView cookies, web storage and cache (`EntryActivity`), so the session cookie of one study never travels with the entry of another.
+- **Permissions.**
+  Without notifications no prompt arrives, and without "Alarms & reminders" it may come late: the start page shows a notice for each right below its heading, read again whenever the app comes back to the front (from the system settings, the dialog, an entry).
+  Once the system no longer shows its dialog (denied twice), or the permission is there but the app's notifications or the channel of the prompts are switched off, the notice's button is "Allow in settings" and opens the app's notification settings (`notifyNotice`).
+  While notifications are off, a running study's card says "Notifications off – you will not get any questions" instead of the time of the next question.
 - **Lock screen.**
   Notifications are private: the lock screen shows only "Askurious – A short question is waiting", never the title of the study or the researchers' notification text.
 - **Thin shell.**
   The questionnaire pages are the participant pages of Askurious in a WebView (`EntryActivity`), opened with a one-time address per entry.
   A release build opens only addresses of its own server (`Api.absolute`); the bridge `AskuriousApp` counts only while the page is the server's (or the kept page under its address); the WebView reaches no files or content providers of the phone, autofill stays out, and the entry screen allows no screenshots (`FLAG_SECURE`).
+  An open entry is listed in "Recents" as its own task, so that it survives a switch to another app, but without a picture of the page (`setRecentsScreenshotEnabled(false)`, `FLAG_SECURE`).
   Links to other sites open in another app (web, mail and phone links only); turning the phone keeps the page and what was typed.
   The app itself does the study list, joining, the schedule, the notifications and the sync.
 - **Schedule on the phone.**
@@ -75,8 +80,10 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
 - **Deleting answers.**
   "Delete my answers" on every study card calls `POST /api/diary/v1/erase`: the server deletes all answers of this person in this study and the person; the app then removes the study.
   Deleting or removing a study from the list also deletes its queued answers, its kept pages and the log of its prompts.
+  "Remove from list" asks first: with the study its secret goes, so its answers can no longer be deleted through the app; the question says so, and says when the exit questionnaire is still open.
 - **What stays on the phone.**
   The studies with their secrets, the seed of the random prompts, the quiet hours, the pauses, the exit questionnaire and a fast-forward clock; the log of the prompts of the last three days (notified, opened) and whether the exit questionnaire was notified; the kept pages of offline modules while the study runs (dropped when it ends, is left, or the module is no longer offline); answers given without a connection until they are sent, at most 7 days after the page was opened (the server takes them no later), then they are dropped unsent.
+  Besides, whether the app asked for the notification permission once (to tell a first request from a refusal for good).
   All of it in the app's private storage, in no backup.
 - **Languages.**
   The survey languages of Askurious: English, German, Spanish, French, Italian, Dutch, Polish, European Portuguese, Russian, Turkish, Simplified Chinese and Arabic (right to left), formal address where the language has it.

@@ -114,4 +114,10 @@
     <string name="clock_off">O relógio deste telemóvel está errado. As respostas dadas sem ligação serão enviadas assim que a data e a hora estiverem certas.</string>
     <string name="rejoin_confirm">Já participa neste estudo neste telemóvel. Participar de novo inicia uma nova participação: depois já não poderá apagar as suas respostas anteriores na aplicação. As respostas pendentes da participação anterior são enviadas antes, se possível; caso contrário, são descartadas. Para apagar as suas respostas anteriores, cancele e use «Apagar as minhas respostas» no cartão do estudo.</string>
     <string name="rejoin">Participar de novo</string>
+    <string name="allow_in_settings">Permitir nas definições</string>
+    <string name="notifications_off">Notificações desativadas – não receberá nenhuma pergunta</string>
+    <string name="remove">Remover</string>
+    <string name="remove_title">Remover «%1$s»?</string>
+    <string name="remove_confirm">O estudo é removido deste telemóvel. Depois, já não poderá apagar as suas respostas através da aplicação.</string>
+    <string name="remove_exit_open">O questionário final deste estudo ainda está aberto.</string>
 </resources>

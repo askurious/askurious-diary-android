@@ -114,4 +114,10 @@
     <string name="clock_off">L’orologio di questo telefono non è corretto. Le risposte date senza connessione verranno inviate non appena data e ora saranno corrette.</string>
     <string name="rejoin_confirm">Partecipa già a questo studio su questo telefono. Partecipare di nuovo avvia una nuova partecipazione: dopo non potrà più cancellare nell’app le Sue risposte precedenti. Le risposte ancora in attesa della partecipazione precedente vengono prima inviate, se possibile, altrimenti scartate. Per cancellare le Sue risposte precedenti, annulli e usi «Cancella le mie risposte» sulla scheda dello studio.</string>
     <string name="rejoin">Partecipa di nuovo</string>
+    <string name="allow_in_settings">Consenti nelle impostazioni</string>
+    <string name="notifications_off">Notifiche disattivate – non riceverà alcuna domanda</string>
+    <string name="remove">Rimuovi</string>
+    <string name="remove_title">Rimuovere «%1$s»?</string>
+    <string name="remove_confirm">Lo studio verrà rimosso da questo telefono. In seguito non potrà più cancellare le Sue risposte tramite l’app.</string>
+    <string name="remove_exit_open">Il questionario finale di questo studio è ancora aperto.</string>
 </resources>
