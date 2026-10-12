@@ -85,6 +85,7 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   The studies with their secrets, the seed of the random prompts, the quiet hours, the pauses, the exit questionnaire and a fast-forward clock; the log of the prompts of the last three days (notified, opened) and whether the exit questionnaire was notified; the kept pages of offline modules while the study runs (dropped when it ends, is left, or the module is no longer offline); answers given without a connection until they are sent, at most 7 days after the page was opened (the server takes them no later), then they are dropped unsent.
   Besides, whether the app asked for the notification permission once (to tell a first request from a refusal for good).
   All of it in the app's private storage, in no backup.
+  The secrets are stored sealed (AES-GCM, `StudyStore.sealed`) under a key that lives in the Android Keystore and never leaves it (`KeystoreSealer`); a copy of the app's files alone gives no secret. A study stored before this is sealed the first time it is read. An entry whose secret cannot be opened (the Keystore lost its key) is kept as it is, not overwritten.
 - **Languages.**
   The survey languages of Askurious: English, German, Spanish, French, Italian, Dutch, Polish, European Portuguese, Russian, Turkish, Simplified Chinese and Arabic (right to left), formal address where the language has it.
   `res/xml/locales_config.xml` lists them for the per-app language setting (Android 13+).
