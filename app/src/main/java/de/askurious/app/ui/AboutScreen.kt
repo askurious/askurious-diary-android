@@ -47,6 +47,7 @@ private val LIBRARIES = listOf(
     "ZXing Android Embedded – JourneyApps",
     "ZXing – ZXing authors",
     "Kotlin standard library, kotlinx.coroutines – JetBrains s.r.o. and Kotlin contributors",
+    "PT Serif (font of the logo and the app icon) – ParaType Ltd, ParaType Free Font License",
 )
 
 /** About the app: what it stores, the privacy statement, the copyright and the notices of the libraries. */
@@ -56,7 +57,8 @@ fun AboutScreen(onBack: () -> Unit) {
     val context = LocalContext.current
     var showLicence by remember { mutableStateOf(false) }
     val licence = remember(showLicence) {
-        if (!showLicence) "" else context.resources.openRawResource(R.raw.apache_license_2_0).bufferedReader().use { it.readText() }
+        if (!showLicence) "" else listOf(R.raw.apache_license_2_0, R.raw.pt_serif_licence)
+            .joinToString("\n\n") { id -> context.resources.openRawResource(id).bufferedReader().use { it.readText() } }
     }
     Scaffold(topBar = {
         TopAppBar(title = { Text(stringResource(R.string.about)) }, navigationIcon = {
@@ -68,7 +70,7 @@ fun AboutScreen(onBack: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(stringResource(R.string.app_name), style = MaterialTheme.typography.titleLarge)
-            Text(stringResource(R.string.version, BuildConfig.VERSION_NAME), style = MaterialTheme.typography.bodySmall)
+            Text(buildInfo { v, t -> context.getString(R.string.build_info, v, t) }, style = MaterialTheme.typography.bodySmall)
 
             Text(stringResource(R.string.about_privacy_title), style = MaterialTheme.typography.titleMedium)
             Text(stringResource(R.string.about_stores))

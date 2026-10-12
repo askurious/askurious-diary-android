@@ -84,6 +84,9 @@ class EntryActivity : ComponentActivity() {
     /** When the kept page was shown: "started" of the queued answer. */
     private var offlineStarted = 0L
 
+    /** The server of the study (Study.server): the only site whose pages may use the bridge. */
+    private var server = Api.defaultServer
+
     /** The WebView of this entry, to check that a call of the bridge comes from the page of the server. */
     private var web: WebView? = null
 
@@ -118,10 +121,11 @@ class EntryActivity : ComponentActivity() {
         }
 
         val study = StudyStore(this).get(code) ?: return finish()
+        server = study.server
         if (!saved && error == null && url == null && offline == null) {
             lifecycleScope.launch {
                 try {
-                    val address = Api.absolute(Api.entry(study.secret, module, due, notified, reminded))
+                    val address = Api.absolute(Api.entry(study.server, study.secret, module, due, notified, reminded), study.server)
                     clearWebState()
                     url = address
                 } catch (e: ApiError) {
@@ -212,7 +216,7 @@ class EntryActivity : ComponentActivity() {
      */
     private fun fromOwnPage(): Boolean {
         val current = web?.url ?: return false
-        return runCatching { Api.sameOrigin(java.net.URI(current), java.net.URI(Api.baseUrl)) }.getOrDefault(false)
+        return runCatching { Api.sameOrigin(java.net.URI(current), java.net.URI(server)) }.getOrDefault(false)
     }
 
     /**
@@ -325,7 +329,7 @@ class EntryActivity : ComponentActivity() {
      * from the server if the connection comes back meanwhile.
      */
     private fun offlineWebView(ctx: Context, page: OfflinePages.Page): WebView {
-        val base = Api.baseUrl.toUri()
+        val base = server.toUri()
         val pages = OfflinePages(ctx)
         return baseWebView(ctx).apply {
             webViewClient = object : WebViewClient() {
@@ -333,7 +337,7 @@ class EntryActivity : ComponentActivity() {
                     val u = request.url
                     val path = (u.encodedPath ?: "") + (u.encodedQuery?.let { "?$it" } ?: "")
                     val kept = if (u.scheme == base.scheme && u.host == base.host && u.port == base.port && OfflinePages.servable(path)) {
-                        pages.file(path)
+                        pages.file(server, path)
                     } else {
                         null
                     }
@@ -352,7 +356,7 @@ class EntryActivity : ComponentActivity() {
                 }
             }
             // the history URL is the server's too, so that url (fromOwnPage) names it
-            loadDataWithBaseURL(Api.baseUrl + "/", page.html, "text/html", "utf-8", Api.baseUrl + "/")
+            loadDataWithBaseURL("$server/", page.html, "text/html", "utf-8", "$server/")
         }
     }
 

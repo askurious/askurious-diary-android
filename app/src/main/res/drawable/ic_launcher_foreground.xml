@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- the serif "A" of the website's favicon: the letter A of PT Serif Bold (ParaType Ltd, ParaType Free Font License),
+     46 units high in the 66 unit safe zone of the adaptive icon -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- Simple "pulse" glyph as a placeholder launcher icon -->
     <path
-        android:fillColor="#00000000"
-        android:strokeColor="#FFFFFF"
-        android:strokeWidth="6"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round"
-        android:pathData="M24,54 L40,54 L48,30 L60,78 L68,54 L84,54" />
+        android:fillColor="#FFFFFF"
+        android:pathData="M46.41 77H30.45V74.54Q31.48 73.9 32.68 73.41Q33.88 72.93 35.04 72.67L51.71 31H56.49L72.7 72.67Q74 72.93 75.29 73.41Q76.58 73.9 77.55 74.54V77H57.33V74.54Q58.55 73.96 59.98 73.45Q61.4 72.93 62.69 72.67L58.94 62.4H44.6L40.79 72.67Q43.76 73.06 46.41 74.54ZM46.15 58.2H57.59L53.39 45.86L52.16 40.3H52.03L50.61 45.99Z" />
 </vector>

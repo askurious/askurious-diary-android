@@ -46,10 +46,14 @@
         <item quantity="other">نحو %d دقيقة يوميًا</item>
     </plurals>
     <string name="join_privacy">عند الانضمام يُفتح نموذج الموافقة الخاص بالدراسة. لا يحفظ التطبيق أي اسم أو عنوان بريد إلكتروني أو رقم هاتف، ولا تستطيع الدراسة رؤية دراساتك الأخرى.</string>
+    <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
+    <string name="join_server" formatted="true">الخادم: %1$s</string>
     <string name="continue_entry">متابعة الاستبيان الأول</string>
     <string name="day_of">اليوم %1$d من %2$d</string>
     <string name="starts_on">تبدأ في %1$s</string>
     <string name="next_prompt">السؤال التالي: %1$s</string>
+    <!-- fast forward (test person): when the next question really comes, time of day and "in 6 minutes" -->
+    <string name="next_prompt_real" formatted="true">بالوقت الفعلي: %1$s، %2$s</string>
     <string name="finished">اكتملت، شكرًا جزيلًا!</string>
     <string name="left">لقد غادرت هذه الدراسة.</string>
     <string name="left_pending">لقد غادرت هذه الدراسة. سيُبلغ التطبيق الباحثين بذلك فور توفر الاتصال.</string>
@@ -73,6 +77,8 @@
     <string name="error">حدث خطأ ما. يُرجى المحاولة مرة أخرى.</string>
     <string name="about">حول التطبيق</string>
     <string name="version">الإصدار %1$s</string>
+    <!-- the footer: version and when this APK was built, so one sees which version runs -->
+    <string name="build_info" formatted="true">الإصدار %1$s · بُني في %2$s</string>
     <string name="about_privacy_title">الخصوصية</string>
     <string name="about_stores">لا يحفظ التطبيق على هذا الهاتف سوى قائمة دراساتك مع مواعيدها، ولكل دراسة سرًّا عشوائيًا هو المفتاح الوحيد لإجاباتك فيها. لا يوجد حساب، ولا يرسل التطبيق أي معرّف للجهاز أو اسم أو عنوان بريد إلكتروني أو رقم هاتف. ولا يُنقل أي من ذلك إلى النسخ الاحتياطية أو إلى هاتف جديد.</string>
     <string name="privacy_statement">بيان الخصوصية</string>

@@ -38,10 +38,14 @@
         <item quantity="other">Około %d minuty dziennie</item>
     </plurals>
     <string name="join_privacy">Dołączenie otwiera formularz zgody badania. Aplikacja nie zapisuje imienia ani nazwiska, adresu e-mail ani numeru telefonu, a badanie nie widzi innych badań na tym telefonie.</string>
+    <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
+    <string name="join_server" formatted="true">Serwer: %1$s</string>
     <string name="continue_entry">Kontynuuj pierwszy kwestionariusz</string>
     <string name="day_of">Dzień %1$d z %2$d</string>
     <string name="starts_on">Początek: %1$s</string>
     <string name="next_prompt">Następne pytanie: %1$s</string>
+    <!-- fast forward (test person): when the next question really comes, time of day and "in 6 minutes" -->
+    <string name="next_prompt_real" formatted="true">w czasie rzeczywistym: %1$s, %2$s</string>
     <string name="finished">Zakończono, dziękujemy!</string>
     <string name="left">Zrezygnowano z udziału w tym badaniu.</string>
     <string name="left_pending">Zrezygnowano z udziału w tym badaniu. Aplikacja poinformuje o tym zespół badawczy, gdy tylko będzie połączenie.</string>
@@ -65,6 +69,8 @@
     <string name="error">Coś poszło nie tak. Prosimy spróbować ponownie.</string>
     <string name="about">O aplikacji</string>
     <string name="version">Wersja %1$s</string>
+    <!-- the footer: version and when this APK was built, so one sees which version runs -->
+    <string name="build_info" formatted="true">Wersja %1$s · zbudowana %2$s</string>
     <string name="about_privacy_title">Prywatność</string>
     <string name="about_stores">Aplikacja przechowuje na tym telefonie tylko listę badań wraz z ich harmonogramami oraz dla każdego badania losowy sekret – jedyny klucz do udzielonych w nim odpowiedzi. Nie ma konta i nie wysyła identyfikatora urządzenia, imienia, adresu e-mail ani numeru telefonu. Nic z tego nie trafia do kopii zapasowych ani na nowy telefon.</string>
     <string name="privacy_statement">Informacja o ochronie danych</string>

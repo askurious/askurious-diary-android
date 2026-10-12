@@ -30,10 +30,14 @@
         <item quantity="other">Ongeveer %d minuten per dag</item>
     </plurals>
     <string name="join_privacy">Bij deelname opent het toestemmingsformulier van het onderzoek. De app slaat geen naam, e-mailadres of telefoonnummer op, en het onderzoek ziet uw andere onderzoeken niet.</string>
+    <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
+    <string name="join_server" formatted="true">Server: %1$s</string>
     <string name="continue_entry">Eerste vragenlijst voortzetten</string>
     <string name="day_of">Dag %1$d van %2$d</string>
     <string name="starts_on">Begint op %1$s</string>
     <string name="next_prompt">Volgende vraag: %1$s</string>
+    <!-- fast forward (test person): when the next question really comes, time of day and "in 6 minutes" -->
+    <string name="next_prompt_real" formatted="true">in echte tijd: %1$s, %2$s</string>
     <string name="finished">Afgerond, hartelijk dank!</string>
     <string name="left">U bent met dit onderzoek gestopt.</string>
     <string name="left_pending">U bent met dit onderzoek gestopt. De app laat het de onderzoekers weten zodra er verbinding is.</string>
@@ -57,6 +61,8 @@
     <string name="error">Er is iets misgegaan. Probeer het opnieuw.</string>
     <string name="about">Over de app</string>
     <string name="version">Versie %1$s</string>
+    <!-- the footer: version and when this APK was built, so one sees which version runs -->
+    <string name="build_info" formatted="true">Versie %1$s · gebouwd %2$s</string>
     <string name="about_privacy_title">Privacy</string>
     <string name="about_stores">De app bewaart op deze telefoon alleen de lijst van uw onderzoeken met hun schema’s en, per onderzoek, een willekeurig geheim: de enige sleutel tot uw antwoorden in dat onderzoek. De app heeft geen account en verstuurt geen apparaat-ID, naam, e-mailadres of telefoonnummer. Niets hiervan komt in back-ups of op een nieuwe telefoon.</string>
     <string name="privacy_statement">Privacyverklaring</string>

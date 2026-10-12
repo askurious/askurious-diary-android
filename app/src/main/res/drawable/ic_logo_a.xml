@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- the serif "A" of the logo on the start page (the same letter as the app icon); tinted where it is used -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M9.19 20.5H3.3V19.59Q3.68 19.35 4.12 19.17Q4.56 19 4.99 18.9L11.15 3.5H12.92L18.91 18.9Q19.39 19 19.87 19.17Q20.34 19.35 20.7 19.59V20.5H13.23V19.59Q13.68 19.38 14.21 19.19Q14.73 19 15.21 18.9L13.83 15.1H8.53L7.12 18.9Q8.22 19.04 9.19 19.59ZM9.1 13.55H13.33L11.77 8.99L11.32 6.94H11.27L10.75 9.04Z" />
+</vector>

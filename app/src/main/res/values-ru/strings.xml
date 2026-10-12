@@ -38,10 +38,14 @@
         <item quantity="other">Около %d минуты в день</item>
     </plurals>
     <string name="join_privacy">При присоединении откроется форма согласия исследования. Приложение не сохраняет ни имени, ни адреса электронной почты, ни номера телефона, а исследование не видит другие Ваши исследования.</string>
+    <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
+    <string name="join_server" formatted="true">Сервер: %1$s</string>
     <string name="continue_entry">Продолжить первую анкету</string>
     <string name="day_of">День %1$d из %2$d</string>
     <string name="starts_on">Начало: %1$s</string>
     <string name="next_prompt">Следующий вопрос: %1$s</string>
+    <!-- fast forward (test person): when the next question really comes, time of day and "in 6 minutes" -->
+    <string name="next_prompt_real" formatted="true">в реальном времени: %1$s, %2$s</string>
     <string name="finished">Завершено, большое спасибо!</string>
     <string name="left">Вы вышли из этого исследования.</string>
     <string name="left_pending">Вы вышли из этого исследования. Приложение сообщит об этом исследователям, как только появится соединение.</string>
@@ -65,6 +69,8 @@
     <string name="error">Что-то пошло не так. Попробуйте ещё раз.</string>
     <string name="about">О приложении</string>
     <string name="version">Версия %1$s</string>
+    <!-- the footer: version and when this APK was built, so one sees which version runs -->
+    <string name="build_info" formatted="true">Версия %1$s · сборка %2$s</string>
     <string name="about_privacy_title">Конфиденциальность</string>
     <string name="about_stores">Приложение хранит на этом телефоне только список Ваших исследований с их расписанием и для каждого исследования случайный секрет — единственный ключ к Вашим ответам в нём. У приложения нет учётной записи, и оно не отправляет ни идентификатор устройства, ни имя, ни адрес электронной почты, ни номер телефона. Ничего из этого не попадает в резервные копии или на новый телефон.</string>
     <string name="privacy_statement">Политика конфиденциальности</string>

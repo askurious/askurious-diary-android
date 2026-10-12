@@ -25,11 +25,15 @@ class ApiError(val key: String, val status: Int = 0) : Exception(key) {
 /**
  * The diary API of Askurious (app/diary_api.py on the server), version 1. No account: a study is reached with the
  * secret the server returned at enrolment, sent as a bearer token. The device sends no id of its own.
+ *
+ * Every call names its [server] ("https://ask.askurious.de", no slash at the end): the one of the study
+ * ([Study.server]), which came from its join link, or [defaultServer] for a typed join code.
  */
 object Api {
     private const val BASE = "/api/diary/v1"
 
-    val baseUrl: String get() = BuildConfig.BASE_URL
+    /** The server of a join code typed by hand, and of the studies joined before the server was kept per study. */
+    val defaultServer: String get() = BuildConfig.BASE_URL
 
     /**
      * The phone's clock minus the server's, in milliseconds, from the Date header of the last answer of the server;
@@ -40,22 +44,22 @@ object Api {
         private set
 
     /** The public information of a study, for the join screen. */
-    suspend fun join(code: String): JSONObject =
-        call("GET", "$BASE/join/${URLEncoder.encode(code, "UTF-8")}?lang=${lang()}")
+    suspend fun join(server: String, code: String): JSONObject =
+        call(server, "GET", "$BASE/join/${URLEncoder.encode(code, "UTF-8")}?lang=${lang()}")
 
     /** Enrols this device. Returns {"secret", "url"}: the url opens the first questionnaire (consent, entry part). */
-    suspend fun enrol(code: String): JSONObject =
-        call("POST", "$BASE/enrol", JSONObject().put("code", code).put("lang", lang()))
+    suspend fun enrol(server: String, code: String): JSONObject =
+        call(server, "POST", "$BASE/enrol", JSONObject().put("code", code).put("lang", lang()))
 
     /**
      * The study as it stands now: status, study period, modules, the seed and the history of the quiet hours. Also
      * tells the server the time zone, and [quiet] when the participant changed the quiet hours (the server keeps
      * the change from the person's next day on).
      */
-    suspend fun study(secret: String, quiet: QuietFrom? = null): JSONObject {
+    suspend fun study(server: String, secret: String, quiet: QuietFrom? = null): JSONObject {
         val body = JSONObject().put("tz", ZoneId.systemDefault().id).put("lang", lang())
         if (quiet != null) body.put("quiet", quiet.quiet?.toJson() ?: JSONObject.NULL)
-        return call("POST", "$BASE/study", body, secret)
+        return call(server, "POST", "$BASE/study", body, secret)
     }
 
     /**
@@ -63,30 +67,30 @@ object Api {
      * [due] and [notified]: epoch milliseconds of the prompt; null for an entry the participant started.
      * [reminded]: the participant opened it from the reminder notification.
      */
-    suspend fun entry(secret: String, module: String, due: Long?, notified: Long?, reminded: Boolean = false): String {
+    suspend fun entry(server: String, secret: String, module: String, due: Long?, notified: Long?, reminded: Boolean = false): String {
         val body = JSONObject().put("module", module).put("tz", ZoneId.systemDefault().id)
             .put("due", due ?: JSONObject.NULL).put("notified", notified ?: JSONObject.NULL)
         if (reminded) body.put("reminded", true)
-        return call("POST", "$BASE/entry", body, secret).optStringOrNull("url") ?: throw ApiError("error")
+        return call(server, "POST", "$BASE/entry", body, secret).optStringOrNull("url") ?: throw ApiError("error")
     }
 
     /**
      * The page of [module] for answering without a connection: {"offline": false}, or {"offline": true, "html",
      * "version"}. The html is the participant page with absolute paths (/static/..., /media/...).
      */
-    suspend fun offlinePage(secret: String, module: String): JSONObject =
-        call("POST", "$BASE/offline/${URLEncoder.encode(module, "UTF-8")}", JSONObject(), secret)
+    suspend fun offlinePage(server: String, secret: String, module: String): JSONObject =
+        call(server, "POST", "$BASE/offline/${URLEncoder.encode(module, "UTF-8")}", JSONObject(), secret)
 
     /** Sends one answer given without a connection (AnswerQueue.Item); see [AnswerQueue.fate] for the errors. */
-    suspend fun offlineAnswer(secret: String, item: AnswerQueue.Item): JSONObject =
-        call("POST", "$BASE/offline", item.body(), secret)
+    suspend fun offlineAnswer(server: String, secret: String, item: AnswerQueue.Item): JSONObject =
+        call(server, "POST", "$BASE/offline", item.body(), secret)
 
     /**
      * A file of the server (a /static/ or /media/ path) with its content type, for pages kept for answering
      * without a connection. No secret: these files are the same for everybody. At most [MAX_FILE] bytes.
      */
-    suspend fun download(path: String): Pair<ByteArray, String?> = withContext(Dispatchers.IO) {
-        val conn = (URL(baseUrl + path).openConnection() as HttpURLConnection).apply {
+    suspend fun download(server: String, path: String): Pair<ByteArray, String?> = withContext(Dispatchers.IO) {
+        val conn = (URL(server + path).openConnection() as HttpURLConnection).apply {
             connectTimeout = 15_000
             readTimeout = 30_000
         }
@@ -116,21 +120,21 @@ object Api {
     /** The largest file kept for an offline page: a video does not belong on the phone without being asked. */
     private const val MAX_FILE = 10L * 1024 * 1024
 
-    suspend fun leave(secret: String): JSONObject = call("POST", "$BASE/leave", JSONObject(), secret)
+    suspend fun leave(server: String, secret: String): JSONObject = call(server, "POST", "$BASE/leave", JSONObject(), secret)
 
     /**
      * Deletes all answers of this person in this study and the person itself, at the researchers too; afterwards
      * the server no longer knows the secret (401).
      */
-    suspend fun erase(secret: String): JSONObject = call("POST", "$BASE/erase", JSONObject(), secret)
+    suspend fun erase(server: String, secret: String): JSONObject = call(server, "POST", "$BASE/erase", JSONObject(), secret)
 
     /**
-     * The address of an entry as the server sent it. A debug build keeps only its path and puts it under its own
-     * BASE_URL: the server may name itself with another port or name than the one adb reverse leads to. A release
-     * build takes only an address of its own BASE_URL (scheme, host and port): the WebView and its bridge must never
+     * The address of an entry as [server] sent it. A debug build keeps only its path and puts it under [server]: a
+     * server on the computer may name itself with another port or name than the one adb reverse leads to. A release
+     * build takes only an address of [server] itself (scheme, host and port): the WebView and its bridge must never
      * open another site, even if a server sent one. Anything else is an [ApiError] "error".
      */
-    fun absolute(url: String): String = absolute(url, baseUrl, BuildConfig.DEBUG)
+    fun absolute(url: String, server: String): String = absolute(url, server, BuildConfig.DEBUG)
 
     /** [absolute] for a given [base] and build type; plain Kotlin for the unit tests. */
     fun absolute(url: String, base: String, debug: Boolean): String {
@@ -154,9 +158,9 @@ object Api {
 
     private fun lang(): String = Locale.getDefault().language
 
-    private suspend fun call(method: String, path: String, body: JSONObject? = null, secret: String? = null): JSONObject =
+    private suspend fun call(server: String, method: String, path: String, body: JSONObject? = null, secret: String? = null): JSONObject =
         withContext(Dispatchers.IO) {
-            val conn = (URL(baseUrl + path).openConnection() as HttpURLConnection).apply {
+            val conn = (URL(server + path).openConnection() as HttpURLConnection).apply {
                 requestMethod = method
                 connectTimeout = 15_000
                 readTimeout = 20_000

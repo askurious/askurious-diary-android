@@ -34,10 +34,14 @@
         <item quantity="other">Circa %d minuti al giorno</item>
     </plurals>
     <string name="join_privacy">Partecipando si apre il modulo di consenso dello studio. L’app non salva nomi, indirizzi e-mail o numeri di telefono, e lo studio non vede i Suoi altri studi.</string>
+    <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
+    <string name="join_server" formatted="true">Server: %1$s</string>
     <string name="continue_entry">Continua il primo questionario</string>
     <string name="day_of">Giorno %1$d di %2$d</string>
     <string name="starts_on">Inizia il %1$s</string>
     <string name="next_prompt">Prossima domanda: %1$s</string>
+    <!-- fast forward (test person): when the next question really comes, time of day and "in 6 minutes" -->
+    <string name="next_prompt_real" formatted="true">in tempo reale: %1$s, %2$s</string>
     <string name="finished">Concluso, grazie mille!</string>
     <string name="left">Ha lasciato questo studio.</string>
     <string name="left_pending">Ha lasciato questo studio. L’app lo comunicherà al gruppo di ricerca non appena sarà disponibile una connessione.</string>
@@ -61,6 +65,8 @@
     <string name="error">Si è verificato un errore. Riprovi.</string>
     <string name="about">Informazioni sull’app</string>
     <string name="version">Versione %1$s</string>
+    <!-- the footer: version and when this APK was built, so one sees which version runs -->
+    <string name="build_info" formatted="true">Versione %1$s · compilata %2$s</string>
     <string name="about_privacy_title">Privacy</string>
     <string name="about_stores">Su questo telefono l’app conserva solo l’elenco dei Suoi studi con i relativi calendari e, per ogni studio, un segreto casuale: l’unica chiave per le Sue risposte in quello studio. Non ha account e non invia alcun ID del dispositivo, nome, indirizzo e-mail o numero di telefono. Nulla di tutto ciò finisce nei backup o su un nuovo telefono.</string>
     <string name="privacy_statement">Informativa sulla privacy</string>

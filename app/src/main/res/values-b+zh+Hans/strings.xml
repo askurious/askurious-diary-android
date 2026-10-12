@@ -26,10 +26,14 @@
         <item quantity="other">每天约 %d 分钟</item>
     </plurals>
     <string name="join_privacy">加入时将打开该研究的知情同意书。本应用不保存姓名、电子邮件地址或电话号码，该研究也无法看到您参加的其他研究。</string>
+    <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
+    <string name="join_server" formatted="true">服务器：%1$s</string>
     <string name="continue_entry">继续填写第一份问卷</string>
     <string name="day_of">第 %1$d 天，共 %2$d 天</string>
     <string name="starts_on">开始日期：%1$s</string>
     <string name="next_prompt">下一个问题：%1$s</string>
+    <!-- fast forward (test person): when the next question really comes, time of day and "in 6 minutes" -->
+    <string name="next_prompt_real" formatted="true">实际时间：%1$s，%2$s</string>
     <string name="finished">已完成，非常感谢！</string>
     <string name="left">您已退出此研究。</string>
     <string name="left_pending">您已退出此研究。一旦有网络连接，本应用将通知研究人员。</string>
@@ -53,6 +57,8 @@
     <string name="error">出现问题。请重试。</string>
     <string name="about">关于本应用</string>
     <string name="version">版本 %1$s</string>
+    <!-- the footer: version and when this APK was built, so one sees which version runs -->
+    <string name="build_info" formatted="true">版本 %1$s · 构建于 %2$s</string>
     <string name="about_privacy_title">隐私</string>
     <string name="about_stores">本应用在此手机上只保存您的研究列表及其时间安排，并为每项研究保存一个随机密钥：这是访问您在该研究中所作回答的唯一凭证。本应用没有账户，不发送设备 ID、姓名、电子邮件地址或电话号码。这些内容都不会进入备份，也不会转移到新手机。</string>
     <string name="privacy_statement">隐私声明</string>

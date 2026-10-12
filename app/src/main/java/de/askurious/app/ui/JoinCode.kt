@@ -28,3 +28,25 @@ fun joinCode(text: String): String? {
 }
 
 private fun segments(uri: URI): List<String> = uri.path.orEmpty().split('/').filter { it.isNotEmpty() }
+
+/**
+ * The server a join link names: "https://ask.askurious.de" for https://ask.askurious.de/j/<code> (scheme, host and a
+ * port other than the default, no path). Null for a typed code, an askurious:// link, or a link without /j/<code>:
+ * then the app's own server ([de.askurious.app.data.Api.defaultServer]) is meant. Only https, unless [allowHttp] (a
+ * debug build, for a server on the computer).
+ */
+fun joinServer(text: String, allowHttp: Boolean): String? {
+    val uri = try {
+        URI(text.trim())
+    } catch (e: URISyntaxException) {
+        return null
+    }
+    val scheme = uri.scheme?.lowercase() ?: return null
+    if (scheme != "https" && !(allowHttp && scheme == "http")) return null
+    val host = uri.host?.lowercase()?.ifBlank { null } ?: return null
+    val s = segments(uri)
+    val at = s.indexOf("j")
+    if (at < 0 || s.getOrNull(at + 1).isNullOrBlank()) return null
+    val port = uri.port.takeIf { it != -1 && it != (if (scheme == "https") 443 else 80) }
+    return "$scheme://$host" + (port?.let { ":$it" } ?: "")
+}

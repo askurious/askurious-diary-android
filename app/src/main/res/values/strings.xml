@@ -30,10 +30,14 @@
         <item quantity="other">About %d minutes a day</item>
     </plurals>
     <string name="join_privacy">Joining opens the consent form of the study. The app stores no name, e-mail address or phone number, and the study cannot see your other studies.</string>
+    <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
+    <string name="join_server" formatted="true">Server: %1$s</string>
     <string name="continue_entry">Continue the first questionnaire</string>
     <string name="day_of">Day %1$d of %2$d</string>
     <string name="starts_on">Starts on %1$s</string>
     <string name="next_prompt">Next question: %1$s</string>
+    <!-- fast forward (test person): when the next question really comes, time of day and "in 6 minutes" -->
+    <string name="next_prompt_real" formatted="true">real time: %1$s, %2$s</string>
     <string name="finished">Finished, thank you!</string>
     <string name="left">You left this study.</string>
     <string name="left_pending">You left this study. The app will tell the researchers as soon as it has a connection.</string>
@@ -57,6 +61,8 @@
     <string name="error">Something went wrong. Please try again.</string>
     <string name="about">About the app</string>
     <string name="version">Version %1$s</string>
+    <!-- the footer: version and when this APK was built, so one sees which version runs -->
+    <string name="build_info" formatted="true">Version %1$s · built %2$s</string>
     <string name="about_privacy_title">Privacy</string>
     <string name="about_stores">The app keeps on this phone only the list of your studies with their schedules and, for each study, a random secret: the only key to your answers there. It has no account and sends no device ID, name, e-mail address or phone number. Nothing of it goes into backups or to a new phone.</string>
     <string name="privacy_statement">Privacy statement</string>

@@ -46,4 +46,26 @@ class JoinCodeTest {
         assertNull(joinCode("askurious://join"))
         assertNull(joinCode("askurious://join/"))
     }
+
+    @Test
+    fun theServerComesFromTheJoinLink() {
+        assertEquals("https://ask.askurious.de", joinServer("https://ask.askurious.de/j/k7qm2x", allowHttp = false))
+        assertEquals("https://example.org:8443", joinServer("https://Example.org:8443/j/k7qm2x?x=1", allowHttp = false))
+        // the default port is no part of the name
+        assertEquals("https://ask.askurious.de", joinServer("https://ask.askurious.de:443/j/k7qm2x", allowHttp = false))
+        // http only for a debug build (a server on the computer)
+        assertNull(joinServer("http://localhost:5060/j/k7qm2x", allowHttp = false))
+        assertEquals("http://localhost:5060", joinServer("http://localhost:5060/j/k7qm2x", allowHttp = true))
+    }
+
+    @Test
+    fun noServerWithoutAJoinLink() {
+        // a typed code and the custom scheme mean the app's own server
+        assertNull(joinServer("k7qm2x", allowHttp = true))
+        assertNull(joinServer("askurious://join/k7qm2x", allowHttp = true))
+        // a link to another page of a server is no join link
+        assertNull(joinServer("https://ask.askurious.de/s/k7qm2x", allowHttp = false))
+        assertNull(joinServer("https://ask.askurious.de/j/", allowHttp = false))
+        assertNull(joinServer("ftp://ask.askurious.de/j/k7qm2x", allowHttp = true))
+    }
 }

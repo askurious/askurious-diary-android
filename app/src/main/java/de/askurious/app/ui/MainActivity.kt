@@ -29,6 +29,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.material3.CardDefaults
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.material.icons.outlined.Warning
+import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -49,6 +57,9 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import kotlinx.coroutines.delay
+import androidx.compose.runtime.mutableLongStateOf
+import android.text.format.DateUtils
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -70,6 +81,9 @@ import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import de.askurious.app.R
 import de.askurious.app.data.AnswerQueue
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
+import de.askurious.app.BuildConfig
 import de.askurious.app.data.Api
 import de.askurious.app.data.ApiError
 import de.askurious.app.data.Quiet
@@ -129,13 +143,14 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        linkCode = intent?.data?.let { joinCode(it.toString()) }
+        // the whole link: JoinScreen reads the code and the server from it (joinCode, joinServer)
+        linkCode = intent?.data?.toString()?.takeIf { joinCode(it) != null }
         setContent { DiaryTheme { App() } }
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        intent.data?.let { linkCode = joinCode(it.toString()) }
+        intent.data?.toString()?.takeIf { joinCode(it) != null }?.let { linkCode = it }
     }
 
     override fun onResume() {
@@ -174,8 +189,9 @@ class MainActivity : ComponentActivity() {
                 ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         }
         Scaffold(topBar = {
-            TopAppBar(title = { Text(stringResource(R.string.my_studies)) }, actions = {
-                TextButton(onClick = onJoin) { Text(stringResource(R.string.join_study)) }
+            TopAppBar(title = { Logo() }, actions = {
+                // an icon: the word mark of the logo needs the room (and the empty start page has the button with text)
+                IconButton(onClick = onJoin) { Icon(Icons.Outlined.Add, contentDescription = stringResource(R.string.join_study)) }
                 IconButton(onClick = onAbout) { Icon(Icons.Outlined.Info, contentDescription = stringResource(R.string.about)) }
             })
         }) { pad ->
@@ -183,15 +199,21 @@ class MainActivity : ComponentActivity() {
                 Modifier.padding(pad).fillMaxSize().padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
+                item {
+                    Text(
+                        stringResource(R.string.my_studies), style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(top = 4.dp).semantics { heading() },
+                    )
+                }
                 if (askNotify) item {
-                    Notice(stringResource(R.string.allow_notifications)) {
+                    Notice(stringResource(R.string.allow_notifications), Icons.Outlined.Notifications) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                             notifyLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                         }
                     }
                 }
                 if (studies.any { it.running } && !Alarms.canExact(context)) item {
-                    Notice(stringResource(R.string.allow_exact)) {
+                    Notice(stringResource(R.string.allow_exact), Icons.Outlined.Warning) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                             openOther(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, "package:$packageName".toUri()))
                         }
@@ -210,16 +232,39 @@ class MainActivity : ComponentActivity() {
                     }
                 }
                 items(studies, key = { it.code }) { StudyCard(it) }
+                item {
+                    // which version runs on this phone (version, build time; server of a debug build)
+                    Text(
+                        buildInfo { v, t -> getString(R.string.build_info, v, t) },
+                        Modifier.fillMaxWidth().padding(vertical = 16.dp),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
         }
     }
 
+    /**
+     * A permission the app needs (notifications, exact alarms): in the accent colour with an icon and a filled button,
+     * at the top of the start page, so that it is not overlooked: without it no prompt arrives (on time).
+     */
     @Composable
-    private fun Notice(text: String, onAllow: () -> Unit) {
-        Card(Modifier.fillMaxWidth()) {
-            Column(Modifier.padding(16.dp)) {
-                Text(text)
-                TextButton(onClick = onAllow) { Text(stringResource(R.string.allow)) }
+    private fun Notice(text: String, icon: ImageVector, onAllow: () -> Unit) {
+        Card(
+            Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            ),
+            border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+        ) {
+            Row(Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(28.dp))
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Text(text, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold)
+                    Button(onClick = onAllow) { Text(stringResource(R.string.allow)) }
+                }
             }
         }
     }
@@ -233,8 +278,17 @@ class MainActivity : ComponentActivity() {
         var confirmErase by remember { mutableStateOf(false) }
         var eraseError by remember { mutableStateOf<String?>(null) }
         var editQuiet by remember { mutableStateOf(false) }
+        // now, read again every 15 s for a fast-forward person (a study day passes in minutes there): the day and the
+        // next question move while the card is shown
+        var tick by remember { mutableLongStateOf(System.currentTimeMillis()) }
+        if (study.clock != null) LaunchedEffect(study.code) {
+            while (true) {
+                delay(15_000)
+                tick = System.currentTimeMillis()
+            }
+        }
         // the study's date and time: virtual for a fast-forward person
-        val today = study.today()
+        val today = study.today(real = tick)
         val fmt = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
         Card(Modifier.fillMaxWidth()) {
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -262,9 +316,19 @@ class MainActivity : ComponentActivity() {
                         } else if (day != null && total != null) {
                             Text(stringResource(R.string.day_of, day, total))
                         }
-                        Schedule.next(listOf(study), Instant.now()).firstOrNull()?.let {
+                        Schedule.next(listOf(study), Instant.ofEpochMilli(tick)).firstOrNull()?.let {
                             // shown in the study's time, like the day
                             Text(stringResource(R.string.next_prompt, Instant.ofEpochMilli(it.due).atZone(ZoneId.systemDefault()).format(fmt)))
+                            // a fast-forward test person: when it really comes, small below
+                            if (study.clock != null) {
+                                val real = Instant.ofEpochMilli(it.ring).atZone(ZoneId.systemDefault())
+                                    .format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
+                                val wait = DateUtils.getRelativeTimeSpanString(it.ring, tick, DateUtils.MINUTE_IN_MILLIS).toString()
+                                Text(
+                                    stringResource(R.string.next_prompt_real, real, wait),
+                                    style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
                         }
                         if (study.hasRandom) {
                             val quietNow = study.quietOn(today)
@@ -445,7 +509,9 @@ class MainActivity : ComponentActivity() {
     private fun JoinScreen(initial: String, onDone: () -> Unit) {
         val context = LocalContext.current
         val scope = rememberCoroutineScope()
-        var code by remember { mutableStateOf(initial) }
+        var code by remember { mutableStateOf(joinCode(initial) ?: "") }
+        // the server of the study: from its join link (QR code, App Link), else the app's own for a typed code
+        var server by remember { mutableStateOf(Api.defaultServer) }
         var info by remember { mutableStateOf<JSONObject?>(null) }
         var busy by remember { mutableStateOf(false) }
         var message by remember { mutableStateOf<String?>(null) }
@@ -455,17 +521,20 @@ class MainActivity : ComponentActivity() {
             "unknown" -> getString(R.string.not_found)
             "closed" -> getString(R.string.closed)
             "offline" -> getString(R.string.offline)
-            else -> getString(R.string.error)
+            // with the HTTP status: a 404 of a web server in between is told apart from an error of Askurious
+            else -> getString(R.string.error) + if (e.status > 0) " (${e.status})" else ""
         }
 
         fun lookUp(c: String) {
             val clean = joinCode(c) ?: return
+            val at = joinServer(c, BuildConfig.DEBUG) ?: Api.defaultServer
             code = clean
+            server = at
             busy = true
             message = null
             scope.launch {
                 try {
-                    info = Api.join(clean)
+                    info = Api.join(at, clean)
                 } catch (e: ApiError) {
                     message = errorText(e)
                 }
@@ -483,9 +552,9 @@ class MainActivity : ComponentActivity() {
             message = null
             scope.launch {
                 try {
-                    val r = Api.enrol(code)
+                    val r = Api.enrol(server, code)
                     val secret = r.optString("secret").ifBlank { throw ApiError("error") }
-                    val study = Study.fromJson(JSONObject(info.toString()).put("status", "pending").put("modules", org.json.JSONArray()), secret)
+                    val study = Study.fromJson(JSONObject(info.toString()).put("status", "pending").put("modules", org.json.JSONArray()), secret, server)
                     val old = StudyStore(context).get(study.code)
                     if (old != null) Sync.rejoin(context, old, study) else StudyStore(context).put(study)
                     startActivity(EntryActivity.intent(context, study.code, "entry"))
@@ -555,6 +624,7 @@ class MainActivity : ComponentActivity() {
                     val minutes = i.optInt("minutes")
                     if (minutes > 0) Text(pluralStringResource(R.plurals.about_minutes, minutes, minutes))
                     Text(stringResource(R.string.join_privacy), style = MaterialTheme.typography.bodySmall)
+                    Text(stringResource(R.string.join_server, server.substringAfter("://")), style = MaterialTheme.typography.bodySmall)
                     Button(enabled = !busy, onClick = {
                         // the same study on this phone already: joining again replaces its secret, so ask first
                         if (StudyStore(context).get(i.optString("code")) != null) confirmRejoin = true else enrol(i)

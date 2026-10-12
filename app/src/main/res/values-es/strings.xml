@@ -34,10 +34,14 @@
         <item quantity="other">Aproximadamente %d minutos al día</item>
     </plurals>
     <string name="join_privacy">Al unirse se abre el formulario de consentimiento del estudio. La aplicación no guarda ningún nombre, dirección de correo electrónico ni número de teléfono, y el estudio no puede ver sus otros estudios.</string>
+    <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
+    <string name="join_server" formatted="true">Servidor: %1$s</string>
     <string name="continue_entry">Continuar el primer cuestionario</string>
     <string name="day_of">Día %1$d de %2$d</string>
     <string name="starts_on">Empieza el %1$s</string>
     <string name="next_prompt">Próxima pregunta: %1$s</string>
+    <!-- fast forward (test person): when the next question really comes, time of day and "in 6 minutes" -->
+    <string name="next_prompt_real" formatted="true">en tiempo real: %1$s, %2$s</string>
     <string name="finished">Terminado, ¡muchas gracias!</string>
     <string name="left">Ha abandonado este estudio.</string>
     <string name="left_pending">Ha abandonado este estudio. La aplicación se lo comunicará al equipo de investigación en cuanto haya conexión.</string>
@@ -61,6 +65,8 @@
     <string name="error">Algo ha fallado. Inténtelo de nuevo.</string>
     <string name="about">Acerca de la aplicación</string>
     <string name="version">Versión %1$s</string>
+    <!-- the footer: version and when this APK was built, so one sees which version runs -->
+    <string name="build_info" formatted="true">Versión %1$s · compilada %2$s</string>
     <string name="about_privacy_title">Privacidad</string>
     <string name="about_stores">En este teléfono, la aplicación solo guarda la lista de sus estudios con sus horarios y, para cada estudio, un secreto aleatorio: la única clave de sus respuestas en ese estudio. No tiene cuenta y no envía ningún identificador del dispositivo, nombre, correo electrónico ni número de teléfono. Nada de ello se incluye en copias de seguridad ni pasa a un teléfono nuevo.</string>
     <string name="privacy_statement">Declaración de privacidad</string>
