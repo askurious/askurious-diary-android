@@ -154,6 +154,8 @@ data class Study(
     val server: String = Api.defaultServer,
     /** The oldest app version (versionCode) the server still accepts for this study; 0 = every version. */
     val minAppVersion: Int = 0,
+    /** The colours of the study's pages for the app's screens around them; null: the app's own look. */
+    val look: Look? = null,
 ) {
     val running get() = status == "active"
 
@@ -216,6 +218,7 @@ data class Study(
         .put("clock", clock?.toJson() ?: JSONObject.NULL)
         .put("server", server)
         .put("min_app_version", minAppVersion)
+        .put("look", look?.toJson() ?: JSONObject.NULL)
 
     companion object {
         /** How long the server may answer 401 before the app takes the study as deleted: three days. */
@@ -252,6 +255,7 @@ data class Study(
             clock = Clock.fromJson(o.optJSONObject("clock")),
             server = server ?: o.optStringOrNull("server") ?: Api.defaultServer,
             minAppVersion = o.optInt("min_app_version", 0),
+            look = runCatching { Look.fromJson(o.optJSONObject("look")) }.getOrNull(),
         )
 
         /** ["YYYY-MM-DD", "YYYY-MM-DD" or null]; anything else is no pause. */

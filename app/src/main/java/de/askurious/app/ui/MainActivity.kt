@@ -57,6 +57,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import de.askurious.app.data.Look
 import kotlinx.coroutines.delay
 import androidx.compose.runtime.mutableLongStateOf
 import android.text.format.DateUtils
@@ -272,7 +273,7 @@ class MainActivity : ComponentActivity() {
                         Button(onClick = onJoin) { Text(stringResource(R.string.join_study)) }
                     }
                 }
-                items(studies, key = { it.code }) { StudyCard(it) }
+                items(studies, key = { it.code }) { StudyTheme(it.look) { StudyCard(it) } }
                 item {
                     // which version runs on this phone (version, build time; server of a debug build)
                     Text(
@@ -332,7 +333,12 @@ class MainActivity : ComponentActivity() {
         // the study's date and time: virtual for a fast-forward person
         val today = study.today(real = tick)
         val fmt = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
-        Card(Modifier.fillMaxWidth()) {
+        // in the study's look (StudyTheme): the page colour with its border, as the participant pages show it
+        Card(
+            Modifier.fillMaxWidth(),
+            colors = if (study.look == null) CardDefaults.cardColors() else CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
+            border = study.look?.let { BorderStroke(1.dp, MaterialTheme.colorScheme.outline) },
+        ) {
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text(study.title, style = MaterialTheme.typography.titleMedium)
                 study.clock?.let { clock ->
@@ -638,66 +644,69 @@ class MainActivity : ComponentActivity() {
         BackHandler(onBack = onDone)
         LaunchedEffect(initial) { if (initial.isNotBlank()) lookUp(initial) }
 
-        Scaffold(topBar = {
-            TopAppBar(title = { Text(stringResource(R.string.join_study)) }, navigationIcon = {
-                TextButton(onClick = onDone) { Text(stringResource(R.string.back)) }
-            })
-        }) { pad ->
-            Column(Modifier.padding(pad).padding(16.dp).fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                val i = info
-                if (i == null) {
-                    OutlinedButton(onClick = {
-                        scanner.launch(ScanOptions().setDesiredBarcodeFormats(ScanOptions.QR_CODE).setBeepEnabled(false).setPrompt(""))
-                    }) { Text(stringResource(R.string.scan_qr)) }
-                    OutlinedTextField(
-                        // lowercase only; the hyphen of a test code (k7qm2x-t3f9a) stays, joinCode removes spaces
-                        value = code, onValueChange = { code = it.lowercase() },
-                        label = { Text(stringResource(R.string.join_code)) }, singleLine = true,
-                        keyboardOptions = KeyboardOptions(
-                            capitalization = KeyboardCapitalization.None,
-                            autoCorrectEnabled = false,
-                            keyboardType = KeyboardType.Ascii,
-                        ),
-                    )
-                    Button(onClick = { lookUp(code) }, enabled = !busy && code.isNotBlank()) { Text(stringResource(R.string.look_up)) }
-                } else {
-                    Text(i.optString("title"), style = MaterialTheme.typography.titleLarge)
-                    i.optString("description").takeIf { it.isNotBlank() }?.let { Text(it) }
-                    val days = i.optInt("period_days")
-                    Text(pluralStringResource(R.plurals.study_days, days, days))
-                    val modules = i.optJSONArray("modules")
-                    if (modules != null && modules.length() > 0) {
-                        Text(stringResource(R.string.study_modules), style = MaterialTheme.typography.titleSmall)
-                        for (k in 0 until modules.length()) {
-                            val m = modules.getJSONObject(k)
-                            val name = m.optString("name")
-                            Text(
-                                when {
-                                    m.optString("trigger") == "self" -> stringResource(R.string.self_module, name)
-                                    m.optString("trigger") == "random" && m.optDouble("per_day", 0.0) >= 1 ->
-                                        Math.round(m.optDouble("per_day")).toInt().let { n -> pluralStringResource(R.plurals.random_per_day, n, name, n) }
-                                    m.optString("trigger") == "random" ->
-                                        m.optInt("per_week").let { n -> pluralStringResource(R.plurals.random_per_week, n, name, n) }
-                                    m.optDouble("per_day", 0.0) >= 1 -> m.optDouble("per_day").toInt().let { n ->
-                                        pluralStringResource(R.plurals.fixed_per_day, n, name, n)
+        // once the study is found, the screen wears its look (that of its pages)
+        StudyTheme(info?.let { Look.fromJson(it.optJSONObject("look")) }, bars = true) {
+            Scaffold(topBar = {
+                TopAppBar(title = { Text(stringResource(R.string.join_study)) }, navigationIcon = {
+                    TextButton(onClick = onDone) { Text(stringResource(R.string.back)) }
+                })
+            }) { pad ->
+                Column(Modifier.padding(pad).padding(16.dp).fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    val i = info
+                    if (i == null) {
+                        OutlinedButton(onClick = {
+                            scanner.launch(ScanOptions().setDesiredBarcodeFormats(ScanOptions.QR_CODE).setBeepEnabled(false).setPrompt(""))
+                        }) { Text(stringResource(R.string.scan_qr)) }
+                        OutlinedTextField(
+                            // lowercase only; the hyphen of a test code (k7qm2x-t3f9a) stays, joinCode removes spaces
+                            value = code, onValueChange = { code = it.lowercase() },
+                            label = { Text(stringResource(R.string.join_code)) }, singleLine = true,
+                            keyboardOptions = KeyboardOptions(
+                                capitalization = KeyboardCapitalization.None,
+                                autoCorrectEnabled = false,
+                                keyboardType = KeyboardType.Ascii,
+                            ),
+                        )
+                        Button(onClick = { lookUp(code) }, enabled = !busy && code.isNotBlank()) { Text(stringResource(R.string.look_up)) }
+                    } else {
+                        Text(i.optString("title"), style = MaterialTheme.typography.titleLarge)
+                        i.optString("description").takeIf { it.isNotBlank() }?.let { Text(it) }
+                        val days = i.optInt("period_days")
+                        Text(pluralStringResource(R.plurals.study_days, days, days))
+                        val modules = i.optJSONArray("modules")
+                        if (modules != null && modules.length() > 0) {
+                            Text(stringResource(R.string.study_modules), style = MaterialTheme.typography.titleSmall)
+                            for (k in 0 until modules.length()) {
+                                val m = modules.getJSONObject(k)
+                                val name = m.optString("name")
+                                Text(
+                                    when {
+                                        m.optString("trigger") == "self" -> stringResource(R.string.self_module, name)
+                                        m.optString("trigger") == "random" && m.optDouble("per_day", 0.0) >= 1 ->
+                                            Math.round(m.optDouble("per_day")).toInt().let { n -> pluralStringResource(R.plurals.random_per_day, n, name, n) }
+                                        m.optString("trigger") == "random" ->
+                                            m.optInt("per_week").let { n -> pluralStringResource(R.plurals.random_per_week, n, name, n) }
+                                        m.optDouble("per_day", 0.0) >= 1 -> m.optDouble("per_day").toInt().let { n ->
+                                            pluralStringResource(R.plurals.fixed_per_day, n, name, n)
+                                        }
+                                        else -> m.optInt("per_week").let { n -> pluralStringResource(R.plurals.fixed_per_week, n, name, n) }
                                     }
-                                    else -> m.optInt("per_week").let { n -> pluralStringResource(R.plurals.fixed_per_week, n, name, n) }
-                                }
-                            )
+                                )
+                            }
                         }
+                        val minutes = i.optInt("minutes")
+                        if (minutes > 0) Text(pluralStringResource(R.plurals.about_minutes, minutes, minutes))
+                        Text(stringResource(R.string.join_privacy), style = MaterialTheme.typography.bodySmall)
+                        Text(stringResource(R.string.join_server, server.substringAfter("://")), style = MaterialTheme.typography.bodySmall)
+                        Button(enabled = !busy, onClick = {
+                            // the same study on this phone already: joining again replaces its secret, so ask first
+                            if (StudyStore(context).get(i.optString("code")) != null) confirmRejoin = true else enrol(i)
+                        }) { Text(stringResource(R.string.join)) }
+                        TextButton(onClick = onDone) { Text(stringResource(R.string.cancel)) }
                     }
-                    val minutes = i.optInt("minutes")
-                    if (minutes > 0) Text(pluralStringResource(R.plurals.about_minutes, minutes, minutes))
-                    Text(stringResource(R.string.join_privacy), style = MaterialTheme.typography.bodySmall)
-                    Text(stringResource(R.string.join_server, server.substringAfter("://")), style = MaterialTheme.typography.bodySmall)
-                    Button(enabled = !busy, onClick = {
-                        // the same study on this phone already: joining again replaces its secret, so ask first
-                        if (StudyStore(context).get(i.optString("code")) != null) confirmRejoin = true else enrol(i)
-                    }) { Text(stringResource(R.string.join)) }
-                    TextButton(onClick = onDone) { Text(stringResource(R.string.cancel)) }
+                    if (busy) CircularProgressIndicator()
+                    message?.let { Text(it, color = MaterialTheme.colorScheme.error) }
                 }
-                if (busy) CircularProgressIndicator()
-                message?.let { Text(it, color = MaterialTheme.colorScheme.error) }
             }
         }
         val pendingInfo = info
