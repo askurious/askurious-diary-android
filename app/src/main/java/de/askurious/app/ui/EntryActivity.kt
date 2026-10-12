@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -35,6 +36,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -153,7 +155,8 @@ class EntryActivity : ComponentActivity() {
         }
 
         setContent {
-            DiaryTheme {
+            // the bar above the page and the screen before it loads in the look of the study's pages
+            StudyTheme(study.look, bars = true) {
                 EntryScreen(study.title)
             }
         }
@@ -277,14 +280,16 @@ class EntryActivity : ComponentActivity() {
             Box(Modifier.padding(pad).fillMaxSize(), contentAlignment = Alignment.Center) {
                 val u = url
                 val o = offline
+                // no white flash before a dark page has loaded
+                val page = MaterialTheme.colorScheme.background.toArgb()
                 val e = error
                 when {
                     e != null || saved -> Column(Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(e ?: stringResource(R.string.offline_saved))
                         Button(onClick = { finish() }, modifier = Modifier.padding(top = 16.dp)) { Text(stringResource(R.string.close)) }
                     }
-                    u != null -> AndroidView(modifier = Modifier.fillMaxSize(), factory = { ctx -> webView(ctx, u) })
-                    o != null -> AndroidView(modifier = Modifier.fillMaxSize(), factory = { ctx -> offlineWebView(ctx, o) })
+                    u != null -> AndroidView(modifier = Modifier.fillMaxSize(), factory = { ctx -> webView(ctx, u).apply { setBackgroundColor(page) } })
+                    o != null -> AndroidView(modifier = Modifier.fillMaxSize(), factory = { ctx -> offlineWebView(ctx, o).apply { setBackgroundColor(page) } })
                     else -> CircularProgressIndicator()
                 }
             }

@@ -24,6 +24,11 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   An open entry is listed in "Recents" as its own task, so that it survives a switch to another app, but without a picture of the page (`setRecentsScreenshotEnabled(false)`, `FLAG_SECURE`).
   Links to other sites open in another app (web, mail and phone links only); turning the phone keeps the page and what was typed.
   The app itself does the study list, joining, the schedule, the notifications and the sync.
+- **Look of the study.**
+  The server sends the colours of a study's participant pages with the study and on the join screen (`"look": {"colors", "colors_dark", "radius"}`, server `diary.look_json`).
+  The study card, the bar above an entry (and the screen before its page has loaded) and the join screen, once the study is found, take them (`StudyTheme`): page colour, text, accent, border, corners.
+  A look that follows the device has a dark palette (`colors_dark`), shown while the phone is dark; a fixed look stays the same, as its pages do.
+  The status bar takes light or dark icons for the look's background. Without a look (an older server) the app keeps its own colours; the rest of the app (start page, notices, about) always does.
 - **Schedule on the phone.**
   `Schedule.kt` computes the prompts of the fixed and random modules in local time; the server computes the same times for the export and to check that a prompt was due (`diary.prompts`).
   One exact alarm at a time (`Alarms.kt`), set again after a reboot, an update, or a change of time or time zone.
@@ -82,7 +87,7 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   Deleting or removing a study from the list also deletes its queued answers, its kept pages and the log of its prompts.
   "Remove from list" asks first: with the study its secret goes, so its answers can no longer be deleted through the app; the question says so, and says when the exit questionnaire is still open.
 - **What stays on the phone.**
-  The studies with their secrets, the seed of the random prompts, the quiet hours, the pauses, the exit questionnaire and a fast-forward clock; the log of the prompts of the last three days (notified, opened) and whether the exit questionnaire was notified; the kept pages of offline modules while the study runs (dropped when it ends, is left, or the module is no longer offline); answers given without a connection until they are sent, at most 7 days after the page was opened (the server takes them no later), then they are dropped unsent.
+  The studies with their secrets, their look (colours), the seed of the random prompts, the quiet hours, the pauses, the exit questionnaire and a fast-forward clock; the log of the prompts of the last three days (notified, opened) and whether the exit questionnaire was notified; the kept pages of offline modules while the study runs (dropped when it ends, is left, or the module is no longer offline); answers given without a connection until they are sent, at most 7 days after the page was opened (the server takes them no later), then they are dropped unsent.
   Besides, whether the app asked for the notification permission once (to tell a first request from a refusal for good).
   All of it in the app's private storage, in no backup.
 - **Languages.**
