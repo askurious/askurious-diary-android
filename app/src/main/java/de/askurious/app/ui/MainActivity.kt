@@ -12,6 +12,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -64,7 +65,6 @@ import android.text.format.DateUtils
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -79,11 +79,9 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.net.toUri
-import androidx.lifecycle.lifecycleScope
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import de.askurious.app.R
-import de.askurious.app.data.AnswerQueue
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import de.askurious.app.BuildConfig
@@ -91,12 +89,9 @@ import de.askurious.app.data.Api
 import de.askurious.app.data.ApiError
 import de.askurious.app.data.Quiet
 import de.askurious.app.data.Study
-import de.askurious.app.data.StudyStore
-import de.askurious.app.data.Sync
 import de.askurious.app.data.Trigger
 import de.askurious.app.schedule.Alarms
 import de.askurious.app.schedule.Schedule
-import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.time.Instant
 import java.time.LocalTime
@@ -114,16 +109,9 @@ fun DiaryTheme(content: @Composable () -> Unit) {
 
 class MainActivity : ComponentActivity() {
     private var linkCode by mutableStateOf<String?>(null)
-    private var studies by mutableStateOf<List<Study>>(emptyList())
 
-    /** Answers waiting to be sent, per study code (AnswerQueue); read again with [studies]. */
-    private var waiting by mutableStateOf<Map<String, Int>>(emptyMap())
-
-    /** Studies with an answer the server refused for today's limit, not yet seen by the participant (AnswerQueue). */
-    private var refused by mutableStateOf<Set<String>>(emptySet())
-
-    /** The phone's clock is off and answers given without a connection wait for it (AnswerQueue.Fate.CLOCK). */
-    private var clockOff by mutableStateOf(false)
+    /** The studies, the waiting answers and the calls to the server (MainModel); this activity only draws them. */
+    private val model: MainModel by viewModels()
 
     /** The notice for notifications (none, the system dialog, the app's settings); read again in [onResume]. */
     private var notifyState by mutableStateOf(NotifyNotice.NONE)
@@ -152,15 +140,6 @@ class MainActivity : ComponentActivity() {
         exactOn = Alarms.canExact(this)
     }
 
-    private fun reload() {
-        studies = StudyStore(this).all()
-        val queue = AnswerQueue(this)
-        val items = queue.all()
-        waiting = items.groupingBy { it.study }.eachCount()
-        refused = queue.refusedStudies()
-        clockOff = items.isNotEmpty() && Api.clockSkew?.let { Math.abs(it) > AnswerQueue.MAX_SKEW_MS } == true
-    }
-
     /** Opens [intent] of another app; a phone without an app for it simply gets nothing. */
     private fun openOther(intent: Intent) {
         try {
@@ -185,12 +164,10 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        reload()
+        model.reload()
         readPermissions()
         // not while a sync runs, nor again within a few minutes (every return from an entry or a dialog resumes)
-        lifecycleScope.launch {
-            if (Sync.allIfDue(this@MainActivity) != null) reload()
-        }
+        model.syncIfDue()
     }
 
     @Composable
@@ -199,8 +176,8 @@ class MainActivity : ComponentActivity() {
         var joining by remember { mutableStateOf(false) }
         var about by remember { mutableStateOf(false) }
         when {
-            code != null -> JoinScreen(initial = code, onDone = { linkCode = null; studies = StudyStore(this).all() })
-            joining -> JoinScreen(initial = "", onDone = { joining = false; studies = StudyStore(this).all() })
+            code != null -> JoinScreen(initial = code, onDone = { linkCode = null; model.reload() })
+            joining -> JoinScreen(initial = "", onDone = { joining = false; model.reload() })
             about -> {
                 BackHandler { about = false }
                 AboutScreen(onBack = { about = false })
@@ -232,6 +209,7 @@ class MainActivity : ComponentActivity() {
                     )
                 }
                 // right below the heading (the first item), so that it is in view after a cold start (audit A1)
+                val studies = model.studies
                 if (studies.isNotEmpty() && notifyState != NotifyNotice.NONE) item(key = "notice-notify") {
                     val settings = notifyState == NotifyNotice.SETTINGS
                     Notice(
@@ -261,7 +239,7 @@ class MainActivity : ComponentActivity() {
                         openOther(Intent(Intent.ACTION_VIEW, "https://play.google.com/store/apps/details?id=$packageName".toUri()))
                     }
                 }
-                if (clockOff) item {
+                if (model.clockOff) item {
                     Card(Modifier.fillMaxWidth()) {
                         Text(stringResource(R.string.clock_off), Modifier.padding(16.dp))
                     }
@@ -315,7 +293,6 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun StudyCard(study: Study) {
         val context = LocalContext.current
-        val scope = rememberCoroutineScope()
         var confirmLeave by remember { mutableStateOf(false) }
         var confirmErase by remember { mutableStateOf(false) }
         var confirmRemove by remember { mutableStateOf(false) }
@@ -414,14 +391,11 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 }
-                val n = waiting[study.code] ?: 0
+                val n = model.waiting[study.code] ?: 0
                 if (n > 0) Text(pluralStringResource(R.plurals.answers_waiting, n, n), style = MaterialTheme.typography.bodySmall)
-                if (study.code in refused) {
+                if (study.code in model.refused) {
                     Text(stringResource(R.string.limit_refused), style = MaterialTheme.typography.bodySmall)
-                    TextButton(onClick = {
-                        AnswerQueue(context).clearRefused(study.code)
-                        reload()
-                    }) { Text(stringResource(R.string.close)) }
+                    TextButton(onClick = { model.clearRefused(study.code) }) { Text(stringResource(R.string.close)) }
                 }
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     if (study.running && study.hasRandom) {
@@ -448,10 +422,7 @@ class MainActivity : ComponentActivity() {
                 onDismiss = { editQuiet = false },
                 onSave = { quiet ->
                     editQuiet = false
-                    scope.launch {
-                        Sync.setQuiet(context, study, quiet)
-                        reload()
-                    }
+                    model.setQuiet(study, quiet)
                 },
             )
         }
@@ -462,13 +433,7 @@ class MainActivity : ComponentActivity() {
                 confirmButton = {
                     TextButton(onClick = {
                         confirmLeave = false
-                        // shown as left at once, also while a sync runs; the server hears of it as soon as it can
-                        Sync.markLeft(context, study)
-                        reload()
-                        scope.launch {
-                            Sync.leave(context, study)
-                            reload()
-                        }
+                        model.leave(study)
                     }) { Text(stringResource(R.string.leave_study)) }
                 },
                 dismissButton = { TextButton(onClick = { confirmLeave = false }) { Text(stringResource(R.string.cancel)) } },
@@ -491,10 +456,7 @@ class MainActivity : ComponentActivity() {
                     TextButton(onClick = {
                         confirmRemove = false
                         // with its queued answers and kept pages: the participant takes the study off the phone
-                        scope.launch {
-                            Sync.forget(context, study.code)
-                            reload()
-                        }
+                        model.remove(study.code)
                     }) { Text(stringResource(R.string.remove), color = MaterialTheme.colorScheme.error) }
                 },
                 dismissButton = { TextButton(onClick = { confirmRemove = false }) { Text(stringResource(R.string.cancel)) } },
@@ -508,15 +470,8 @@ class MainActivity : ComponentActivity() {
                 confirmButton = {
                     TextButton(onClick = {
                         confirmErase = false
-                        scope.launch {
-                            try {
-                                Sync.erase(context, study)
-                            } catch (e: ApiError) {
-                                // the study stays: its secret is the only way to try again
-                                eraseError = getString(if (e.key == "offline") R.string.offline else R.string.error)
-                            }
-                            reload()
-                        }
+                        // the study stays after an error: its secret is the only way to try again
+                        model.erase(study) { e -> eraseError = getString(if (e.key == "offline") R.string.offline else R.string.error) }
                     }) { Text(stringResource(R.string.erase), color = MaterialTheme.colorScheme.error) }
                 },
                 dismissButton = { TextButton(onClick = { confirmErase = false }) { Text(stringResource(R.string.cancel)) } },
@@ -579,7 +534,6 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun JoinScreen(initial: String, onDone: () -> Unit) {
         val context = LocalContext.current
-        val scope = rememberCoroutineScope()
         var code by remember { mutableStateOf(joinCode(initial) ?: "") }
         // the server of the study: from its join link (QR code, App Link), else the app's own for a typed code
         var server by remember { mutableStateOf(Api.defaultServer) }
@@ -603,12 +557,9 @@ class MainActivity : ComponentActivity() {
             server = at
             busy = true
             message = null
-            scope.launch {
-                try {
-                    info = Api.join(at, clean)
-                } catch (e: ApiError) {
-                    message = errorText(e)
-                }
+            model.lookUp(at, clean) { found, e ->
+                info = found
+                message = e?.let { errorText(it) }
                 busy = false
             }
         }
@@ -621,22 +572,14 @@ class MainActivity : ComponentActivity() {
         fun enrol(info: JSONObject) {
             busy = true
             message = null
-            scope.launch {
-                try {
-                    val r = Api.enrol(server, code)
-                    val secret = r.optString("secret").ifBlank { throw ApiError("error") }
-                    val study = Study.fromJson(JSONObject(info.toString()).put("status", "pending").put("modules", org.json.JSONArray()), secret, server)
-                    val old = StudyStore(context).get(study.code)
-                    if (old != null) Sync.rejoin(context, old, study) else StudyStore(context).put(study)
+            model.enrol(server, code, info) { study, e ->
+                busy = false
+                if (study != null) {
                     startActivity(EntryActivity.intent(context, study.code, "entry"))
                     onDone()
-                } catch (e: ApiError) {
-                    message = errorText(e)
-                } catch (e: org.json.JSONException) {
-                    // the server's answer lacks something this app needs
-                    message = getString(R.string.error)
+                } else {
+                    message = e?.let { errorText(it) }
                 }
-                busy = false
             }
         }
 
@@ -700,7 +643,7 @@ class MainActivity : ComponentActivity() {
                         Text(stringResource(R.string.join_server, server.substringAfter("://")), style = MaterialTheme.typography.bodySmall)
                         Button(enabled = !busy, onClick = {
                             // the same study on this phone already: joining again replaces its secret, so ask first
-                            if (StudyStore(context).get(i.optString("code")) != null) confirmRejoin = true else enrol(i)
+                            if (model.studies.any { it.code == i.optString("code") }) confirmRejoin = true else enrol(i)
                         }) { Text(stringResource(R.string.join)) }
                         TextButton(onClick = onDone) { Text(stringResource(R.string.cancel)) }
                     }
