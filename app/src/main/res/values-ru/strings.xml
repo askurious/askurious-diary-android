@@ -129,4 +129,18 @@
     <string name="remove_exit_open">Заключительная анкета этого исследования ещё открыта.</string>
     <string name="update_app">Для вашего исследования нужна более новая версия этого приложения. Пожалуйста, обновите приложение, чтобы вопросы и дальше приходили правильно.</string>
     <string name="update_button">Обновить</string>
+    <string name="entry_abort_title">Прервать эту запись?</string>
+    <string name="entry_abort_text">Ответы на этой странице, которые ещё не отправлены, будут потеряны.</string>
+    <string name="entry_abort">Прервать</string>
+    <string name="entry_keep">Продолжить</string>
+    <string name="retry">Повторить</string>
+    <string name="load_failed">Не удалось загрузить страницу. Проверьте подключение и повторите попытку.</string>
+    <string name="loading">Загрузка</string>
+    <string name="scan_prompt">Наведите рамку на QR-код исследования</string>
+    <string name="camera_refused">Без доступа к камере приложение не может прочитать QR-код. Введите ниже код участия — он указан под QR-кодом.</string>
+    <string name="next_prompt_about">Следующий вопрос: около %1$s</string>
+    <string name="too_many">Слишком много попыток. Подождите несколько минут, прежде чем повторить.</string>
+    <string name="looking_up">Поиск исследования</string>
+    <string name="joining">Присоединение к исследованию</string>
+    <string name="more_actions">Другие действия для «%1$s»</string>
 </resources>

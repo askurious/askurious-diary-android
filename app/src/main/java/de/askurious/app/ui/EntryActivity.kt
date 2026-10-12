@@ -1,6 +1,7 @@
 package de.askurious.app.ui
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -11,29 +12,46 @@ import android.view.View
 import android.view.WindowManager
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
+import android.webkit.WebChromeClient
+import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebStorage
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
@@ -84,6 +102,28 @@ class EntryActivity : ComponentActivity() {
     private var saved by mutableStateOf(false)
     private var done = false
 
+    /** [error] is one that may pass (no connection, a fault): the screen offers "Try again" (audit A8). */
+    private var retryable by mutableStateOf(false)
+
+    /** The page in the WebView did not load (no connection on the way, audit A7): a native error state over it. */
+    private var loadFailed by mutableStateOf(false)
+
+    /** Loading progress of the page in the WebView, 0..100: a bar under the top bar while below 100. */
+    private var pageProgress by mutableIntStateOf(100)
+
+    /** The question before the entry is closed with a page that may hold answers not yet sent (audit A6). */
+    private var askAbort by mutableStateOf(false)
+
+    /** The prompt's notification is gone: removed only once the entry has opened, so it stays as the way back (A8). */
+    private var cleared = false
+
+    /** The extras of the intent: the study, the module, the prompt. */
+    private var code = ""
+    private var module = ""
+    private var due: Long? = null
+    private var notified: Long? = null
+    private var reminded = false
+
     /** When the kept page was shown: "started" of the queued answer. */
     private var offlineStarted = 0L
 
@@ -106,53 +146,25 @@ class EntryActivity : ComponentActivity() {
             done = savedInstanceState.getBoolean(STATE_DONE)
             saved = savedInstanceState.getBoolean(STATE_SAVED)
             error = savedInstanceState.getString(STATE_ERROR)
+            retryable = savedInstanceState.getBoolean(STATE_RETRY)
+            cleared = savedInstanceState.getBoolean(STATE_CLEARED)
             offlineStarted = savedInstanceState.getLong(STATE_STARTED)
             if (done && !saved && error == null) return finish()
         }
-        val code = intent.getStringExtra(EXTRA_STUDY) ?: return finish()
-        val module = intent.getStringExtra(EXTRA_MODULE) ?: return finish()
-        val due = intent.getLongExtra(EXTRA_DUE, 0L).takeIf { it > 0 }
-        val notified = intent.getLongExtra(EXTRA_NOTIFIED, 0L).takeIf { it > 0 }
-        val reminded = intent.getBooleanExtra(EXTRA_REMINDED, false)
-        if (due != null) {
-            Alarms.cancel(this, Prompt(code, module, due, 0).id)
-            // opened: the reminder of this prompt stays silent
-            PromptLog(this).opened(code, module, due)
-        }
+        code = intent.getStringExtra(EXTRA_STUDY) ?: return finish()
+        module = intent.getStringExtra(EXTRA_MODULE) ?: return finish()
+        due = intent.getLongExtra(EXTRA_DUE, 0L).takeIf { it > 0 }
+        notified = intent.getLongExtra(EXTRA_NOTIFIED, 0L).takeIf { it > 0 }
+        reminded = intent.getBooleanExtra(EXTRA_REMINDED, false)
         if (module == EXIT) {
-            Alarms.cancel(this, "$code|exit".hashCode())
-            // opened: no exit notification any more (the server closes it once answered)
+            // no further exit notification (the server closes the questionnaire once answered); the one shown stays
+            // until the entry has opened (clearPrompt)
             PromptLog(this).exitNotified(code)
         }
 
         val study = StudyStore(this).get(code) ?: return finish()
         server = study.server
-        if (!saved && error == null && url == null && offline == null) {
-            lifecycleScope.launch {
-                try {
-                    val address = Api.absolute(Api.entry(study.server, study.secret, module, due, notified, reminded), study.server)
-                    clearWebState()
-                    url = address
-                } catch (e: ApiError) {
-                    // the kept page is read from the files directory: not on the main thread
-                    val kept = if (e.key == "offline") withContext(Dispatchers.IO) { keptPage(study, module, due) } else null
-                    if (kept != null) {
-                        clearWebState()
-                        if (offlineStarted == 0L) offlineStarted = study.now()
-                        offline = kept
-                    } else if (error == null) {
-                        error = when (e.key) {
-                            "expired" -> getString(R.string.expired)
-                            // today's limit of a self-started report (409); a 429 "limit" is the rate limit
-                            "daily_limit" -> getString(R.string.limit)
-                            "paused" -> getString(R.string.paused)
-                            "offline" -> getString(R.string.offline)
-                            else -> getString(R.string.error)
-                        }
-                    }
-                }
-            }
-        }
+        if (!saved && error == null && url == null && offline == null) open(study)
 
         setContent {
             // the bar above the page and the screen before it loads in the look of the study's pages
@@ -160,6 +172,108 @@ class EntryActivity : ComponentActivity() {
                 EntryScreen(study.title)
             }
         }
+    }
+
+    /**
+     * Asks the server for the one-time address of the entry; without a connection the kept page, if the module has
+     * one. An error that may pass (no connection, a fault of the server) can be tried again from the error screen.
+     */
+    private fun open(study: Study) {
+        error = null
+        retryable = false
+        lifecycleScope.launch {
+            try {
+                val address = Api.absolute(Api.entry(study.server, study.secret, module, due, notified, reminded), study.server)
+                clearWebState()
+                url = address
+            } catch (e: ApiError) {
+                // the kept page is read from the files directory: not on the main thread
+                val kept = if (e.key == "offline") withContext(Dispatchers.IO) { keptPage(study, module, due) } else null
+                if (kept != null) {
+                    clearWebState()
+                    if (offlineStarted == 0L) offlineStarted = study.now()
+                    offline = kept
+                    clearPrompt()
+                } else if (error == null) {
+                    error = when (e.key) {
+                        "expired" -> getString(R.string.expired)
+                        // today's limit of a self-started report (409); a 429 "limit" is the rate limit
+                        "daily_limit" -> getString(R.string.limit)
+                        "paused" -> getString(R.string.paused)
+                        "offline" -> getString(R.string.offline)
+                        else -> getString(R.string.error)
+                    }
+                    retryable = retryable(e)
+                    // a final answer (expired, today's limit, paused): the notification has nothing left to open
+                    if (!retryable) clearPrompt()
+                } else {
+                    // keptPage() named the reason (expired, saved already, today's limit): final as well
+                    clearPrompt()
+                }
+            }
+        }
+    }
+
+    /**
+     * The entry has opened (or can never open): the prompt's notification goes and its reminder stays silent. Until
+     * then the notification stays, so that a participant whose page did not load can open it again (audit A8).
+     */
+    private fun clearPrompt() {
+        if (cleared) return
+        cleared = true
+        due?.let {
+            Alarms.cancel(this, Prompt(code, module, it, 0).id)
+            PromptLog(this).opened(code, module, it)
+        }
+        if (module == EXIT) Alarms.cancel(this, "$code|exit".hashCode())
+    }
+
+    /**
+     * The address came, but its first page did not (the connection went on the way): a module that can be answered
+     * without a connection switches to its kept page, as if there had been no connection from the start (audit A7).
+     */
+    private fun toKeptPage() {
+        val study = StudyStore(this).get(code) ?: return
+        lifecycleScope.launch {
+            val kept = withContext(Dispatchers.IO) { keptPage(study, module, due) } ?: return@launch
+            if (cleared || offline != null) return@launch
+            clearWebState()
+            if (offlineStarted == 0L) offlineStarted = study.now()
+            web = null
+            url = null
+            loadFailed = false
+            offline = kept
+            clearPrompt()
+        }
+    }
+
+    /** "Try again" on the error screen: the page that did not load, or a new address (audit A7, A8). */
+    private fun retry() {
+        val w = web
+        if (loadFailed && w != null) {
+            loadFailed = false
+            w.reload()
+            return
+        }
+        val study = StudyStore(this).get(code) ?: return finish()
+        open(study)
+    }
+
+    /**
+     * Whether closing now may lose something: a page of the questionnaire is open and the entry is not over. The
+     * error and "saved" screens hold nothing (audit A6).
+     */
+    private val mayLose: Boolean get() = (url != null || offline != null) && !done && !saved && error == null && !loadFailed
+
+    /** The back gesture: one page back in the questionnaire, else the question before closing (audit A6). */
+    private fun back() {
+        val w = web
+        if (url != null && mayLose && w != null && w.canGoBack()) w.goBack() else close()
+    }
+
+    /** The X in the top bar and the last step of the back gesture. */
+    private fun close() {
+        if (mayLose) askAbort = true else finish()
     }
 
     /**
@@ -207,6 +321,8 @@ class EntryActivity : ComponentActivity() {
         outState.putBoolean(STATE_DONE, done)
         outState.putBoolean(STATE_SAVED, saved)
         outState.putString(STATE_ERROR, error)
+        outState.putBoolean(STATE_RETRY, retryable)
+        outState.putBoolean(STATE_CLEARED, cleared)
         outState.putLong(STATE_STARTED, offlineStarted)
     }
 
@@ -271,11 +387,25 @@ class EntryActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     @androidx.compose.runtime.Composable
     private fun EntryScreen(title: String) {
+        BackHandler { back() }
         Scaffold(topBar = {
-            TopAppBar(
-                title = { Text(title) },
-                actions = { TextButton(onClick = { finish() }) { Text(stringResource(R.string.close)) } },
-            )
+            Column {
+                TopAppBar(
+                    title = { Text(title) },
+                    // the X closes the entry, at the left where a screen has its way out (audit A6)
+                    navigationIcon = {
+                        IconButton(onClick = { close() }) { Icon(Icons.Outlined.Close, contentDescription = stringResource(R.string.close)) }
+                    },
+                )
+                // a page is loading: the questionnaire has no indicator of its own between its pages (audit A7)
+                val loading = stringResource(R.string.loading)
+                if (url != null && pageProgress < 100 && !loadFailed && error == null) {
+                    LinearProgressIndicator(
+                        progress = { pageProgress / 100f },
+                        modifier = Modifier.fillMaxWidth().semantics { contentDescription = loading },
+                    )
+                }
+            }
         }) { pad ->
             Box(Modifier.padding(pad).fillMaxSize(), contentAlignment = Alignment.Center) {
                 val u = url
@@ -284,14 +414,48 @@ class EntryActivity : ComponentActivity() {
                 val page = MaterialTheme.colorScheme.background.toArgb()
                 val e = error
                 when {
-                    e != null || saved -> Column(Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(e ?: stringResource(R.string.offline_saved))
-                        Button(onClick = { finish() }, modifier = Modifier.padding(top = 16.dp)) { Text(stringResource(R.string.close)) }
-                    }
+                    e != null || saved -> Message(e ?: stringResource(R.string.offline_saved), retry = e != null && retryable)
                     u != null -> AndroidView(modifier = Modifier.fillMaxSize(), factory = { ctx -> webView(ctx, u).apply { setBackgroundColor(page) } })
                     o != null -> AndroidView(modifier = Modifier.fillMaxSize(), factory = { ctx -> offlineWebView(ctx, o).apply { setBackgroundColor(page) } })
-                    else -> CircularProgressIndicator()
+                    else -> {
+                        val loading = stringResource(R.string.loading)
+                        CircularProgressIndicator(Modifier.semantics { contentDescription = loading })
+                    }
                 }
+                // the page did not load: the app's own error state over the WebView, never the browser's page (A7)
+                if (loadFailed && e == null && !saved) {
+                    Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                        Box(contentAlignment = Alignment.Center) { Message(stringResource(R.string.load_failed), retry = true) }
+                    }
+                }
+            }
+        }
+        if (askAbort) {
+            AlertDialog(
+                onDismissRequest = { askAbort = false },
+                title = { Text(stringResource(R.string.entry_abort_title)) },
+                text = { Text(stringResource(R.string.entry_abort_text)) },
+                confirmButton = {
+                    TextButton(onClick = { askAbort = false; finish() }) {
+                        Text(stringResource(R.string.entry_abort), color = MaterialTheme.colorScheme.error)
+                    }
+                },
+                dismissButton = { TextButton(onClick = { askAbort = false }) { Text(stringResource(R.string.entry_keep)) } },
+            )
+        }
+    }
+
+    /** A message instead of the page; "Try again" as the main button when it may help (audit A8). */
+    @androidx.compose.runtime.Composable
+    private fun Message(text: String, retry: Boolean) {
+        Column(Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            // read out as soon as it shows (it replaces the page or the spinner)
+            Text(text, Modifier.semantics { liveRegion = LiveRegionMode.Polite })
+            if (retry) {
+                Button(onClick = { retry() }, modifier = Modifier.padding(top = 16.dp)) { Text(stringResource(R.string.retry)) }
+                OutlinedButton(onClick = { finish() }, modifier = Modifier.padding(top = 8.dp)) { Text(stringResource(R.string.close)) }
+            } else {
+                Button(onClick = { finish() }, modifier = Modifier.padding(top = 16.dp)) { Text(stringResource(R.string.close)) }
             }
         }
     }
@@ -319,12 +483,39 @@ class EntryActivity : ComponentActivity() {
         val host = start.toUri().host
         return baseWebView(ctx).apply {
             webViewClient = object : WebViewClient() {
+                /** The page now loading failed (its main frame): its onPageFinished is no success. */
+                private var failed = false
+
                 // pages of the study stay in the app; any other link (privacy statement of an institution, ...)
                 // opens in the browser
                 override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                     if (request.url.host == host) return false
                     openOutside(request.url)
                     return true
+                }
+
+                override fun onPageStarted(view: WebView, url: String?, favicon: Bitmap?) {
+                    failed = false
+                }
+
+                // no connection on the way to a page: the app's own error state with "Try again" instead of the
+                // browser's English page (audit A7); a missing picture or style sheet (no main frame) does not count
+                override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
+                    if (!request.isForMainFrame) return
+                    failed = true
+                    loadFailed = true
+                    // the first page did not come for want of a connection: the kept page, if the module has one
+                    if (!cleared && error.errorCode in OFFLINE_ERRORS) toKeptPage()
+                }
+
+                override fun onPageFinished(view: WebView, url: String?) {
+                    // the first page of the entry is there: now its notification may go (audit A8)
+                    if (!failed) clearPrompt()
+                }
+            }
+            webChromeClient = object : WebChromeClient() {
+                override fun onProgressChanged(view: WebView, newProgress: Int) {
+                    pageProgress = newProgress
                 }
             }
             loadUrl(start)
@@ -399,6 +590,19 @@ class EntryActivity : ComponentActivity() {
         private const val STATE_SAVED = "saved"
         private const val STATE_ERROR = "error"
         private const val STATE_STARTED = "started"
+        private const val STATE_RETRY = "retry"
+        private const val STATE_CLEARED = "cleared"
+
+        /** The WebView's errors that mean no connection (not a page the server refused). */
+        private val OFFLINE_ERRORS = setOf(
+            WebViewClient.ERROR_HOST_LOOKUP, WebViewClient.ERROR_CONNECT, WebViewClient.ERROR_TIMEOUT, WebViewClient.ERROR_IO,
+        )
+
+        /**
+         * Whether "Try again" may help after [e]: no connection, the rate limit, a fault of the server or an answer it
+         * could not read; not an expired prompt, today's limit or a paused study (audit A8).
+         */
+        fun retryable(e: ApiError): Boolean = e.transient || e.key == "error"
 
         /** The links of a page that may open in another app. */
         private val OUTSIDE_SCHEMES = setOf("http", "https", "mailto", "tel")

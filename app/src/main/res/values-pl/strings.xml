@@ -129,4 +129,18 @@
     <string name="remove_exit_open">Ankieta końcowa tego badania jest jeszcze otwarta.</string>
     <string name="update_app">To badanie wymaga nowszej wersji tej aplikacji. Należy zaktualizować aplikację, aby pytania nadal docierały prawidłowo.</string>
     <string name="update_button">Aktualizuj</string>
+    <string name="entry_abort_title">Przerwać ten wpis?</string>
+    <string name="entry_abort_text">Odpowiedzi na tej stronie, które nie zostały jeszcze wysłane, zostaną utracone.</string>
+    <string name="entry_abort">Przerwij wpis</string>
+    <string name="entry_keep">Odpowiadaj dalej</string>
+    <string name="retry">Spróbuj ponownie</string>
+    <string name="load_failed">Nie udało się wczytać strony. Sprawdź połączenie i spróbuj ponownie.</string>
+    <string name="loading">Wczytywanie</string>
+    <string name="scan_prompt">Umieść kod QR badania w ramce</string>
+    <string name="camera_refused">Bez dostępu do aparatu aplikacja nie odczyta kodu QR. Wpisz poniżej kod dołączenia; znajduje się pod kodem QR.</string>
+    <string name="next_prompt_about">Następne pytanie: około %1$s</string>
+    <string name="too_many">Zbyt wiele prób. Odczekaj kilka minut, zanim spróbujesz ponownie.</string>
+    <string name="looking_up">Wyszukiwanie badania</string>
+    <string name="joining">Dołączanie do badania</string>
+    <string name="more_actions">Więcej działań dla „%1$s”</string>
 </resources>

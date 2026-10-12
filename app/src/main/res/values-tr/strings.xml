@@ -115,4 +115,18 @@
     <string name="remove_exit_open">Bu çalışmanın son anketi hâlâ açık.</string>
     <string name="update_app">Çalışmanız için bu uygulamanın daha yeni bir sürümü gerekiyor. Sorularınızın doğru şekilde gelmeye devam etmesi için lütfen uygulamayı güncelleyin.</string>
     <string name="update_button">Güncelle</string>
+    <string name="entry_abort_title">Bu giriş iptal edilsin mi?</string>
+    <string name="entry_abort_text">Bu sayfada henüz gönderilmemiş yanıtlar kaybolur.</string>
+    <string name="entry_abort">Girişi iptal et</string>
+    <string name="entry_keep">Yanıtlamaya devam et</string>
+    <string name="retry">Tekrar dene</string>
+    <string name="load_failed">Sayfa yüklenemedi. Lütfen bağlantıyı kontrol edip tekrar deneyin.</string>
+    <string name="loading">Yükleniyor</string>
+    <string name="scan_prompt">Çalışmanın QR kodunu çerçevenin içine getirin</string>
+    <string name="camera_refused">Kameraya erişim olmadan uygulama QR kodunu okuyamaz. Bunun yerine aşağıya katılım kodunu girin; kod, QR kodunun altında yazar.</string>
+    <string name="next_prompt_about">Sonraki soru: yaklaşık %1$s</string>
+    <string name="too_many">Çok fazla deneme. Lütfen tekrar denemeden önce birkaç dakika bekleyin.</string>
+    <string name="looking_up">Çalışma aranıyor</string>
+    <string name="joining">Çalışmaya katılınıyor</string>
+    <string name="more_actions">“%1$s” için diğer işlemler</string>
 </resources>
