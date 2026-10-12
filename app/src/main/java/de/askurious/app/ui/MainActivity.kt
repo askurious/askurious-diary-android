@@ -253,6 +253,13 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 }
+                // a study's server needs a newer app (config DIARY_MIN_APP_VERSION): the app keeps working, but asks
+                if (studies.any { it.needsUpdate(BuildConfig.VERSION_CODE) }) item(key = "notice-update") {
+                    Notice(stringResource(R.string.update_app), Icons.Outlined.Warning, stringResource(R.string.update_button)) {
+                        // the Play Store opens this link itself; without it the browser shows the page
+                        openOther(Intent(Intent.ACTION_VIEW, "https://play.google.com/store/apps/details?id=$packageName".toUri()))
+                    }
+                }
                 if (clockOff) item {
                     Card(Modifier.fillMaxWidth()) {
                         Text(stringResource(R.string.clock_off), Modifier.padding(16.dp))

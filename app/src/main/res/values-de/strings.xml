@@ -113,4 +113,6 @@
     <string name="remove_title">„%1$s“ entfernen?</string>
     <string name="remove_confirm">Die Studie wird von diesem Telefon entfernt. Danach können Sie Ihre Antworten nicht mehr über die App löschen.</string>
     <string name="remove_exit_open">Die Abschlussbefragung dieser Studie ist noch offen.</string>
+    <string name="update_app">Für Ihre Studie wird eine neuere Version dieser App gebraucht. Bitte aktualisieren Sie die App, damit Ihre Fragen weiter richtig ankommen.</string>
+    <string name="update_button">Aktualisieren</string>
 </resources>
