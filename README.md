@@ -117,7 +117,7 @@ Checks: `./gradlew testDebugUnitTest lintDebug`.
 
 A **debug build** talks to `http://localhost:5060`, the Flask server on the computer (`.venv/bin/python run.py` in the Askurious repository).
 Run `adb reverse tcp:5060 tcp:5060` once per start of the emulator, so that its `localhost:5060` is the computer's: the server answers only under `localhost` while it runs with the development key.
-A **release build** talks to `https://ask.askurious.de`, the participants' address.
+A **release build** talks to `https://askurious.de` for a typed join code (the main address, where the diary studies run for now; `BASE_URL` in app/build.gradle.kts), and to the server a QR code names.
 
 ## Trying it on the emulator
 
@@ -133,9 +133,16 @@ Test join codes (`k7qm2x-t3f9a`, five characters after the hyphen) and personal 
 For the phone to open the app directly, the server must answer `/.well-known/assetlinks.json` with the SHA-256 fingerprint of the signing key: set `DIARY_APP_FINGERPRINTS` on the server (`keytool -list -v -keystore <keystore>`).
 Without it the link opens the join page in the browser, which shows the join code.
 
+## Release build
+
+A signed release needs the upload key in `keystore.properties` next to this README (never in Git; `.gitignore` keeps it and `*.jks` out). Copy `keystore.properties.example`, make the key once (Android Studio: Build › Generate Signed Bundle, or the `keytool` line in the example) and keep the key file and its passwords safe outside the repository.
+Then `./gradlew bundleRelease` gives `app/build/outputs/bundle/release/app-release.aab` for the Play Console. Use Play App Signing: Google keeps the key the app is signed with, the upload key only uploads and can be replaced if it is lost.
+Without `keystore.properties` a release build stays unsigned. The SHA-256 fingerprint for `DIARY_APP_FINGERPRINTS` on the server is the one of the app signing key in the Play Console (Setup › App signing), not the upload key's.
+`versionCode` comes from Git (see "Update request"), so build releases from a clone with its history, not from a source archive.
+
 ## Not yet
 
-The entry part without a connection, a release signing configuration, iOS (concept, section 10).
+The entry part without a connection, iOS (concept, section 10), an open-source licence (a decision of the copyright holder).
 
 ## Licence
 

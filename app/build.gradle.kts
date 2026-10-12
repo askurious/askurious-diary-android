@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     id("com.android.application")
@@ -11,9 +12,27 @@ val gitCommitCount: Int = runCatching {
     providers.exec { commandLine("git", "rev-list", "--count", "HEAD") }.standardOutput.asText.get().trim().toInt()
 }.getOrDefault(1)
 
+/**
+ * The upload key for the Play Store (Play App Signing keeps the app signing key): keystore.properties in the project
+ * folder, never in Git (storeFile, storePassword, keyAlias, keyPassword; see keystore.properties.example). Without it
+ * a release build stays unsigned, as before.
+ */
+val upload: Properties? = rootProject.file("keystore.properties").takeIf { it.isFile }?.let { f ->
+    Properties().apply { f.inputStream().use { load(it) } }
+}
+
 android {
     namespace = "de.askurious.app"
     compileSdk = 36
+
+    signingConfigs {
+        if (upload != null) create("upload") {
+            storeFile = rootProject.file(upload.getProperty("storeFile"))
+            storePassword = upload.getProperty("storePassword")
+            keyAlias = upload.getProperty("keyAlias")
+            keyPassword = upload.getProperty("keyPassword")
+        }
+    }
 
     defaultConfig {
         applicationId = "de.askurious.app"
@@ -40,6 +59,7 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            if (upload != null) signingConfig = signingConfigs.getByName("upload")
         }
     }
 
