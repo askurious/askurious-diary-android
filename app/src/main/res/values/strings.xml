@@ -115,4 +115,18 @@
     <string name="remove_exit_open">The final survey of this study is still open.</string>
     <string name="update_app">A newer version of this app is needed for your study. Please update the app so that your questions keep arriving correctly.</string>
     <string name="update_button">Update</string>
+    <string name="entry_abort_title">Cancel this entry?</string>
+    <string name="entry_abort_text">Answers on this page that have not been sent yet will be lost.</string>
+    <string name="entry_abort">Cancel entry</string>
+    <string name="entry_keep">Keep answering</string>
+    <string name="retry">Try again</string>
+    <string name="load_failed">The page could not be loaded. Please check the connection and try again.</string>
+    <string name="loading">Loading</string>
+    <string name="scan_prompt">Hold the study’s QR code inside the frame</string>
+    <string name="camera_refused">Without access to the camera the app cannot read a QR code. Type the join code below instead; it is printed under the QR code.</string>
+    <string name="next_prompt_about">Next question: about %1$s</string>
+    <string name="too_many">Too many attempts. Please wait a few minutes before trying again.</string>
+    <string name="looking_up">Looking up the study</string>
+    <string name="joining">Joining the study</string>
+    <string name="more_actions">More actions for “%1$s”</string>
 </resources>

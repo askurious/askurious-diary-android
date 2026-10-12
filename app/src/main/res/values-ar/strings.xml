@@ -143,4 +143,18 @@
     <string name="remove_exit_open">الاستبيان الختامي لهذه الدراسة لا يزال مفتوحًا.</string>
     <string name="update_app">تحتاج دراستك إلى إصدار أحدث من هذا التطبيق. يرجى تحديث التطبيق حتى تستمر أسئلتك في الوصول بشكل صحيح.</string>
     <string name="update_button">تحديث</string>
+    <string name="entry_abort_title">إلغاء هذا الإدخال؟</string>
+    <string name="entry_abort_text">ستضيع الإجابات في هذه الصفحة التي لم تُرسل بعد.</string>
+    <string name="entry_abort">إلغاء الإدخال</string>
+    <string name="entry_keep">متابعة الإجابة</string>
+    <string name="retry">إعادة المحاولة</string>
+    <string name="load_failed">تعذّر تحميل الصفحة. يُرجى التحقق من الاتصال والمحاولة مرة أخرى.</string>
+    <string name="loading">جارٍ التحميل</string>
+    <string name="scan_prompt">ضع رمز QR الخاص بالدراسة داخل الإطار</string>
+    <string name="camera_refused">بدون الوصول إلى الكاميرا لا يستطيع التطبيق قراءة رمز QR. أدخل رمز الانضمام أدناه بدلاً من ذلك؛ فهو مكتوب تحت رمز QR.</string>
+    <string name="next_prompt_about">السؤال التالي: نحو %1$s</string>
+    <string name="too_many">محاولات كثيرة جدًا. يُرجى الانتظار بضع دقائق قبل المحاولة مرة أخرى.</string>
+    <string name="looking_up">جارٍ البحث عن الدراسة</string>
+    <string name="joining">جارٍ الانضمام إلى الدراسة</string>
+    <string name="more_actions">إجراءات أخرى لـ «%1$s»</string>
 </resources>

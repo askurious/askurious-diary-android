@@ -58,6 +58,16 @@
             android:taskAffinity=""
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation|uiMode" />
 
+        <!-- the QR scanner (ZXing Android Embedded's CaptureActivity, clear of the system bars): it turns with the
+             phone instead of always lying in landscape (with ScanOptions.setOrientationLocked(false), audit A10) -->
+        <activity
+            android:name=".ui.ScanActivity"
+            android:exported="false"
+            android:screenOrientation="fullSensor"
+            android:stateNotNeeded="true"
+            android:theme="@style/zxing_CaptureTheme"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
         <receiver android:name=".schedule.PromptReceiver" android:exported="false" />
 
         <receiver android:name=".schedule.BootReceiver" android:exported="true">

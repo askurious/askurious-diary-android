@@ -15,7 +15,8 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
 - **Permissions.**
   Without notifications no prompt arrives, and without "Alarms & reminders" it may come late: the start page shows a notice for each right below its heading, read again whenever the app comes back to the front (from the system settings, the dialog, an entry).
   Once the system no longer shows its dialog (denied twice), or the permission is there but the app's notifications or the channel of the prompts are switched off, the notice's button is "Allow in settings" and opens the app's notification settings (`notifyNotice`).
-  While notifications are off, a running study's card says "Notifications off – you will not get any questions" instead of the time of the next question.
+  While notifications are off, a running study's card says "Notifications off – you will not get any questions" instead of the time of the next question; while "Alarms & reminders" is off, it says "about" before that time (Android may ring a few minutes late).
+  The camera (QR code) is asked for by the app itself before the scanner opens; refused, the join screen points to the join code, and once the system shows no dialog any more the button opens the app's settings.
 - **Lock screen.**
   Notifications are private: the lock screen shows only "Askurious – A short question is waiting", never the title of the study or the researchers' notification text.
 - **Thin shell.**
@@ -23,6 +24,9 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   A release build opens only addresses of its own server (`Api.absolute`); the bridge `AskuriousApp` counts only while the page is the server's (or the kept page under its address); the WebView reaches no files or content providers of the phone, autofill stays out, and the entry screen allows no screenshots (`FLAG_SECURE`).
   An open entry is listed in "Recents" as its own task, so that it survives a switch to another app, but without a picture of the page (`setRecentsScreenshotEnabled(false)`, `FLAG_SECURE`).
   Links to other sites open in another app (web, mail and phone links only); turning the phone keeps the page and what was typed.
+  The back gesture goes one page back in the questionnaire; on its first page, and with the X at the left of the top bar, the app asks "Cancel this entry?" first.
+  A bar under the top bar shows a page loading; a page that does not load (no connection on the way) shows the app's own message with "Try again" instead of the browser's error page, and the first page of a module that can be answered offline falls back to the kept page.
+  The notification of a prompt stays until its entry has loaded (it is not cleared by the tap), so an entry that failed for want of a connection can be opened from it again; an error that may pass ("No connection", a fault of the server) offers "Try again".
   The app itself does the study list, joining, the schedule, the notifications and the sync.
 - **Look of the study.**
   The server sends the colours of a study's participant pages with the study and on the join screen (`"look": {"colors", "colors_dark", "radius"}`, server `diary.look_json`).
@@ -91,12 +95,12 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   Joining a study that is still on the phone (after leaving it, or with a test or invitation code) asks first: a new participation gets a new secret, and the earlier answers can then no longer be deleted in the app.
   If the participant goes on, the earlier participation is closed with its own secret (its waiting answers are sent, a running one is left) and then removed from the phone (`Sync.rejoin`): nothing of it goes to the new person.
 - **Deleting answers.**
-  "Delete my answers" on every study card calls `POST /api/diary/v1/erase`: the server deletes all answers of this person in this study and the person; the app then removes the study.
+  "Delete my answers" in the menu ⋮ of every study card (with "Quiet hours", "Leave study" or "Remove from list") calls `POST /api/diary/v1/erase`: the server deletes all answers of this person in this study and the person; the app then removes the study.
   Deleting or removing a study from the list also deletes its queued answers, its kept pages and the log of its prompts.
   "Remove from list" asks first: with the study its secret goes, so its answers can no longer be deleted through the app; the question says so, and says when the exit questionnaire is still open.
 - **What stays on the phone.**
   The studies with their secrets, their look (colours), the seed of the random prompts, the quiet hours, the pauses, the exit questionnaire and a fast-forward clock; the log of the prompts of the last three days (notified, opened) and whether the exit questionnaire was notified; the kept pages of offline modules while the study runs (dropped when it ends, is left, or the module is no longer offline); answers given without a connection until they are sent, at most 7 days after the page was opened (the server takes them no later), then they are dropped unsent.
-  Besides, whether the app asked for the notification permission once (to tell a first request from a refusal for good).
+  Besides, whether the app asked for the notification and the camera permission once (to tell a first request from a refusal for good).
   All of it in the app's private storage, in no backup.
   The secrets are stored sealed (AES-GCM, `StudyStore.sealed`) under a key that lives in the Android Keystore and never leaves it (`KeystoreSealer`); a copy of the app's files alone gives no secret. A study stored before this is sealed the first time it is read. An entry whose secret cannot be opened (the Keystore lost its key) is kept as it is, not overwritten.
 - **Languages.**

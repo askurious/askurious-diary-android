@@ -65,6 +65,14 @@ import android.text.format.DateUtils
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -152,9 +160,16 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        // the whole link: JoinScreen reads the code and the server from it (joinCode, joinServer)
-        linkCode = intent?.data?.toString()?.takeIf { joinCode(it) != null }
+        // the whole link: JoinScreen reads the code and the server from it (joinCode, joinServer); after turning the
+        // phone (a new activity, the same intent) the link counts only if its join screen was still open (audit A9)
+        linkCode = if (savedInstanceState == null) intent?.data?.toString()?.takeIf { joinCode(it) != null }
+        else savedInstanceState.getString(STATE_LINK)
         setContent { DiaryTheme { App() } }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(STATE_LINK, linkCode)
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -173,8 +188,9 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun App() {
         val code = linkCode
-        var joining by remember { mutableStateOf(false) }
-        var about by remember { mutableStateOf(false) }
+        // saved with the activity: turning the phone, a change of language or of dark mode keeps the screen (audit A9)
+        var joining by rememberSaveable { mutableStateOf(false) }
+        var about by rememberSaveable { mutableStateOf(false) }
         when {
             code != null -> JoinScreen(initial = code, onDone = { linkCode = null; model.reload() })
             joining -> JoinScreen(initial = "", onDone = { joining = false; model.reload() })
@@ -317,7 +333,18 @@ class MainActivity : ComponentActivity() {
             border = study.look?.let { BorderStroke(1.dp, MaterialTheme.colorScheme.outline) },
         ) {
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text(study.title, style = MaterialTheme.typography.titleMedium)
+                // the rarer actions, the final ones among them, in the menu at the title: the card's buttons are for
+                // answering (audit A14)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(study.title, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
+                    StudyMenu(
+                        study,
+                        onQuiet = { editQuiet = true },
+                        onLeave = { confirmLeave = true },
+                        onRemove = { confirmRemove = true },
+                        onErase = { eraseError = null; confirmErase = true },
+                    )
+                }
                 study.clock?.let { clock ->
                     Surface(color = MaterialTheme.colorScheme.tertiaryContainer, shape = MaterialTheme.shapes.small) {
                         Text(
@@ -345,8 +372,9 @@ class MainActivity : ComponentActivity() {
                             // without notifications no prompt reaches the participant: no time that would not come (audit A1)
                             Text(stringResource(R.string.notifications_off), color = MaterialTheme.colorScheme.error)
                         } else Schedule.next(listOf(study), Instant.ofEpochMilli(tick)).firstOrNull()?.let {
-                            // shown in the study's time, like the day
-                            Text(stringResource(R.string.next_prompt, Instant.ofEpochMilli(it.due).atZone(ZoneId.systemDefault()).format(fmt)))
+                            // shown in the study's time, like the day; "about" while the alarm may ring minutes late
+                            // (no "Alarms & reminders", audit A11)
+                            Text(stringResource(nextPromptText(exactOn), Instant.ofEpochMilli(it.due).atZone(ZoneId.systemDefault()).format(fmt)))
                             // a fast-forward test person: when it really comes, small below
                             if (study.clock != null) {
                                 val real = Instant.ofEpochMilli(it.ring).atZone(ZoneId.systemDefault())
@@ -396,21 +424,6 @@ class MainActivity : ComponentActivity() {
                 if (study.code in model.refused) {
                     Text(stringResource(R.string.limit_refused), style = MaterialTheme.typography.bodySmall)
                     TextButton(onClick = { model.clearRefused(study.code) }) { Text(stringResource(R.string.close)) }
-                }
-                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    if (study.running && study.hasRandom) {
-                        TextButton(onClick = { editQuiet = true }) { Text(stringResource(R.string.quiet_change)) }
-                    }
-                    if (study.status == "active" || study.status == "pending" || study.status == "paused") {
-                        TextButton(onClick = { confirmLeave = true }) { Text(stringResource(R.string.leave_study)) }
-                    } else if (!study.leavePending) {
-                        // a leave not yet told to the server keeps the study, so that the next sync can send it
-                        TextButton(onClick = { confirmRemove = true }) { Text(stringResource(R.string.remove_from_list)) }
-                    }
-                    // every study still holds its secret, so its answers can be deleted, also after the end
-                    TextButton(onClick = { eraseError = null; confirmErase = true }) {
-                        Text(stringResource(R.string.erase_answers), color = MaterialTheme.colorScheme.error)
-                    }
                 }
                 eraseError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
             }
@@ -479,6 +492,37 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * The menu ⋮ of a study card: quiet hours, leaving or removing, deleting the answers. Each of the final ones asks
+     * first (the dialogs of the card).
+     */
+    @Composable
+    private fun StudyMenu(study: Study, onQuiet: () -> Unit, onLeave: () -> Unit, onRemove: () -> Unit, onErase: () -> Unit) {
+        var open by remember { mutableStateOf(false) }
+        Box {
+            IconButton(onClick = { open = true }) {
+                Icon(Icons.Outlined.MoreVert, contentDescription = stringResource(R.string.more_actions, study.title))
+            }
+            DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+                fun pick(action: () -> Unit): () -> Unit = { open = false; action() }
+                if (study.running && study.hasRandom) {
+                    DropdownMenuItem(text = { Text(stringResource(R.string.quiet_change)) }, onClick = pick(onQuiet))
+                }
+                if (study.status == "active" || study.status == "pending" || study.status == "paused") {
+                    DropdownMenuItem(text = { Text(stringResource(R.string.leave_study)) }, onClick = pick(onLeave))
+                } else if (!study.leavePending) {
+                    // a leave not yet told to the server keeps the study, so that the next sync can send it
+                    DropdownMenuItem(text = { Text(stringResource(R.string.remove_from_list)) }, onClick = pick(onRemove))
+                }
+                // every study still holds its secret, so its answers can be deleted, also after the end
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.erase_answers), color = MaterialTheme.colorScheme.error) },
+                    onClick = pick(onErase),
+                )
+            }
+        }
+    }
+
     /** "22:00–07:00" in the phone's time format, or "none". */
     @Composable
     private fun quietText(quiet: Quiet?): String =
@@ -534,18 +578,24 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun JoinScreen(initial: String, onDone: () -> Unit) {
         val context = LocalContext.current
-        var code by remember { mutableStateOf(joinCode(initial) ?: "") }
+        // what was typed and found survives turning the phone (audit A9); the study's information as its JSON text
+        var code by rememberSaveable { mutableStateOf(joinCode(initial) ?: "") }
         // the server of the study: from its join link (QR code, App Link), else the app's own for a typed code
-        var server by remember { mutableStateOf(Api.defaultServer) }
-        var info by remember { mutableStateOf<JSONObject?>(null) }
+        var server by rememberSaveable { mutableStateOf(Api.defaultServer) }
+        var infoText by rememberSaveable { mutableStateOf<String?>(null) }
+        val info = remember(infoText) { infoText?.let { runCatching { JSONObject(it) }.getOrNull() } }
         var busy by remember { mutableStateOf(false) }
-        var message by remember { mutableStateOf<String?>(null) }
+        var message by rememberSaveable { mutableStateOf<String?>(null) }
         var confirmRejoin by remember { mutableStateOf(false) }
+        // the camera was refused: the scan button says so and points to the field (audit A10)
+        var cameraRefused by rememberSaveable { mutableStateOf(false) }
 
-        fun errorText(e: ApiError) = when (e.key) {
-            "unknown" -> getString(R.string.not_found)
-            "closed" -> getString(R.string.closed)
-            "offline" -> getString(R.string.offline)
+        fun errorText(e: ApiError) = when {
+            e.key == "unknown" -> getString(R.string.not_found)
+            e.key == "closed" -> getString(R.string.closed)
+            e.key == "offline" -> getString(R.string.offline)
+            // the rate limit: trying again at once keeps the lock (audit A12)
+            e.status == 429 -> getString(R.string.too_many)
             // with the HTTP status: a 404 of a web server in between is told apart from an error of Askurious
             else -> getString(R.string.error) + if (e.status > 0) " (${e.status})" else ""
         }
@@ -558,7 +608,7 @@ class MainActivity : ComponentActivity() {
             busy = true
             message = null
             model.lookUp(at, clean) { found, e ->
-                info = found
+                infoText = found?.toString()
                 message = e?.let { errorText(it) }
                 busy = false
             }
@@ -584,8 +634,37 @@ class MainActivity : ComponentActivity() {
         }
 
         val scanner = rememberLauncherForActivityResult(ScanContract()) { result -> result.contents?.let { lookUp(it) } }
+
+        fun scan() {
+            cameraRefused = false
+            // the scanner turns with the phone and says what to do; its own text is English and blames the camera
+            // when the permission is missing, so the app asks for the permission itself first (audit A10)
+            scanner.launch(
+                ScanOptions().setDesiredBarcodeFormats(ScanOptions.QR_CODE).setBeepEnabled(false)
+                    .setOrientationLocked(false).setPrompt(getString(R.string.scan_prompt))
+                    .setCaptureActivity(ScanActivity::class.java),
+            )
+        }
+
+        val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            if (granted) scan() else cameraRefused = true
+        }
+
+        fun scanWithPermission() {
+            when {
+                ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED -> scan()
+                // refused for good: the system shows no dialog any more, only the app's settings can help
+                uiPrefs.getBoolean(CAMERA_ASKED, false) && !shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) ->
+                    openOther(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, "package:$packageName".toUri())).also { cameraRefused = true }
+                else -> {
+                    uiPrefs.edit { putBoolean(CAMERA_ASKED, true) }
+                    cameraLauncher.launch(Manifest.permission.CAMERA)
+                }
+            }
+        }
         BackHandler(onBack = onDone)
-        LaunchedEffect(initial) { if (initial.isNotBlank()) lookUp(initial) }
+        // a join link is looked up once, not again after turning the phone
+        LaunchedEffect(initial) { if (initial.isNotBlank() && infoText == null && message == null) lookUp(initial) }
 
         // once the study is found, the screen wears its look (that of its pages)
         StudyTheme(info?.let { Look.fromJson(it.optJSONObject("look")) }, bars = true) {
@@ -597,13 +676,22 @@ class MainActivity : ComponentActivity() {
                 Column(Modifier.padding(pad).padding(16.dp).fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     val i = info
                     if (i == null) {
-                        OutlinedButton(onClick = {
-                            scanner.launch(ScanOptions().setDesiredBarcodeFormats(ScanOptions.QR_CODE).setBeepEnabled(false).setPrompt(""))
-                        }) { Text(stringResource(R.string.scan_qr)) }
+                        OutlinedButton(onClick = { scanWithPermission() }) { Text(stringResource(R.string.scan_qr)) }
+                        if (cameraRefused) {
+                            Text(
+                                stringResource(R.string.camera_refused),
+                                Modifier.semantics { liveRegion = LiveRegionMode.Polite },
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+                        val m = message
                         OutlinedTextField(
                             // lowercase only; the hyphen of a test code (k7qm2x-t3f9a) stays, joinCode removes spaces
-                            value = code, onValueChange = { code = it.lowercase() },
+                            value = code, onValueChange = { code = it.lowercase(); message = null },
                             label = { Text(stringResource(R.string.join_code)) }, singleLine = true,
+                            // the error at the field it is about, read out when it comes (audit A12)
+                            isError = m != null,
+                            supportingText = m?.let { { Text(it, Modifier.semantics { liveRegion = LiveRegionMode.Polite }) } },
                             keyboardOptions = KeyboardOptions(
                                 capitalization = KeyboardCapitalization.None,
                                 autoCorrectEnabled = false,
@@ -647,8 +735,14 @@ class MainActivity : ComponentActivity() {
                         }) { Text(stringResource(R.string.join)) }
                         TextButton(onClick = onDone) { Text(stringResource(R.string.cancel)) }
                     }
-                    if (busy) CircularProgressIndicator()
-                    message?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+                    if (busy) {
+                        val label = stringResource(if (i == null) R.string.looking_up else R.string.joining)
+                        CircularProgressIndicator(Modifier.semantics { contentDescription = label })
+                    }
+                    // an error of joining (the field is gone by then): read out when it comes
+                    if (i != null) message?.let {
+                        Text(it, Modifier.semantics { liveRegion = LiveRegionMode.Polite }, color = MaterialTheme.colorScheme.error)
+                    }
                 }
             }
         }
@@ -674,5 +768,11 @@ class MainActivity : ComponentActivity() {
 
         /** The permission dialog for notifications was shown once: tells "never asked" from "denied for good". */
         const val NOTIFY_ASKED = "notify_asked"
+
+        /** The permission dialog for the camera (QR code) was shown once; the same distinction for the camera. */
+        const val CAMERA_ASKED = "camera_asked"
+
+        /** The join link whose screen is open, kept when the activity is made anew (turning the phone). */
+        const val STATE_LINK = "link"
     }
 }

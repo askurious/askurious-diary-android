@@ -108,4 +108,18 @@
     <string name="remove_exit_open">此研究的结束问卷仍处于开放状态。</string>
     <string name="update_app">您的研究需要此应用的较新版本。请更新应用，以便您的问题继续正确送达。</string>
     <string name="update_button">更新</string>
+    <string name="entry_abort_title">要取消本次填写吗？</string>
+    <string name="entry_abort_text">本页尚未发送的回答将会丢失。</string>
+    <string name="entry_abort">取消填写</string>
+    <string name="entry_keep">继续填写</string>
+    <string name="retry">重试</string>
+    <string name="load_failed">无法加载页面。请检查网络连接后重试。</string>
+    <string name="loading">正在加载</string>
+    <string name="scan_prompt">将研究的二维码放入取景框内</string>
+    <string name="camera_refused">无法使用相机时，应用无法读取二维码。请在下方输入加入码，它印在二维码下方。</string>
+    <string name="next_prompt_about">下一个问题：约 %1$s</string>
+    <string name="too_many">尝试次数过多。请等待几分钟后再试。</string>
+    <string name="looking_up">正在查找研究</string>
+    <string name="joining">正在加入研究</string>
+    <string name="more_actions">“%1$s”的更多操作</string>
 </resources>

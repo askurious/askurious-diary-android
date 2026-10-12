@@ -122,4 +122,18 @@
     <string name="remove_exit_open">Le questionnaire final de cette étude est encore ouvert.</string>
     <string name="update_app">Votre étude nécessite une version plus récente de cette application. Veuillez mettre à jour l’application afin que vos questions continuent d’arriver correctement.</string>
     <string name="update_button">Mettre à jour</string>
+    <string name="entry_abort_title">Annuler cette saisie ?</string>
+    <string name="entry_abort_text">Les réponses de cette page qui n’ont pas encore été envoyées seront perdues.</string>
+    <string name="entry_abort">Annuler la saisie</string>
+    <string name="entry_keep">Continuer</string>
+    <string name="retry">Réessayer</string>
+    <string name="load_failed">La page n’a pas pu être chargée. Veuillez vérifier la connexion et réessayer.</string>
+    <string name="loading">Chargement</string>
+    <string name="scan_prompt">Placez le code QR de l’étude dans le cadre</string>
+    <string name="camera_refused">Sans accès à la caméra, l’application ne peut pas lire de code QR. Saisissez plutôt ci-dessous le code de participation ; il figure sous le code QR.</string>
+    <string name="next_prompt_about">Prochaine question : vers %1$s</string>
+    <string name="too_many">Trop de tentatives. Veuillez patienter quelques minutes avant de réessayer.</string>
+    <string name="looking_up">Recherche de l’étude</string>
+    <string name="joining">Inscription en cours</string>
+    <string name="more_actions">Autres actions pour « %1$s »</string>
 </resources>

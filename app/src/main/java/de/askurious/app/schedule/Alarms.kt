@@ -157,7 +157,9 @@ object Alarms {
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
             .setContentText(text)
-            .setAutoCancel(true)
+            // not gone with the tap: the entry removes it once its page has loaded, so that a page that did not load
+            // (no connection) can be opened again from it (audit A8)
+            .setAutoCancel(false)
             .setCategory(NotificationCompat.CATEGORY_REMINDER)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
