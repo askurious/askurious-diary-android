@@ -32,6 +32,8 @@
     <string name="day_of">第 %1$d 天，共 %2$d 天</string>
     <string name="starts_on">开始日期：%1$s</string>
     <string name="next_prompt">下一个问题：%1$s</string>
+    <!-- fast forward (test person): when the next question really comes, time of day and "in 6 minutes" -->
+    <string name="next_prompt_real" formatted="true">实际时间：%1$s，%2$s</string>
     <string name="finished">已完成，非常感谢！</string>
     <string name="left">您已退出此研究。</string>
     <string name="left_pending">您已退出此研究。一旦有网络连接，本应用将通知研究人员。</string>

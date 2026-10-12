@@ -57,6 +57,9 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import kotlinx.coroutines.delay
+import androidx.compose.runtime.mutableLongStateOf
+import android.text.format.DateUtils
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -275,8 +278,17 @@ class MainActivity : ComponentActivity() {
         var confirmErase by remember { mutableStateOf(false) }
         var eraseError by remember { mutableStateOf<String?>(null) }
         var editQuiet by remember { mutableStateOf(false) }
+        // now, read again every 15 s for a fast-forward person (a study day passes in minutes there): the day and the
+        // next question move while the card is shown
+        var tick by remember { mutableLongStateOf(System.currentTimeMillis()) }
+        if (study.clock != null) LaunchedEffect(study.code) {
+            while (true) {
+                delay(15_000)
+                tick = System.currentTimeMillis()
+            }
+        }
         // the study's date and time: virtual for a fast-forward person
-        val today = study.today()
+        val today = study.today(real = tick)
         val fmt = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
         Card(Modifier.fillMaxWidth()) {
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -304,9 +316,19 @@ class MainActivity : ComponentActivity() {
                         } else if (day != null && total != null) {
                             Text(stringResource(R.string.day_of, day, total))
                         }
-                        Schedule.next(listOf(study), Instant.now()).firstOrNull()?.let {
+                        Schedule.next(listOf(study), Instant.ofEpochMilli(tick)).firstOrNull()?.let {
                             // shown in the study's time, like the day
                             Text(stringResource(R.string.next_prompt, Instant.ofEpochMilli(it.due).atZone(ZoneId.systemDefault()).format(fmt)))
+                            // a fast-forward test person: when it really comes, small below
+                            if (study.clock != null) {
+                                val real = Instant.ofEpochMilli(it.ring).atZone(ZoneId.systemDefault())
+                                    .format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
+                                val wait = DateUtils.getRelativeTimeSpanString(it.ring, tick, DateUtils.MINUTE_IN_MILLIS).toString()
+                                Text(
+                                    stringResource(R.string.next_prompt_real, real, wait),
+                                    style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
                         }
                         if (study.hasRandom) {
                             val quietNow = study.quietOn(today)

@@ -36,6 +36,8 @@
     <string name="day_of">Tag %1$d von %2$d</string>
     <string name="starts_on">Beginnt am %1$s</string>
     <string name="next_prompt">Nächste Frage: %1$s</string>
+    <!-- fast forward (test person): when the next question really comes, time of day and "in 6 minutes" -->
+    <string name="next_prompt_real" formatted="true">in Echtzeit: %1$s, %2$s</string>
     <string name="finished">Abgeschlossen, vielen Dank!</string>
     <string name="left">Sie haben diese Studie verlassen.</string>
     <string name="left_pending">Sie haben diese Studie verlassen. Die App teilt das den Forschenden mit, sobald eine Verbindung besteht.</string>

@@ -36,6 +36,8 @@
     <string name="day_of">Day %1$d of %2$d</string>
     <string name="starts_on">Starts on %1$s</string>
     <string name="next_prompt">Next question: %1$s</string>
+    <!-- fast forward (test person): when the next question really comes, time of day and "in 6 minutes" -->
+    <string name="next_prompt_real" formatted="true">real time: %1$s, %2$s</string>
     <string name="finished">Finished, thank you!</string>
     <string name="left">You left this study.</string>
     <string name="left_pending">You left this study. The app will tell the researchers as soon as it has a connection.</string>

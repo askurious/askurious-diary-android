@@ -36,6 +36,8 @@
     <string name="day_of">Gün %1$d / %2$d</string>
     <string name="starts_on">Başlangıç: %1$s</string>
     <string name="next_prompt">Sonraki soru: %1$s</string>
+    <!-- fast forward (test person): when the next question really comes, time of day and "in 6 minutes" -->
+    <string name="next_prompt_real" formatted="true">gerçek zamanda: %1$s, %2$s</string>
     <string name="finished">Tamamlandı, çok teşekkür ederiz!</string>
     <string name="left">Bu çalışmadan ayrıldınız.</string>
     <string name="left_pending">Bu çalışmadan ayrıldınız. Uygulama, bağlantı kurulur kurulmaz bunu araştırmacılara bildirecek.</string>

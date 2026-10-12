@@ -36,6 +36,8 @@
     <string name="day_of">Dag %1$d van %2$d</string>
     <string name="starts_on">Begint op %1$s</string>
     <string name="next_prompt">Volgende vraag: %1$s</string>
+    <!-- fast forward (test person): when the next question really comes, time of day and "in 6 minutes" -->
+    <string name="next_prompt_real" formatted="true">in echte tijd: %1$s, %2$s</string>
     <string name="finished">Afgerond, hartelijk dank!</string>
     <string name="left">U bent met dit onderzoek gestopt.</string>
     <string name="left_pending">U bent met dit onderzoek gestopt. De app laat het de onderzoekers weten zodra er verbinding is.</string>

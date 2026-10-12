@@ -52,6 +52,8 @@
     <string name="day_of">اليوم %1$d من %2$d</string>
     <string name="starts_on">تبدأ في %1$s</string>
     <string name="next_prompt">السؤال التالي: %1$s</string>
+    <!-- fast forward (test person): when the next question really comes, time of day and "in 6 minutes" -->
+    <string name="next_prompt_real" formatted="true">بالوقت الفعلي: %1$s، %2$s</string>
     <string name="finished">اكتملت، شكرًا جزيلًا!</string>
     <string name="left">لقد غادرت هذه الدراسة.</string>
     <string name="left_pending">لقد غادرت هذه الدراسة. سيُبلغ التطبيق الباحثين بذلك فور توفر الاتصال.</string>

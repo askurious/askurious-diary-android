@@ -40,6 +40,8 @@
     <string name="day_of">Giorno %1$d di %2$d</string>
     <string name="starts_on">Inizia il %1$s</string>
     <string name="next_prompt">Prossima domanda: %1$s</string>
+    <!-- fast forward (test person): when the next question really comes, time of day and "in 6 minutes" -->
+    <string name="next_prompt_real" formatted="true">in tempo reale: %1$s, %2$s</string>
     <string name="finished">Concluso, grazie mille!</string>
     <string name="left">Ha lasciato questo studio.</string>
     <string name="left_pending">Ha lasciato questo studio. L’app lo comunicherà al gruppo di ricerca non appena sarà disponibile una connessione.</string>
