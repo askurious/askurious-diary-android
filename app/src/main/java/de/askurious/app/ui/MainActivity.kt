@@ -29,6 +29,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.material3.CardDefaults
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.material.icons.outlined.Warning
+import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -179,7 +187,8 @@ class MainActivity : ComponentActivity() {
         }
         Scaffold(topBar = {
             TopAppBar(title = { Logo() }, actions = {
-                TextButton(onClick = onJoin) { Text(stringResource(R.string.join_study)) }
+                // an icon: the word mark of the logo needs the room (and the empty start page has the button with text)
+                IconButton(onClick = onJoin) { Icon(Icons.Outlined.Add, contentDescription = stringResource(R.string.join_study)) }
                 IconButton(onClick = onAbout) { Icon(Icons.Outlined.Info, contentDescription = stringResource(R.string.about)) }
             })
         }) { pad ->
@@ -194,14 +203,14 @@ class MainActivity : ComponentActivity() {
                     )
                 }
                 if (askNotify) item {
-                    Notice(stringResource(R.string.allow_notifications)) {
+                    Notice(stringResource(R.string.allow_notifications), Icons.Outlined.Notifications) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                             notifyLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                         }
                     }
                 }
                 if (studies.any { it.running } && !Alarms.canExact(context)) item {
-                    Notice(stringResource(R.string.allow_exact)) {
+                    Notice(stringResource(R.string.allow_exact), Icons.Outlined.Warning) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                             openOther(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, "package:$packageName".toUri()))
                         }
@@ -233,12 +242,26 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * A permission the app needs (notifications, exact alarms): in the accent colour with an icon and a filled button,
+     * at the top of the start page, so that it is not overlooked: without it no prompt arrives (on time).
+     */
     @Composable
-    private fun Notice(text: String, onAllow: () -> Unit) {
-        Card(Modifier.fillMaxWidth()) {
-            Column(Modifier.padding(16.dp)) {
-                Text(text)
-                TextButton(onClick = onAllow) { Text(stringResource(R.string.allow)) }
+    private fun Notice(text: String, icon: ImageVector, onAllow: () -> Unit) {
+        Card(
+            Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            ),
+            border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+        ) {
+            Row(Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(28.dp))
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Text(text, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold)
+                    Button(onClick = onAllow) { Text(stringResource(R.string.allow)) }
+                }
             }
         }
     }

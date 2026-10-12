@@ -1,0 +1,9 @@
+PT Serif Bold, the font of the logo and of the letter in the app icon.
+Copyright © 2010 ParaType Ltd. All rights reserved.
+
+ParaType Ltd grants you the right to use, copy, modify this font and distribute modified and unmodified copies of the
+font by any means, including placing on Web servers for free downloading, embedding in documents and Web pages,
+bundling with commercial and non commercial products, if it does not conflict with the ParaType Free Font License
+placed on www.paratype.com/public/pt_openlicense_eng.asp.
+
+The font is bundled unmodified (res/font/pt_serif_bold.ttf).
