@@ -16,6 +16,8 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   Notifications are private: the lock screen shows only "Askurious – A short question is waiting", never the title of the study or the researchers' notification text.
 - **Thin shell.**
   The questionnaire pages are the participant pages of Askurious in a WebView (`EntryActivity`), opened with a one-time address per entry.
+  A release build opens only addresses of its own server (`Api.absolute`); the bridge `AskuriousApp` counts only while the page is the server's (or the kept page under its address); the WebView reaches no files or content providers of the phone, autofill stays out, and the entry screen allows no screenshots (`FLAG_SECURE`).
+  Links to other sites open in another app (web, mail and phone links only); turning the phone keeps the page and what was typed.
   The app itself does the study list, joining, the schedule, the notifications and the sync.
 - **Schedule on the phone.**
   `Schedule.kt` computes the prompts of the fixed and random modules in local time; the server computes the same times for the export and to check that a prompt was due (`diary.prompts`).
@@ -39,7 +41,12 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   When an entry finds no network, a prompt still open or a self-started module under its daily limit opens the kept page in the WebView; the page's own files come from the phone, any other request fails.
   `participant.js` hands the filled form to `AskuriousApp.offlineSubmit()`, and the app queues it (`AnswerQueue`) and says it will be sent.
   The next sync, and a one-time WorkManager job that waits for a connection, sends it with `POST /offline`; the study card shows how many answers are waiting.
-  An answer leaves the queue when the server stored it or refused it for good (answered already, questionnaire changed, expired, unknown, secret unknown); without a network, at 429 or 5xx it stays.
+  Each answer goes with its `"uuid"` (made when it was queued): the server stores an answer that arrives twice (a timeout after it was stored, two syncs) only once and answers as the first time.
+  Only one sync runs at a time in the app (`Sync`, one lock for the sync on opening, the periodic one, the one after an answer and the one after an entry).
+  An answer leaves the queue when the server stored it or refused it for good (answered already, questionnaire changed, expired, unknown); without a network, at 429 or 5xx it stays.
+  409 `daily_limit` (today's limit of a self-started report was reached, also by answers sent online the phone does not know of) is final: the answer goes and the study card says so once.
+  A 401 or 409 `paused` does not drop it: it waits for the next regular sync, with the same three days of grace as the study itself (`AnswerQueue.afterRefusal`).
+  If the server refuses an answer while its clock and the phone's differ by more than five minutes (from the `Date` header of its answers), the answer stays and the app asks to set the phone's clock right.
   The entry part is always answered online.
 - **Paused by the researchers.**
   `POST /study` may answer `"status": "paused"`: the card says "Paused by the researchers", there are no prompts or reminders, and the self-started modules are hidden; leaving stays possible.
@@ -58,8 +65,13 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   The card shows a small "Fast-forward ×144" badge. Studies without a clock are unchanged.
 - **Server answers.**
   A 401 (`unauthorised`: the server does not know the secret, study deleted) ends a study only if it keeps coming for more than three days (`Study.unauthorised`); any answer of the server clears it.
-  429 (`limit`) and 5xx never change a study.
-  Leaving without a connection marks the study as left at once and sends `/leave` at the next sync (`leavePending`).
+  429 (`limit`, the rate limit) and 5xx never change a study; 409 `daily_limit` is today's limit of a self-started report.
+  Leaving marks the study as left at once, also while a sync runs (a sync that ends afterwards keeps it, `Sync.merged`), and sends `/leave` then or at the next sync (`leavePending`).
+  An answer of the server the app cannot read (a date or a module of a newer kind) costs only that part, never the app; damaged storage is skipped, not crashed on.
+  Bringing the app to the front syncs at most every five minutes and never while a sync runs (`Sync.allIfDue`).
+- **Joining again.**
+  Joining a study that is still on the phone (after leaving it, or with a test or invitation code) asks first: a new participation gets a new secret, and the earlier answers can then no longer be deleted in the app.
+  If the participant goes on, the earlier participation is closed with its own secret (its waiting answers are sent, a running one is left) and then removed from the phone (`Sync.rejoin`): nothing of it goes to the new person.
 - **Deleting answers.**
   "Delete my answers" on every study card calls `POST /api/diary/v1/erase`: the server deletes all answers of this person in this study and the person; the app then removes the study.
   Deleting or removing a study from the list also deletes its queued answers, its kept pages and the log of its prompts.
@@ -82,6 +94,8 @@ export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
 ```
 
 Toolchain: Gradle 9.5.1, AGP 9.3.3 (with the compatibility flags of the upgrade assistant in gradle.properties, still `android.newDsl=false`), Kotlin 2.2.20, compileSdk and targetSdk 36, minSdk 26.
+The wrapper checks the SHA-256 of the Gradle download (`distributionSha256Sum`). Compose BOM 2026.06.01 is the newest that builds with compileSdk 36 (Compose UI 1.12 from BOM 2026.08.00 on needs compileSdk 37).
+Not yet: `gradle/verification-metadata.xml` (`./gradlew --write-verification-metadata sha256 help` on a machine with Gradle), and a check of the transitive versions (`./gradlew :app:dependencies`) before the store upload.
 A release build is shrunk with R8 (`proguard-rules.pro` keeps the WebView bridge `EntryActivity.Bridge`).
 Checks: `./gradlew testDebugUnitTest lintDebug`.
 
@@ -94,7 +108,7 @@ A **release build** talks to `https://ask.askurious.de`, the participants' addre
 1. In Askurious: My surveys › + Diary survey; check the tab "Schedule"; start data collection.
 2. In the app: Join study › type the join code from the tab "Schedule".
 3. Answer the entry part; the study shows "Starts on …" (or "Day 1 of 14" with the start "on the day of the entry part").
-4. To see a prompt at once, set a module's time to a few minutes from now and bring the app to the front again (it syncs whenever it opens).
+4. To see a prompt at once, set a module's time to a few minutes from now and bring the app to the front again (it syncs when it opens, at most every five minutes).
 
 ## App Links
 

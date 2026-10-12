@@ -53,10 +53,15 @@ class OfflinePages(context: Context) {
         pageFile(study, module).delete()
     }
 
-    /** Deletes all pages of [study] and the files no other page needs. */
-    fun dropStudy(study: String) {
-        pages.listFiles()?.filter { it.name.startsWith(hash(study) + "_") }?.forEach { it.delete() }
-        prune()
+    /**
+     * Deletes all pages of [study] and the files no other page needs. Under the same lock as [refresh] (a fetch running
+     * at the same time must not lose the files it just kept) and off the main thread.
+     */
+    suspend fun dropStudy(study: String): Unit = lock.withLock {
+        withContext(Dispatchers.IO) {
+            pages.listFiles()?.filter { it.name.startsWith(hash(study) + "_") }?.forEach { it.delete() }
+            prune()
+        }
     }
 
     private fun has(path: String) = File(files, hash(path)).exists()
@@ -137,21 +142,30 @@ class OfflinePages(context: Context) {
         val version = r.optString("version")
         if (html.isBlank()) return
         val needed = LinkedHashSet<String>()
+        var total = 0L
+        // all files of one page together at most MAX_PAGE: the phone keeps no page that would fill it
+        fun count(path: String) {
+            total += File(files, hash(path)).length()
+            if (total > MAX_PAGE) throw ApiError("error", 413)
+        }
         for (path in resourcePaths(html)) {
             needed += path
             if (!has(path)) {
                 val (bytes, type) = Api.download(path)
                 keepFile(path, bytes, type)
             }
+            count(path)
             // a style sheet names its fonts and images itself
             if (path.substringBefore('?').endsWith(".css")) {
                 val css = file(path)?.first?.readText().orEmpty()
                 for (inner in cssPaths(css, path)) {
+                    val seen = inner in needed
                     needed += inner
                     if (!has(inner)) {
                         val (bytes, type) = Api.download(inner)
                         keepFile(inner, bytes, type)
                     }
+                    if (!seen) count(inner)
                 }
             }
         }
@@ -166,6 +180,9 @@ class OfflinePages(context: Context) {
     companion object {
         /** How often a kept page is checked with the server: often enough that a changed questionnaire is seen soon. */
         private const val REFRESH_MS = 15L * 60 * 1000
+
+        /** The most all files of one kept page may take together. */
+        private const val MAX_PAGE = 30L * 1024 * 1024
 
         private val lock = Mutex()
 

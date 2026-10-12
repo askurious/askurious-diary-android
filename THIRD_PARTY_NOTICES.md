@@ -8,7 +8,7 @@ All of them are under the [Apache License, Version 2.0](https://www.apache.org/l
 | AndroidX Core | `androidx.core:core-ktx` | 1.17.0 | The Android Open Source Project | Apache-2.0 |
 | AndroidX Activity | `androidx.activity:activity-compose` | 1.11.0 | The Android Open Source Project | Apache-2.0 |
 | AndroidX Lifecycle | `androidx.lifecycle:lifecycle-runtime-ktx` | 2.9.4 | The Android Open Source Project | Apache-2.0 |
-| Jetpack Compose (UI, Material 3, Material Icons) | `androidx.compose:compose-bom` and its artifacts | BOM 2024.09.00 | The Android Open Source Project | Apache-2.0 |
+| Jetpack Compose (UI, Material 3, Material Icons) | `androidx.compose:compose-bom` and its artifacts | BOM 2026.06.01 | The Android Open Source Project | Apache-2.0 |
 | Material Components for Android | `com.google.android.material:material` | 1.13.0 | The Android Open Source Project | Apache-2.0 |
 | WorkManager | `androidx.work:work-runtime-ktx` | 2.10.5 | The Android Open Source Project | Apache-2.0 |
 | ZXing Android Embedded | `com.journeyapps:zxing-android-embedded` | 4.3.0 | JourneyApps | Apache-2.0 |

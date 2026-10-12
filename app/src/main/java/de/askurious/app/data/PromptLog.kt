@@ -36,7 +36,7 @@ class PromptLog(context: Context) {
 
     /** The studies whose exit questionnaire was notified or opened. */
     @Synchronized
-    fun exits(): Set<String> = prefs.getStringSet(EXITS, null)?.toSet() ?: emptySet()
+    fun exits(): Set<String> = runCatching { prefs.getStringSet(EXITS, null)?.toSet() }.getOrNull() ?: emptySet()
 
     /** Forgets everything of [study] (deleted or removed from the list). */
     @Synchronized
@@ -62,7 +62,7 @@ class PromptLog(context: Context) {
         prefs.edit { putString(KEY, all.toString()) }
     }
 
-    private fun load(): JSONObject = prefs.getString(KEY, null)?.let { runCatching { JSONObject(it) }.getOrNull() } ?: JSONObject()
+    private fun load(): JSONObject = runCatching { prefs.getString(KEY, null) }.getOrNull()?.let { runCatching { JSONObject(it) }.getOrNull() } ?: JSONObject()
 
     private companion object {
         const val KEY = "log"

@@ -90,4 +90,8 @@
     <string name="exit_default">结束问卷</string>
     <string name="exit_until">开放至 %1$s</string>
     <string name="notif_exit">研究期已结束。请填写：%1$s</string>
+    <string name="limit_refused">您在无网络时给出的一个回答未被保存：此项报告今天的次数已达上限。</string>
+    <string name="clock_off">此手机的时钟不准确。日期和时间设置正确后，无网络时给出的回答才会被发送。</string>
+    <string name="rejoin_confirm">您已在此手机上参加了该研究。再次加入将开始一次新的参与：之后您将无法在应用中删除之前的回答。之前参与中尚在等待的回答会尽可能先发送，否则将被丢弃。如需删除之前的回答，请取消并使用研究卡片上的“删除我的回答”。</string>
+    <string name="rejoin">再次加入</string>
 </resources>

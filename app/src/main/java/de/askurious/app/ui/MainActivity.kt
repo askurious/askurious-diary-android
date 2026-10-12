@@ -2,6 +2,7 @@ package de.askurious.app.ui
 
 import android.Manifest
 import android.app.TimePickerDialog
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -101,9 +102,28 @@ class MainActivity : ComponentActivity() {
     /** Answers waiting to be sent, per study code (AnswerQueue); read again with [studies]. */
     private var waiting by mutableStateOf<Map<String, Int>>(emptyMap())
 
+    /** Studies with an answer the server refused for today's limit, not yet seen by the participant (AnswerQueue). */
+    private var refused by mutableStateOf<Set<String>>(emptySet())
+
+    /** The phone's clock is off and answers given without a connection wait for it (AnswerQueue.Fate.CLOCK). */
+    private var clockOff by mutableStateOf(false)
+
     private fun reload() {
         studies = StudyStore(this).all()
-        waiting = AnswerQueue(this).all().groupingBy { it.study }.eachCount()
+        val queue = AnswerQueue(this)
+        val items = queue.all()
+        waiting = items.groupingBy { it.study }.eachCount()
+        refused = queue.refusedStudies()
+        clockOff = items.isNotEmpty() && Api.clockSkew?.let { Math.abs(it) > AnswerQueue.MAX_SKEW_MS } == true
+    }
+
+    /** Opens [intent] of another app; a phone without an app for it simply gets nothing. */
+    private fun openOther(intent: Intent) {
+        try {
+            startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            // nothing to open it with
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -121,9 +141,9 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         reload()
+        // not while a sync runs, nor again within a few minutes (every return from an entry or a dialog resumes)
         lifecycleScope.launch {
-            Sync.all(this@MainActivity)
-            reload()
+            if (Sync.allIfDue(this@MainActivity) != null) reload()
         }
     }
 
@@ -173,8 +193,13 @@ class MainActivity : ComponentActivity() {
                 if (studies.any { it.running } && !Alarms.canExact(context)) item {
                     Notice(stringResource(R.string.allow_exact)) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                            startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, "package:$packageName".toUri()))
+                            openOther(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, "package:$packageName".toUri()))
                         }
+                    }
+                }
+                if (clockOff) item {
+                    Card(Modifier.fillMaxWidth()) {
+                        Text(stringResource(R.string.clock_off), Modifier.padding(16.dp))
                     }
                 }
                 if (studies.isEmpty()) item {
@@ -276,6 +301,13 @@ class MainActivity : ComponentActivity() {
                 }
                 val n = waiting[study.code] ?: 0
                 if (n > 0) Text(pluralStringResource(R.plurals.answers_waiting, n, n), style = MaterialTheme.typography.bodySmall)
+                if (study.code in refused) {
+                    Text(stringResource(R.string.limit_refused), style = MaterialTheme.typography.bodySmall)
+                    TextButton(onClick = {
+                        AnswerQueue(context).clearRefused(study.code)
+                        reload()
+                    }) { Text(stringResource(R.string.close)) }
+                }
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     if (study.running && study.hasRandom) {
                         TextButton(onClick = { editQuiet = true }) { Text(stringResource(R.string.quiet_change)) }
@@ -286,8 +318,10 @@ class MainActivity : ComponentActivity() {
                         // a leave not yet told to the server keeps the study, so that the next sync can send it
                         TextButton(onClick = {
                             // with its queued answers and kept pages: the participant takes the study off the phone
-                            Sync.forget(context, study.code)
-                            reload()
+                            scope.launch {
+                                Sync.forget(context, study.code)
+                                reload()
+                            }
                         }) { Text(stringResource(R.string.remove_from_list)) }
                     }
                     // every study still holds its secret, so its answers can be deleted, also after the end
@@ -319,6 +353,9 @@ class MainActivity : ComponentActivity() {
                 confirmButton = {
                     TextButton(onClick = {
                         confirmLeave = false
+                        // shown as left at once, also while a sync runs; the server hears of it as soon as it can
+                        Sync.markLeft(context, study)
+                        reload()
                         scope.launch {
                             Sync.leave(context, study)
                             reload()
@@ -412,6 +449,7 @@ class MainActivity : ComponentActivity() {
         var info by remember { mutableStateOf<JSONObject?>(null) }
         var busy by remember { mutableStateOf(false) }
         var message by remember { mutableStateOf<String?>(null) }
+        var confirmRejoin by remember { mutableStateOf(false) }
 
         fun errorText(e: ApiError) = when (e.key) {
             "unknown" -> getString(R.string.not_found)
@@ -430,6 +468,33 @@ class MainActivity : ComponentActivity() {
                     info = Api.join(clean)
                 } catch (e: ApiError) {
                     message = errorText(e)
+                }
+                busy = false
+            }
+        }
+
+        /**
+         * Enrols with the join code of [info]. When the same study is on the phone already (the participant agreed to
+         * join again), the earlier participation is closed first with its own secret (Sync.rejoin): its waiting answers
+         * never go to the new person.
+         */
+        fun enrol(info: JSONObject) {
+            busy = true
+            message = null
+            scope.launch {
+                try {
+                    val r = Api.enrol(code)
+                    val secret = r.optString("secret").ifBlank { throw ApiError("error") }
+                    val study = Study.fromJson(JSONObject(info.toString()).put("status", "pending").put("modules", org.json.JSONArray()), secret)
+                    val old = StudyStore(context).get(study.code)
+                    if (old != null) Sync.rejoin(context, old, study) else StudyStore(context).put(study)
+                    startActivity(EntryActivity.intent(context, study.code, "entry"))
+                    onDone()
+                } catch (e: ApiError) {
+                    message = errorText(e)
+                } catch (e: org.json.JSONException) {
+                    // the server's answer lacks something this app needs
+                    message = getString(R.string.error)
                 }
                 busy = false
             }
@@ -491,25 +556,28 @@ class MainActivity : ComponentActivity() {
                     if (minutes > 0) Text(pluralStringResource(R.plurals.about_minutes, minutes, minutes))
                     Text(stringResource(R.string.join_privacy), style = MaterialTheme.typography.bodySmall)
                     Button(enabled = !busy, onClick = {
-                        busy = true
-                        scope.launch {
-                            try {
-                                val r = Api.enrol(code)
-                                val study = Study.fromJson(i.put("status", "pending").put("modules", org.json.JSONArray()), r.getString("secret"))
-                                StudyStore(context).put(study)
-                                startActivity(EntryActivity.intent(context, study.code, "entry"))
-                                onDone()
-                            } catch (e: ApiError) {
-                                message = errorText(e)
-                            }
-                            busy = false
-                        }
+                        // the same study on this phone already: joining again replaces its secret, so ask first
+                        if (StudyStore(context).get(i.optString("code")) != null) confirmRejoin = true else enrol(i)
                     }) { Text(stringResource(R.string.join)) }
                     TextButton(onClick = onDone) { Text(stringResource(R.string.cancel)) }
                 }
                 if (busy) CircularProgressIndicator()
                 message?.let { Text(it, color = MaterialTheme.colorScheme.error) }
             }
+        }
+        val pendingInfo = info
+        if (confirmRejoin && pendingInfo != null) {
+            AlertDialog(
+                onDismissRequest = { confirmRejoin = false },
+                text = { Text(stringResource(R.string.rejoin_confirm)) },
+                confirmButton = {
+                    TextButton(onClick = {
+                        confirmRejoin = false
+                        enrol(pendingInfo)
+                    }) { Text(stringResource(R.string.rejoin)) }
+                },
+                dismissButton = { TextButton(onClick = { confirmRejoin = false }) { Text(stringResource(R.string.cancel)) } },
+            )
         }
     }
 }

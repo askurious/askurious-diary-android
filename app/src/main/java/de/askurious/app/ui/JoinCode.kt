@@ -19,7 +19,8 @@ fun joinCode(text: String): String? {
     val scheme = uri?.scheme?.lowercase()
     val code = when {
         uri == null || scheme == null -> t
-        scheme == "askurious" -> segments(uri).lastOrNull() ?: uri.host
+        // askurious://join/<code>; askurious://join alone names no study (the host is no code)
+        scheme == "askurious" -> segments(uri).lastOrNull()
         scheme.startsWith("http") -> segments(uri).let { s -> s.getOrNull(s.indexOf("j") + 1) }
         else -> t
     }

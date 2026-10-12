@@ -12,11 +12,19 @@ import org.json.JSONArray
 class StudyStore(context: Context) {
     private val prefs = context.applicationContext.getSharedPreferences("studies", Context.MODE_PRIVATE)
 
+    /**
+     * The stored studies. A damaged entry is skipped, not thrown: one unreadable study must not crash the app at every
+     * start (DiaryApp.onCreate reads them) and so cost the participant the secrets of all the others. While the stored
+     * text cannot be read at all, nothing is written over it ([save] refuses), so a later fix can still read it.
+     */
     @Synchronized
-    fun all(): List<Study> {
-        val raw = prefs.getString(KEY, null) ?: return emptyList()
-        val arr = JSONArray(raw)
-        return (0 until arr.length()).map { Study.fromJson(arr.getJSONObject(it)) }
+    fun all(): List<Study> = read() ?: emptyList()
+
+    /** The stored studies, null when the stored text is there but no JSON list. */
+    private fun read(): List<Study>? {
+        val raw = runCatching { prefs.getString(KEY, null) }.getOrNull() ?: return emptyList()
+        val arr = runCatching { JSONArray(raw) }.getOrNull() ?: return null
+        return (0 until arr.length()).mapNotNull { k -> runCatching { Study.fromJson(arr.getJSONObject(k)) }.getOrNull() }
     }
 
     fun get(code: String): Study? = all().firstOrNull { it.code == code }
@@ -42,6 +50,8 @@ class StudyStore(context: Context) {
     fun remove(code: String) = save(all().filterNot { it.code == code })
 
     private fun save(studies: List<Study>) {
+        // a stored text that is no JSON list at all stays as it is, unless a new study is joined (put) on purpose
+        if (read() == null && studies.isEmpty()) return
         prefs.edit { putString(KEY, JSONArray(studies.map { it.toJson() }).toString()) }
     }
 

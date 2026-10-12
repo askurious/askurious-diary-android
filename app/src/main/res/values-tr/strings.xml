@@ -97,4 +97,8 @@
     <string name="exit_default">Son anket</string>
     <string name="exit_until">%1$s tarihine kadar açık</string>
     <string name="notif_exit">Çalışma süresi sona erdi. Lütfen şunu yanıtlayın: %1$s</string>
+    <string name="limit_refused">Bağlantı olmadan verdiğiniz bir yanıt kaydedilmedi: bu bildirim için bugünkü sınıra zaten ulaşılmıştı.</string>
+    <string name="clock_off">Bu telefonun saati yanlış. Bağlantı olmadan verilen yanıtlar, tarih ve saat doğru ayarlandığında gönderilecek.</string>
+    <string name="rejoin_confirm">Bu telefonda bu çalışmaya zaten katılıyorsunuz. Yeniden katılmak yeni bir katılım başlatır: önceki yanıtlarınızı artık uygulamada silemezsiniz. Önceki katılımın bekleyen yanıtları mümkünse önce gönderilir, değilse silinir. Önceki yanıtlarınızı silmek için iptal edin ve çalışma kartındaki “Yanıtlarımı sil” düğmesini kullanın.</string>
+    <string name="rejoin">Yeniden katıl</string>
 </resources>

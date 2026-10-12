@@ -97,4 +97,8 @@
     <string name="exit_default">Abschlussbefragung</string>
     <string name="exit_until">Offen bis %1$s</string>
     <string name="notif_exit">Der Studienzeitraum ist vorbei. Bitte beantworten Sie noch: %1$s</string>
+    <string name="limit_refused">Eine Antwort, die Sie ohne Verbindung gegeben haben, wurde nicht gespeichert: Die Höchstzahl dieser Meldung für heute war schon erreicht.</string>
+    <string name="clock_off">Die Uhr dieses Telefons geht falsch. Antworten, die ohne Verbindung gegeben wurden, werden gesendet, sobald Datum und Uhrzeit stimmen.</string>
+    <string name="rejoin_confirm">Sie nehmen auf diesem Telefon schon an dieser Studie teil. Ein erneuter Beitritt beginnt eine neue Teilnahme: Ihre früheren Antworten können Sie dann nicht mehr in der App löschen. Noch wartende Antworten der früheren Teilnahme werden vorher gesendet, wenn möglich, sonst verworfen. Um Ihre früheren Antworten zu löschen, brechen Sie ab und nutzen Sie „Meine Antworten löschen“ auf der Karte der Studie.</string>
+    <string name="rejoin">Erneut beitreten</string>
 </resources>

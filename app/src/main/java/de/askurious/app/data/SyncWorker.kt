@@ -11,6 +11,11 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import de.askurious.app.schedule.Alarms
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
 /**
@@ -45,29 +50,70 @@ class SyncWorker(context: Context, params: WorkerParameters) : CoroutineWorker(c
     }
 }
 
+/**
+ * Everything that talks to the server for the stored studies. One at a time in the whole process ([lock]): the sync
+ * when the app comes to the front, the periodic one, the one after an answer was queued and the one after an entry
+ * would otherwise send the same queued answer twice and write studies back over each other. Everything here runs off
+ * the main thread.
+ */
 object Sync {
+    private val lock = Mutex()
+
+    /** When the last full sync without network trouble ended (real epoch milliseconds); 0 = none in this process. */
+    @Volatile
+    private var lastAll = 0L
+
+    /** The shortest time between two full syncs started by bringing the app to the front ([allIfDue]). */
+    const val RESUME_GAP_MS = 5L * 60 * 1000
+
+    /**
+     * Fetches one study and stores it (see [oneLocked]). Reads the stored study again under the lock: the one handed
+     * in may be out of date (left, or joined again meanwhile). Returns the stored study, or [study] if it is gone.
+     */
+    suspend fun one(context: Context, study: Study): Study = withContext(Dispatchers.IO) {
+        lock.withLock {
+            val current = StudyStore(context).get(study.code)
+            if (current == null) study else oneLocked(context, current)
+        }
+    }
+
     /**
      * Fetches one study and stores it, sending quiet hours the server has not confirmed yet
      * ([Study.quietPending]); from then on the server's history counts. A 401 (secret unknown) ends the study only
      * when it keeps coming ([Study.unauthorised]); any answer of the server clears it. Other errors (offline, 429,
-     * 5xx) change nothing and are thrown.
+     * 5xx) change nothing and are thrown. What the participant changed on the phone while the call ran wins over the
+     * server's answer ([merged]). Only with [lock] held.
      */
-    suspend fun one(context: Context, study: Study): Study {
+    private suspend fun oneLocked(context: Context, study: Study): Study {
         val sent = study.quietPending
-        var fresh = try {
+        val fetched = try {
             Study.fromJson(Api.study(study.secret, sent), study.secret)
         } catch (e: ApiError) {
             if (e.status == 401) study.unauthorised(System.currentTimeMillis()) else throw e
         }
-        // quiet hours changed again while the call ran stay pending for the next sync (after a 401 they stay anyway)
-        val pending = StudyStore(context).get(study.code)?.quietPending
-        if (pending != null && pending != sent) fresh = fresh.copy(quietPending = pending)
-        StudyStore(context).update(fresh)
+        val store = StudyStore(context)
+        val fresh = merged(fetched, store.get(study.code), sent) ?: return study
+        store.update(fresh)
         // an exit questionnaire that opened after its moment (or whose moment passed while the phone was off)
         Alarms.notifyExits(context)
         Alarms.rearm(context)
         // the pages for answering without a connection; only while the study is still on the phone
-        if (StudyStore(context).get(fresh.code) != null) OfflinePages(context).refresh(fresh)
+        if (store.get(fresh.code) != null) OfflinePages(context).refresh(fresh)
+        return fresh
+    }
+
+    /**
+     * The study to store after a sync: [fetched] (the server's answer, or the study after a 401) with what the
+     * participant did on the phone while the call ran, as [stored] holds it now. Null when the study is gone from the
+     * phone or was joined again with another secret: nothing to store. Quiet hours changed again stay pending (after a
+     * 401 they stay anyway); a leave stays, also one the server has not heard of yet ([Study.leavePending]).
+     */
+    fun merged(fetched: Study, stored: Study?, sentQuiet: QuietFrom?): Study? {
+        if (stored == null || stored.secret != fetched.secret) return null
+        var fresh = fetched
+        val pending = stored.quietPending
+        if (pending != null && pending != sentQuiet) fresh = fresh.copy(quietPending = pending)
+        if (stored.status == "left" || stored.leavePending) fresh = fresh.copy(status = "left", leavePending = stored.leavePending)
         return fresh
     }
 
@@ -76,28 +122,48 @@ object Sync {
      * server's rule), and sent with a sync; without a connection the next sync sends them. The server's answer then
      * says from which day they count.
      */
-    suspend fun setQuiet(context: Context, study: Study, quiet: Quiet?) {
+    suspend fun setQuiet(context: Context, study: Study, quiet: Quiet?): Unit = withContext(Dispatchers.IO) {
         val store = StudyStore(context)
-        val current = store.get(study.code) ?: return
+        val current = store.get(study.code) ?: return@withContext
         val from = current.today().plusDays(1)
         store.update(current.copy(quietPending = QuietFrom(from, quiet)))
         Alarms.rearm(context)
         try {
-            store.get(study.code)?.let { one(context, it) }
-        } catch (e: ApiError) {
+            one(context, current)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
             SyncWorker.sendSoon(context)
         }
     }
 
     /**
-     * Leaves [study]: shown as left at once, and told to the server. When the server cannot be reached (offline,
-     * 429, 5xx) the study keeps [Study.leavePending] and [all] tries again. Returns false in that case.
+     * Marks [study] as left on the phone at once, before anything is sent: no more prompts from now on, even if the
+     * app is closed or a sync is running ([merged] keeps it). The server hears of it with [leave].
      */
-    suspend fun leave(context: Context, study: Study): Boolean {
+    fun markLeft(context: Context, study: Study) {
         val store = StudyStore(context)
-        // stored as pending first: no more prompts from now on, even if the app is closed during the call
-        store.update(study.copy(status = "left", leavePending = true))
+        val current = store.get(study.code) ?: return
+        store.update(current.copy(status = "left", leavePending = true))
         Alarms.rearm(context)
+    }
+
+    /**
+     * Leaves [study]: shown as left at once ([markLeft]), and told to the server. When the server cannot be reached
+     * (offline, 429, 5xx) the study keeps [Study.leavePending] and [all] tries again. Returns false in that case.
+     */
+    suspend fun leave(context: Context, study: Study): Boolean = withContext(Dispatchers.IO) {
+        markLeft(context, study)
+        lock.withLock {
+            // a sync that ran meanwhile may have sent it already
+            val current = StudyStore(context).get(study.code)
+            if (current == null || !current.leavePending) true else leaveLocked(context, current)
+        }
+    }
+
+    /** Tells the server that [study] was left; only with [lock] held. */
+    private suspend fun leaveLocked(context: Context, study: Study): Boolean {
+        val store = StudyStore(context)
         OfflinePages(context).dropStudy(study.code)
         val sent = try {
             Api.leave(study.secret)
@@ -106,7 +172,9 @@ object Sync {
             // any other answer (401: the server no longer knows the secret) leaves nothing to tell
             !e.transient
         }
-        if (sent) store.update(study.copy(status = "left", leavePending = false))
+        if (sent) store.get(study.code)?.takeIf { it.secret == study.secret }?.let {
+            store.update(it.copy(status = "left", leavePending = false))
+        }
         return sent
     }
 
@@ -114,20 +182,26 @@ object Sync {
      * Deletes all answers of [study] on the server and removes the study from the phone. A 401 means there is
      * nothing left on the server, so the study goes too; any other error (offline, ...) is thrown and the study stays.
      */
-    suspend fun erase(context: Context, study: Study) {
-        try {
-            Api.erase(study.secret)
-        } catch (e: ApiError) {
-            if (e.status != 401) throw e
+    suspend fun erase(context: Context, study: Study): Unit = withContext(Dispatchers.IO) {
+        lock.withLock {
+            try {
+                Api.erase(study.secret)
+            } catch (e: ApiError) {
+                if (e.status != 401) throw e
+            }
+            forgetLocked(context, study.code)
         }
-        forget(context, study.code)
     }
 
     /**
      * Removes [code] from the phone with everything kept for it: queued answers, kept pages and the log of its
      * prompts. Used by "Delete my answers" and "Remove from list".
      */
-    fun forget(context: Context, code: String) {
+    suspend fun forget(context: Context, code: String): Unit = withContext(Dispatchers.IO) {
+        lock.withLock { forgetLocked(context, code) }
+    }
+
+    private suspend fun forgetLocked(context: Context, code: String) {
         StudyStore(context).remove(code)
         AnswerQueue(context).removeStudy(code)
         OfflinePages(context).dropStudy(code)
@@ -136,11 +210,42 @@ object Sync {
     }
 
     /**
-     * Sends the queued answers of [study] (POST /offline). Returns false when some must wait (no network, 429,
-     * 5xx). An answer the questionnaire no longer fits ("changed") is dropped with the kept page, which the sync of
-     * the study fetches again.
+     * Joins [study] in place of [old], an earlier participation in the same study on this phone, after the participant
+     * agreed to it. The earlier participation is closed first, with its own secret: its queued answers are sent (they
+     * belong to it, never to the new person), a running one is left, then everything kept for it goes; then the new
+     * one is stored. Trouble with the earlier one does not stop it: the new secret is already issued. Under the lock,
+     * so that no sync writes the earlier study back.
      */
-    suspend fun send(context: Context, study: Study): Boolean {
+    suspend fun rejoin(context: Context, old: Study, study: Study): Unit = withContext(Dispatchers.IO) {
+        lock.withLock {
+            try {
+                sendLocked(context, old)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                // what could not be sent goes with the earlier participation
+            }
+            if (old.status == "active" || old.status == "pending" || old.status == "paused" || old.leavePending) {
+                try {
+                    Api.leave(old.secret)
+                } catch (e: ApiError) {
+                    // nothing more to do for it: the participant chose to start again
+                }
+            }
+            forgetLocked(context, old.code)
+            StudyStore(context).put(study)
+            Alarms.rearm(context)
+        }
+    }
+
+    /**
+     * Sends the queued answers of [study] (POST /offline, each with its uuid). Returns false when some must wait for
+     * the network (no network, 429, 5xx). An answer the questionnaire no longer fits ("changed") is dropped with the
+     * kept page, which the sync of the study fetches again; one over today's limit is dropped and noted for the card;
+     * one refused for now (401, "paused") waits with a grace, one refused for the phone's clock until it is too old.
+     * Only with [lock] held.
+     */
+    private suspend fun sendLocked(context: Context, study: Study): Boolean {
         val queue = AnswerQueue(context)
         var kept = false
         for (item in queue.of(study.code)) {
@@ -155,13 +260,22 @@ object Sync {
             } catch (e: ApiError) {
                 e
             }
-            when (AnswerQueue.fate(error)) {
+            when (AnswerQueue.fate(error, Api.clockSkew)) {
                 AnswerQueue.Fate.KEEP -> kept = true
+                AnswerQueue.Fate.CLOCK -> {}
+                AnswerQueue.Fate.WAIT -> {
+                    val next = AnswerQueue.afterRefusal(item, System.currentTimeMillis())
+                    if (next == null) queue.remove(item.id) else if (next != item) queue.replace(next)
+                }
                 AnswerQueue.Fate.CHANGED -> {
                     queue.remove(item.id)
                     OfflinePages(context).drop(study.code, item.module)
                 }
-                else -> queue.remove(item.id)
+                AnswerQueue.Fate.LIMIT -> {
+                    queue.remove(item.id)
+                    queue.noteRefused(study.code)
+                }
+                AnswerQueue.Fate.SENT, AnswerQueue.Fate.DROP -> queue.remove(item.id)
             }
         }
         return !kept
@@ -181,24 +295,53 @@ object Sync {
     }
 
     /**
+     * Whether a full sync started by bringing the app to the front should run at [now]: none is [running], and the
+     * last one without network trouble ended at least [RESUME_GAP_MS] ago ([last]; 0 = none yet; a time after [now],
+     * the clock set back, counts as long ago).
+     */
+    fun due(last: Long, now: Long, running: Boolean): Boolean =
+        !running && (last == 0L || now - last !in 0 until RESUME_GAP_MS)
+
+    /**
+     * [all] when the app comes to the front, but not while one runs and not again within [RESUME_GAP_MS] of the last
+     * one that reached the server: every return from an entry or a permission dialog would otherwise fetch every
+     * study and check every kept page. Returns null when it did not run.
+     */
+    suspend fun allIfDue(context: Context): Boolean? {
+        if (!due(lastAll, System.currentTimeMillis(), lock.isLocked)) return null
+        return all(context)
+    }
+
+    /**
      * Sends the queued answers, fetches all studies that can bring news ([wanted]) and sends pending leaves; returns
      * true when the network was missing or an answer or a leave could not be sent yet (SyncWorker then tries again).
-     * The answers go first: those given before leaving belong to the study.
+     * The answers go first: those given before leaving belong to the study. A study whose sync fails in any other way
+     * (an answer of the server this app cannot read) is skipped; the others go on.
      */
-    suspend fun all(context: Context): Boolean {
-        var offline = false
-        val exits = PromptLog(context).exits()
-        for (s in StudyStore(context).all()) {
-            if (!send(context, s)) offline = true
-            try {
-                when {
-                    s.leavePending -> if (!leave(context, s)) offline = true
-                    wanted(s, s.code in exits) -> one(context, s)
+    suspend fun all(context: Context): Boolean = withContext(Dispatchers.IO) {
+        lock.withLock {
+            var offline = false
+            val exits = PromptLog(context).exits()
+            val store = StudyStore(context)
+            for (code in store.all().map { it.code }) {
+                // read again: a leave or a removal while the studies before were synced
+                val s = store.get(code) ?: continue
+                try {
+                    if (!sendLocked(context, s)) offline = true
+                    when {
+                        s.leavePending -> if (!leaveLocked(context, s)) offline = true
+                        wanted(s, s.code in exits) -> oneLocked(context, s)
+                    }
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: ApiError) {
+                    if (e.key == "offline") offline = true
+                } catch (e: Exception) {
+                    // the next sync tries again; the study stays as it is
                 }
-            } catch (e: ApiError) {
-                if (e.key == "offline") offline = true
             }
+            if (!offline) lastAll = System.currentTimeMillis()
+            offline
         }
-        return offline
     }
 }

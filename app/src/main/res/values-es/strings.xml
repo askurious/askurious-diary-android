@@ -104,4 +104,8 @@
     <string name="exit_default">Cuestionario final</string>
     <string name="exit_until">Disponible hasta el %1$s</string>
     <string name="notif_exit">El periodo del estudio ha terminado. Por favor, responda: %1$s</string>
+    <string name="limit_refused">Una respuesta que dio sin conexión no se guardó: ya se había alcanzado el límite de hoy para este registro.</string>
+    <string name="clock_off">El reloj de este teléfono no está bien. Las respuestas dadas sin conexión se enviarán en cuanto la fecha y la hora sean correctas.</string>
+    <string name="rejoin_confirm">Ya participa en este estudio en este teléfono. Unirse de nuevo inicia una nueva participación: después ya no podrá borrar sus respuestas anteriores en la aplicación. Las respuestas pendientes de la participación anterior se envían antes si es posible; si no, se descartan. Para borrar sus respuestas anteriores, cancele y use «Borrar mis respuestas» en la tarjeta del estudio.</string>
+    <string name="rejoin">Unirse de nuevo</string>
 </resources>

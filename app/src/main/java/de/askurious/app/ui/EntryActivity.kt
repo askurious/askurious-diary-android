@@ -1,9 +1,13 @@
 package de.askurious.app.ui
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.view.View
+import android.view.WindowManager
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
 import android.webkit.WebResourceRequest
@@ -49,8 +53,10 @@ import de.askurious.app.data.Trigger
 import de.askurious.app.schedule.Alarms
 import de.askurious.app.schedule.Prompt
 import de.askurious.app.schedule.Schedule
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.io.ByteArrayInputStream
 import kotlin.coroutines.resume
@@ -78,9 +84,23 @@ class EntryActivity : ComponentActivity() {
     /** When the kept page was shown: "started" of the queued answer. */
     private var offlineStarted = 0L
 
+    /** The WebView of this entry, to check that a call of the bridge comes from the page of the server. */
+    private var web: WebView? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        // the answers are nobody else's business: no screenshots, no picture in the list of recent apps
+        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+        // turning the phone does not recreate the activity (android:configChanges); anything else that does (the
+        // system took the app's memory, a change of language) keeps what was answered already
+        if (savedInstanceState != null) {
+            done = savedInstanceState.getBoolean(STATE_DONE)
+            saved = savedInstanceState.getBoolean(STATE_SAVED)
+            error = savedInstanceState.getString(STATE_ERROR)
+            offlineStarted = savedInstanceState.getLong(STATE_STARTED)
+            if (done && !saved && error == null) return finish()
+        }
         val code = intent.getStringExtra(EXTRA_STUDY) ?: return finish()
         val module = intent.getStringExtra(EXTRA_MODULE) ?: return finish()
         val due = intent.getLongExtra(EXTRA_DUE, 0L).takeIf { it > 0 }
@@ -98,22 +118,25 @@ class EntryActivity : ComponentActivity() {
         }
 
         val study = StudyStore(this).get(code) ?: return finish()
-        if (savedInstanceState == null || (url == null && offline == null)) {
+        if (!saved && error == null && url == null && offline == null) {
             lifecycleScope.launch {
                 try {
                     val address = Api.absolute(Api.entry(study.secret, module, due, notified, reminded))
                     clearWebState()
                     url = address
                 } catch (e: ApiError) {
-                    val kept = if (e.key == "offline") keptPage(study, module, due) else null
+                    // the kept page is read from the files directory: not on the main thread
+                    val kept = if (e.key == "offline") withContext(Dispatchers.IO) { keptPage(study, module, due) } else null
                     if (kept != null) {
                         clearWebState()
-                        offlineStarted = study.now()
+                        if (offlineStarted == 0L) offlineStarted = study.now()
                         offline = kept
-                    } else {
+                    } else if (error == null) {
                         error = when (e.key) {
                             "expired" -> getString(R.string.expired)
-                            "limit" -> getString(R.string.limit)
+                            // today's limit of a self-started report (409); a 429 "limit" is the rate limit
+                            "daily_limit" -> getString(R.string.limit)
+                            "paused" -> getString(R.string.paused)
                             "offline" -> getString(R.string.offline)
                             else -> getString(R.string.error)
                         }
@@ -167,6 +190,45 @@ class EntryActivity : ComponentActivity() {
         suspendCancellableCoroutine { cont -> cookies.removeAllCookies { cont.resume(Unit) } }
         cookies.flush()
         WebStorage.getInstance().deleteAllData()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(STATE_DONE, done)
+        outState.putBoolean(STATE_SAVED, saved)
+        outState.putString(STATE_ERROR, error)
+        outState.putLong(STATE_STARTED, offlineStarted)
+    }
+
+    override fun onDestroy() {
+        web = null
+        super.onDestroy()
+    }
+
+    /**
+     * Whether the page now in the WebView is one of the server (online) or the kept page under its address: only then
+     * may a call of the bridge count. The bridge is reachable from every frame; the participant pages have none, and
+     * a page of another site must not be able to end an entry or queue an answer.
+     */
+    private fun fromOwnPage(): Boolean {
+        val current = web?.url ?: return false
+        return runCatching { Api.sameOrigin(java.net.URI(current), java.net.URI(Api.baseUrl)) }.getOrDefault(false)
+    }
+
+    /**
+     * Opens a link of the page in another app: only web, mail and phone links, and nothing happens when no app on the
+     * phone takes it (an unknown scheme must not crash the entry).
+     */
+    private fun openOutside(uri: Uri) {
+        val scheme = uri.scheme?.lowercase() ?: return
+        if (scheme !in OUTSIDE_SCHEMES) return
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, uri))
+        } catch (e: ActivityNotFoundException) {
+            // nothing to open it with
+        } catch (e: SecurityException) {
+            // the only app for it does not take links from others
+        }
     }
 
     private fun finished() {
@@ -230,8 +292,14 @@ class EntryActivity : ComponentActivity() {
             clearCache(true)
             settings.javaScriptEnabled = true
             settings.domStorageEnabled = true
+            // no files and no content providers of the phone: the pages come from the server or from OfflinePages
+            settings.allowFileAccess = false
+            settings.allowContentAccess = false
+            // autofill services do not see (nor offer) what is typed into a questionnaire
+            importantForAutofill = View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS
             settings.userAgentString = settings.userAgentString + " AskuriousDiary/1"
             addJavascriptInterface(Bridge(), "AskuriousApp")
+            web = this
         }
     }
 
@@ -243,7 +311,7 @@ class EntryActivity : ComponentActivity() {
                 // opens in the browser
                 override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                     if (request.url.host == host) return false
-                    startActivity(Intent(Intent.ACTION_VIEW, request.url))
+                    openOutside(request.url)
                     return true
                 }
             }
@@ -279,18 +347,19 @@ class EntryActivity : ComponentActivity() {
 
                 // links leave the app as on the online page; nothing loads in place of the kept page
                 override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
-                    if (request.url.host != base.host) startActivity(Intent(Intent.ACTION_VIEW, request.url))
+                    if (request.url.host != base.host) openOutside(request.url)
                     return true
                 }
             }
-            loadDataWithBaseURL(Api.baseUrl + "/", page.html, "text/html", "utf-8", null)
+            // the history URL is the server's too, so that url (fromOwnPage) names it
+            loadDataWithBaseURL(Api.baseUrl + "/", page.html, "text/html", "utf-8", Api.baseUrl + "/")
         }
     }
 
     inner class Bridge {
         @JavascriptInterface
         fun done() {
-            runOnUiThread { finished() }
+            runOnUiThread { if (fromOwnPage()) finished() }
         }
 
         /**
@@ -299,7 +368,7 @@ class EntryActivity : ComponentActivity() {
          */
         @JavascriptInterface
         fun offlineSubmit(json: String) {
-            runOnUiThread { offlineSubmitted(json) }
+            runOnUiThread { if (fromOwnPage()) offlineSubmitted(json) }
         }
     }
 
@@ -309,6 +378,13 @@ class EntryActivity : ComponentActivity() {
         private const val EXTRA_DUE = "due"
         private const val EXTRA_NOTIFIED = "notified"
         private const val EXTRA_REMINDED = "reminded"
+        private const val STATE_DONE = "done"
+        private const val STATE_SAVED = "saved"
+        private const val STATE_ERROR = "error"
+        private const val STATE_STARTED = "started"
+
+        /** The links of a page that may open in another app. */
+        private val OUTSIDE_SCHEMES = setOf("http", "https", "mailto", "tel")
 
         /** The module key of the exit questionnaire (POST /entry {"module": "exit"}, without due). */
         const val EXIT = "exit"

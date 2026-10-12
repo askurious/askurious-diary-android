@@ -104,4 +104,8 @@
     <string name="exit_default">Questionnaire final</string>
     <string name="exit_until">Disponible jusqu’au %1$s</string>
     <string name="notif_exit">La période de l’étude est terminée. Merci de remplir : %1$s</string>
+    <string name="limit_refused">Une réponse donnée sans connexion n’a pas été enregistrée : la limite d’aujourd’hui pour cette saisie était déjà atteinte.</string>
+    <string name="clock_off">L’horloge de ce téléphone n’est pas à l’heure. Les réponses données sans connexion seront envoyées dès que la date et l’heure seront correctes.</string>
+    <string name="rejoin_confirm">Vous participez déjà à cette étude sur ce téléphone. Rejoindre à nouveau commence une nouvelle participation : vous ne pourrez alors plus supprimer vos réponses précédentes dans l’application. Les réponses en attente de la participation précédente sont d’abord envoyées si possible, sinon supprimées. Pour supprimer vos réponses précédentes, annulez et utilisez « Supprimer mes réponses » sur la carte de l’étude.</string>
+    <string name="rejoin">Rejoindre à nouveau</string>
 </resources>
