@@ -6,7 +6,7 @@
     <string name="join_study">Deelnemen aan onderzoek</string>
     <string name="join_code">Deelnamecode</string>
     <string name="scan_qr">QR-code scannen</string>
-    <string name="look_up">Zoeken</string>
+    <string name="look_up">Verder</string>
     <string name="join">Deelnemen</string>
     <string name="cancel">Annuleren</string>
     <string name="back">Terug</string>
@@ -70,8 +70,7 @@
     <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Alle rechten voorbehouden.</string>
     <string name="about_oss_title">Opensourcesoftware</string>
     <string name="about_oss_intro">De app gebruikt deze bibliotheken, elk onder de Apache License 2.0:</string>
-    <string name="show_licence">Licentietekst tonen</string>
-    <string name="hide_licence">Licentietekst verbergen</string>
+    <string name="show_licence">Licentieteksten tonen</string>
     <string name="notif_reminder">Herinnering: er wacht nog een korte vraag</string>
     <string name="offline_saved">Opgeslagen. Uw antwoorden worden verstuurd zodra de telefoon verbinding heeft.</string>
     <plurals name="answers_waiting">
@@ -83,8 +82,7 @@
     <string name="quiet_now">Rusttijden: %1$s</string>
     <string name="quiet_from_tomorrow">Vanaf morgen: %1$s</string>
     <string name="quiet_none">geen</string>
-    <string name="quiet_none_button">Geen</string>
-    <string name="quiet_change">Rusttijden</string>
+    <string name="quiet_change">Rusttijden wijzigen</string>
     <string name="quiet_hint">Tijdens uw rusttijden komt er geen vraag op een willekeurig tijdstip. Een wijziging geldt vanaf morgen en alleen voor de vragen op willekeurige tijdstippen, niet voor die op vaste tijden.</string>
     <string name="quiet_from">Van</string>
     <string name="quiet_to">tot</string>
@@ -124,9 +122,48 @@
     <string name="loading">Laden</string>
     <string name="scan_prompt">Houd de QR-code van het onderzoek binnen het kader</string>
     <string name="camera_refused">Zonder toegang tot de camera kan de app geen QR-code lezen. Voer hieronder de deelnamecode in; die staat onder de QR-code.</string>
-    <string name="next_prompt_about">Volgende vraag: rond %1$s</string>
     <string name="too_many">Te veel pogingen. Wacht een paar minuten voordat u het opnieuw probeert.</string>
     <string name="looking_up">Onderzoek wordt gezocht</string>
     <string name="joining">Bezig met deelnemen</string>
     <string name="more_actions">Meer acties voor ‘%1$s’</string>
+    <string name="about_contact_title">Contact</string>
+    <string name="about_contact">Aanbieder van de app en van het platform Askurious:</string>
+    <string name="imprint">Colofon</string>
+    <string name="allowed">Toegestaan</string>
+    <string name="today_at">vandaag, %1$s</string>
+    <string name="tomorrow_at">morgen, %1$s</string>
+    <string name="date_at" formatted="true">%1$s, %2$s</string>
+    <string name="done">Klaar</string>
+    <string name="later">Later</string>
+    <string name="ended_group">Beëindigd</string>
+    <string name="erase_title">Antwoorden in ‘%1$s’ verwijderen?</string>
+    <string name="erased_done">De antwoorden in ‘%1$s’ zijn verwijderd.</string>
+    <string name="erasing">Bezig met verwijderen…</string>
+    <string name="exit_open">De onderzoeksperiode is voorbij. Vul nog de slotvragenlijst in.</string>
+    <string name="exit_open_until">De onderzoeksperiode is voorbij. Vul nog de slotvragenlijst in (open tot %1$s).</string>
+    <string name="fast_forward_spoken">Versneld, %1$d keer</string>
+    <string name="join_code_hint">Staat onder de QR-code van het onderzoek, bijv. k7qm2x</string>
+    <string name="leave_title">‘%1$s’ verlaten?</string>
+    <string name="left_done">U hebt ‘%1$s’ verlaten.</string>
+    <string name="removed_done">‘%1$s’ uit de lijst verwijderd.</string>
+    <string name="licence_texts">Licentieteksten</string>
+    <string name="notif_channel_desc">De vragen van uw dagboekonderzoeken op de tijden die de onderzoekers kozen, en de herinneringen</string>
+    <string name="notif_exit_until" formatted="true">De onderzoeksperiode is voorbij. Vul nog in: %1$s (open tot %2$s)</string>
+    <string name="notif_reminder_of">Herinnering: %1$s</string>
+    <string name="participation_title">Deelname</string>
+    <string name="period_title">Onderzoeksperiode</string>
+    <string name="period_from_to" formatted="true">%1$s – %2$s</string>
+    <string name="period_over">Onderzoeksperiode voorbij – wordt bijgewerkt…</string>
+    <string name="quiet_use">Rusttijden gebruiken</string>
+    <string name="quiet_from_cd">Rusttijden vanaf %1$s</string>
+    <string name="quiet_to_cd">Rusttijden tot %1$s</string>
+    <string name="ready_title">Zodat vragen op tijd komen</string>
+    <string name="ready_intro">De app stelt de vragen van het onderzoek op het juiste moment met een melding. Daarvoor zijn twee toestemmingen nodig; beide kunt u later in de instellingen van de telefoon wijzigen.</string>
+    <string name="ready_notify_title">Meldingen</string>
+    <string name="ready_notify_text">Zonder meldingen komt er geen vraag aan.</string>
+    <string name="ready_exact_title">Wekkers en herinneringen</string>
+    <string name="ready_exact_text">Zonder deze toestemming kunnen vragen enkele minuten te laat komen.</string>
+    <string name="state_pending">Eerste vragenlijst nog niet afgerond</string>
+    <string name="state_running">Loopt</string>
+    <string name="time_about">rond %1$s</string>
 </resources>

@@ -6,7 +6,7 @@
     <string name="join_study">Присоединиться к исследованию</string>
     <string name="join_code">Код участия</string>
     <string name="scan_qr">Сканировать QR-код</string>
-    <string name="look_up">Найти</string>
+    <string name="look_up">Далее</string>
     <string name="join">Присоединиться</string>
     <string name="cancel">Отмена</string>
     <string name="back">Назад</string>
@@ -78,8 +78,7 @@
     <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Все права защищены.</string>
     <string name="about_oss_title">Программы с открытым исходным кодом</string>
     <string name="about_oss_intro">Приложение использует следующие библиотеки, все по лицензии Apache License 2.0:</string>
-    <string name="show_licence">Показать текст лицензии</string>
-    <string name="hide_licence">Скрыть текст лицензии</string>
+    <string name="show_licence">Показать тексты лицензий</string>
     <string name="notif_reminder">Напоминание: Вас всё ещё ждёт короткий вопрос</string>
     <string name="offline_saved">Сохранено. Ваши ответы будут отправлены, как только у телефона появится соединение.</string>
     <plurals name="answers_waiting">
@@ -93,8 +92,7 @@
     <string name="quiet_now">Время тишины: %1$s</string>
     <string name="quiet_from_tomorrow">С завтрашнего дня: %1$s</string>
     <string name="quiet_none">нет</string>
-    <string name="quiet_none_button">Нет</string>
-    <string name="quiet_change">Время тишины</string>
+    <string name="quiet_change">Изменить часы тишины</string>
     <string name="quiet_hint">В Ваше время тишины не приходят вопросы в случайное время. Изменение действует с завтрашнего дня и только для вопросов в случайное время, но не для вопросов в фиксированное время.</string>
     <string name="quiet_from">С</string>
     <string name="quiet_to">до</string>
@@ -138,9 +136,48 @@
     <string name="loading">Загрузка</string>
     <string name="scan_prompt">Наведите рамку на QR-код исследования</string>
     <string name="camera_refused">Без доступа к камере приложение не может прочитать QR-код. Введите ниже код участия — он указан под QR-кодом.</string>
-    <string name="next_prompt_about">Следующий вопрос: около %1$s</string>
     <string name="too_many">Слишком много попыток. Подождите несколько минут, прежде чем повторить.</string>
     <string name="looking_up">Поиск исследования</string>
     <string name="joining">Присоединение к исследованию</string>
     <string name="more_actions">Другие действия для «%1$s»</string>
+    <string name="about_contact_title">Контакты</string>
+    <string name="about_contact">Поставщик приложения и платформы Askurious:</string>
+    <string name="imprint">Выходные данные</string>
+    <string name="allowed">Разрешено</string>
+    <string name="today_at">сегодня, %1$s</string>
+    <string name="tomorrow_at">завтра, %1$s</string>
+    <string name="date_at" formatted="true">%1$s, %2$s</string>
+    <string name="done">Готово</string>
+    <string name="later">Позже</string>
+    <string name="ended_group">Завершённые</string>
+    <string name="erase_title">Удалить ответы в «%1$s»?</string>
+    <string name="erased_done">Ответы в «%1$s» удалены.</string>
+    <string name="erasing">Удаление…</string>
+    <string name="exit_open">Период исследования завершён. Пожалуйста, ответьте ещё на заключительный опрос.</string>
+    <string name="exit_open_until">Период исследования завершён. Пожалуйста, ответьте ещё на заключительный опрос (открыт до %1$s).</string>
+    <string name="fast_forward_spoken">Ускорение в %1$d раз</string>
+    <string name="join_code_hint">Указан под QR-кодом исследования, напр. k7qm2x</string>
+    <string name="leave_title">Покинуть «%1$s»?</string>
+    <string name="left_done">Вы покинули «%1$s».</string>
+    <string name="removed_done">«%1$s» удалено из списка.</string>
+    <string name="licence_texts">Тексты лицензий</string>
+    <string name="notif_channel_desc">Вопросы ваших дневниковых исследований в выбранное исследователями время и напоминания</string>
+    <string name="notif_exit_until" formatted="true">Период исследования завершён. Пожалуйста, ответьте: %1$s (открыт до %2$s)</string>
+    <string name="notif_reminder_of">Напоминание: %1$s</string>
+    <string name="participation_title">Участие</string>
+    <string name="period_title">Период исследования</string>
+    <string name="period_from_to" formatted="true">%1$s – %2$s</string>
+    <string name="period_over">Период исследования завершён – обновление…</string>
+    <string name="quiet_use">Использовать часы тишины</string>
+    <string name="quiet_from_cd">Часы тишины с %1$s</string>
+    <string name="quiet_to_cd">Часы тишины до %1$s</string>
+    <string name="ready_title">Чтобы вопросы приходили вовремя</string>
+    <string name="ready_intro">Приложение задаёт вопросы исследования уведомлением в нужный момент. Для этого нужны два разрешения; оба можно позже изменить в настройках телефона.</string>
+    <string name="ready_notify_title">Уведомления</string>
+    <string name="ready_notify_text">Без них вопросы не приходят.</string>
+    <string name="ready_exact_title">Будильники и напоминания</string>
+    <string name="ready_exact_text">Без этого вопросы могут приходить с опозданием на несколько минут.</string>
+    <string name="state_pending">Первая анкета ещё не завершена</string>
+    <string name="state_running">Идёт</string>
+    <string name="time_about">около %1$s</string>
 </resources>

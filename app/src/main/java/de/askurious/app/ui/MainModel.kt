@@ -81,15 +81,20 @@ class MainModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    /** Deletes the participant's answers at the server; [onError] gets the error, and the study stays (its secret). */
-    fun erase(study: Study, onError: (ApiError) -> Unit) {
+    /**
+     * Deletes the participant's answers at the server; [done] gets null when they are gone, else the error, and the
+     * study stays (its secret).
+     */
+    fun erase(study: Study, done: (ApiError?) -> Unit) {
         viewModelScope.launch {
-            try {
+            val error = try {
                 Sync.erase(context, study)
+                null
             } catch (e: ApiError) {
-                onError(e)
+                e
             }
             reload()
+            done(error)
         }
     }
 
