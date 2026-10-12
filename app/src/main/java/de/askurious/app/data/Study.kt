@@ -212,17 +212,20 @@ data class Study(
         /**
          * Reads the study as the server sends it (POST /api/diary/v1/study) or as stored on the device; the server
          * sends neither "unauthorised_since", "leave_pending" nor "quiet_pending", so a fresh copy starts without them;
-         * "pauses", "exit" and "clock" have the same shape in both.
+         * "pauses", "exit" and "clock" have the same shape in both. Defensive: a date that is no date counts as none,
+         * and a module that cannot be read is left out (the server may send something newer than this app knows); only
+         * a missing "code" throws.
          */
         fun fromJson(o: JSONObject, secret: String = o.optString("secret")): Study = Study(
             code = o.getString("code"),
             secret = secret,
             title = o.optString("title"),
             status = o.optString("status", "pending"),
-            firstDay = o.optStringOrNull("first_day")?.let(LocalDate::parse),
-            lastDay = o.optStringOrNull("last_day")?.let(LocalDate::parse),
-            modules = o.optJSONArray("modules")?.let { arr -> (0 until arr.length()).map { module(arr.getJSONObject(it)) } }
-                ?: emptyList(),
+            firstDay = o.optStringOrNull("first_day")?.let { runCatching { LocalDate.parse(it) }.getOrNull() },
+            lastDay = o.optStringOrNull("last_day")?.let { runCatching { LocalDate.parse(it) }.getOrNull() },
+            modules = o.optJSONArray("modules")?.let { arr ->
+                (0 until arr.length()).mapNotNull { k -> runCatching { module(arr.getJSONObject(k)) }.getOrNull() }
+            } ?: emptyList(),
             unauthorisedSince = if (o.isNull("unauthorised_since")) null else o.optLong("unauthorised_since"),
             leavePending = o.optBoolean("leave_pending", false),
             seed = o.optLong("seed", 0L),
@@ -247,7 +250,8 @@ data class Study(
         private fun module(o: JSONObject): Module {
             val t = o.getJSONObject("trigger")
             val weekdayList = t.optJSONArray("weekdays")
-            val weekdays = weekdayList?.let { a -> (0 until a.length()).map { a.getInt(it) }.toSet() } ?: (1..7).toSet()
+            val weekdays = weekdayList?.let { a -> (0 until a.length()).mapNotNull { k -> a.optInt(k, 0).takeIf { it in 1..7 } }.toSet() }
+                ?: (1..7).toSet()
             val trigger = when (t.optString("t")) {
                 "self" -> Trigger.Self(t.optString("label"), t.optInt("max_per_day", 0))
                 "random" -> Trigger.Random(
@@ -266,7 +270,9 @@ data class Study(
                 else -> {
                     val times = t.optJSONArray("times")
                     Trigger.Fixed(
-                        times = times?.let { a -> (0 until a.length()).map { LocalTime.parse(a.getString(it)) } } ?: emptyList(),
+                        times = times?.let { a ->
+                            (0 until a.length()).mapNotNull { k -> runCatching { LocalTime.parse(a.getString(k)) }.getOrNull() }
+                        } ?: emptyList(),
                         weekdays = weekdays,
                     )
                 }

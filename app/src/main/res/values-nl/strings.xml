@@ -97,4 +97,8 @@
     <string name="exit_default">Afsluitende vragenlijst</string>
     <string name="exit_until">Open tot %1$s</string>
     <string name="notif_exit">De onderzoeksperiode is voorbij. Vult u nog in: %1$s</string>
+    <string name="limit_refused">Een antwoord dat u zonder verbinding gaf, is niet opgeslagen: het maximum van vandaag voor deze melding was al bereikt.</string>
+    <string name="clock_off">De klok van deze telefoon staat verkeerd. Antwoorden die zonder verbinding zijn gegeven, worden verstuurd zodra datum en tijd kloppen.</string>
+    <string name="rejoin_confirm">U neemt op deze telefoon al deel aan dit onderzoek. Opnieuw deelnemen start een nieuwe deelname: uw eerdere antwoorden kunt u daarna niet meer in de app verwijderen. Nog wachtende antwoorden van de eerdere deelname worden eerst verstuurd als dat lukt, anders vervallen ze. Om uw eerdere antwoorden te verwijderen, annuleert u en gebruikt u ‘Mijn antwoorden verwijderen’ op de kaart van het onderzoek.</string>
+    <string name="rejoin">Opnieuw deelnemen</string>
 </resources>

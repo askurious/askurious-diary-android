@@ -97,4 +97,8 @@
     <string name="exit_default">Final survey</string>
     <string name="exit_until">Open until %1$s</string>
     <string name="notif_exit">The study period is over. Please answer: %1$s</string>
+    <string name="limit_refused">An answer you gave without a connection was not stored: today\'s limit for this report had already been reached.</string>
+    <string name="clock_off">The clock of this phone is wrong. Answers given without a connection will be sent once the date and time are set correctly.</string>
+    <string name="rejoin_confirm">You already take part in this study on this phone. Joining again starts a new participation: your earlier answers can then no longer be deleted in the app. Answers of the earlier participation still waiting are sent first if possible, otherwise discarded. To delete your earlier answers, cancel and use \"Delete my answers\" on the study card.</string>
+    <string name="rejoin">Join again</string>
 </resources>

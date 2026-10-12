@@ -196,8 +196,9 @@ object Alarms {
 class PromptReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val at = Alarms.dueOf(intent)
-        if (at > 0) Alarms.notify(context, at)
-        Alarms.rearm(context)
+        // nothing stored may crash the app at every alarm (DiaryApp)
+        if (at > 0) runCatching { Alarms.notify(context, at) }
+        runCatching { Alarms.rearm(context) }
     }
 }
 
@@ -207,7 +208,7 @@ class BootReceiver : BroadcastReceiver() {
         // the receiver is exported for these system broadcasts; anything else (an intent another app sends
         // directly) is ignored
         if (intent.action !in ACTIONS) return
-        Alarms.rearm(context)
+        runCatching { Alarms.rearm(context) }
     }
 
     private companion object {

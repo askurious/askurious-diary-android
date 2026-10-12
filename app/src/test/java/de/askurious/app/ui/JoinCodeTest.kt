@@ -42,5 +42,8 @@ class JoinCodeTest {
         assertNull(joinCode(""))
         assertNull(joinCode("   "))
         assertNull(joinCode("https://ask.askurious.de/j/"))
+        // the host of the custom scheme is no code
+        assertNull(joinCode("askurious://join"))
+        assertNull(joinCode("askurious://join/"))
     }
 }

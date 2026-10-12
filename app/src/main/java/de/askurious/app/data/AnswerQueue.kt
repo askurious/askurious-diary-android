@@ -21,7 +21,9 @@ class AnswerQueue(context: Context) {
     /**
      * One answer. [due] and [notified]: of the prompt, null for a module the participant started; [started]: the
      * page was shown; [completed]: the participant submitted it; [version]: of the kept page; [form]: the filled
-     * form as participant.js passed it, {field: [values]}, as JSON text.
+     * form as participant.js passed it, {field: [values]}, as JSON text. [id] goes to the server as "uuid": an answer
+     * sent twice (a timeout after the server stored it, two syncs at once) is stored only once. [refusedSince]: real
+     * epoch milliseconds of the first refusal that may pass (401, "paused"; see [Fate.WAIT]), null until then.
      */
     data class Item(
         val id: String,
@@ -33,13 +35,15 @@ class AnswerQueue(context: Context) {
         val completed: Long,
         val version: String,
         val form: String,
+        val refusedSince: Long? = null,
     ) {
-        /** The body of POST /offline. */
-        fun body(): JSONObject = JSONObject().put("module", module)
+        /** The body of POST /offline; "uuid" makes sending it again harmless (the server answers as the first time). */
+        fun body(): JSONObject = JSONObject().put("uuid", id).put("module", module)
             .put("due", due ?: JSONObject.NULL).put("notified", notified ?: JSONObject.NULL)
             .put("started", started).put("completed", completed).put("version", version).put("form", JSONObject(form))
 
         fun toJson(): JSONObject = body().put("id", id).put("study", study)
+            .put("refused_since", refusedSince ?: JSONObject.NULL)
 
         companion object {
             fun fromJson(o: JSONObject) = Item(
@@ -52,13 +56,14 @@ class AnswerQueue(context: Context) {
                 completed = o.optLong("completed"),
                 version = o.optString("version"),
                 form = (o.optJSONObject("form") ?: JSONObject()).toString(),
+                refusedSince = if (o.isNull("refused_since")) null else o.optLong("refused_since"),
             )
         }
     }
 
     @Synchronized
     fun all(): List<Item> {
-        val raw = prefs.getString(KEY, null) ?: return emptyList()
+        val raw = runCatching { prefs.getString(KEY, null) }.getOrNull() ?: return emptyList()
         val arr = runCatching { JSONArray(raw) }.getOrNull() ?: return emptyList()
         return (0 until arr.length()).mapNotNull { runCatching { Item.fromJson(arr.getJSONObject(it)) }.getOrNull() }
     }
@@ -76,7 +81,31 @@ class AnswerQueue(context: Context) {
     fun remove(id: String) = save(all().filterNot { it.id == id })
 
     @Synchronized
-    fun removeStudy(study: String) = save(all().filterNot { it.study == study })
+    fun removeStudy(study: String) {
+        save(all().filterNot { it.study == study })
+        clearRefused(study)
+    }
+
+    /** Stores [item] again in place of the one with its id (the time of a first refusal); nothing if it is gone. */
+    @Synchronized
+    fun replace(item: Item) {
+        val all = all()
+        if (all.any { it.id == item.id }) save(all.map { if (it.id == item.id) item else it })
+    }
+
+    /**
+     * An answer of [study] the server refused because today's limit of the report was reached (409 daily_limit):
+     * the study card says so once, until the participant closes the note.
+     */
+    @Synchronized
+    fun noteRefused(study: String) = prefs.edit { putStringSet(REFUSED, refusedStudies() + study) }
+
+    /** The studies with an answer refused for the daily limit that the participant has not seen yet. */
+    @Synchronized
+    fun refusedStudies(): Set<String> = runCatching { prefs.getStringSet(REFUSED, null)?.toSet() }.getOrNull() ?: emptySet()
+
+    @Synchronized
+    fun clearRefused(study: String) = prefs.edit { putStringSet(REFUSED, refusedStudies() - study) }
 
     /** Whether an answer to the prompt of [module] due at [due] is waiting: it counts as opened for the reminder. */
     fun has(study: String, module: String, due: Long): Boolean = all().any { it.study == study && it.module == module && it.due == due }
@@ -100,8 +129,24 @@ class AnswerQueue(context: Context) {
         /** no network, the rate limit or a fault of the server: try again later */
         KEEP,
 
-        /** refused for good (answered already, expired, unknown module, secret unknown): remove it unsent */
+        /**
+         * refused for now (401: the server does not know the secret; 409 "paused"): kept with the same grace as the
+         * study itself ([Study.UNAUTHORISED_GRACE_MS], [afterRefusal]), tried again at the next regular sync, not at
+         * once: a server restored from a backup or a pause of the researchers must not cost the answer
+         */
+        WAIT,
+
+        /**
+         * refused because the phone's clock is wrong (a 400 while the server's clock differs by more than
+         * [MAX_SKEW_MS], or "clock"): kept until it is too old ([tooOld]), the app shows a note
+         */
+        CLOCK,
+
+        /** refused for good (answered already, expired, unknown module): remove it unsent */
         DROP,
+
+        /** today's limit of the self-started report was reached (409 daily_limit): remove it, the card says so */
+        LIMIT,
 
         /** the questionnaire changed since the page was kept: remove the answer and the kept page, fetch it again */
         CHANGED,
@@ -109,17 +154,37 @@ class AnswerQueue(context: Context) {
 
     companion object {
         private const val KEY = "items"
+        private const val REFUSED = "refused"
 
         /** The server takes an answer up to 7 days after "started". */
         const val MAX_AGE_MS = 7L * 24 * 3600 * 1000
 
-        /** [error]: null when the server answered 200. */
-        fun fate(error: ApiError?): Fate = when {
+        /** How far the phone's clock may be off before the server refuses an answer (its LATE_SECONDS). */
+        const val MAX_SKEW_MS = 5L * 60 * 1000
+
+        /**
+         * [error]: null when the server answered 200. [skew]: the phone's clock minus the server's (milliseconds, from
+         * the Date header of the server's answer), null when unknown.
+         */
+        fun fate(error: ApiError?, skew: Long? = null): Fate = when {
             error == null -> Fate.SENT
             error.transient -> Fate.KEEP
             error.key == "changed" -> Fate.CHANGED
-            // 409 done, 410 expired, 400 unknown, 401 and anything else the server will not take later either
+            error.key == "daily_limit" -> Fate.LIMIT
+            error.status == 401 || error.key == "paused" -> Fate.WAIT
+            error.key == "clock" || (error.status == 400 && skew != null && Math.abs(skew) > MAX_SKEW_MS) -> Fate.CLOCK
+            // 409 done, 410 expired, 400 unknown and anything else the server will not take later either
             else -> Fate.DROP
+        }
+
+        /**
+         * [item] after a refusal that may pass ([Fate.WAIT]) at the real moment [now]: with the time of the first
+         * refusal noted, or null when the server has refused it for more than [Study.UNAUTHORISED_GRACE_MS] (then it
+         * is dropped, like the study itself after that long).
+         */
+        fun afterRefusal(item: Item, now: Long): Item? {
+            val since = item.refusedSince ?: return item.copy(refusedSince = now)
+            return if (now - since > Study.UNAUTHORISED_GRACE_MS) null else item
         }
 
         /** Whether [item] is too old for the server at [now]: dropped without trying. */

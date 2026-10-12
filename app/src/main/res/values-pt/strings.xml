@@ -104,4 +104,8 @@
     <string name="exit_default">Questionário final</string>
     <string name="exit_until">Disponível até %1$s</string>
     <string name="notif_exit">O período do estudo terminou. Por favor, responda: %1$s</string>
+    <string name="limit_refused">Uma resposta dada sem ligação não foi guardada: o limite de hoje para este registo já tinha sido atingido.</string>
+    <string name="clock_off">O relógio deste telemóvel está errado. As respostas dadas sem ligação serão enviadas assim que a data e a hora estiverem certas.</string>
+    <string name="rejoin_confirm">Já participa neste estudo neste telemóvel. Participar de novo inicia uma nova participação: depois já não poderá apagar as suas respostas anteriores na aplicação. As respostas pendentes da participação anterior são enviadas antes, se possível; caso contrário, são descartadas. Para apagar as suas respostas anteriores, cancele e use «Apagar as minhas respostas» no cartão do estudo.</string>
+    <string name="rejoin">Participar de novo</string>
 </resources>

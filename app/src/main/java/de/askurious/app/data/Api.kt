@@ -12,9 +12,10 @@ import java.time.ZoneId
 import java.util.Locale
 
 /**
- * What a call can end in, besides success: the server's error key ("expired", "limit", "unknown", "unauthorised",
- * ...) or no network ("offline", [status] 0). A 401 means the server does not know the secret (study deleted);
- * a 429 is the rate limit and says nothing about the study.
+ * What a call can end in, besides success: the server's error key ("expired", "daily_limit", "limit", "unknown",
+ * "unauthorised", ...) or no network ("offline", [status] 0). A 401 means the server does not know the secret (study
+ * deleted); a 429 ("limit") is the rate limit and says nothing about the study; a 409 "daily_limit" is today's limit
+ * of a self-started report, final for that answer.
  */
 class ApiError(val key: String, val status: Int = 0) : Exception(key) {
     /** Worth trying again later: no network, the rate limit, or a fault of the server. */
@@ -29,6 +30,14 @@ object Api {
     private const val BASE = "/api/diary/v1"
 
     val baseUrl: String get() = BuildConfig.BASE_URL
+
+    /**
+     * The phone's clock minus the server's, in milliseconds, from the Date header of the last answer of the server;
+     * null until one came. Only to tell why answers given without a connection wait (AnswerQueue.Fate.CLOCK).
+     */
+    @Volatile
+    var clockSkew: Long? = null
+        private set
 
     /** The public information of a study, for the join screen. */
     suspend fun join(code: String): JSONObject =
@@ -58,7 +67,7 @@ object Api {
         val body = JSONObject().put("module", module).put("tz", ZoneId.systemDefault().id)
             .put("due", due ?: JSONObject.NULL).put("notified", notified ?: JSONObject.NULL)
         if (reminded) body.put("reminded", true)
-        return call("POST", "$BASE/entry", body, secret).getString("url")
+        return call("POST", "$BASE/entry", body, secret).optStringOrNull("url") ?: throw ApiError("error")
     }
 
     /**
@@ -117,13 +126,30 @@ object Api {
 
     /**
      * The address of an entry as the server sent it. A debug build keeps only its path and puts it under its own
-     * BASE_URL: the server may name itself with another port or name than the one adb reverse leads to.
+     * BASE_URL: the server may name itself with another port or name than the one adb reverse leads to. A release
+     * build takes only an address of its own BASE_URL (scheme, host and port): the WebView and its bridge must never
+     * open another site, even if a server sent one. Anything else is an [ApiError] "error".
      */
-    fun absolute(url: String): String {
-        if (!url.startsWith("http")) return baseUrl + url
-        if (!BuildConfig.DEBUG) return url
-        val uri = java.net.URI(url)
-        return baseUrl + uri.rawPath + (uri.rawQuery?.let { "?$it" } ?: "")
+    fun absolute(url: String): String = absolute(url, baseUrl, BuildConfig.DEBUG)
+
+    /** [absolute] for a given [base] and build type; plain Kotlin for the unit tests. */
+    fun absolute(url: String, base: String, debug: Boolean): String {
+        if (url.startsWith("/") && !url.startsWith("//")) return base + url
+        val uri = runCatching { java.net.URI(url) }.getOrNull() ?: throw ApiError("error")
+        if (debug) return base + uri.rawPath.orEmpty() + (uri.rawQuery?.let { "?$it" } ?: "")
+        if (!sameOrigin(uri, java.net.URI(base))) throw ApiError("error")
+        return url
+    }
+
+    /** Whether [uri] has the scheme, host and port of [base] (the default port counted as given). */
+    fun sameOrigin(uri: java.net.URI, base: java.net.URI): Boolean {
+        fun port(u: java.net.URI) = if (u.port != -1) u.port else when (u.scheme?.lowercase()) {
+            "https" -> 443
+            "http" -> 80
+            else -> -1
+        }
+        return uri.scheme.equals(base.scheme, ignoreCase = true) && uri.host != null &&
+            uri.host.equals(base.host, ignoreCase = true) && port(uri) == port(base)
     }
 
     private fun lang(): String = Locale.getDefault().language
@@ -144,6 +170,8 @@ object Api {
             try {
                 if (body != null) conn.outputStream.use { it.write(body.toString().toByteArray()) }
                 val code = conn.responseCode
+                // the Date header has whole seconds: a skew below a few seconds is noise and not looked at
+                conn.date.takeIf { it > 0 }?.let { clockSkew = System.currentTimeMillis() - it }
                 val stream = if (code in 200..299) conn.inputStream else conn.errorStream
                 val text = stream?.bufferedReader()?.use { it.readText() }.orEmpty()
                 val json = runCatching { JSONObject(text) }.getOrNull()

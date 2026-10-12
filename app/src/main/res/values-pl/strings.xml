@@ -111,4 +111,8 @@
     <string name="exit_default">Ankieta końcowa</string>
     <string name="exit_until">Dostępna do %1$s</string>
     <string name="notif_exit">Okres badania dobiegł końca. Prosimy wypełnić: %1$s</string>
+    <string name="limit_refused">Odpowiedź udzielona bez połączenia nie została zapisana: dzisiejszy limit dla tego zgłoszenia był już osiągnięty.</string>
+    <string name="clock_off">Zegar tego telefonu jest ustawiony nieprawidłowo. Odpowiedzi udzielone bez połączenia zostaną wysłane, gdy data i godzina będą prawidłowe.</string>
+    <string name="rejoin_confirm">To badanie jest już na tym telefonie. Ponowne dołączenie rozpoczyna nowy udział: wcześniejszych odpowiedzi nie będzie można już usunąć w aplikacji. Oczekujące odpowiedzi z wcześniejszego udziału zostaną najpierw wysłane, jeśli to możliwe, w przeciwnym razie odrzucone. Aby usunąć wcześniejsze odpowiedzi, prosimy anulować i użyć przycisku „Usuń moje odpowiedzi” na karcie badania.</string>
+    <string name="rejoin">Dołącz ponownie</string>
 </resources>
