@@ -33,6 +33,14 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   The free minutes of the day (the windows without the quiet hours) are cut into `per_day` equal slots, each draws one minute at least `min_gap`/2 from its edges.
   All times are local times of that calendar day: a window 20:00–02:00 gives early-morning times of the same day.
   `app/src/test/resources/diary_random_vectors.json` is the server's `tests/diary_random_vectors.json`, unchanged; `RandomTimesTest` checks every case.
+- **The same prompts as the server.**
+  The server checks with its own list (`diary.prompts`) that a prompt was due, so the app's `Schedule.prompts` must give exactly that list.
+  `app/src/test/resources/diary_schedule_vectors.json` is the server's `tests/diary_schedule_vectors.json`, unchanged: studies as `POST /study` sends them (fixed and random modules, weekdays, days of a module, quiet hours changing during the study, pauses, both changes of summer time, a zone far from Berlin) with the prompts the server computes for them; `ScheduleVectorsTest` checks every case.
+  When the server's rule changes, it regenerates the file (`python tests/test_diary_app_contract.py --update`), and the copy here and `Schedule.kt` change with it; the server's test compares both copies when this repository lies next to it.
+- **Update request.**
+  `POST /study` sends `"min_app_version"` (the server's `DIARY_MIN_APP_VERSION`, 0 = every version).
+  When a study asks for a newer version than the running `versionCode`, the start page asks the participant to update the app (button to its Play Store page); the app goes on working meanwhile.
+  `versionCode` is the number of Git commits up to the build (`git rev-list --count HEAD`), `versionName` "0.1.<that number>", so every later build on main is newer.
 - **Quiet hours.**
   A running study with a random module shows its quiet hours on the study card ("Quiet hours", from/to or none); they keep the random prompts out of that time, never the fixed ones.
   `POST /study` sends a change (`"quiet": ["22:00", "07:00"]` or `null`), the server keeps it from the person's next day on and answers with the whole history (`"quiet": [{"from", "q"}]`); the app uses exactly that history, the entry of the last `from` on or before a day (`QuietFrom.on`, the server's `quiet_on`).

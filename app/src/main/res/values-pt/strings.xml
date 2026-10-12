@@ -120,4 +120,6 @@
     <string name="remove_title">Remover «%1$s»?</string>
     <string name="remove_confirm">O estudo é removido deste telemóvel. Depois, já não poderá apagar as suas respostas através da aplicação.</string>
     <string name="remove_exit_open">O questionário final deste estudo ainda está aberto.</string>
+    <string name="update_app">O seu estudo precisa de uma versão mais recente desta aplicação. Atualize a aplicação para que as suas perguntas continuem a chegar corretamente.</string>
+    <string name="update_button">Atualizar</string>
 </resources>
