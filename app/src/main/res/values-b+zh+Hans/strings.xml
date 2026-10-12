@@ -6,7 +6,7 @@
     <string name="join_study">加入研究</string>
     <string name="join_code">加入码</string>
     <string name="scan_qr">扫描二维码</string>
-    <string name="look_up">查找</string>
+    <string name="look_up">继续</string>
     <string name="join">加入</string>
     <string name="cancel">取消</string>
     <string name="back">返回</string>
@@ -66,8 +66,7 @@
     <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University。保留所有权利。</string>
     <string name="about_oss_title">开源软件</string>
     <string name="about_oss_intro">本应用使用以下库，均采用 Apache License 2.0 许可：</string>
-    <string name="show_licence">显示许可文本</string>
-    <string name="hide_licence">隐藏许可文本</string>
+    <string name="show_licence">显示许可证文本</string>
     <string name="notif_reminder">提醒：还有一个简短的问题等待您回答</string>
     <string name="offline_saved">已保存。手机一旦联网，您的回答就会被发送。</string>
     <plurals name="answers_waiting">
@@ -78,8 +77,7 @@
     <string name="quiet_now">免打扰时段：%1$s</string>
     <string name="quiet_from_tomorrow">自明天起：%1$s</string>
     <string name="quiet_none">无</string>
-    <string name="quiet_none_button">无</string>
-    <string name="quiet_change">免打扰时段</string>
+    <string name="quiet_change">更改免打扰时段</string>
     <string name="quiet_hint">在您的免打扰时段内，不会收到随机时间的问题。更改自明天起生效，且仅适用于随机时间的问题，不适用于固定时间的问题。</string>
     <string name="quiet_from">从</string>
     <string name="quiet_to">至</string>
@@ -117,9 +115,48 @@
     <string name="loading">正在加载</string>
     <string name="scan_prompt">将研究的二维码放入取景框内</string>
     <string name="camera_refused">无法使用相机时，应用无法读取二维码。请在下方输入加入码，它印在二维码下方。</string>
-    <string name="next_prompt_about">下一个问题：约 %1$s</string>
     <string name="too_many">尝试次数过多。请等待几分钟后再试。</string>
     <string name="looking_up">正在查找研究</string>
     <string name="joining">正在加入研究</string>
     <string name="more_actions">“%1$s”的更多操作</string>
+    <string name="about_contact_title">联系方式</string>
+    <string name="about_contact">本应用及 Askurious 平台的提供方：</string>
+    <string name="imprint">法律声明</string>
+    <string name="allowed">已允许</string>
+    <string name="today_at">今天 %1$s</string>
+    <string name="tomorrow_at">明天 %1$s</string>
+    <string name="date_at" formatted="true">%1$s %2$s</string>
+    <string name="done">完成</string>
+    <string name="later">稍后</string>
+    <string name="ended_group">已结束</string>
+    <string name="erase_title">要删除“%1$s”中的回答吗？</string>
+    <string name="erased_done">“%1$s”中的回答已删除。</string>
+    <string name="erasing">正在删除…</string>
+    <string name="exit_open">研究期已结束。请完成最后的问卷。</string>
+    <string name="exit_open_until">研究期已结束。请完成最后的问卷（开放至 %1$s）。</string>
+    <string name="fast_forward_spoken">快进 %1$d 倍</string>
+    <string name="join_code_hint">印在研究二维码下方，例如 k7qm2x</string>
+    <string name="leave_title">要退出“%1$s”吗？</string>
+    <string name="left_done">已退出“%1$s”。</string>
+    <string name="removed_done">已从列表中移除“%1$s”。</string>
+    <string name="licence_texts">许可证文本</string>
+    <string name="notif_channel_desc">日记研究在研究人员设定的时间提出的问题及其提醒</string>
+    <string name="notif_exit_until" formatted="true">研究期已结束。请回答：%1$s（开放至 %2$s）</string>
+    <string name="notif_reminder_of">提醒：%1$s</string>
+    <string name="participation_title">参与</string>
+    <string name="period_title">研究期</string>
+    <string name="period_from_to" formatted="true">%1$s – %2$s</string>
+    <string name="period_over">研究期已结束 – 正在更新…</string>
+    <string name="quiet_use">使用免打扰时段</string>
+    <string name="quiet_from_cd">免打扰开始时间 %1$s</string>
+    <string name="quiet_to_cd">免打扰结束时间 %1$s</string>
+    <string name="ready_title">让问题准时送达</string>
+    <string name="ready_intro">应用会在合适的时刻通过通知提出研究的问题。为此需要两项权限，之后都可以在手机设置中更改。</string>
+    <string name="ready_notify_title">通知</string>
+    <string name="ready_notify_text">没有通知，问题就无法送达。</string>
+    <string name="ready_exact_title">闹钟和提醒</string>
+    <string name="ready_exact_text">否则问题可能会晚几分钟送达。</string>
+    <string name="state_pending">第一份问卷尚未完成</string>
+    <string name="state_running">进行中</string>
+    <string name="time_about">约 %1$s</string>
 </resources>

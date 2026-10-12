@@ -2,11 +2,11 @@
 <resources>
     <string name="app_name">Askurious</string>
     <string name="my_studies">Meine Studien</string>
-    <string name="no_studies">Sie nehmen noch an keiner Tagebuchstudie teil. Scannen Sie den QR-Code einer Studie oder geben Sie ihren Beitrittscode ein.</string>
+    <string name="no_studies">Noch keine Tagebuchstudie auf diesem Telefon. Zum Beitreten den QR-Code einer Studie scannen oder ihren Beitrittscode eingeben.</string>
     <string name="join_study">Studie beitreten</string>
     <string name="join_code">Beitrittscode</string>
     <string name="scan_qr">QR-Code scannen</string>
-    <string name="look_up">Suchen</string>
+    <string name="look_up">Weiter</string>
     <string name="join">Beitreten</string>
     <string name="cancel">Abbrechen</string>
     <string name="back">Zurück</string>
@@ -15,7 +15,7 @@
         <item quantity="one">Dauer: %d Tag</item>
         <item quantity="other">Dauer: %d Tage</item>
     </plurals>
-    <string name="study_modules">Was Sie gefragt werden</string>
+    <string name="study_modules">Was gefragt wird</string>
     <plurals name="fixed_per_day">
         <item quantity="one">%1$s: %2$d× am Tag</item>
         <item quantity="other">%1$s: %2$d× am Tag</item>
@@ -24,12 +24,12 @@
         <item quantity="one">%1$s: %2$d× in der Woche</item>
         <item quantity="other">%1$s: %2$d× in der Woche</item>
     </plurals>
-    <string name="self_module">%1$s: wann immer Sie möchten</string>
+    <string name="self_module">%1$s: jederzeit möglich</string>
     <plurals name="about_minutes">
         <item quantity="one">Etwa %d Minute am Tag</item>
         <item quantity="other">Etwa %d Minuten am Tag</item>
     </plurals>
-    <string name="join_privacy">Beim Beitritt öffnet sich die Einwilligung der Studie. Die App speichert keinen Namen, keine E-Mail-Adresse und keine Telefonnummer, und die Studie sieht Ihre anderen Studien nicht.</string>
+    <string name="join_privacy">Beim Beitritt öffnet sich die Einwilligung der Studie. Die App speichert keinen Namen, keine E-Mail-Adresse und keine Telefonnummer, und die Studie sieht keine anderen Studien auf diesem Telefon.</string>
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
     <string name="join_server" formatted="true">Server: %1$s</string>
     <string name="continue_entry">Ersten Fragebogen fortsetzen</string>
@@ -39,41 +39,40 @@
     <!-- fast forward (test person): when the next question really comes, time of day and "in 6 minutes" -->
     <string name="next_prompt_real" formatted="true">in Echtzeit: %1$s, %2$s</string>
     <string name="finished">Abgeschlossen, vielen Dank!</string>
-    <string name="left">Sie haben diese Studie verlassen.</string>
-    <string name="left_pending">Sie haben diese Studie verlassen. Die App teilt das den Forschenden mit, sobald eine Verbindung besteht.</string>
+    <string name="left">Diese Studie wurde verlassen.</string>
+    <string name="left_pending">Diese Studie wurde verlassen. Die App teilt das den Forschenden mit, sobald eine Verbindung besteht.</string>
     <string name="ended">Die Forschenden haben diese Studie beendet.</string>
     <string name="leave_study">Studie verlassen</string>
-    <string name="leave_confirm">Diese Studie verlassen? Sie bekommen keine Fragen mehr. Ihre Antworten bleiben bei den Forschenden, außer Sie löschen sie mit „Meine Antworten löschen“.</string>
+    <string name="leave_confirm">Danach kommen keine Fragen mehr. Die bisherigen Antworten bleiben bei den Forschenden, außer sie werden mit „Meine Antworten löschen“ gelöscht.</string>
     <string name="remove_from_list">Aus der Liste entfernen</string>
     <string name="erase_answers">Meine Antworten löschen</string>
-    <string name="erase_confirm">Alle Ihre Antworten in dieser Studie löschen? Sie werden auch bei den Forschenden gelöscht und lassen sich nicht wiederherstellen. Die Studie verschwindet danach aus der App.</string>
+    <string name="erase_confirm">Alle Antworten in dieser Studie werden gelöscht, auch bei den Forschenden, und lassen sich nicht wiederherstellen. Die Studie verschwindet danach aus der App.</string>
     <string name="erase">Löschen</string>
-    <string name="notif_channel">Fragen Ihrer Studien</string>
+    <string name="notif_channel">Fragen der Studien</string>
     <string name="notif_default">Eine kurze Frage wartet</string>
-    <string name="allow_notifications">Erlauben Sie Benachrichtigungen, sonst kann die App Sie nicht im richtigen Moment fragen.</string>
-    <string name="allow_exact">Erlauben Sie „Wecker und Erinnerungen“, damit Fragen pünktlich kommen.</string>
+    <string name="allow_notifications">Benachrichtigungen erlauben, sonst kann die App nicht im richtigen Moment fragen.</string>
+    <string name="allow_exact">„Wecker und Erinnerungen“ erlauben, damit Fragen pünktlich kommen.</string>
     <string name="allow">Erlauben</string>
     <string name="expired">Diese Frage ist abgelaufen. Die nächste kommt bestimmt.</string>
-    <string name="limit">Für heute haben Sie die Höchstzahl dieser Meldung erreicht.</string>
+    <string name="limit">Die Höchstzahl dieser Meldung für heute ist erreicht.</string>
     <string name="not_found">Keine Studie mit diesem Code.</string>
     <string name="closed">Diese Studie nimmt keine neuen Teilnehmenden auf.</string>
-    <string name="offline">Keine Verbindung. Bitte versuchen Sie es noch einmal.</string>
-    <string name="error">Etwas ist schiefgegangen. Bitte versuchen Sie es noch einmal.</string>
+    <string name="offline">Keine Verbindung. Bitte noch einmal versuchen.</string>
+    <string name="error">Etwas ist schiefgegangen. Bitte noch einmal versuchen.</string>
     <string name="about">Über die App</string>
     <string name="version">Version %1$s</string>
     <!-- the footer: version and when this APK was built, so one sees which version runs -->
     <string name="build_info" formatted="true">Version %1$s · gebaut %2$s</string>
     <string name="about_privacy_title">Datenschutz</string>
-    <string name="about_stores">Die App speichert auf diesem Telefon nur die Liste Ihrer Studien mit ihren Zeitplänen und für jede Studie ein zufälliges Geheimnis: den einzigen Schlüssel zu Ihren Antworten dort. Sie hat kein Konto und sendet keine Geräte-ID, keinen Namen, keine E-Mail-Adresse und keine Telefonnummer. Nichts davon kommt in Sicherungen oder auf ein neues Telefon.</string>
+    <string name="about_stores">Die App speichert auf diesem Telefon nur die Liste der Studien mit ihren Zeitplänen und für jede Studie ein zufälliges Geheimnis: den einzigen Schlüssel zu den Antworten dort. Sie hat kein Konto und sendet keine Geräte-ID, keinen Namen, keine E-Mail-Adresse und keine Telefonnummer. Nichts davon kommt in Sicherungen oder auf ein neues Telefon.</string>
     <string name="privacy_statement">Datenschutzerklärung</string>
     <string name="about_licence_title">Lizenz</string>
     <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Alle Rechte vorbehalten.</string>
     <string name="about_oss_title">Open-Source-Software</string>
     <string name="about_oss_intro">Die App nutzt diese Bibliotheken, jeweils unter der Apache License 2.0:</string>
-    <string name="show_licence">Lizenztext anzeigen</string>
-    <string name="hide_licence">Lizenztext ausblenden</string>
+    <string name="show_licence">Lizenztexte anzeigen</string>
     <string name="notif_reminder">Erinnerung: Eine kurze Frage wartet noch</string>
-    <string name="offline_saved">Gespeichert. Ihre Antworten werden gesendet, sobald das Telefon eine Verbindung hat.</string>
+    <string name="offline_saved">Gespeichert. Die Antworten werden gesendet, sobald das Telefon eine Verbindung hat.</string>
     <plurals name="answers_waiting">
         <item quantity="one">%d Antwort wartet auf das Senden</item>
         <item quantity="other">%d Antworten warten auf das Senden</item>
@@ -83,13 +82,12 @@
     <string name="quiet_now">Ruhezeiten: %1$s</string>
     <string name="quiet_from_tomorrow">Ab morgen: %1$s</string>
     <string name="quiet_none">keine</string>
-    <string name="quiet_none_button">Keine</string>
-    <string name="quiet_change">Ruhezeiten</string>
-    <string name="quiet_hint">In Ihren Ruhezeiten kommt keine Frage zu zufälligen Zeiten. Eine Änderung gilt ab morgen und nur für die Fragen zu zufälligen Zeiten, nicht für die zu festen Zeiten.</string>
+    <string name="quiet_change">Ruhezeiten ändern</string>
+    <string name="quiet_hint">In den Ruhezeiten kommt keine Frage zu zufälligen Zeiten. Eine Änderung gilt ab morgen und nur für die Fragen zu zufälligen Zeiten, nicht für die zu festen Zeiten.</string>
     <string name="quiet_from">Von</string>
     <string name="quiet_to">bis</string>
     <string name="save">Speichern</string>
-    <string name="about_quiet">Wenn Sie für eine Studie Ruhezeiten festlegen, speichert die App sie und sendet sie an den Server der Studie, damit in dieser Zeit keine Frage zu zufälligen Zeiten kommt.</string>
+    <string name="about_quiet">Werden für eine Studie Ruhezeiten festgelegt, speichert die App sie und sendet sie an den Server der Studie, damit in dieser Zeit keine Frage zu zufälligen Zeiten kommt.</string>
     <plurals name="random_per_day">
         <item quantity="one">%1$s: %2$d× am Tag zu zufälligen Zeiten</item>
         <item quantity="other">%1$s: %2$d× am Tag zu zufälligen Zeiten</item>
@@ -102,31 +100,70 @@
     <string name="fast_forward">Zeitraffer ×%1$d</string>
     <string name="exit_default">Abschlussbefragung</string>
     <string name="exit_until">Offen bis %1$s</string>
-    <string name="notif_exit">Der Studienzeitraum ist vorbei. Bitte beantworten Sie noch: %1$s</string>
-    <string name="limit_refused">Eine Antwort, die Sie ohne Verbindung gegeben haben, wurde nicht gespeichert: Die Höchstzahl dieser Meldung für heute war schon erreicht.</string>
+    <string name="notif_exit">Der Studienzeitraum ist vorbei. Bitte noch beantworten: %1$s</string>
+    <string name="limit_refused">Eine ohne Verbindung gegebene Antwort wurde nicht gespeichert: Die Höchstzahl dieser Meldung für heute war schon erreicht.</string>
     <string name="clock_off">Die Uhr dieses Telefons geht falsch. Antworten, die ohne Verbindung gegeben wurden, werden gesendet, sobald Datum und Uhrzeit stimmen.</string>
-    <string name="rejoin_confirm">Sie nehmen auf diesem Telefon schon an dieser Studie teil. Ein erneuter Beitritt beginnt eine neue Teilnahme: Ihre früheren Antworten können Sie dann nicht mehr in der App löschen. Noch wartende Antworten der früheren Teilnahme werden vorher gesendet, wenn möglich, sonst verworfen. Um Ihre früheren Antworten zu löschen, brechen Sie ab und nutzen Sie „Meine Antworten löschen“ auf der Karte der Studie.</string>
+    <string name="rejoin_confirm">Auf diesem Telefon läuft schon eine Teilnahme an dieser Studie. Ein erneuter Beitritt beginnt eine neue Teilnahme: Die früheren Antworten lassen sich dann nicht mehr in der App löschen. Noch wartende Antworten der früheren Teilnahme werden vorher gesendet, wenn möglich, sonst verworfen. Wer die früheren Antworten löschen möchte, bricht hier ab und nutzt „Meine Antworten löschen“ auf der Seite der Studie.</string>
     <string name="rejoin">Erneut beitreten</string>
     <string name="allow_in_settings">In den Einstellungen erlauben</string>
-    <string name="notifications_off">Benachrichtigungen aus – Sie erhalten keine Fragen</string>
+    <string name="notifications_off">Benachrichtigungen aus – es kommen keine Fragen</string>
     <string name="remove">Entfernen</string>
     <string name="remove_title">„%1$s“ entfernen?</string>
-    <string name="remove_confirm">Die Studie wird von diesem Telefon entfernt. Danach können Sie Ihre Antworten nicht mehr über die App löschen.</string>
+    <string name="remove_confirm">Die Studie wird von diesem Telefon entfernt. Danach lassen sich die Antworten nicht mehr über die App löschen.</string>
     <string name="remove_exit_open">Die Abschlussbefragung dieser Studie ist noch offen.</string>
-    <string name="update_app">Für Ihre Studie wird eine neuere Version dieser App gebraucht. Bitte aktualisieren Sie die App, damit Ihre Fragen weiter richtig ankommen.</string>
+    <string name="update_app">Für eine Studie wird eine neuere Version dieser App gebraucht. Bitte die App aktualisieren, damit die Fragen weiter richtig ankommen.</string>
     <string name="update_button">Aktualisieren</string>
     <string name="entry_abort_title">Eintrag abbrechen?</string>
     <string name="entry_abort_text">Antworten auf dieser Seite, die noch nicht gesendet sind, gehen verloren.</string>
     <string name="entry_abort">Eintrag abbrechen</string>
     <string name="entry_keep">Weiter ausfüllen</string>
     <string name="retry">Erneut versuchen</string>
-    <string name="load_failed">Die Seite konnte nicht geladen werden. Bitte prüfen Sie die Verbindung und versuchen Sie es erneut.</string>
+    <string name="load_failed">Die Seite konnte nicht geladen werden. Bitte die Verbindung prüfen und es erneut versuchen.</string>
     <string name="loading">Wird geladen</string>
     <string name="scan_prompt">QR-Code der Studie in den Rahmen halten</string>
-    <string name="camera_refused">Ohne Zugriff auf die Kamera kann die App keinen QR-Code lesen. Geben Sie stattdessen unten den Beitrittscode ein; er steht unter dem QR-Code.</string>
-    <string name="next_prompt_about">Nächste Frage: etwa %1$s</string>
-    <string name="too_many">Zu viele Versuche. Bitte warten Sie einige Minuten, bevor Sie es erneut versuchen.</string>
+    <string name="camera_refused">Ohne Zugriff auf die Kamera kann die App keinen QR-Code lesen. Stattdessen unten den Beitrittscode eingeben; er steht unter dem QR-Code.</string>
+    <string name="too_many">Zu viele Versuche. Bitte einige Minuten warten und es dann erneut versuchen.</string>
     <string name="looking_up">Studie wird gesucht</string>
     <string name="joining">Beitritt läuft</string>
     <string name="more_actions">Weitere Aktionen für „%1$s“</string>
+    <string name="about_contact_title">Kontakt</string>
+    <string name="about_contact">Anbieter der App und der Plattform Askurious:</string>
+    <string name="imprint">Impressum</string>
+    <string name="allowed">Erlaubt</string>
+    <string name="today_at">heute, %1$s</string>
+    <string name="tomorrow_at">morgen, %1$s</string>
+    <string name="date_at" formatted="true">%1$s, %2$s</string>
+    <string name="done">Fertig</string>
+    <string name="later">Später</string>
+    <string name="ended_group">Beendet</string>
+    <string name="erase_title">Antworten in „%1$s“ löschen?</string>
+    <string name="erased_done">Die Antworten in „%1$s“ sind gelöscht.</string>
+    <string name="erasing">Wird gelöscht …</string>
+    <string name="exit_open">Der Studienzeitraum ist vorbei. Bitte noch die Abschlussbefragung beantworten.</string>
+    <string name="exit_open_until">Der Studienzeitraum ist vorbei. Bitte noch die Abschlussbefragung beantworten (offen bis %1$s).</string>
+    <string name="fast_forward_spoken">Zeitraffer, %1$d-fach</string>
+    <string name="join_code_hint">Steht unter dem QR-Code der Studie, z. B. k7qm2x</string>
+    <string name="leave_title">„%1$s“ verlassen?</string>
+    <string name="left_done">„%1$s“ verlassen.</string>
+    <string name="removed_done">„%1$s“ aus der Liste entfernt.</string>
+    <string name="licence_texts">Lizenztexte</string>
+    <string name="notif_channel_desc">Die Fragen der Tagebuchstudien zu den Zeiten der Forschenden und ihre Erinnerungen</string>
+    <string name="notif_exit_until" formatted="true">Der Studienzeitraum ist vorbei. Bitte noch beantworten: %1$s (offen bis %2$s)</string>
+    <string name="notif_reminder_of">Erinnerung: %1$s</string>
+    <string name="participation_title">Teilnahme</string>
+    <string name="period_title">Studienzeitraum</string>
+    <string name="period_from_to" formatted="true">%1$s – %2$s</string>
+    <string name="period_over">Studienzeitraum vorbei – wird aktualisiert …</string>
+    <string name="quiet_use">Ruhezeiten verwenden</string>
+    <string name="quiet_from_cd">Ruhezeiten von %1$s</string>
+    <string name="quiet_to_cd">Ruhezeiten bis %1$s</string>
+    <string name="ready_title">Damit Fragen pünktlich kommen</string>
+    <string name="ready_intro">Die App stellt die Fragen der Studie im richtigen Moment per Benachrichtigung. Dafür braucht sie zwei Erlaubnisse; beide lassen sich später in den Einstellungen des Telefons ändern.</string>
+    <string name="ready_notify_title">Benachrichtigungen</string>
+    <string name="ready_notify_text">Ohne sie kommt keine Frage an.</string>
+    <string name="ready_exact_title">Wecker und Erinnerungen</string>
+    <string name="ready_exact_text">Ohne sie können Fragen einige Minuten zu spät kommen.</string>
+    <string name="state_pending">Erster Fragebogen noch nicht beendet</string>
+    <string name="state_running">Läuft</string>
+    <string name="time_about">etwa %1$s</string>
 </resources>

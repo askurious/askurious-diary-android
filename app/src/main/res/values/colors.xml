@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- the page colour of the participant pages (Look.DEFAULT, "background"): window and splash screen, so that the
+         app does not open on Material's lilac white (audit A19) -->
+    <color name="page">#FFFFFF</color>
+</resources>

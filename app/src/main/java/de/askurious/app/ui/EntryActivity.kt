@@ -52,6 +52,7 @@ import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
@@ -391,7 +392,8 @@ class EntryActivity : ComponentActivity() {
         Scaffold(topBar = {
             Column {
                 TopAppBar(
-                    title = { Text(title) },
+                    // one line, cut with "…": a long title of a study took three lines of the page (audit A21)
+                    title = { Text(title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
                     // the X closes the entry, at the left where a screen has its way out (audit A6)
                     navigationIcon = {
                         IconButton(onClick = { close() }) { Icon(Icons.Outlined.Close, contentDescription = stringResource(R.string.close)) }

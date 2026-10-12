@@ -15,6 +15,7 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
 - **Permissions.**
   Without notifications no prompt arrives, and without "Alarms & reminders" it may come late: the start page shows a notice for each right below its heading, read again whenever the app comes back to the front (from the system settings, the dialog, an entry).
   Once the system no longer shows its dialog (denied twice), or the permission is there but the app's notifications or the channel of the prompts are switched off, the notice's button is "Allow in settings" and opens the app's notification settings (`notifyNotice`).
+  Both notices stand in one block in the error colours above the list, gone while all is well (`Readiness`). After the first join (once per phone), a step "So that questions arrive on time" explains both permissions and asks for one after the other.
   While notifications are off, a running study's card says "Notifications off – you will not get any questions" instead of the time of the next question; while "Alarms & reminders" is off, it says "about" before that time (Android may ring a few minutes late).
   The camera (QR code) is asked for by the app itself before the scanner opens; refused, the join screen points to the join code, and once the system shows no dialog any more the button opens the app's settings.
 - **Lock screen.**
@@ -32,7 +33,14 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   The server sends the colours of a study's participant pages with the study and on the join screen (`"look": {"colors", "colors_dark", "radius"}`, server `diary.look_json`).
   The study card, the bar above an entry (and the screen before its page has loaded) and the join screen, once the study is found, take them (`StudyTheme`): page colour, text, accent, border, corners.
   A look that follows the device has a dark palette (`colors_dark`), shown while the phone is dark; a fixed look stays the same, as its pages do.
-  The status bar takes light or dark icons for the look's background. Without a look (an older server) the app keeps its own colours; the rest of the app (start page, notices, about) always does.
+  The status bar takes light or dark icons for the look's background. Without a look (an older server) the app shows its own look; the rest of the app (start page, notices, about) always does.
+  The app's own look is the standard look of the participant pages, light and dark (`Look.DEFAULT`, the values the server's `look_json` gives for "askurious" and "askurious-dark"); every colour role of Material 3 is set from a look's colours (`StudyTheme`), so no purple default shows, and the window and the splash screen take the page colour (`res/values*/colors.xml`, `themes.xml`).
+- **Screens.**
+  The start page lists the studies that still ask something (running, not yet begun, paused, an open exit questionnaire) and below them, under "Ended", the others; each card shows the title, the state with an icon, the next question ("today, 09:40", "tomorrow, 08:15" or the date, in the phone's 12 or 24 h format; "about" without exact alarms) and what to do now.
+  A day after the study period while the server still says "active" shows "Study period over – updating …", never "Day 17 of 14"; a finished study with an open exit questionnaire asks for it instead of thanking (`StudyStatus.kt`).
+  Tapping a card opens the study's page: study period, what is asked, quiet hours, waiting answers, and apart from the rest leaving or removing and deleting the answers, each with a question first and a short message afterwards.
+  The screens (start page, study page, joining, the permission step, about, licence texts) lie on a back stack saved with the activity (`MainActivity.App`): the back gesture goes one screen back, and turning the phone or a change of language or dark mode keeps the screen and what was typed.
+  "Join study" is the floating button of the start page; every other screen has a back arrow at the left of its top bar.
 - **Schedule on the phone.**
   `Schedule.kt` computes the prompts of the fixed and random modules in local time; the server computes the same times for the export and to check that a prompt was due (`diary.prompts`).
   One exact alarm at a time (`Alarms.kt`), set again after a reboot, an update, or a change of time or time zone.
@@ -51,12 +59,12 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   When a study asks for a newer version than the running `versionCode`, the start page asks the participant to update the app (button to its Play Store page); the app goes on working meanwhile.
   `versionCode` is the number of Git commits up to the build (`git rev-list --count HEAD`), `versionName` "0.1.<that number>", so every later build on main is newer.
 - **Quiet hours.**
-  A running study with a random module shows its quiet hours on the study card ("Quiet hours", from/to or none); they keep the random prompts out of that time, never the fixed ones.
+  A study with a random module shows its quiet hours on its page; "Change quiet hours" opens a dialog with the switch "Use quiet hours", from and to, saved with "Save". They keep the random prompts out of that time, never the fixed ones.
   `POST /study` sends a change (`"quiet": ["22:00", "07:00"]` or `null`), the server keeps it from the person's next day on and answers with the whole history (`"quiet": [{"from", "q"}]`); the app uses exactly that history, the entry of the last `from` on or before a day (`QuietFrom.on`, the server's `quiet_on`).
   Without a connection the change waits as `quietPending` (valid from the day after it was set, by the server's rule) and goes with the next sync.
 - **Reminder.**
   A fixed or random module with `reminder` > 0 gets a second notification that many minutes after the prompt, from the same one alarm (`Schedule.nextMoment` takes the earlier of the next prompt and the next reminder).
-  It is posted only if the prompt is still open and was neither opened nor answered without a connection (`PromptLog`, a list of the prompts of the last three days on the phone), under the prompt's notification id (it replaces the first one) and with the same neutral lock-screen version ("Reminder: a short question is still waiting").
+  It is posted only if the prompt is still open and was neither opened nor answered without a connection (`PromptLog`, a list of the prompts of the last three days on the phone), under the prompt's notification id (it replaces the first one) and with the same neutral lock-screen version ("Reminder: a short question is still waiting"); unlocked, it shows the researchers' text after "Reminder:" (or that neutral text when they wrote none).
   Tapping it sends `"reminded": true` with the entry, and the time of the first notification as `notified`.
 - **Answering without a connection.**
   For a module with `offline: true` each sync of a running study fetches its page (`POST /offline/<module>`, at most every 15 minutes) and the `/static/` and `/media/` files it names, also those named by its style sheets (`OfflinePages`, in the app's files directory, at most 10 MB per file).
@@ -77,6 +85,7 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
 - **Exit questionnaire.**
   `"exit": {"name", "open", "until"}` (or `null`): the server sets `open` after the person's study period is over (finished or ended), until `until`, and only while it is not answered.
   While it is open the card shows a button with its name (default "Final survey", German "Abschlussbefragung"), which opens the entry with `POST /entry {"module": "exit"}` (no `due`; always online, never from a kept page).
+  Its notification names the last day it can be answered when the server sends `until`.
   One notification at 10:00 local time on the day after `last_day` (`Schedule.exitAt`), or at the next sync if that moment has passed and it is still open; `PromptLog` remembers that it was notified (or opened from the card), so it comes only once.
   A finished or ended study with an exit questionnaire is synced until it is answered or `until` has passed (`Sync.wanted`); once answered the server sends `open: false` and the button goes.
 - **Fast-forward test persons.**
@@ -84,7 +93,7 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   Everything the app computes for such a study is in the virtual time v = t0 + (real − t0) · factor (`Clock.virtual`, `Study.now`, `Study.today`): dates, first and last day, day index, fixed and random prompt times, quiet hours, weekdays, expiry and reminder minutes, the exit notification, and "Next question" and "Day x of n" on the card; the zone stays the phone's.
   The one alarm rings at the real moment t0 + (v − t0) / factor, rounded up (`Clock.real`, `Prompt.ring`).
   Every time sent to the server (`due`, `notified`, offline `started` and `completed`) is virtual epoch milliseconds.
-  The card shows a small "Fast-forward ×144" badge. Studies without a clock are unchanged.
+  The card shows a small neutral "Fast-forward ×144" badge (TalkBack: "Fast-forward, 144 times"). Studies without a clock are unchanged.
 - **Server answers.**
   A 401 (`unauthorised`: the server does not know the secret, study deleted) ends a study only if it keeps coming for more than three days (`Study.unauthorised`); any answer of the server clears it.
   429 (`limit`, the rate limit) and 5xx never change a study; 409 `daily_limit` is today's limit of a self-started report.
@@ -95,19 +104,19 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   Joining a study that is still on the phone (after leaving it, or with a test or invitation code) asks first: a new participation gets a new secret, and the earlier answers can then no longer be deleted in the app.
   If the participant goes on, the earlier participation is closed with its own secret (its waiting answers are sent, a running one is left) and then removed from the phone (`Sync.rejoin`): nothing of it goes to the new person.
 - **Deleting answers.**
-  "Delete my answers" in the menu ⋮ of every study card (with "Quiet hours", "Leave study" or "Remove from list") calls `POST /api/diary/v1/erase`: the server deletes all answers of this person in this study and the person; the app then removes the study.
+  "Delete my answers" on the page of every study (beside "Leave study" or "Remove from list") calls `POST /api/diary/v1/erase`: the server deletes all answers of this person in this study and the person; the app then removes the study.
   Deleting or removing a study from the list also deletes its queued answers, its kept pages and the log of its prompts.
   "Remove from list" asks first: with the study its secret goes, so its answers can no longer be deleted through the app; the question says so, and says when the exit questionnaire is still open.
 - **What stays on the phone.**
   The studies with their secrets, their look (colours), the seed of the random prompts, the quiet hours, the pauses, the exit questionnaire and a fast-forward clock; the log of the prompts of the last three days (notified, opened) and whether the exit questionnaire was notified; the kept pages of offline modules while the study runs (dropped when it ends, is left, or the module is no longer offline); answers given without a connection until they are sent, at most 7 days after the page was opened (the server takes them no later), then they are dropped unsent.
-  Besides, whether the app asked for the notification and the camera permission once (to tell a first request from a refusal for good).
+  Besides, whether the app asked for the notification and the camera permission once (to tell a first request from a refusal for good), and whether the step for the permissions was shown.
   All of it in the app's private storage, in no backup.
   The secrets are stored sealed (AES-GCM, `StudyStore.sealed`) under a key that lives in the Android Keystore and never leaves it (`KeystoreSealer`); a copy of the app's files alone gives no secret. A study stored before this is sealed the first time it is read. An entry whose secret cannot be opened (the Keystore lost its key) is kept as it is, not overwritten.
 - **Languages.**
-  The survey languages of Askurious: English, German, Spanish, French, Italian, Dutch, Polish, European Portuguese, Russian, Turkish, Simplified Chinese and Arabic (right to left), formal address where the language has it.
+  The survey languages of Askurious: English, German, Spanish, French, Italian, Dutch, Polish, European Portuguese, Russian, Turkish, Simplified Chinese and Arabic (right to left), formal address where the language has it, except German: the German texts address nobody directly (neither "Sie" nor "du"), because the start page shows studies whose pages may use either.
   `res/xml/locales_config.xml` lists them for the per-app language setting (Android 13+).
 - **About the app.**
-  The (i) in the top bar: what the app stores, the privacy statement (https://askurious.de/privacy#tagebuch), the copyright and the licences of the libraries.
+  The (i) in the top bar: what the app stores, the privacy statement (https://askurious.de/privacy#tagebuch), the provider as named in the imprint of askurious.de with a link to it (https://askurious.de/imprint), the copyright, the libraries, and their licence texts on a page of their own (without the hard line breaks of the text files).
 
 ## Build and run
 

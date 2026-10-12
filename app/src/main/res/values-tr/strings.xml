@@ -6,7 +6,7 @@
     <string name="join_study">Çalışmaya katıl</string>
     <string name="join_code">Katılım kodu</string>
     <string name="scan_qr">QR kodu tara</string>
-    <string name="look_up">Ara</string>
+    <string name="look_up">Devam</string>
     <string name="join">Katıl</string>
     <string name="cancel">İptal</string>
     <string name="back">Geri</string>
@@ -70,8 +70,7 @@
     <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Tüm hakları saklıdır.</string>
     <string name="about_oss_title">Açık kaynak yazılım</string>
     <string name="about_oss_intro">Uygulama, her biri Apache License 2.0 kapsamında olan şu kütüphaneleri kullanır:</string>
-    <string name="show_licence">Lisans metnini göster</string>
-    <string name="hide_licence">Lisans metnini gizle</string>
+    <string name="show_licence">Lisans metinlerini göster</string>
     <string name="notif_reminder">Hatırlatma: Kısa bir soru hâlâ sizi bekliyor</string>
     <string name="offline_saved">Kaydedildi. Yanıtlarınız telefon bağlantı kurar kurmaz gönderilecek.</string>
     <plurals name="answers_waiting">
@@ -83,8 +82,7 @@
     <string name="quiet_now">Sessiz saatler: %1$s</string>
     <string name="quiet_from_tomorrow">Yarından itibaren: %1$s</string>
     <string name="quiet_none">yok</string>
-    <string name="quiet_none_button">Yok</string>
-    <string name="quiet_change">Sessiz saatler</string>
+    <string name="quiet_change">Sessiz saatleri değiştir</string>
     <string name="quiet_hint">Sessiz saatlerinizde rastgele zamanlı soru gelmez. Bir değişiklik yarından itibaren ve yalnızca rastgele zamanlı sorular için geçerlidir, sabit saatli sorular için geçerli değildir.</string>
     <string name="quiet_from">Başlangıç</string>
     <string name="quiet_to">Bitiş</string>
@@ -124,9 +122,48 @@
     <string name="loading">Yükleniyor</string>
     <string name="scan_prompt">Çalışmanın QR kodunu çerçevenin içine getirin</string>
     <string name="camera_refused">Kameraya erişim olmadan uygulama QR kodunu okuyamaz. Bunun yerine aşağıya katılım kodunu girin; kod, QR kodunun altında yazar.</string>
-    <string name="next_prompt_about">Sonraki soru: yaklaşık %1$s</string>
     <string name="too_many">Çok fazla deneme. Lütfen tekrar denemeden önce birkaç dakika bekleyin.</string>
     <string name="looking_up">Çalışma aranıyor</string>
     <string name="joining">Çalışmaya katılınıyor</string>
     <string name="more_actions">“%1$s” için diğer işlemler</string>
+    <string name="about_contact_title">İletişim</string>
+    <string name="about_contact">Uygulamanın ve Askurious platformunun sağlayıcısı:</string>
+    <string name="imprint">Künye</string>
+    <string name="allowed">İzin verildi</string>
+    <string name="today_at">bugün, %1$s</string>
+    <string name="tomorrow_at">yarın, %1$s</string>
+    <string name="date_at" formatted="true">%1$s, %2$s</string>
+    <string name="done">Tamam</string>
+    <string name="later">Daha sonra</string>
+    <string name="ended_group">Sona erenler</string>
+    <string name="erase_title">“%1$s” çalışmasındaki yanıtlar silinsin mi?</string>
+    <string name="erased_done">“%1$s” çalışmasındaki yanıtlar silindi.</string>
+    <string name="erasing">Siliniyor…</string>
+    <string name="exit_open">Çalışma dönemi sona erdi. Lütfen son anketi de yanıtlayın.</string>
+    <string name="exit_open_until">Çalışma dönemi sona erdi. Lütfen son anketi de yanıtlayın (%1$s tarihine kadar açık).</string>
+    <string name="fast_forward_spoken">Hızlandırma, %1$d kat</string>
+    <string name="join_code_hint">Çalışmanın QR kodunun altında yazar, ör. k7qm2x</string>
+    <string name="leave_title">“%1$s” çalışmasından ayrılınsın mı?</string>
+    <string name="left_done">“%1$s” çalışmasından ayrıldınız.</string>
+    <string name="removed_done">“%1$s” listeden kaldırıldı.</string>
+    <string name="licence_texts">Lisans metinleri</string>
+    <string name="notif_channel_desc">Günlük çalışmalarınızın, araştırmacıların seçtiği zamanlardaki soruları ve hatırlatmaları</string>
+    <string name="notif_exit_until" formatted="true">Çalışma dönemi sona erdi. Lütfen yanıtlayın: %1$s (%2$s tarihine kadar açık)</string>
+    <string name="notif_reminder_of">Hatırlatma: %1$s</string>
+    <string name="participation_title">Katılım</string>
+    <string name="period_title">Çalışma dönemi</string>
+    <string name="period_from_to" formatted="true">%1$s – %2$s</string>
+    <string name="period_over">Çalışma dönemi sona erdi – güncelleniyor…</string>
+    <string name="quiet_use">Sessiz saatleri kullan</string>
+    <string name="quiet_from_cd">Sessiz saatler başlangıcı %1$s</string>
+    <string name="quiet_to_cd">Sessiz saatler bitişi %1$s</string>
+    <string name="ready_title">Sorular zamanında gelsin diye</string>
+    <string name="ready_intro">Uygulama, çalışmanın sorularını doğru anda bir bildirimle sorar. Bunun için iki izne ihtiyaç duyar; ikisi de daha sonra telefonun ayarlarından değiştirilebilir.</string>
+    <string name="ready_notify_title">Bildirimler</string>
+    <string name="ready_notify_text">Bunlar olmadan hiçbir soru gelmez.</string>
+    <string name="ready_exact_title">Alarmlar ve hatırlatıcılar</string>
+    <string name="ready_exact_text">Bu izin olmadan sorular birkaç dakika geç gelebilir.</string>
+    <string name="state_pending">İlk anket henüz bitmedi</string>
+    <string name="state_running">Devam ediyor</string>
+    <string name="time_about">yaklaşık %1$s</string>
 </resources>

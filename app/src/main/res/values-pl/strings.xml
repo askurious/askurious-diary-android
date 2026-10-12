@@ -6,7 +6,7 @@
     <string name="join_study">Dołącz do badania</string>
     <string name="join_code">Kod dołączenia</string>
     <string name="scan_qr">Zeskanuj kod QR</string>
-    <string name="look_up">Szukaj</string>
+    <string name="look_up">Dalej</string>
     <string name="join">Dołącz</string>
     <string name="cancel">Anuluj</string>
     <string name="back">Wstecz</string>
@@ -78,8 +78,7 @@
     <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Wszelkie prawa zastrzeżone.</string>
     <string name="about_oss_title">Oprogramowanie open source</string>
     <string name="about_oss_intro">Aplikacja korzysta z następujących bibliotek, każdej na licencji Apache License 2.0:</string>
-    <string name="show_licence">Pokaż tekst licencji</string>
-    <string name="hide_licence">Ukryj tekst licencji</string>
+    <string name="show_licence">Pokaż teksty licencji</string>
     <string name="notif_reminder">Przypomnienie: wciąż czeka krótkie pytanie</string>
     <string name="offline_saved">Zapisano. Odpowiedzi zostaną wysłane, gdy tylko telefon uzyska połączenie.</string>
     <plurals name="answers_waiting">
@@ -93,8 +92,7 @@
     <string name="quiet_now">Godziny ciszy: %1$s</string>
     <string name="quiet_from_tomorrow">Od jutra: %1$s</string>
     <string name="quiet_none">brak</string>
-    <string name="quiet_none_button">Brak</string>
-    <string name="quiet_change">Godziny ciszy</string>
+    <string name="quiet_change">Zmień godziny ciszy</string>
     <string name="quiet_hint">W godzinach ciszy nie pojawia się żadne pytanie o losowej porze. Zmiana obowiązuje od jutra i tylko dla pytań o losowych porach, nie dla pytań o stałych godzinach.</string>
     <string name="quiet_from">Od</string>
     <string name="quiet_to">do</string>
@@ -138,9 +136,48 @@
     <string name="loading">Wczytywanie</string>
     <string name="scan_prompt">Umieść kod QR badania w ramce</string>
     <string name="camera_refused">Bez dostępu do aparatu aplikacja nie odczyta kodu QR. Wpisz poniżej kod dołączenia; znajduje się pod kodem QR.</string>
-    <string name="next_prompt_about">Następne pytanie: około %1$s</string>
     <string name="too_many">Zbyt wiele prób. Odczekaj kilka minut, zanim spróbujesz ponownie.</string>
     <string name="looking_up">Wyszukiwanie badania</string>
     <string name="joining">Dołączanie do badania</string>
     <string name="more_actions">Więcej działań dla „%1$s”</string>
+    <string name="about_contact_title">Kontakt</string>
+    <string name="about_contact">Dostawca aplikacji i platformy Askurious:</string>
+    <string name="imprint">Nota prawna</string>
+    <string name="allowed">Zezwolono</string>
+    <string name="today_at">dziś, %1$s</string>
+    <string name="tomorrow_at">jutro, %1$s</string>
+    <string name="date_at" formatted="true">%1$s, %2$s</string>
+    <string name="done">Gotowe</string>
+    <string name="later">Później</string>
+    <string name="ended_group">Zakończone</string>
+    <string name="erase_title">Usunąć odpowiedzi w „%1$s”?</string>
+    <string name="erased_done">Odpowiedzi w „%1$s” zostały usunięte.</string>
+    <string name="erasing">Usuwanie…</string>
+    <string name="exit_open">Okres badania się zakończył. Odpowiedz jeszcze na ankietę końcową.</string>
+    <string name="exit_open_until">Okres badania się zakończył. Odpowiedz jeszcze na ankietę końcową (otwarta do %1$s).</string>
+    <string name="fast_forward_spoken">Przyspieszenie, %1$d razy</string>
+    <string name="join_code_hint">Znajduje się pod kodem QR badania, np. k7qm2x</string>
+    <string name="leave_title">Opuścić „%1$s”?</string>
+    <string name="left_done">Opuszczono „%1$s”.</string>
+    <string name="removed_done">Usunięto „%1$s” z listy.</string>
+    <string name="licence_texts">Teksty licencji</string>
+    <string name="notif_channel_desc">Pytania z badań dzienniczkowych w terminach wybranych przez badaczy oraz przypomnienia</string>
+    <string name="notif_exit_until" formatted="true">Okres badania się zakończył. Odpowiedz jeszcze: %1$s (otwarta do %2$s)</string>
+    <string name="notif_reminder_of">Przypomnienie: %1$s</string>
+    <string name="participation_title">Udział</string>
+    <string name="period_title">Okres badania</string>
+    <string name="period_from_to" formatted="true">%1$s – %2$s</string>
+    <string name="period_over">Okres badania zakończony – aktualizacja…</string>
+    <string name="quiet_use">Używaj godzin ciszy</string>
+    <string name="quiet_from_cd">Godziny ciszy od %1$s</string>
+    <string name="quiet_to_cd">Godziny ciszy do %1$s</string>
+    <string name="ready_title">Aby pytania przychodziły na czas</string>
+    <string name="ready_intro">Aplikacja zadaje pytania badania powiadomieniem we właściwym momencie. Potrzebuje do tego dwóch uprawnień; oba można później zmienić w ustawieniach telefonu.</string>
+    <string name="ready_notify_title">Powiadomienia</string>
+    <string name="ready_notify_text">Bez nich nie dotrze żadne pytanie.</string>
+    <string name="ready_exact_title">Alarmy i przypomnienia</string>
+    <string name="ready_exact_text">Bez tego pytania mogą przychodzić z kilkuminutowym opóźnieniem.</string>
+    <string name="state_pending">Pierwszy kwestionariusz jeszcze nieukończony</string>
+    <string name="state_running">W toku</string>
+    <string name="time_about">około %1$s</string>
 </resources>

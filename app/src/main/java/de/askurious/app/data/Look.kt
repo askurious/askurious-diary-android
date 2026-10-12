@@ -21,6 +21,26 @@ data class Look(val colors: Map<String, Int>, val dark: Map<String, Int>?, val r
     companion object {
         private val HEX = Regex("^#[0-9a-fA-F]{6}$")
 
+        /**
+         * The app's own look: the standard look of the participant pages of Askurious ("askurious", light) with its
+         * dark partner ("askurious-dark"), the values the server's look_json gives for them (tokens of
+         * app/static/participant.css and app/theme.py, 2026-10-12). One source for the start page, the notices and every
+         * study without a look of its own (audit A19, SA5).
+         */
+        val DEFAULT = Look(
+            colors = mapOf(
+                "background" to 0xffffff, "surface" to 0xffffff, "surface_2" to 0xf7f7f4, "text" to 0x1d1d1b,
+                "muted" to 0x66665f, "accent" to 0x2a5db0, "on_accent" to 0xffffff, "accent_soft" to 0xe9f0fb,
+                "border" to 0xd6d4cc, "error" to 0xb3261e,
+            ),
+            dark = mapOf(
+                "background" to 0x141517, "surface" to 0x1c1e21, "surface_2" to 0x212224, "text" to 0xe7e5e0,
+                "muted" to 0xa4a29c, "accent" to 0x7ea6e6, "on_accent" to 0x0e1a2e, "accent_soft" to 0x272f3c,
+                "border" to 0x555555, "error" to 0xf08d86,
+            ),
+            radius = 10,
+        )
+
         /** Null without a look or with one that names no colour (an older server: the app's own look). */
         fun fromJson(o: JSONObject?): Look? {
             if (o == null) return null

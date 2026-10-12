@@ -6,7 +6,7 @@
     <string name="join_study">Unirse a un estudio</string>
     <string name="join_code">Código de acceso</string>
     <string name="scan_qr">Escanear código QR</string>
-    <string name="look_up">Buscar</string>
+    <string name="look_up">Continuar</string>
     <string name="join">Unirse</string>
     <string name="cancel">Cancelar</string>
     <string name="back">Atrás</string>
@@ -74,8 +74,7 @@
     <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Todos los derechos reservados.</string>
     <string name="about_oss_title">Software de código abierto</string>
     <string name="about_oss_intro">La aplicación utiliza estas bibliotecas, todas bajo la Apache License 2.0:</string>
-    <string name="show_licence">Mostrar el texto de la licencia</string>
-    <string name="hide_licence">Ocultar el texto de la licencia</string>
+    <string name="show_licence">Mostrar textos de licencia</string>
     <string name="notif_reminder">Recordatorio: todavía le espera una pregunta breve</string>
     <string name="offline_saved">Guardado. Sus respuestas se enviarán en cuanto el teléfono tenga conexión.</string>
     <plurals name="answers_waiting">
@@ -88,8 +87,7 @@
     <string name="quiet_now">Horas de descanso: %1$s</string>
     <string name="quiet_from_tomorrow">A partir de mañana: %1$s</string>
     <string name="quiet_none">ninguna</string>
-    <string name="quiet_none_button">Ninguna</string>
-    <string name="quiet_change">Horas de descanso</string>
+    <string name="quiet_change">Cambiar horas de silencio</string>
     <string name="quiet_hint">Durante sus horas de descanso no llega ninguna pregunta a horas aleatorias. Un cambio se aplica a partir de mañana y solo a las preguntas a horas aleatorias, no a las de horas fijas.</string>
     <string name="quiet_from">De</string>
     <string name="quiet_to">a</string>
@@ -131,9 +129,48 @@
     <string name="loading">Cargando</string>
     <string name="scan_prompt">Sitúe el código QR del estudio dentro del marco</string>
     <string name="camera_refused">Sin acceso a la cámara, la aplicación no puede leer un código QR. Introduzca abajo el código de participación; figura debajo del código QR.</string>
-    <string name="next_prompt_about">Próxima pregunta: hacia %1$s</string>
     <string name="too_many">Demasiados intentos. Espere unos minutos antes de volver a intentarlo.</string>
     <string name="looking_up">Buscando el estudio</string>
     <string name="joining">Uniéndose al estudio</string>
     <string name="more_actions">Más acciones para «%1$s»</string>
+    <string name="about_contact_title">Contacto</string>
+    <string name="about_contact">Proveedor de la aplicación y de la plataforma Askurious:</string>
+    <string name="imprint">Aviso legal</string>
+    <string name="allowed">Permitido</string>
+    <string name="today_at">hoy, %1$s</string>
+    <string name="tomorrow_at">mañana, %1$s</string>
+    <string name="date_at" formatted="true">%1$s, %2$s</string>
+    <string name="done">Listo</string>
+    <string name="later">Más tarde</string>
+    <string name="ended_group">Finalizados</string>
+    <string name="erase_title">¿Eliminar las respuestas de «%1$s»?</string>
+    <string name="erased_done">Se han eliminado las respuestas de «%1$s».</string>
+    <string name="erasing">Eliminando…</string>
+    <string name="exit_open">El periodo del estudio ha terminado. Responda todavía la encuesta final.</string>
+    <string name="exit_open_until">El periodo del estudio ha terminado. Responda todavía la encuesta final (abierta hasta el %1$s).</string>
+    <string name="fast_forward_spoken">Avance rápido, %1$d veces</string>
+    <string name="join_code_hint">Figura debajo del código QR del estudio, p. ej. k7qm2x</string>
+    <string name="leave_title">¿Abandonar «%1$s»?</string>
+    <string name="left_done">Ha abandonado «%1$s».</string>
+    <string name="removed_done">«%1$s» se ha quitado de la lista.</string>
+    <string name="licence_texts">Textos de licencia</string>
+    <string name="notif_channel_desc">Las preguntas de sus estudios de diario en los momentos fijados por los investigadores, y sus recordatorios</string>
+    <string name="notif_exit_until" formatted="true">El periodo del estudio ha terminado. Responda: %1$s (abierta hasta el %2$s)</string>
+    <string name="notif_reminder_of">Recordatorio: %1$s</string>
+    <string name="participation_title">Participación</string>
+    <string name="period_title">Periodo del estudio</string>
+    <string name="period_from_to" formatted="true">%1$s – %2$s</string>
+    <string name="period_over">Periodo del estudio terminado – actualizando…</string>
+    <string name="quiet_use">Usar horas de silencio</string>
+    <string name="quiet_from_cd">Horas de silencio desde las %1$s</string>
+    <string name="quiet_to_cd">Horas de silencio hasta las %1$s</string>
+    <string name="ready_title">Para que las preguntas lleguen a tiempo</string>
+    <string name="ready_intro">La aplicación hace las preguntas del estudio con una notificación en el momento adecuado. Para ello necesita dos permisos; ambos pueden cambiarse después en los ajustes del teléfono.</string>
+    <string name="ready_notify_title">Notificaciones</string>
+    <string name="ready_notify_text">Sin ellas no llega ninguna pregunta.</string>
+    <string name="ready_exact_title">Alarmas y recordatorios</string>
+    <string name="ready_exact_text">Sin ello, las preguntas pueden llegar con unos minutos de retraso.</string>
+    <string name="state_pending">Primer cuestionario aún sin terminar</string>
+    <string name="state_running">En curso</string>
+    <string name="time_about">hacia las %1$s</string>
 </resources>

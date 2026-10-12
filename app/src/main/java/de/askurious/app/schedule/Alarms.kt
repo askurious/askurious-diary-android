@@ -23,6 +23,8 @@ import de.askurious.app.data.StudyStore
 import de.askurious.app.data.SyncWorker
 import de.askurious.app.ui.EntryActivity
 import java.time.Instant
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 /**
  * One alarm at a time: the earliest next prompt, reminder or exit notification over all studies
@@ -65,6 +67,8 @@ object Alarms {
         val channel = NotificationChannel(CHANNEL, context.getString(R.string.notif_channel), NotificationManager.IMPORTANCE_HIGH)
         // on the lock screen only the neutral public version (see notify): taking part in a study is nobody's business
         channel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+        // what the channel is for, in the system's notification settings (audit A26)
+        channel.description = context.getString(R.string.notif_channel_desc)
         context.getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
     }
 
@@ -131,7 +135,11 @@ object Alarms {
                 context, id, EntryActivity.intent(context, study.code, EntryActivity.EXIT),
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
             )
-            val text = context.getString(R.string.notif_exit, exit.name.ifBlank { context.getString(R.string.exit_default) })
+            val name = exit.name.ifBlank { context.getString(R.string.exit_default) }
+            // with the last day it can be answered, when the server names one (audit A26)
+            val text = exit.until?.let {
+                context.getString(R.string.notif_exit_until, name, it.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)))
+            } ?: context.getString(R.string.notif_exit, name)
             val n = builder(context, study.title, text, context.getString(R.string.notif_default)).setContentIntent(tap).build()
             try {
                 NotificationManagerCompat.from(context).notify(id, n)
@@ -177,7 +185,8 @@ object Alarms {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
         val neutral = context.getString(if (reminder) R.string.notif_reminder else R.string.notif_default)
-        val text = if (reminder) neutral else module.notify.ifBlank { neutral }
+        // the reminder keeps the researchers' text, marked as a reminder (audit A26); the lock screen stays neutral
+        val text = reminderText(module.notify, reminder, neutral) { context.getString(R.string.notif_reminder_of, it) }
         // the notification goes when the prompt expires: at the real moment of its (study's time) expiry
         val n = builder(context, study.title, text, neutral)
             .setContentIntent(tap)
@@ -188,6 +197,16 @@ object Alarms {
         } catch (e: SecurityException) {
             // the permission was taken away after notify() checked it: nothing to post
         }
+    }
+
+    /**
+     * The text of a prompt's notification: the researchers' text, for the reminder after "Reminder:"; without a text
+     * of theirs the app's own ([neutral]). Plain Kotlin for the unit tests.
+     */
+    fun reminderText(notify: String, reminder: Boolean, neutral: String, marked: (String) -> String): String = when {
+        notify.isBlank() -> neutral
+        reminder -> marked(notify)
+        else -> notify
     }
 
     fun cancel(context: Context, id: Int) = NotificationManagerCompat.from(context).cancel(id)
