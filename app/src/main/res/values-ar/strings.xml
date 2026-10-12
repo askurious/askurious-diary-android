@@ -141,4 +141,6 @@
     <string name="remove_title">إزالة «%1$s»؟</string>
     <string name="remove_confirm">ستُزال الدراسة من هذا الهاتف. بعد ذلك لن تتمكن من حذف إجاباتك عبر التطبيق.</string>
     <string name="remove_exit_open">الاستبيان الختامي لهذه الدراسة لا يزال مفتوحًا.</string>
+    <string name="update_app">تحتاج دراستك إلى إصدار أحدث من هذا التطبيق. يرجى تحديث التطبيق حتى تستمر أسئلتك في الوصول بشكل صحيح.</string>
+    <string name="update_button">تحديث</string>
 </resources>

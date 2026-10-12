@@ -113,4 +113,6 @@
     <string name="remove_title">Remove “%1$s”?</string>
     <string name="remove_confirm">The study is removed from this phone. Afterwards you can no longer delete your answers through the app.</string>
     <string name="remove_exit_open">The final survey of this study is still open.</string>
+    <string name="update_app">A newer version of this app is needed for your study. Please update the app so that your questions keep arriving correctly.</string>
+    <string name="update_button">Update</string>
 </resources>

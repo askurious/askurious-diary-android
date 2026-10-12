@@ -113,4 +113,6 @@
     <string name="remove_title">“%1$s” kaldırılsın mı?</string>
     <string name="remove_confirm">Çalışma bu telefondan kaldırılır. Ardından yanıtlarınızı artık uygulama üzerinden silemezsiniz.</string>
     <string name="remove_exit_open">Bu çalışmanın son anketi hâlâ açık.</string>
+    <string name="update_app">Çalışmanız için bu uygulamanın daha yeni bir sürümü gerekiyor. Sorularınızın doğru şekilde gelmeye devam etmesi için lütfen uygulamayı güncelleyin.</string>
+    <string name="update_button">Güncelle</string>
 </resources>

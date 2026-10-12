@@ -310,7 +310,7 @@ class EntryActivity : ComponentActivity() {
             // autofill services do not see (nor offer) what is typed into a questionnaire
             importantForAutofill = View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS
             settings.userAgentString = settings.userAgentString + " AskuriousDiary/1"
-            addJavascriptInterface(Bridge(), "AskuriousApp")
+            addJavascriptInterface(Bridge(), BRIDGE)
             web = this
         }
     }
@@ -385,6 +385,11 @@ class EntryActivity : ComponentActivity() {
     }
 
     companion object {
+        /**
+         * The name participant.js calls the bridge by (window.AskuriousApp.done, .offlineSubmit): the server's
+         * tests/test_diary_app_bridge.py runs the pages against these names, BridgeContractTest checks them here.
+         */
+        const val BRIDGE = "AskuriousApp"
         private const val EXTRA_STUDY = "study"
         private const val EXTRA_MODULE = "module"
         private const val EXTRA_DUE = "due"

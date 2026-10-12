@@ -38,6 +38,14 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   The free minutes of the day (the windows without the quiet hours) are cut into `per_day` equal slots, each draws one minute at least `min_gap`/2 from its edges.
   All times are local times of that calendar day: a window 20:00–02:00 gives early-morning times of the same day.
   `app/src/test/resources/diary_random_vectors.json` is the server's `tests/diary_random_vectors.json`, unchanged; `RandomTimesTest` checks every case.
+- **The same prompts as the server.**
+  The server checks with its own list (`diary.prompts`) that a prompt was due, so the app's `Schedule.prompts` must give exactly that list.
+  `app/src/test/resources/diary_schedule_vectors.json` is the server's `tests/diary_schedule_vectors.json`, unchanged: studies as `POST /study` sends them (fixed and random modules, weekdays, days of a module, quiet hours changing during the study, pauses, both changes of summer time, a zone far from Berlin) with the prompts the server computes for them; `ScheduleVectorsTest` checks every case.
+  When the server's rule changes, it regenerates the file (`python tests/test_diary_app_contract.py --update`), and the copy here and `Schedule.kt` change with it; the server's test compares both copies when this repository lies next to it.
+- **Update request.**
+  `POST /study` sends `"min_app_version"` (the server's `DIARY_MIN_APP_VERSION`, 0 = every version).
+  When a study asks for a newer version than the running `versionCode`, the start page asks the participant to update the app (button to its Play Store page); the app goes on working meanwhile.
+  `versionCode` is the number of Git commits up to the build (`git rev-list --count HEAD`), `versionName` "0.1.<that number>", so every later build on main is newer.
 - **Quiet hours.**
   A running study with a random module shows its quiet hours on the study card ("Quiet hours", from/to or none); they keep the random prompts out of that time, never the fixed ones.
   `POST /study` sends a change (`"quiet": ["22:00", "07:00"]` or `null`), the server keeps it from the person's next day on and answers with the whole history (`"quiet": [{"from", "q"}]`); the app uses exactly that history, the entry of the last `from` on or before a day (`QuietFrom.on`, the server's `quiet_on`).
@@ -90,6 +98,7 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   The studies with their secrets, their look (colours), the seed of the random prompts, the quiet hours, the pauses, the exit questionnaire and a fast-forward clock; the log of the prompts of the last three days (notified, opened) and whether the exit questionnaire was notified; the kept pages of offline modules while the study runs (dropped when it ends, is left, or the module is no longer offline); answers given without a connection until they are sent, at most 7 days after the page was opened (the server takes them no later), then they are dropped unsent.
   Besides, whether the app asked for the notification permission once (to tell a first request from a refusal for good).
   All of it in the app's private storage, in no backup.
+  The secrets are stored sealed (AES-GCM, `StudyStore.sealed`) under a key that lives in the Android Keystore and never leaves it (`KeystoreSealer`); a copy of the app's files alone gives no secret. A study stored before this is sealed the first time it is read. An entry whose secret cannot be opened (the Keystore lost its key) is kept as it is, not overwritten.
 - **Languages.**
   The survey languages of Askurious: English, German, Spanish, French, Italian, Dutch, Polish, European Portuguese, Russian, Turkish, Simplified Chinese and Arabic (right to left), formal address where the language has it.
   `res/xml/locales_config.xml` lists them for the per-app language setting (Android 13+).

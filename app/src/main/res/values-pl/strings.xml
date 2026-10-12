@@ -127,4 +127,6 @@
     <string name="remove_title">Usunąć „%1$s”?</string>
     <string name="remove_confirm">Badanie zostanie usunięte z tego telefonu. Potem nie będzie już można usunąć odpowiedzi przez aplikację.</string>
     <string name="remove_exit_open">Ankieta końcowa tego badania jest jeszcze otwarta.</string>
+    <string name="update_app">To badanie wymaga nowszej wersji tej aplikacji. Należy zaktualizować aplikację, aby pytania nadal docierały prawidłowo.</string>
+    <string name="update_button">Aktualizuj</string>
 </resources>

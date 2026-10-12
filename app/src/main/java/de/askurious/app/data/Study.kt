@@ -152,10 +152,15 @@ data class Study(
      * only on the device; every call for the study goes there.
      */
     val server: String = Api.defaultServer,
+    /** The oldest app version (versionCode) the server still accepts for this study; 0 = every version. */
+    val minAppVersion: Int = 0,
     /** The colours of the study's pages for the app's screens around them; null: the app's own look. */
     val look: Look? = null,
 ) {
     val running get() = status == "active"
+
+    /** Whether the server asks for a newer app than [versionCode] (the one running). */
+    fun needsUpdate(versionCode: Int): Boolean = minAppVersion > versionCode
 
     /** The study's time (epoch milliseconds) at the real moment [real]: virtual for a fast-forward person. */
     fun now(real: Long = System.currentTimeMillis()): Long = clock?.virtual(real) ?: real
@@ -212,6 +217,7 @@ data class Study(
         .put("exit", exit?.toJson() ?: JSONObject.NULL)
         .put("clock", clock?.toJson() ?: JSONObject.NULL)
         .put("server", server)
+        .put("min_app_version", minAppVersion)
         .put("look", look?.toJson() ?: JSONObject.NULL)
 
     companion object {
@@ -248,6 +254,7 @@ data class Study(
             exit = Exit.fromJson(o.optJSONObject("exit")),
             clock = Clock.fromJson(o.optJSONObject("clock")),
             server = server ?: o.optStringOrNull("server") ?: Api.defaultServer,
+            minAppVersion = o.optInt("min_app_version", 0),
             look = runCatching { Look.fromJson(o.optJSONObject("look")) }.getOrNull(),
         )
 

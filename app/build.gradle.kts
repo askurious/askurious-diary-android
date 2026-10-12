@@ -6,6 +6,11 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
+/** The number of commits up to HEAD, the app's versionCode; 1 when Git is not there. */
+val gitCommitCount: Int = runCatching {
+    providers.exec { commandLine("git", "rev-list", "--count", "HEAD") }.standardOutput.asText.get().trim().toInt()
+}.getOrDefault(1)
+
 android {
     namespace = "de.askurious.app"
     compileSdk = 36
@@ -14,8 +19,10 @@ android {
         applicationId = "de.askurious.app"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = "0.1"
+        // the version from Git: every commit on main counts up, so a newer build always has a higher versionCode (the
+        // Play Store and the server's DIARY_MIN_APP_VERSION compare it); 1 without Git (a source archive)
+        versionCode = gitCommitCount
+        versionName = "0.1.$gitCommitCount"
         // the server of a join code typed by hand (a QR code names its own server): the main address of Askurious, where
         // the diary studies run for now (server: config DIARY_ON_MAIN_ADDRESS, 2026-10-12); a debug build talks to
         // the Flask server on the computer through `adb reverse tcp:5060 tcp:5060` (the server answers only under

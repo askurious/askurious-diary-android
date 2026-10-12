@@ -120,4 +120,6 @@
     <string name="remove_title">¿Quitar «%1$s»?</string>
     <string name="remove_confirm">El estudio se quita de este teléfono. Después ya no podrá borrar sus respuestas desde la aplicación.</string>
     <string name="remove_exit_open">El cuestionario final de este estudio sigue abierto.</string>
+    <string name="update_app">Su estudio necesita una versión más reciente de esta aplicación. Actualice la aplicación para que sus preguntas sigan llegando correctamente.</string>
+    <string name="update_button">Actualizar</string>
 </resources>

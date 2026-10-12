@@ -120,4 +120,6 @@
     <string name="remove_title">Rimuovere «%1$s»?</string>
     <string name="remove_confirm">Lo studio verrà rimosso da questo telefono. In seguito non potrà più cancellare le Sue risposte tramite l’app.</string>
     <string name="remove_exit_open">Il questionario finale di questo studio è ancora aperto.</string>
+    <string name="update_app">Il suo studio richiede una versione più recente di questa app. Aggiorni l’app affinché le domande continuino ad arrivare correttamente.</string>
+    <string name="update_button">Aggiorna</string>
 </resources>
