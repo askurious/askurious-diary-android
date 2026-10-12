@@ -87,7 +87,7 @@ object Sync {
     private suspend fun oneLocked(context: Context, study: Study): Study {
         val sent = study.quietPending
         val fetched = try {
-            Study.fromJson(Api.study(study.secret, sent), study.secret)
+            Study.fromJson(Api.study(study.server, study.secret, sent), study.secret, study.server)
         } catch (e: ApiError) {
             if (e.status == 401) study.unauthorised(System.currentTimeMillis()) else throw e
         }
@@ -166,7 +166,7 @@ object Sync {
         val store = StudyStore(context)
         OfflinePages(context).dropStudy(study.code)
         val sent = try {
-            Api.leave(study.secret)
+            Api.leave(study.server, study.secret)
             true
         } catch (e: ApiError) {
             // any other answer (401: the server no longer knows the secret) leaves nothing to tell
@@ -185,7 +185,7 @@ object Sync {
     suspend fun erase(context: Context, study: Study): Unit = withContext(Dispatchers.IO) {
         lock.withLock {
             try {
-                Api.erase(study.secret)
+                Api.erase(study.server, study.secret)
             } catch (e: ApiError) {
                 if (e.status != 401) throw e
             }
@@ -227,7 +227,7 @@ object Sync {
             }
             if (old.status == "active" || old.status == "pending" || old.status == "paused" || old.leavePending) {
                 try {
-                    Api.leave(old.secret)
+                    Api.leave(old.server, old.secret)
                 } catch (e: ApiError) {
                     // nothing more to do for it: the participant chose to start again
                 }
@@ -255,7 +255,7 @@ object Sync {
                 continue
             }
             val error = try {
-                Api.offlineAnswer(study.secret, item)
+                Api.offlineAnswer(study.server, study.secret, item)
                 null
             } catch (e: ApiError) {
                 e

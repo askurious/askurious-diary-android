@@ -147,6 +147,11 @@ data class Study(
     val exit: Exit? = null,
     /** The clock of a fast-forward test person, null for real time. */
     val clock: Clock? = null,
+    /**
+     * The server of the study ("https://ask.askurious.de"): the one its join link named, else [Api.defaultServer]. Kept
+     * only on the device; every call for the study goes there.
+     */
+    val server: String = Api.defaultServer,
 ) {
     val running get() = status == "active"
 
@@ -204,6 +209,7 @@ data class Study(
         .put("pauses", JSONArray(pauses.map { (from, to) -> JSONArray(listOf(from.toString(), to?.toString() ?: JSONObject.NULL)) }))
         .put("exit", exit?.toJson() ?: JSONObject.NULL)
         .put("clock", clock?.toJson() ?: JSONObject.NULL)
+        .put("server", server)
 
     companion object {
         /** How long the server may answer 401 before the app takes the study as deleted: three days. */
@@ -214,9 +220,10 @@ data class Study(
          * sends neither "unauthorised_since", "leave_pending" nor "quiet_pending", so a fresh copy starts without them;
          * "pauses", "exit" and "clock" have the same shape in both. Defensive: a date that is no date counts as none,
          * and a module that cannot be read is left out (the server may send something newer than this app knows); only
-         * a missing "code" throws.
+         * a missing "code" throws. The server sends no "server" either: [server] names it (the study's own, kept on the
+         * phone), else the stored one counts, and a study stored before there was one has [Api.defaultServer].
          */
-        fun fromJson(o: JSONObject, secret: String = o.optString("secret")): Study = Study(
+        fun fromJson(o: JSONObject, secret: String = o.optString("secret"), server: String? = null): Study = Study(
             code = o.getString("code"),
             secret = secret,
             title = o.optString("title"),
@@ -237,6 +244,7 @@ data class Study(
                 ?: emptyList(),
             exit = Exit.fromJson(o.optJSONObject("exit")),
             clock = Clock.fromJson(o.optJSONObject("clock")),
+            server = server ?: o.optStringOrNull("server") ?: Api.defaultServer,
         )
 
         /** ["YYYY-MM-DD", "YYYY-MM-DD" or null]; anything else is no pause. */

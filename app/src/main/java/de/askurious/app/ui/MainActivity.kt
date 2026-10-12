@@ -70,6 +70,7 @@ import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import de.askurious.app.R
 import de.askurious.app.data.AnswerQueue
+import de.askurious.app.BuildConfig
 import de.askurious.app.data.Api
 import de.askurious.app.data.ApiError
 import de.askurious.app.data.Quiet
@@ -129,13 +130,14 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        linkCode = intent?.data?.let { joinCode(it.toString()) }
+        // the whole link: JoinScreen reads the code and the server from it (joinCode, joinServer)
+        linkCode = intent?.data?.toString()?.takeIf { joinCode(it) != null }
         setContent { DiaryTheme { App() } }
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        intent.data?.let { linkCode = joinCode(it.toString()) }
+        intent.data?.toString()?.takeIf { joinCode(it) != null }?.let { linkCode = it }
     }
 
     override fun onResume() {
@@ -445,7 +447,9 @@ class MainActivity : ComponentActivity() {
     private fun JoinScreen(initial: String, onDone: () -> Unit) {
         val context = LocalContext.current
         val scope = rememberCoroutineScope()
-        var code by remember { mutableStateOf(initial) }
+        var code by remember { mutableStateOf(joinCode(initial) ?: "") }
+        // the server of the study: from its join link (QR code, App Link), else the app's own for a typed code
+        var server by remember { mutableStateOf(Api.defaultServer) }
         var info by remember { mutableStateOf<JSONObject?>(null) }
         var busy by remember { mutableStateOf(false) }
         var message by remember { mutableStateOf<String?>(null) }
@@ -460,12 +464,14 @@ class MainActivity : ComponentActivity() {
 
         fun lookUp(c: String) {
             val clean = joinCode(c) ?: return
+            val at = joinServer(c, BuildConfig.DEBUG) ?: Api.defaultServer
             code = clean
+            server = at
             busy = true
             message = null
             scope.launch {
                 try {
-                    info = Api.join(clean)
+                    info = Api.join(at, clean)
                 } catch (e: ApiError) {
                     message = errorText(e)
                 }
@@ -483,9 +489,9 @@ class MainActivity : ComponentActivity() {
             message = null
             scope.launch {
                 try {
-                    val r = Api.enrol(code)
+                    val r = Api.enrol(server, code)
                     val secret = r.optString("secret").ifBlank { throw ApiError("error") }
-                    val study = Study.fromJson(JSONObject(info.toString()).put("status", "pending").put("modules", org.json.JSONArray()), secret)
+                    val study = Study.fromJson(JSONObject(info.toString()).put("status", "pending").put("modules", org.json.JSONArray()), secret, server)
                     val old = StudyStore(context).get(study.code)
                     if (old != null) Sync.rejoin(context, old, study) else StudyStore(context).put(study)
                     startActivity(EntryActivity.intent(context, study.code, "entry"))
@@ -555,6 +561,7 @@ class MainActivity : ComponentActivity() {
                     val minutes = i.optInt("minutes")
                     if (minutes > 0) Text(pluralStringResource(R.plurals.about_minutes, minutes, minutes))
                     Text(stringResource(R.string.join_privacy), style = MaterialTheme.typography.bodySmall)
+                    Text(stringResource(R.string.join_server, server.substringAfter("://")), style = MaterialTheme.typography.bodySmall)
                     Button(enabled = !busy, onClick = {
                         // the same study on this phone already: joining again replaces its secret, so ask first
                         if (StudyStore(context).get(i.optString("code")) != null) confirmRejoin = true else enrol(i)

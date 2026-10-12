@@ -16,16 +16,20 @@ import java.security.MessageDigest
  * (/static/ and /media/ paths: style sheet, participant.js, images). Kept in the app's files directory, which goes
  * into no backup and to no new phone (res/xml/data_extraction_rules.xml excludes the domain "file").
  *
- * pages/<study>_<module>.json holds {html, version, files, fetched}; files/<hash> holds one file of the server and
- * files/<hash>.type its content type. Files are shared by all pages (they are the same for everybody) and deleted
- * when no page names them any more.
+ * pages/<study>_<module>.json holds {html, version, files, fetched}; files/<hash> holds one file of a server and
+ * files/<hash>.type its content type. A file is known by its full address (server and path: two servers may have
+ * different files under the same path); files are shared by all pages of a server (they are the same for everybody)
+ * and deleted when no page names them any more.
  */
 class OfflinePages(context: Context) {
     private val root = File(context.applicationContext.filesDir, "offline")
     private val pages = File(root, "pages")
     private val files = File(root, "files")
 
-    /** A kept page: [files] are the server paths it needs, [fetched] the time it was last checked with the server. */
+    /**
+     * A kept page: [files] are the full addresses (server and path) of the files it needs, [fetched] the time it was
+     * last checked with the server. A page kept before the addresses were full names paths only: it counts as missing.
+     */
     data class Page(val html: String, val version: String, val files: List<String>, val fetched: Long)
 
     fun page(study: String, module: String): Page? {
@@ -39,15 +43,20 @@ class OfflinePages(context: Context) {
     }
 
     /** A page counts only with all its files: without participant.js the answers would go nowhere. */
-    fun usable(study: String, module: String): Page? = page(study, module)?.takeIf { p -> p.files.all { has(it) } }
+    fun usable(study: String, module: String): Page? = page(study, module)?.takeIf { complete(it) }
 
-    /** The kept file of server [path] and its content type, null when it is not kept. */
-    fun file(path: String): Pair<File, String>? {
-        val f = File(files, hash(path))
+    /** The kept file of [path] on [server] and its content type, null when it is not kept. */
+    fun file(server: String, path: String): Pair<File, String>? = file(server + path)
+
+    private fun file(address: String): Pair<File, String>? {
+        val f = File(files, hash(address))
         if (!f.exists()) return null
-        val type = File(files, hash(path) + ".type").takeIf { it.exists() }?.readText()?.ifBlank { null } ?: guessType(path)
+        val type = File(files, hash(address) + ".type").takeIf { it.exists() }?.readText()?.ifBlank { null } ?: guessType(address)
         return f to type
     }
+
+    /** All files of [page] are kept, under their full addresses. */
+    private fun complete(page: Page) = page.files.all { it.contains("://") && has(it) }
 
     fun drop(study: String, module: String) {
         pageFile(study, module).delete()
@@ -119,7 +128,7 @@ class OfflinePages(context: Context) {
             val now = System.currentTimeMillis()
             for (key in wanted) {
                 val kept = page(study.code, key)
-                if (kept != null && kept.files.all { has(it) } && now - kept.fetched in 0 until REFRESH_MS) continue
+                if (kept != null && complete(kept) && now - kept.fetched in 0 until REFRESH_MS) continue
                 try {
                     fetch(study, key, kept, now)
                 } catch (e: ApiError) {
@@ -133,7 +142,7 @@ class OfflinePages(context: Context) {
     }
 
     private suspend fun fetch(study: Study, module: String, kept: Page?, now: Long) {
-        val r = Api.offlinePage(study.secret, module)
+        val r = Api.offlinePage(study.server, study.secret, module)
         if (!r.optBoolean("offline", false)) {
             drop(study.code, module)
             return
@@ -141,31 +150,34 @@ class OfflinePages(context: Context) {
         val html = r.optString("html")
         val version = r.optString("version")
         if (html.isBlank()) return
-        val needed = LinkedHashSet<String>()
+        val server = study.server
+        val needed = LinkedHashSet<String>()  // full addresses: server and path
         var total = 0L
         // all files of one page together at most MAX_PAGE: the phone keeps no page that would fill it
-        fun count(path: String) {
-            total += File(files, hash(path)).length()
+        fun count(address: String) {
+            total += File(files, hash(address)).length()
             if (total > MAX_PAGE) throw ApiError("error", 413)
         }
         for (path in resourcePaths(html)) {
-            needed += path
-            if (!has(path)) {
-                val (bytes, type) = Api.download(path)
-                keepFile(path, bytes, type)
+            val address = server + path
+            needed += address
+            if (!has(address)) {
+                val (bytes, type) = Api.download(server, path)
+                keepFile(address, bytes, type)
             }
-            count(path)
+            count(address)
             // a style sheet names its fonts and images itself
             if (path.substringBefore('?').endsWith(".css")) {
-                val css = file(path)?.first?.readText().orEmpty()
+                val css = file(address)?.first?.readText().orEmpty()
                 for (inner in cssPaths(css, path)) {
-                    val seen = inner in needed
-                    needed += inner
-                    if (!has(inner)) {
-                        val (bytes, type) = Api.download(inner)
-                        keepFile(inner, bytes, type)
+                    val innerAddress = server + inner
+                    val seen = innerAddress in needed
+                    needed += innerAddress
+                    if (!has(innerAddress)) {
+                        val (bytes, type) = Api.download(server, inner)
+                        keepFile(innerAddress, bytes, type)
                     }
-                    if (!seen) count(inner)
+                    if (!seen) count(innerAddress)
                 }
             }
         }

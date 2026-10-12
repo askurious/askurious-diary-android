@@ -34,6 +34,8 @@
         <item quantity="other">Circa %d minuti al giorno</item>
     </plurals>
     <string name="join_privacy">Partecipando si apre il modulo di consenso dello studio. L’app non salva nomi, indirizzi e-mail o numeri di telefono, e lo studio non vede i Suoi altri studi.</string>
+    <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
+    <string name="join_server" formatted="true">Server: %1$s</string>
     <string name="continue_entry">Continua il primo questionario</string>
     <string name="day_of">Giorno %1$d di %2$d</string>
     <string name="starts_on">Inizia il %1$s</string>

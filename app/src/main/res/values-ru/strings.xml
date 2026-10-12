@@ -38,6 +38,8 @@
         <item quantity="other">Около %d минуты в день</item>
     </plurals>
     <string name="join_privacy">При присоединении откроется форма согласия исследования. Приложение не сохраняет ни имени, ни адреса электронной почты, ни номера телефона, а исследование не видит другие Ваши исследования.</string>
+    <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
+    <string name="join_server" formatted="true">Сервер: %1$s</string>
     <string name="continue_entry">Продолжить первую анкету</string>
     <string name="day_of">День %1$d из %2$d</string>
     <string name="starts_on">Начало: %1$s</string>

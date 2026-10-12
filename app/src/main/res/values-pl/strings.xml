@@ -38,6 +38,8 @@
         <item quantity="other">Około %d minuty dziennie</item>
     </plurals>
     <string name="join_privacy">Dołączenie otwiera formularz zgody badania. Aplikacja nie zapisuje imienia ani nazwiska, adresu e-mail ani numeru telefonu, a badanie nie widzi innych badań na tym telefonie.</string>
+    <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
+    <string name="join_server" formatted="true">Serwer: %1$s</string>
     <string name="continue_entry">Kontynuuj pierwszy kwestionariusz</string>
     <string name="day_of">Dzień %1$d z %2$d</string>
     <string name="starts_on">Początek: %1$s</string>
