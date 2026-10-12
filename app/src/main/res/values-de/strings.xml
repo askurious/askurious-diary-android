@@ -107,4 +107,10 @@
     <string name="clock_off">Die Uhr dieses Telefons geht falsch. Antworten, die ohne Verbindung gegeben wurden, werden gesendet, sobald Datum und Uhrzeit stimmen.</string>
     <string name="rejoin_confirm">Sie nehmen auf diesem Telefon schon an dieser Studie teil. Ein erneuter Beitritt beginnt eine neue Teilnahme: Ihre früheren Antworten können Sie dann nicht mehr in der App löschen. Noch wartende Antworten der früheren Teilnahme werden vorher gesendet, wenn möglich, sonst verworfen. Um Ihre früheren Antworten zu löschen, brechen Sie ab und nutzen Sie „Meine Antworten löschen“ auf der Karte der Studie.</string>
     <string name="rejoin">Erneut beitreten</string>
+    <string name="allow_in_settings">In den Einstellungen erlauben</string>
+    <string name="notifications_off">Benachrichtigungen aus – Sie erhalten keine Fragen</string>
+    <string name="remove">Entfernen</string>
+    <string name="remove_title">„%1$s“ entfernen?</string>
+    <string name="remove_confirm">Die Studie wird von diesem Telefon entfernt. Danach können Sie Ihre Antworten nicht mehr über die App löschen.</string>
+    <string name="remove_exit_open">Die Abschlussbefragung dieser Studie ist noch offen.</string>
 </resources>

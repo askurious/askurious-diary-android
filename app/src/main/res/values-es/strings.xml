@@ -114,4 +114,10 @@
     <string name="clock_off">El reloj de este teléfono no está bien. Las respuestas dadas sin conexión se enviarán en cuanto la fecha y la hora sean correctas.</string>
     <string name="rejoin_confirm">Ya participa en este estudio en este teléfono. Unirse de nuevo inicia una nueva participación: después ya no podrá borrar sus respuestas anteriores en la aplicación. Las respuestas pendientes de la participación anterior se envían antes si es posible; si no, se descartan. Para borrar sus respuestas anteriores, cancele y use «Borrar mis respuestas» en la tarjeta del estudio.</string>
     <string name="rejoin">Unirse de nuevo</string>
+    <string name="allow_in_settings">Permitir en los ajustes</string>
+    <string name="notifications_off">Notificaciones desactivadas: no recibirá ninguna pregunta</string>
+    <string name="remove">Quitar</string>
+    <string name="remove_title">¿Quitar «%1$s»?</string>
+    <string name="remove_confirm">El estudio se quita de este teléfono. Después ya no podrá borrar sus respuestas desde la aplicación.</string>
+    <string name="remove_exit_open">El cuestionario final de este estudio sigue abierto.</string>
 </resources>

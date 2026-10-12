@@ -74,7 +74,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import com.journeyapps.barcodescanner.ScanContract
@@ -122,6 +124,33 @@ class MainActivity : ComponentActivity() {
     /** The phone's clock is off and answers given without a connection wait for it (AnswerQueue.Fate.CLOCK). */
     private var clockOff by mutableStateOf(false)
 
+    /** The notice for notifications (none, the system dialog, the app's settings); read again in [onResume]. */
+    private var notifyState by mutableStateOf(NotifyNotice.NONE)
+
+    /** Exact alarms are allowed ("Alarms & reminders"); read again in [onResume], also after the system settings. */
+    private var exactOn by mutableStateOf(true)
+
+    private val uiPrefs get() = getSharedPreferences(UI_PREFS, MODE_PRIVATE)
+
+    /**
+     * Reads the permissions again: on every return to the app (from the system settings, the permission dialog, an
+     * entry), so that a notice goes as soon as the permission is there and comes back when it was taken away.
+     */
+    private fun readPermissions() {
+        val manager = NotificationManagerCompat.from(this)
+        // the channel of the prompts switched off counts like notifications off
+        val channelOn = manager.getNotificationChannelCompat(Alarms.CHANNEL)?.importance != NotificationManagerCompat.IMPORTANCE_NONE
+        val canAsk = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+        notifyState = notifyNotice(
+            enabled = manager.areNotificationsEnabled() && channelOn,
+            canAsk = canAsk,
+            granted = !canAsk || ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED,
+            asked = uiPrefs.getBoolean(NOTIFY_ASKED, false),
+            rationale = canAsk && shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS),
+        )
+        exactOn = Alarms.canExact(this)
+    }
+
     private fun reload() {
         studies = StudyStore(this).all()
         val queue = AnswerQueue(this)
@@ -156,6 +185,7 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         reload()
+        readPermissions()
         // not while a sync runs, nor again within a few minutes (every return from an entry or a dialog resumes)
         lifecycleScope.launch {
             if (Sync.allIfDue(this@MainActivity) != null) reload()
@@ -181,13 +211,8 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun HomeScreen(onJoin: () -> Unit, onAbout: () -> Unit) {
-        val context = LocalContext.current
-        var askNotify by remember { mutableStateOf(false) }
-        val notifyLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { askNotify = false }
-        LaunchedEffect(studies.size) {
-            askNotify = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && studies.isNotEmpty() &&
-                ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
-        }
+        // the notice stays after a denial: readPermissions() decides whether the dialog can still come (audit A2)
+        val notifyLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { readPermissions() }
         Scaffold(topBar = {
             TopAppBar(title = { Logo() }, actions = {
                 // an icon: the word mark of the logo needs the room (and the empty start page has the button with text)
@@ -205,15 +230,24 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(top = 4.dp).semantics { heading() },
                     )
                 }
-                if (askNotify) item {
-                    Notice(stringResource(R.string.allow_notifications), Icons.Outlined.Notifications) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                // right below the heading (the first item), so that it is in view after a cold start (audit A1)
+                if (studies.isNotEmpty() && notifyState != NotifyNotice.NONE) item(key = "notice-notify") {
+                    val settings = notifyState == NotifyNotice.SETTINGS
+                    Notice(
+                        stringResource(R.string.allow_notifications), Icons.Outlined.Notifications,
+                        stringResource(if (settings) R.string.allow_in_settings else R.string.allow),
+                    ) {
+                        if (settings) {
+                            // denied for good (or switched off): the system shows no dialog any more
+                            openOther(Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(Settings.EXTRA_APP_PACKAGE, packageName))
+                        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            uiPrefs.edit { putBoolean(NOTIFY_ASKED, true) }
                             notifyLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                         }
                     }
                 }
-                if (studies.any { it.running } && !Alarms.canExact(context)) item {
-                    Notice(stringResource(R.string.allow_exact), Icons.Outlined.Warning) {
+                if (studies.any { it.running } && !exactOn) item(key = "notice-exact") {
+                    Notice(stringResource(R.string.allow_exact), Icons.Outlined.Warning, stringResource(R.string.allow)) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                             openOther(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, "package:$packageName".toUri()))
                         }
@@ -250,7 +284,7 @@ class MainActivity : ComponentActivity() {
      * at the top of the start page, so that it is not overlooked: without it no prompt arrives (on time).
      */
     @Composable
-    private fun Notice(text: String, icon: ImageVector, onAllow: () -> Unit) {
+    private fun Notice(text: String, icon: ImageVector, button: String, onAllow: () -> Unit) {
         Card(
             Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(
@@ -263,7 +297,7 @@ class MainActivity : ComponentActivity() {
                 Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(28.dp))
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     Text(text, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold)
-                    Button(onClick = onAllow) { Text(stringResource(R.string.allow)) }
+                    Button(onClick = onAllow) { Text(button) }
                 }
             }
         }
@@ -276,6 +310,7 @@ class MainActivity : ComponentActivity() {
         val scope = rememberCoroutineScope()
         var confirmLeave by remember { mutableStateOf(false) }
         var confirmErase by remember { mutableStateOf(false) }
+        var confirmRemove by remember { mutableStateOf(false) }
         var eraseError by remember { mutableStateOf<String?>(null) }
         var editQuiet by remember { mutableStateOf(false) }
         // now, read again every 15 s for a fast-forward person (a study day passes in minutes there): the day and the
@@ -316,7 +351,10 @@ class MainActivity : ComponentActivity() {
                         } else if (day != null && total != null) {
                             Text(stringResource(R.string.day_of, day, total))
                         }
-                        Schedule.next(listOf(study), Instant.ofEpochMilli(tick)).firstOrNull()?.let {
+                        if (notifyState != NotifyNotice.NONE) {
+                            // without notifications no prompt reaches the participant: no time that would not come (audit A1)
+                            Text(stringResource(R.string.notifications_off), color = MaterialTheme.colorScheme.error)
+                        } else Schedule.next(listOf(study), Instant.ofEpochMilli(tick)).firstOrNull()?.let {
                             // shown in the study's time, like the day
                             Text(stringResource(R.string.next_prompt, Instant.ofEpochMilli(it.due).atZone(ZoneId.systemDefault()).format(fmt)))
                             // a fast-forward test person: when it really comes, small below
@@ -380,13 +418,7 @@ class MainActivity : ComponentActivity() {
                         TextButton(onClick = { confirmLeave = true }) { Text(stringResource(R.string.leave_study)) }
                     } else if (!study.leavePending) {
                         // a leave not yet told to the server keeps the study, so that the next sync can send it
-                        TextButton(onClick = {
-                            // with its queued answers and kept pages: the participant takes the study off the phone
-                            scope.launch {
-                                Sync.forget(context, study.code)
-                                reload()
-                            }
-                        }) { Text(stringResource(R.string.remove_from_list)) }
+                        TextButton(onClick = { confirmRemove = true }) { Text(stringResource(R.string.remove_from_list)) }
                     }
                     // every study still holds its secret, so its answers can be deleted, also after the end
                     TextButton(onClick = { eraseError = null; confirmErase = true }) {
@@ -427,6 +459,32 @@ class MainActivity : ComponentActivity() {
                     }) { Text(stringResource(R.string.leave_study)) }
                 },
                 dismissButton = { TextButton(onClick = { confirmLeave = false }) { Text(stringResource(R.string.cancel)) } },
+            )
+        }
+        if (confirmRemove) {
+            // the secret goes with the study: afterwards its answers can no longer be deleted from the phone (audit A4)
+            AlertDialog(
+                onDismissRequest = { confirmRemove = false },
+                title = { Text(stringResource(R.string.remove_title, study.title)) },
+                text = {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(stringResource(R.string.remove_confirm))
+                        if (study.exit?.open == true) {
+                            Text(stringResource(R.string.remove_exit_open), color = MaterialTheme.colorScheme.error)
+                        }
+                    }
+                },
+                confirmButton = {
+                    TextButton(onClick = {
+                        confirmRemove = false
+                        // with its queued answers and kept pages: the participant takes the study off the phone
+                        scope.launch {
+                            Sync.forget(context, study.code)
+                            reload()
+                        }
+                    }) { Text(stringResource(R.string.remove), color = MaterialTheme.colorScheme.error) }
+                },
+                dismissButton = { TextButton(onClick = { confirmRemove = false }) { Text(stringResource(R.string.cancel)) } },
             )
         }
         if (confirmErase) {
@@ -649,5 +707,13 @@ class MainActivity : ComponentActivity() {
                 dismissButton = { TextButton(onClick = { confirmRejoin = false }) { Text(stringResource(R.string.cancel)) } },
             )
         }
+    }
+
+    private companion object {
+        /** Preferences of the screens (not of the studies). */
+        const val UI_PREFS = "ui"
+
+        /** The permission dialog for notifications was shown once: tells "never asked" from "denied for good". */
+        const val NOTIFY_ASKED = "notify_asked"
     }
 }

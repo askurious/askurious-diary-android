@@ -56,7 +56,6 @@
             android:name=".ui.EntryActivity"
             android:exported="false"
             android:taskAffinity=""
-            android:excludeFromRecents="true"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation|uiMode" />
 
         <receiver android:name=".schedule.PromptReceiver" android:exported="false" />

@@ -114,4 +114,10 @@
     <string name="clock_off">L’horloge de ce téléphone n’est pas à l’heure. Les réponses données sans connexion seront envoyées dès que la date et l’heure seront correctes.</string>
     <string name="rejoin_confirm">Vous participez déjà à cette étude sur ce téléphone. Rejoindre à nouveau commence une nouvelle participation : vous ne pourrez alors plus supprimer vos réponses précédentes dans l’application. Les réponses en attente de la participation précédente sont d’abord envoyées si possible, sinon supprimées. Pour supprimer vos réponses précédentes, annulez et utilisez « Supprimer mes réponses » sur la carte de l’étude.</string>
     <string name="rejoin">Rejoindre à nouveau</string>
+    <string name="allow_in_settings">Autoriser dans les paramètres</string>
+    <string name="notifications_off">Notifications désactivées – vous ne recevrez aucune question</string>
+    <string name="remove">Retirer</string>
+    <string name="remove_title">Retirer « %1$s » ?</string>
+    <string name="remove_confirm">L’étude sera retirée de ce téléphone. Vous ne pourrez ensuite plus supprimer vos réponses depuis l’application.</string>
+    <string name="remove_exit_open">Le questionnaire final de cette étude est encore ouvert.</string>
 </resources>

@@ -107,4 +107,10 @@
     <string name="clock_off">Bu telefonun saati yanlış. Bağlantı olmadan verilen yanıtlar, tarih ve saat doğru ayarlandığında gönderilecek.</string>
     <string name="rejoin_confirm">Bu telefonda bu çalışmaya zaten katılıyorsunuz. Yeniden katılmak yeni bir katılım başlatır: önceki yanıtlarınızı artık uygulamada silemezsiniz. Önceki katılımın bekleyen yanıtları mümkünse önce gönderilir, değilse silinir. Önceki yanıtlarınızı silmek için iptal edin ve çalışma kartındaki “Yanıtlarımı sil” düğmesini kullanın.</string>
     <string name="rejoin">Yeniden katıl</string>
+    <string name="allow_in_settings">Ayarlardan izin ver</string>
+    <string name="notifications_off">Bildirimler kapalı – hiç soru almayacaksınız</string>
+    <string name="remove">Kaldır</string>
+    <string name="remove_title">“%1$s” kaldırılsın mı?</string>
+    <string name="remove_confirm">Çalışma bu telefondan kaldırılır. Ardından yanıtlarınızı artık uygulama üzerinden silemezsiniz.</string>
+    <string name="remove_exit_open">Bu çalışmanın son anketi hâlâ açık.</string>
 </resources>

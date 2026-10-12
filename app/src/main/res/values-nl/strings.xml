@@ -107,4 +107,10 @@
     <string name="clock_off">De klok van deze telefoon staat verkeerd. Antwoorden die zonder verbinding zijn gegeven, worden verstuurd zodra datum en tijd kloppen.</string>
     <string name="rejoin_confirm">U neemt op deze telefoon al deel aan dit onderzoek. Opnieuw deelnemen start een nieuwe deelname: uw eerdere antwoorden kunt u daarna niet meer in de app verwijderen. Nog wachtende antwoorden van de eerdere deelname worden eerst verstuurd als dat lukt, anders vervallen ze. Om uw eerdere antwoorden te verwijderen, annuleert u en gebruikt u ‘Mijn antwoorden verwijderen’ op de kaart van het onderzoek.</string>
     <string name="rejoin">Opnieuw deelnemen</string>
+    <string name="allow_in_settings">Toestaan in instellingen</string>
+    <string name="notifications_off">Meldingen uit – u krijgt geen vragen</string>
+    <string name="remove">Verwijderen</string>
+    <string name="remove_title">‘%1$s’ verwijderen?</string>
+    <string name="remove_confirm">Het onderzoek wordt van deze telefoon verwijderd. Daarna kunt u uw antwoorden niet meer via de app verwijderen.</string>
+    <string name="remove_exit_open">De afsluitende vragenlijst van dit onderzoek staat nog open.</string>
 </resources>
