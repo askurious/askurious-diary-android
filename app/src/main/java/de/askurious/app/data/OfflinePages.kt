@@ -22,7 +22,8 @@ import java.security.MessageDigest
  * and deleted when no page names them any more.
  */
 class OfflinePages(context: Context) {
-    private val root = File(context.applicationContext.filesDir, "offline")
+    private val app = context.applicationContext
+    private val root = File(app.filesDir, "offline")
     private val pages = File(root, "pages")
     private val files = File(root, "files")
 
@@ -66,10 +67,18 @@ class OfflinePages(context: Context) {
      * Deletes all pages of [study] and the files no other page needs. Under the same lock as [refresh] (a fetch running
      * at the same time must not lose the files it just kept) and off the main thread.
      */
-    suspend fun dropStudy(study: String): Unit = lock.withLock {
-        withContext(Dispatchers.IO) {
-            pages.listFiles()?.filter { it.name.startsWith(hash(study) + "_") }?.forEach { it.delete() }
-            prune()
+    suspend fun dropStudy(study: String) {
+        // a refresh of this study that runs now stops after the file it is fetching (audit 2026-10-13, AN-9)
+        dropping.add(study)
+        try {
+            lock.withLock {
+                withContext(Dispatchers.IO) {
+                    pages.listFiles()?.filter { it.name.startsWith(hash(study) + "_") }?.forEach { it.delete() }
+                    prune()
+                }
+            }
+        } finally {
+            dropping.remove(study)
         }
     }
 
@@ -118,15 +127,21 @@ class OfflinePages(context: Context) {
      * (at most every [REFRESH_MS], at once when it or one of its files is missing), downloads the files it names
      * that are not kept yet, and drops the pages of modules no longer offline. Errors are swallowed: the pages are
      * a fallback, and the next sync tries again.
+     *
+     * Runs outside the lock of the sync (Sync.refreshPages, AN-9): it works with the study as it is stored now, does
+     * nothing when it is gone from the phone (deleted, joined again with another secret), and stops between two files
+     * when the study is being dropped ([dropStudy]).
      */
-    suspend fun refresh(study: Study) = lock.withLock {
+    suspend fun refresh(given: Study) = lock.withLock {
         withContext(Dispatchers.IO) {
+            val study = StudyStore(app).get(given.code)?.takeIf { it.secret == given.secret } ?: return@withContext
             val wanted = if (study.running) study.modules.filter { it.offline }.map { it.key }.toSet() else emptySet()
             pages.listFiles()?.filter { f ->
                 f.name.startsWith(hash(study.code) + "_") && wanted.none { f.name == pageFile(study.code, it).name }
             }?.forEach { it.delete() }
             val now = System.currentTimeMillis()
             for (key in wanted) {
+                if (study.code in dropping) return@withContext
                 val kept = page(study.code, key)
                 if (kept != null && complete(kept) && now - kept.fetched in 0 until REFRESH_MS) continue
                 try {
@@ -135,6 +150,9 @@ class OfflinePages(context: Context) {
                     if (e.status == 400 || e.status == 404) drop(study.code, key)
                 } catch (e: java.io.IOException) {
                     // storage full or similar: the old page (if any) stays
+                } catch (e: Dropped) {
+                    // the study is being dropped: dropStudy deletes what was fetched
+                    return@withContext
                 }
             }
             prune()
@@ -162,6 +180,7 @@ class OfflinePages(context: Context) {
             val address = server + path
             needed += address
             if (!has(address)) {
+                if (study.code in dropping) throw Dropped()
                 val (bytes, type) = Api.download(server, path)
                 keepFile(address, bytes, type)
             }
@@ -174,6 +193,7 @@ class OfflinePages(context: Context) {
                     val seen = innerAddress in needed
                     needed += innerAddress
                     if (!has(innerAddress)) {
+                        if (study.code in dropping) throw Dropped()
                         val (bytes, type) = Api.download(server, inner)
                         keepFile(innerAddress, bytes, type)
                     }
@@ -197,6 +217,12 @@ class OfflinePages(context: Context) {
         private const val MAX_PAGE = 30L * 1024 * 1024
 
         private val lock = Mutex()
+
+        /** The studies whose pages [dropStudy] is about to delete: a refresh of one of them stops (AN-9). */
+        private val dropping: MutableSet<String> = java.util.concurrent.ConcurrentHashMap.newKeySet()
+
+        /** A refresh stopped because its study is being dropped. */
+        private class Dropped : Exception()
 
         private val ATTR = Regex("""\b(?:src|href)\s*=\s*(["'])(/[^"']*)\1""", RegexOption.IGNORE_CASE)
         private val CSS_URL = Regex("""url\(\s*(["']?)([^"')]+)\1\s*\)""", RegexOption.IGNORE_CASE)

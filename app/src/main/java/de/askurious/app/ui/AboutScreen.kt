@@ -20,9 +20,11 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -57,7 +59,7 @@ private val PROVIDER = listOf(
 
 /** The libraries in the app, all under the Apache License 2.0 (THIRD_PARTY_NOTICES.md in the repository). */
 private val LIBRARIES = listOf(
-    "AndroidX (Core, Activity, Lifecycle) – The Android Open Source Project",
+    "AndroidX (Core, Activity, Lifecycle, WebKit) – The Android Open Source Project",
     "Jetpack Compose (UI, Material 3, Material Icons) – The Android Open Source Project",
     "Material Components for Android – The Android Open Source Project",
     "WorkManager – The Android Open Source Project",
@@ -125,7 +127,10 @@ fun AboutScreen(onBack: () -> Unit, onLicence: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(stringResource(R.string.app_name), style = MaterialTheme.typography.titleLarge, modifier = Modifier.semantics { heading() })
-            Text(buildInfo { v, t -> context.getString(R.string.build_info, v, t) }, style = MaterialTheme.typography.bodySmall)
+            // the format from the resources of the composition: a change of language shows at once (lint
+            // LocalContextGetResourceValueCall, audit 2026-10-13, AN-10)
+            val format = stringResource(R.string.build_info)
+            Text(buildInfo { v, t -> String.format(format, v, t) }, style = MaterialTheme.typography.bodySmall)
 
             SectionTitle(stringResource(R.string.about_privacy_title))
             Text(stringResource(R.string.about_stores))
@@ -164,5 +169,21 @@ fun LicenceScreen(onBack: () -> Unit) {
         ) {
             for (t in texts) Text(t, style = MaterialTheme.typography.bodyMedium)
         }
+    }
+}
+
+/**
+ * Touches on the window that holds this composable count only while no other app's window lies over it
+ * (filterTouchesWhenObscured, audit 2026-10-13, AN-16): an overlay of another app cannot make the participant join,
+ * leave or delete without seeing it. Android 12 and later block untrusted overlays themselves; this covers 8 to 11.
+ * Put into a dialog it guards the dialog's window; on a screen, the screen while it is shown.
+ */
+@Composable
+fun GuardAgainstOverlays() {
+    val view = LocalView.current
+    DisposableEffect(view) {
+        val before = view.filterTouchesWhenObscured
+        view.filterTouchesWhenObscured = true
+        onDispose { view.filterTouchesWhenObscured = before }
     }
 }

@@ -11,8 +11,8 @@ import org.junit.Test
 class StudyStoreSealTest {
     /** A stand-in for the Keystore: reversible, and it refuses what it did not seal. */
     private val fake = object : Sealer {
-        override fun seal(plain: String) = "x:" + plain.reversed()
-        override fun open(sealed: String) = if (sealed.startsWith("x:")) sealed.removePrefix("x:").reversed() else null
+        override fun seal(plain: String, aad: String) = "x:" + plain.reversed()
+        override fun open(sealed: String, aad: String) = if (sealed.startsWith("x:")) sealed.removePrefix("x:").reversed() else null
     }
 
     private val study = Study(code = "abc", secret = "s3cr3t", title = "T", status = "active", firstDay = null, lastDay = null,

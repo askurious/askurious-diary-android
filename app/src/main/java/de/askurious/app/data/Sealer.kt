@@ -9,10 +9,14 @@ import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 
-/** Seals a text for storage and opens it again; [open] gives null for anything it cannot open. */
+/**
+ * Seals a text for storage and opens it again; [open] gives null for anything it cannot open. [aad] names what the
+ * text is ("studies", "queue", ...): a text sealed for one purpose does not open for another, so stored texts cannot
+ * be swapped unnoticed (audit 2026-10-13, AN-3). The secrets sealed before that have none ("").
+ */
 interface Sealer {
-    fun seal(plain: String): String
-    fun open(sealed: String): String?
+    fun seal(plain: String, aad: String = ""): String
+    fun open(sealed: String, aad: String = ""): String?
 }
 
 /**
@@ -27,8 +31,20 @@ object KeystoreSealer : Sealer {
     private const val PREFIX = "k1:"
     private const val IV_BYTES = 12
 
+    /**
+     * The handle of the key, once per process: loading the Keystore at every call cost a call to keystore2 each time
+     * (audit 2026-10-13, AN-8). The key itself stays in the Keystore.
+     */
+    @Volatile
+    private var cached: SecretKey? = null
+
     @Synchronized
     private fun key(): SecretKey {
+        cached?.let { return it }
+        return load().also { cached = it }
+    }
+
+    private fun load(): SecretKey {
         val store = KeyStore.getInstance(STORE).apply { load(null) }
         (store.getKey(ALIAS, null) as? SecretKey)?.let { return it }
         val gen = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, STORE)
@@ -42,17 +58,19 @@ object KeystoreSealer : Sealer {
         return gen.generateKey()
     }
 
-    override fun seal(plain: String): String {
+    override fun seal(plain: String, aad: String): String {
         val cipher = Cipher.getInstance("AES/GCM/NoPadding")
         cipher.init(Cipher.ENCRYPT_MODE, key())
+        if (aad.isNotEmpty()) cipher.updateAAD(aad.toByteArray())
         return PREFIX + Base64.getEncoder().encodeToString(cipher.iv + cipher.doFinal(plain.toByteArray()))
     }
 
-    override fun open(sealed: String): String? = runCatching {
+    override fun open(sealed: String, aad: String): String? = runCatching {
         if (!sealed.startsWith(PREFIX)) return null
         val bytes = Base64.getDecoder().decode(sealed.removePrefix(PREFIX))
         val cipher = Cipher.getInstance("AES/GCM/NoPadding")
         cipher.init(Cipher.DECRYPT_MODE, key(), GCMParameterSpec(128, bytes, 0, IV_BYTES))
+        if (aad.isNotEmpty()) cipher.updateAAD(aad.toByteArray())
         String(cipher.doFinal(bytes, IV_BYTES, bytes.size - IV_BYTES))
     }.getOrNull()
 }

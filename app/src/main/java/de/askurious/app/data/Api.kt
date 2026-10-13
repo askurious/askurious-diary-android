@@ -36,6 +36,30 @@ object Api {
     val defaultServer: String get() = BuildConfig.BASE_URL
 
     /**
+     * The servers of Askurious this app joins studies at (audit 2026-10-13, AN-1): the domains of Askurious and of its
+     * brands (server: BRANDS in .env, app/brand.py) and their participants' addresses; a debug build also the Flask
+     * server on the computer. Set per build type in app/build.gradle.kts (KNOWN_SERVERS). A join link of any other
+     * server (a QR code on a poster, a link another app hands over) is refused before the app asks that server
+     * anything: it would get the app's frame, its notifications and its WebView for its own pages.
+     */
+    val knownServers: List<String> get() = servers(BuildConfig.KNOWN_SERVERS)
+
+    /** The origins in [list] ("https://a.de,https://b.de"), normalised as [origin] makes them. */
+    fun servers(list: String): List<String> = list.split(',').mapNotNull { origin(it.trim()) }
+
+    /** Whether [server] is one of [known] (scheme, host and port; the default port counted as given). */
+    fun isKnown(server: String, known: List<String> = knownServers): Boolean = origin(server)?.let { it in known } == true
+
+    /** "scheme://host[:port]" of [url] in lower case (the default port left out); null for anything but http(s). */
+    fun origin(url: String): String? {
+        val u = runCatching { java.net.URI(url) }.getOrNull() ?: return null
+        val scheme = u.scheme?.lowercase()?.takeIf { it == "https" || it == "http" } ?: return null
+        val host = u.host?.lowercase()?.ifBlank { null } ?: return null
+        val port = u.port.takeIf { it != -1 && it != (if (scheme == "https") 443 else 80) }
+        return "$scheme://$host" + (port?.let { ":$it" } ?: "")
+    }
+
+    /**
      * The phone's clock minus the server's, in milliseconds, from the Date header of the last answer of the server;
      * null until one came. Only to tell why answers given without a connection wait (AnswerQueue.Fate.CLOCK).
      */
@@ -44,12 +68,19 @@ object Api {
         private set
 
     /** The public information of a study, for the join screen. */
-    suspend fun join(server: String, code: String): JSONObject =
-        call(server, "GET", "$BASE/join/${URLEncoder.encode(code, "UTF-8")}?lang=${lang()}")
+    suspend fun join(server: String, code: String): JSONObject {
+        if (!isKnown(server)) throw ApiError(FOREIGN)
+        return call(server, "GET", "$BASE/join/${URLEncoder.encode(code, "UTF-8")}?lang=${lang()}")
+    }
 
     /** Enrols this device. Returns {"secret", "url"}: the url opens the first questionnaire (consent, entry part). */
-    suspend fun enrol(server: String, code: String): JSONObject =
-        call(server, "POST", "$BASE/enrol", JSONObject().put("code", code).put("lang", lang()))
+    suspend fun enrol(server: String, code: String): JSONObject {
+        if (!isKnown(server)) throw ApiError(FOREIGN)
+        return call(server, "POST", "$BASE/enrol", JSONObject().put("code", code).put("lang", lang()))
+    }
+
+    /** The error of a join link of a server that is not one of [knownServers] (AN-1). */
+    const val FOREIGN = "foreign_server"
 
     /**
      * The study as it stands now: status, study period, modules, the seed and the history of the quiet hours. Also

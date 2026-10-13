@@ -1,6 +1,7 @@
 package de.askurious.app.data
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.core.content.edit
 import org.json.JSONArray
 import org.json.JSONObject
@@ -13,10 +14,15 @@ import java.util.UUID
  * Answers given without a connection (EntryActivity, offline page), waiting to be sent with POST /offline.
  * Kept in the app's private storage like the studies (no backup, not moved to a new phone) and only until the
  * server took them or refused them for good; the server takes an answer at most [MAX_AGE_MS] after the page was
- * opened, so an older one is dropped unsent.
+ * opened, so an older one is dropped unsent. The answers are stored sealed under the Keystore key and kept open in
+ * memory ([SealedText], audit 2026-10-13, AN-3, AN-8); a queue stored in plain text by an earlier version is sealed
+ * the first time it is read.
  */
-class AnswerQueue(context: Context) {
-    private val prefs = context.applicationContext.getSharedPreferences("queue", Context.MODE_PRIVATE)
+class AnswerQueue internal constructor(private val prefs: SharedPreferences, sealer: Sealer) {
+    constructor(context: Context, sealer: Sealer = KeystoreSealer) :
+        this(context.applicationContext.getSharedPreferences("queue", Context.MODE_PRIVATE), sealer)
+
+    private val text = SealedText(prefs, KEY, sealer, AAD)
 
     /**
      * One answer. [due] and [notified]: of the prompt, null for a module the participant started; [started]: the
@@ -61,34 +67,30 @@ class AnswerQueue(context: Context) {
         }
     }
 
-    @Synchronized
-    fun all(): List<Item> {
-        val raw = runCatching { prefs.getString(KEY, null) }.getOrNull() ?: return emptyList()
+    fun all(): List<Item> = synchronized(SealedText.LOCK) {
+        val raw = text.read().text ?: return emptyList()
         val arr = runCatching { JSONArray(raw) }.getOrNull() ?: return emptyList()
         return (0 until arr.length()).mapNotNull { runCatching { Item.fromJson(arr.getJSONObject(it)) }.getOrNull() }
     }
 
     fun of(study: String): List<Item> = all().filter { it.study == study }
 
-    @Synchronized
-    fun add(study: String, module: String, due: Long?, notified: Long?, started: Long, completed: Long, version: String, form: String): Item {
-        val item = Item(UUID.randomUUID().toString(), study, module, due, notified, started, completed, version, form)
-        save(all() + item)
-        return item
-    }
+    fun add(study: String, module: String, due: Long?, notified: Long?, started: Long, completed: Long, version: String, form: String): Item =
+        synchronized(SealedText.LOCK) {
+            val item = Item(UUID.randomUUID().toString(), study, module, due, notified, started, completed, version, form)
+            save(all() + item)
+            item
+        }
 
-    @Synchronized
-    fun remove(id: String) = save(all().filterNot { it.id == id })
+    fun remove(id: String): Unit = synchronized(SealedText.LOCK) { save(all().filterNot { it.id == id }) }
 
-    @Synchronized
-    fun removeStudy(study: String) {
+    fun removeStudy(study: String): Unit = synchronized(SealedText.LOCK) {
         save(all().filterNot { it.study == study })
         clearRefused(study)
     }
 
     /** Stores [item] again in place of the one with its id (the time of a first refusal); nothing if it is gone. */
-    @Synchronized
-    fun replace(item: Item) {
+    fun replace(item: Item): Unit = synchronized(SealedText.LOCK) {
         val all = all()
         if (all.any { it.id == item.id }) save(all.map { if (it.id == item.id) item else it })
     }
@@ -97,15 +99,12 @@ class AnswerQueue(context: Context) {
      * An answer of [study] the server refused because today's limit of the report was reached (409 daily_limit):
      * the study card says so once, until the participant closes the note.
      */
-    @Synchronized
-    fun noteRefused(study: String) = prefs.edit { putStringSet(REFUSED, refusedStudies() + study) }
+    fun noteRefused(study: String): Unit = synchronized(SealedText.LOCK) { prefs.edit { putStringSet(REFUSED, refusedStudies() + study) } }
 
     /** The studies with an answer refused for the daily limit that the participant has not seen yet. */
-    @Synchronized
     fun refusedStudies(): Set<String> = runCatching { prefs.getStringSet(REFUSED, null)?.toSet() }.getOrNull() ?: emptySet()
 
-    @Synchronized
-    fun clearRefused(study: String) = prefs.edit { putStringSet(REFUSED, refusedStudies() - study) }
+    fun clearRefused(study: String): Unit = synchronized(SealedText.LOCK) { prefs.edit { putStringSet(REFUSED, refusedStudies() - study) } }
 
     /** Whether an answer to the prompt of [module] due at [due] is waiting: it counts as opened for the reminder. */
     fun has(study: String, module: String, due: Long): Boolean = all().any { it.study == study && it.module == module && it.due == due }
@@ -118,7 +117,7 @@ class AnswerQueue(context: Context) {
     }
 
     private fun save(items: List<Item>) {
-        prefs.edit { putString(KEY, JSONArray(items.map { it.toJson() }).toString()) }
+        if (items.isEmpty()) text.remove() else text.write(JSONArray(items.map { it.toJson() }).toString())
     }
 
     /** What becomes of a queued answer after the server's answer to POST /offline. */
@@ -154,6 +153,7 @@ class AnswerQueue(context: Context) {
 
     companion object {
         private const val KEY = "items"
+        private const val AAD = "queue"
         private const val REFUSED = "refused"
 
         /** The server takes an answer up to 7 days after "started". */

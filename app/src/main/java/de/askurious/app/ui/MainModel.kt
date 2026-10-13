@@ -13,7 +13,9 @@ import de.askurious.app.data.Quiet
 import de.askurious.app.data.Study
 import de.askurious.app.data.StudyStore
 import de.askurious.app.data.Sync
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -41,14 +43,31 @@ class MainModel(app: Application) : AndroidViewModel(app) {
     var clockOff by mutableStateOf(false)
         private set
 
-    /** Reads the studies and the queue again (after a sync, an entry, a change on the start page). */
+    /** The studies were read once: until then an empty list means "not read yet", not "no studies". */
+    var loaded by mutableStateOf(false)
+        private set
+
+    /** Counts the reloads: only the newest one sets the state, one started earlier may end later. */
+    private var reloads = 0
+
+    /**
+     * Reads the studies and the queue again (after a sync, an entry, a change on the start page). Off the main thread:
+     * the first read of a process opens the stored texts with the Keystore (audit 2026-10-13, AN-8).
+     */
     fun reload() {
-        studies = StudyStore(context).all()
-        val queue = AnswerQueue(context)
-        val items = queue.all()
-        waiting = items.groupingBy { it.study }.eachCount()
-        refused = queue.refusedStudies()
-        clockOff = clockOff(items.size, Api.clockSkew)
+        val mine = ++reloads
+        viewModelScope.launch {
+            val (s, items, r) = withContext(Dispatchers.IO) {
+                val queue = AnswerQueue(context)
+                Triple(StudyStore(context).all(), queue.all(), queue.refusedStudies())
+            }
+            if (mine != reloads) return@launch
+            studies = s
+            waiting = items.groupingBy { it.study }.eachCount()
+            refused = r
+            clockOff = clockOff(items.size, Api.clockSkew)
+            loaded = true
+        }
     }
 
     /** Syncs when the app comes to the front: not while a sync runs, nor again within a few minutes (Sync.allIfDue). */
@@ -65,9 +84,9 @@ class MainModel(app: Application) : AndroidViewModel(app) {
 
     /** Shown as left at once, also while a sync runs; the server hears of it as soon as it can. */
     fun leave(study: Study) {
-        Sync.markLeft(context, study)
-        reload()
         viewModelScope.launch {
+            withContext(Dispatchers.IO) { Sync.markLeft(context, study) }
+            reload()
             Sync.leave(context, study)
             reload()
         }
@@ -99,8 +118,10 @@ class MainModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun clearRefused(code: String) {
-        AnswerQueue(context).clearRefused(code)
-        reload()
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) { AnswerQueue(context).clearRefused(code) }
+            reload()
+        }
     }
 
     /** The public information of a study for the join screen; [done] gets it or the error. */
@@ -126,8 +147,8 @@ class MainModel(app: Application) : AndroidViewModel(app) {
                 val secret = r.optString("secret").ifBlank { throw ApiError("error") }
                 val study = Study.fromJson(JSONObject(info.toString()).put("status", "pending").put("modules", JSONArray()), secret, server)
                 val store = StudyStore(context)
-                val old = store.get(study.code)
-                if (old != null) Sync.rejoin(context, old, study) else store.put(study)
+                val old = withContext(Dispatchers.IO) { store.get(study.code) }
+                if (old != null) Sync.rejoin(context, old, study) else withContext(Dispatchers.IO) { store.put(study) }
                 reload()
                 done(study, null)
             } catch (e: ApiError) {

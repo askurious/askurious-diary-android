@@ -28,6 +28,7 @@
     <string name="join_privacy">加入时将打开该研究的知情同意书。本应用不保存姓名、电子邮件地址或电话号码，该研究也无法看到您参加的其他研究。</string>
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
     <string name="join_server" formatted="true">服务器：%1$s</string>
+    <string name="foreign_server" formatted="true">此链接不指向 Askurious 的服务器（%1$s），因此应用不会打开它。</string>
     <string name="continue_entry">继续填写第一份问卷</string>
     <string name="day_of">第 %1$d 天，共 %2$d 天</string>
     <string name="starts_on">开始日期：%1$s</string>

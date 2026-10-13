@@ -1,6 +1,7 @@
 package de.askurious.app.data
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.core.content.edit
 import org.json.JSONArray
 import org.json.JSONObject
@@ -9,51 +10,70 @@ import org.json.JSONObject
  * The studies of this device, kept in the app's private storage (not in backups nor moved to a new phone:
  * android:allowBackup="false" and res/xml/data_extraction_rules.xml).
  * Each study holds its own enrolment secret, so two studies on one phone share nothing the server could link.
- * The secrets are stored sealed with a key of the Android Keystore ([KeystoreSealer], "secret_sealed"); a study stored
- * before that, with its secret in plain text, is sealed the first time it is read.
+ *
+ * The whole list (titles, servers, schedules, seeds and secrets) is stored as one text sealed with a key of the
+ * Android Keystore ([SealedText] under "studies_sealed", audit 2026-10-13, AN-3) and kept open in memory, so the
+ * Keystore is asked once per process, not for every study at every read (AN-8). The lists of earlier versions under
+ * "studies" (each secret sealed on its own, "secret_sealed", or in plain text before that) are moved over the first
+ * time they are read; an entry whose secret cannot be opened (the Keystore lost its key) stays there as it is, not
+ * overwritten, for a later fix.
  */
-class StudyStore(context: Context, private val sealer: Sealer = KeystoreSealer) {
-    private val prefs = context.applicationContext.getSharedPreferences("studies", Context.MODE_PRIVATE)
+class StudyStore internal constructor(private val prefs: SharedPreferences, private val sealer: Sealer) {
+    constructor(context: Context, sealer: Sealer = KeystoreSealer) :
+        this(context.applicationContext.getSharedPreferences("studies", Context.MODE_PRIVATE), sealer)
+
+    private val text = SealedText(prefs, KEY_SEALED, sealer, AAD)
 
     /**
      * The stored studies. A damaged entry is skipped, not thrown: one unreadable study must not crash the app at every
      * start (DiaryApp.onCreate reads them) and so cost the participant the secrets of all the others. While the stored
      * text cannot be read at all, nothing is written over it ([save] refuses), so a later fix can still read it.
      */
-    @Synchronized
-    fun all(): List<Study> {
+    fun all(): List<Study> = synchronized(SealedText.LOCK) {
         val stored = read() ?: return emptyList()
-        if (stored.plain) save(stored.studies)  // seal the secrets stored before they were sealed
+        if (stored.moved) save(stored.studies)  // the list of an earlier version: sealed as a whole now
         return stored.studies
     }
 
-    private class Stored(val studies: List<Study>, val kept: List<JSONObject>, val plain: Boolean)
+    /**
+     * [kept]: entries of the earlier list whose secret cannot be opened, null when that list is not there or no JSON
+     * list (then it is left alone). [moved]: studies of the earlier list were read and are to be stored sealed.
+     */
+    private class Stored(val studies: List<Study>, val kept: List<JSONObject>?, val moved: Boolean)
 
-    /** The stored studies, null when the stored text is there but no JSON list. */
+    /** The stored studies, null when the sealed text is there but cannot be opened or is no JSON list. */
     private fun read(): Stored? {
-        val raw = runCatching { prefs.getString(KEY, null) }.getOrNull() ?: return Stored(emptyList(), emptyList(), false)
-        val arr = runCatching { JSONArray(raw) }.getOrNull() ?: return null
+        val opened = text.read()
+        if (opened.unreadable) return null
         val studies = mutableListOf<Study>()
+        opened.text?.let { t ->
+            val arr = runCatching { JSONArray(t) }.getOrNull() ?: return null
+            for (k in 0 until arr.length()) {
+                arr.optJSONObject(k)?.let { o -> runCatching { Study.fromJson(o) }.getOrNull()?.let { studies += it } }
+            }
+        }
+        val legacy = runCatching { prefs.getString(KEY, null) }.getOrNull()?.let { runCatching { JSONArray(it) }.getOrNull() }
+            ?: return Stored(studies, null, false)
         val kept = mutableListOf<JSONObject>()
-        var plain = false
-        for (k in 0 until arr.length()) {
-            val o = arr.optJSONObject(k) ?: continue
-            when (val opened = opened(o, sealer)) {
+        var moved = false
+        for (k in 0 until legacy.length()) {
+            val o = legacy.optJSONObject(k) ?: continue
+            when (val plain = opened(o, sealer)) {
                 null -> kept += o
-                else -> runCatching { Study.fromJson(opened) }.getOrNull()?.let {
-                    studies += it
-                    if (!o.has(SEALED)) plain = true
+                else -> runCatching { Study.fromJson(plain) }.getOrNull()?.let { s ->
+                    moved = true
+                    // the sealed list is the newer one
+                    if (studies.none { it.code == s.code }) studies += s
                 }
             }
         }
-        return Stored(studies, kept, plain)
+        return Stored(studies, kept, moved)
     }
 
     fun get(code: String): Study? = all().firstOrNull { it.code == code }
 
     /** Adds the study or replaces the one with the same code. */
-    @Synchronized
-    fun put(study: Study) {
+    fun put(study: Study): Unit = synchronized(SealedText.LOCK) {
         val rest = all().filterNot { it.code == study.code }
         save(rest + study)
     }
@@ -62,29 +82,31 @@ class StudyStore(context: Context, private val sealer: Sealer = KeystoreSealer) 
      * Replaces the stored study with the same code, but only if it is still there: a sync or a leave that ends
      * after the participant deleted the study must not bring it back.
      */
-    @Synchronized
-    fun update(study: Study) {
+    fun update(study: Study): Unit = synchronized(SealedText.LOCK) {
         val all = all()
         if (all.any { it.code == study.code }) save(all.map { if (it.code == study.code) study else it })
     }
 
-    @Synchronized
-    fun remove(code: String) = save(all().filterNot { it.code == code })
+    fun remove(code: String): Unit = synchronized(SealedText.LOCK) { save(all().filterNot { it.code == code }) }
 
     private fun save(studies: List<Study>) {
         val stored = read()
-        // a stored text that is no JSON list at all stays as it is, unless a new study is joined (put) on purpose
+        // a stored text that cannot be read stays as it is, unless a new study is joined (put) on purpose
         if (stored == null && studies.isEmpty()) return
-        // an entry whose secret cannot be opened (the Keystore lost its key) stays as it was, for a later fix
-        val kept = stored?.kept.orEmpty()
-        prefs.edit { putString(KEY, JSONArray(studies.map { sealed(it.toJson(), sealer) } + kept).toString()) }
+        text.write(JSONArray(studies.map { it.toJson() }).toString())
+        // what is left of the earlier list: only the entries whose secret cannot be opened
+        val kept = stored?.kept ?: return
+        prefs.edit { if (kept.isEmpty()) remove(KEY) else putString(KEY, JSONArray(kept).toString()) }
     }
 
     companion object {
+        /** The list of earlier versions (secrets sealed one by one); only read, and emptied as it is moved. */
         private const val KEY = "studies"
+        private const val KEY_SEALED = "studies_sealed"
+        private const val AAD = "studies"
         private const val SEALED = "secret_sealed"
 
-        /** A study's JSON for storage: its secret sealed, never in plain text. */
+        /** A study's JSON as earlier versions stored it: its secret sealed on its own (still read, see [opened]). */
         fun sealed(o: JSONObject, sealer: Sealer): JSONObject {
             val secret = o.optString("secret")
             o.remove("secret")
