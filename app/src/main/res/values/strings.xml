@@ -6,7 +6,7 @@
     <string name="join_study">Join study</string>
     <string name="join_code">Join code</string>
     <string name="scan_qr">Scan QR code</string>
-    <string name="look_up">Look up</string>
+    <string name="look_up">Continue</string>
     <string name="join">Join</string>
     <string name="cancel">Cancel</string>
     <string name="back">Back</string>
@@ -32,6 +32,7 @@
     <string name="join_privacy">Joining opens the consent form of the study. The app stores no name, e-mail address or phone number, and the study cannot see your other studies.</string>
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
     <string name="join_server" formatted="true">Server: %1$s</string>
+    <string name="foreign_server" formatted="true">This link does not lead to a server of Askurious (%1$s), so the app does not open it.</string>
     <string name="continue_entry">Continue the first questionnaire</string>
     <string name="day_of">Day %1$d of %2$d</string>
     <string name="starts_on">Starts on %1$s</string>
@@ -43,10 +44,10 @@
     <string name="left_pending">You left this study. The app will tell the researchers as soon as it has a connection.</string>
     <string name="ended">The researchers have ended this study.</string>
     <string name="leave_study">Leave study</string>
-    <string name="leave_confirm">Leave this study? You will get no more questions.</string>
+    <string name="leave_confirm">You will get no more questions. Your answers stay with the researchers unless you delete them with “Delete my answers”.</string>
     <string name="remove_from_list">Remove from list</string>
     <string name="erase_answers">Delete my answers</string>
-    <string name="erase_confirm">Delete all your answers in this study? They are deleted at the researchers too and cannot be restored. The study is then removed from the app.</string>
+    <string name="erase_confirm">All your answers in this study are deleted, at the researchers too, and cannot be restored. The study is then removed from the app.</string>
     <string name="erase">Delete</string>
     <string name="notif_channel">Questions of your studies</string>
     <string name="notif_default">A short question is waiting</string>
@@ -70,8 +71,7 @@
     <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. All rights reserved.</string>
     <string name="about_oss_title">Open-source software</string>
     <string name="about_oss_intro">The app uses these libraries, each under the Apache License 2.0:</string>
-    <string name="show_licence">Show licence text</string>
-    <string name="hide_licence">Hide licence text</string>
+    <string name="show_licence">Show licence texts</string>
     <string name="notif_reminder">Reminder: a short question is still waiting</string>
     <string name="offline_saved">Saved. Your answers will be sent as soon as the phone has a connection.</string>
     <plurals name="answers_waiting">
@@ -83,8 +83,7 @@
     <string name="quiet_now">Quiet hours: %1$s</string>
     <string name="quiet_from_tomorrow">From tomorrow: %1$s</string>
     <string name="quiet_none">none</string>
-    <string name="quiet_none_button">None</string>
-    <string name="quiet_change">Quiet hours</string>
+    <string name="quiet_change">Change quiet hours</string>
     <string name="quiet_hint">No question at a random time comes during your quiet hours. A change applies from tomorrow and only to the questions at random times, not to those at fixed times.</string>
     <string name="quiet_from">From</string>
     <string name="quiet_to">to</string>
@@ -105,15 +104,73 @@
     <string name="notif_exit">The study period is over. Please answer: %1$s</string>
     <string name="limit_refused">An answer you gave without a connection was not stored: today\'s limit for this report had already been reached.</string>
     <string name="clock_off">The clock of this phone is wrong. Answers given without a connection will be sent once the date and time are set correctly.</string>
-    <string name="rejoin_confirm">You already take part in this study on this phone. Joining again starts a new participation: your earlier answers can then no longer be deleted in the app. Answers of the earlier participation still waiting are sent first if possible, otherwise discarded. To delete your earlier answers, cancel and use \"Delete my answers\" on the study card.</string>
+    <string name="rejoin_confirm">You already take part in this study on this phone. Joining again starts a new participation: your earlier answers can then no longer be deleted in the app. Answers of the earlier participation still waiting are sent first if possible, otherwise discarded. To delete your earlier answers, cancel and use “Delete my answers” on the study’s page.</string>
     <string name="rejoin">Join again</string>
-    <!-- the details of a study (DetailScreen), the sound per study, home-screen shortcuts (Shortcuts) -->
-    <string name="details">Details</string>
-    <string name="day_n" formatted="true">Day %1$d</string>
+    <string name="allow_in_settings">Allow in settings</string>
+    <string name="notifications_off">Notifications off – you will not get any questions</string>
+    <string name="remove">Remove</string>
+    <string name="remove_title">Remove “%1$s”?</string>
+    <string name="remove_confirm">The study is removed from this phone. Afterwards you can no longer delete your answers through the app.</string>
+    <string name="remove_exit_open">The final survey of this study is still open.</string>
+    <string name="update_app">A newer version of this app is needed for your study. Please update the app so that your questions keep arriving correctly.</string>
+    <string name="update_button">Update</string>
+    <string name="entry_abort_title">Cancel this entry?</string>
+    <string name="entry_abort_text">Answers on this page that have not been sent yet will be lost.</string>
+    <string name="entry_abort">Cancel entry</string>
+    <string name="entry_keep">Keep answering</string>
+    <string name="retry">Try again</string>
+    <string name="load_failed">The page could not be loaded. Please check the connection and try again.</string>
+    <string name="loading">Loading</string>
+    <string name="scan_prompt">Hold the study’s QR code inside the frame</string>
+    <string name="camera_refused">Without access to the camera the app cannot read a QR code. Type the join code below instead; it is printed under the QR code.</string>
+    <string name="too_many">Too many attempts. Please wait a few minutes before trying again.</string>
+    <string name="looking_up">Looking up the study</string>
+    <string name="joining">Joining the study</string>
+    <string name="more_actions">More actions for “%1$s”</string>
+    <string name="about_contact_title">Contact</string>
+    <string name="about_contact">Provider of the app and of the Askurious platform:</string>
+    <string name="imprint">Legal notice</string>
+    <string name="allowed">Allowed</string>
+    <string name="today_at">today, %1$s</string>
+    <string name="tomorrow_at">tomorrow, %1$s</string>
+    <string name="date_at" formatted="true">%1$s, %2$s</string>
+    <string name="done">Done</string>
+    <string name="later">Later</string>
+    <string name="ended_group">Ended</string>
+    <string name="erase_title">Delete the answers in “%1$s”?</string>
+    <string name="erased_done">The answers in “%1$s” have been deleted.</string>
+    <string name="erasing">Deleting …</string>
+    <string name="exit_open">The study period is over. Please still answer the final survey.</string>
+    <string name="exit_open_until">The study period is over. Please still answer the final survey (open until %1$s).</string>
+    <string name="fast_forward_spoken">Fast-forward, %1$d times</string>
+    <string name="join_code_hint">Printed under the study’s QR code, e.g. k7qm2x</string>
+    <string name="leave_title">Leave “%1$s”?</string>
+    <string name="left_done">You left “%1$s”.</string>
+    <string name="removed_done">“%1$s” removed from the list.</string>
+    <string name="licence_texts">Licence texts</string>
+    <string name="notif_channel_desc">The questions of your diary studies at the times the researchers chose, and their reminders</string>
+    <string name="notif_exit_until" formatted="true">The study period is over. Please answer: %1$s (open until %2$s)</string>
+    <string name="notif_reminder_of">Reminder: %1$s</string>
+    <string name="participation_title">Participation</string>
     <string name="period_title">Study period</string>
+    <string name="period_from_to" formatted="true">%1$s – %2$s</string>
+    <string name="period_over">Study period over – updating …</string>
+    <string name="quiet_use">Use quiet hours</string>
+    <string name="quiet_from_cd">Quiet hours from %1$s</string>
+    <string name="quiet_to_cd">Quiet hours until %1$s</string>
+    <string name="ready_title">So that questions arrive on time</string>
+    <string name="ready_intro">The app asks the study’s questions with a notification at the right moment. For that it needs two permissions; both can be changed later in the phone’s settings.</string>
+    <string name="ready_notify_title">Notifications</string>
+    <string name="ready_notify_text">Without them no question arrives.</string>
+    <string name="ready_exact_title">Alarms &amp; reminders</string>
+    <string name="ready_exact_text">Without it questions may come a few minutes late.</string>
+    <string name="state_pending">First questionnaire not finished yet</string>
+    <string name="state_running">Running</string>
+    <string name="time_about">about %1$s</string>
+    <!-- the study page: summary, open-ended period, sound per study, home-screen shortcuts (Shortcuts), after leaving -->
+    <string name="day_n" formatted="true">Day %1$d</string>
     <string name="period_after_entry">The study period begins once you have finished the first questionnaire.</string>
     <string name="period_start" formatted="true">Start: %1$s</string>
-    <string name="period_end" formatted="true">End: %1$s</string>
     <string name="period_open_end">End: open, until the researchers end the study</string>
     <string name="duration_open_end">Duration: open-ended, until the researchers end the study</string>
     <string name="also_self_module" formatted="true">%1$s: also whenever you like</string>
@@ -132,7 +189,6 @@
     <string name="shortcut_failed">Your home screen did not accept the shortcut.</string>
     <string name="shortcut_default">Report</string>
     <string name="shortcut_disabled">This study has ended.</string>
-    <string name="your_participation">Your participation</string>
     <string name="after_leave_title">Keep your answers?</string>
     <string name="after_leave_text">You have left the study. Your answers so far still help the research, even though you stopped, and the researchers would be grateful to keep them. Do you want to delete them anyway? This cannot be undone.</string>
     <string name="keep_answers">Keep my answers</string>

@@ -6,7 +6,7 @@
     <string name="join_study">Присоединиться к исследованию</string>
     <string name="join_code">Код участия</string>
     <string name="scan_qr">Сканировать QR-код</string>
-    <string name="look_up">Найти</string>
+    <string name="look_up">Далее</string>
     <string name="join">Присоединиться</string>
     <string name="cancel">Отмена</string>
     <string name="back">Назад</string>
@@ -40,6 +40,7 @@
     <string name="join_privacy">При присоединении откроется форма согласия исследования. Приложение не сохраняет ни имени, ни адреса электронной почты, ни номера телефона, а исследование не видит другие Ваши исследования.</string>
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
     <string name="join_server" formatted="true">Сервер: %1$s</string>
+    <string name="foreign_server" formatted="true">Эта ссылка ведёт не на сервер Askurious (%1$s), поэтому приложение её не открывает.</string>
     <string name="continue_entry">Продолжить первую анкету</string>
     <string name="day_of">День %1$d из %2$d</string>
     <string name="starts_on">Начало: %1$s</string>
@@ -51,7 +52,7 @@
     <string name="left_pending">Вы вышли из этого исследования. Приложение сообщит об этом исследователям, как только появится соединение.</string>
     <string name="ended">Исследователи завершили это исследование.</string>
     <string name="leave_study">Выйти из исследования</string>
-    <string name="leave_confirm">Выйти из этого исследования? Вы больше не будете получать вопросы.</string>
+    <string name="leave_confirm">Выйти из этого исследования? Вы больше не будете получать вопросы. Ваши ответы останутся у исследователей, если Вы не удалите их кнопкой «Удалить мои ответы».</string>
     <string name="remove_from_list">Убрать из списка</string>
     <string name="erase_answers">Удалить мои ответы</string>
     <string name="erase_confirm">Удалить все Ваши ответы в этом исследовании? Они будут удалены и у исследователей, восстановить их будет невозможно. После этого исследование исчезнет из приложения.</string>
@@ -78,8 +79,7 @@
     <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Все права защищены.</string>
     <string name="about_oss_title">Программы с открытым исходным кодом</string>
     <string name="about_oss_intro">Приложение использует следующие библиотеки, все по лицензии Apache License 2.0:</string>
-    <string name="show_licence">Показать текст лицензии</string>
-    <string name="hide_licence">Скрыть текст лицензии</string>
+    <string name="show_licence">Показать тексты лицензий</string>
     <string name="notif_reminder">Напоминание: Вас всё ещё ждёт короткий вопрос</string>
     <string name="offline_saved">Сохранено. Ваши ответы будут отправлены, как только у телефона появится соединение.</string>
     <plurals name="answers_waiting">
@@ -93,8 +93,7 @@
     <string name="quiet_now">Время тишины: %1$s</string>
     <string name="quiet_from_tomorrow">С завтрашнего дня: %1$s</string>
     <string name="quiet_none">нет</string>
-    <string name="quiet_none_button">Нет</string>
-    <string name="quiet_change">Время тишины</string>
+    <string name="quiet_change">Изменить часы тишины</string>
     <string name="quiet_hint">В Ваше время тишины не приходят вопросы в случайное время. Изменение действует с завтрашнего дня и только для вопросов в случайное время, но не для вопросов в фиксированное время.</string>
     <string name="quiet_from">С</string>
     <string name="quiet_to">до</string>
@@ -121,13 +120,71 @@
     <string name="clock_off">Часы этого телефона идут неправильно. Ответы, данные без соединения, будут отправлены, как только дата и время будут установлены правильно.</string>
     <string name="rejoin_confirm">Вы уже участвуете в этом исследовании на этом телефоне. Повторное присоединение начинает новое участие: удалить прежние ответы в приложении будет уже нельзя. Ожидающие ответы прежнего участия по возможности сначала отправляются, иначе удаляются. Чтобы удалить прежние ответы, отмените и воспользуйтесь кнопкой «Удалить мои ответы» на карточке исследования.</string>
     <string name="rejoin">Присоединиться снова</string>
-    <!-- the details of a study (DetailScreen), the sound per study, home-screen shortcuts (Shortcuts) -->
-    <string name="details">Подробнее</string>
-    <string name="day_n" formatted="true">День %1$d</string>
+    <string name="allow_in_settings">Разрешить в настройках</string>
+    <string name="notifications_off">Уведомления выключены – Вы не будете получать вопросы</string>
+    <string name="remove">Убрать</string>
+    <string name="remove_title">Убрать «%1$s»?</string>
+    <string name="remove_confirm">Исследование будет убрано с этого телефона. После этого Вы уже не сможете удалить свои ответы через приложение.</string>
+    <string name="remove_exit_open">Заключительная анкета этого исследования ещё открыта.</string>
+    <string name="update_app">Для вашего исследования нужна более новая версия этого приложения. Пожалуйста, обновите приложение, чтобы вопросы и дальше приходили правильно.</string>
+    <string name="update_button">Обновить</string>
+    <string name="entry_abort_title">Прервать эту запись?</string>
+    <string name="entry_abort_text">Ответы на этой странице, которые ещё не отправлены, будут потеряны.</string>
+    <string name="entry_abort">Прервать</string>
+    <string name="entry_keep">Продолжить</string>
+    <string name="retry">Повторить</string>
+    <string name="load_failed">Не удалось загрузить страницу. Проверьте подключение и повторите попытку.</string>
+    <string name="loading">Загрузка</string>
+    <string name="scan_prompt">Наведите рамку на QR-код исследования</string>
+    <string name="camera_refused">Без доступа к камере приложение не может прочитать QR-код. Введите ниже код участия — он указан под QR-кодом.</string>
+    <string name="too_many">Слишком много попыток. Подождите несколько минут, прежде чем повторить.</string>
+    <string name="looking_up">Поиск исследования</string>
+    <string name="joining">Присоединение к исследованию</string>
+    <string name="more_actions">Другие действия для «%1$s»</string>
+    <string name="about_contact_title">Контакты</string>
+    <string name="about_contact">Поставщик приложения и платформы Askurious:</string>
+    <string name="imprint">Выходные данные</string>
+    <string name="allowed">Разрешено</string>
+    <string name="today_at">сегодня, %1$s</string>
+    <string name="tomorrow_at">завтра, %1$s</string>
+    <string name="date_at" formatted="true">%1$s, %2$s</string>
+    <string name="done">Готово</string>
+    <string name="later">Позже</string>
+    <string name="ended_group">Завершённые</string>
+    <string name="erase_title">Удалить ответы в «%1$s»?</string>
+    <string name="erased_done">Ответы в «%1$s» удалены.</string>
+    <string name="erasing">Удаление…</string>
+    <string name="exit_open">Период исследования завершён. Пожалуйста, ответьте ещё на заключительный опрос.</string>
+    <string name="exit_open_until">Период исследования завершён. Пожалуйста, ответьте ещё на заключительный опрос (открыт до %1$s).</string>
+    <string name="fast_forward_spoken">Ускорение в %1$d раз</string>
+    <string name="join_code_hint">Указан под QR-кодом исследования, напр. k7qm2x</string>
+    <string name="leave_title">Покинуть «%1$s»?</string>
+    <string name="left_done">Вы покинули «%1$s».</string>
+    <string name="removed_done">«%1$s» удалено из списка.</string>
+    <string name="licence_texts">Тексты лицензий</string>
+    <string name="notif_channel_desc">Вопросы ваших дневниковых исследований в выбранное исследователями время и напоминания</string>
+    <string name="notif_exit_until" formatted="true">Период исследования завершён. Пожалуйста, ответьте: %1$s (открыт до %2$s)</string>
+    <string name="notif_reminder_of">Напоминание: %1$s</string>
+    <string name="participation_title">Участие</string>
     <string name="period_title">Период исследования</string>
+    <string name="period_from_to" formatted="true">%1$s – %2$s</string>
+    <string name="period_over">Период исследования завершён – обновление…</string>
+    <string name="quiet_use">Использовать часы тишины</string>
+    <string name="quiet_from_cd">Часы тишины с %1$s</string>
+    <string name="quiet_to_cd">Часы тишины до %1$s</string>
+    <string name="ready_title">Чтобы вопросы приходили вовремя</string>
+    <string name="ready_intro">Приложение задаёт вопросы исследования уведомлением в нужный момент. Для этого нужны два разрешения; оба можно позже изменить в настройках телефона.</string>
+    <string name="ready_notify_title">Уведомления</string>
+    <string name="ready_notify_text">Без них вопросы не приходят.</string>
+    <string name="ready_exact_title">Будильники и напоминания</string>
+    <string name="ready_exact_text">Без этого вопросы могут приходить с опозданием на несколько минут.</string>
+    <string name="state_pending">Первая анкета ещё не завершена</string>
+    <string name="state_running">Идёт</string>
+    <string name="time_about">около %1$s</string>
+    <!-- the study page: summary, open-ended period, sound per study, home-screen shortcuts (Shortcuts), after leaving -->
+    <string name="day_n" formatted="true">День %1$d</string>
     <string name="period_after_entry">Период исследования начинается, как только вы заполните первую анкету.</string>
     <string name="period_start" formatted="true">Начало: %1$s</string>
-    <string name="period_end" formatted="true">Окончание: %1$s</string>
     <string name="period_open_end">Окончание: открыто, пока исследователи не завершат исследование</string>
     <string name="duration_open_end">Длительность: без срока, пока исследователи не завершат исследование</string>
     <string name="also_self_module" formatted="true">%1$s: также когда захотите</string>
@@ -146,7 +203,6 @@
     <string name="shortcut_failed">Главный экран не принял ярлык.</string>
     <string name="shortcut_default">Сообщить</string>
     <string name="shortcut_disabled">Это исследование завершено.</string>
-    <string name="your_participation">Ваше участие</string>
     <string name="after_leave_title">Сохранить ваши ответы?</string>
     <string name="after_leave_text">Вы вышли из исследования. Ваши ответы до сих пор по-прежнему помогают исследованию, даже если вы сейчас прекращаете участие, и исследователи были бы благодарны, если бы могли их сохранить. Всё равно удалить их? Это нельзя отменить.</string>
     <string name="keep_answers">Сохранить мои ответы</string>

@@ -6,7 +6,7 @@
     <string name="join_study">Çalışmaya katıl</string>
     <string name="join_code">Katılım kodu</string>
     <string name="scan_qr">QR kodu tara</string>
-    <string name="look_up">Ara</string>
+    <string name="look_up">Devam</string>
     <string name="join">Katıl</string>
     <string name="cancel">İptal</string>
     <string name="back">Geri</string>
@@ -32,6 +32,7 @@
     <string name="join_privacy">Katıldığınızda çalışmanın onam formu açılır. Uygulama ad, e-posta adresi veya telefon numarası kaydetmez ve çalışma diğer çalışmalarınızı göremez.</string>
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
     <string name="join_server" formatted="true">Sunucu: %1$s</string>
+    <string name="foreign_server" formatted="true">Bu bağlantı bir Askurious sunucusuna gitmiyor (%1$s), bu nedenle uygulama onu açmıyor.</string>
     <string name="continue_entry">İlk ankete devam et</string>
     <string name="day_of">Gün %1$d / %2$d</string>
     <string name="starts_on">Başlangıç: %1$s</string>
@@ -43,7 +44,7 @@
     <string name="left_pending">Bu çalışmadan ayrıldınız. Uygulama, bağlantı kurulur kurulmaz bunu araştırmacılara bildirecek.</string>
     <string name="ended">Araştırmacılar bu çalışmayı sonlandırdı.</string>
     <string name="leave_study">Çalışmadan ayrıl</string>
-    <string name="leave_confirm">Bu çalışmadan ayrılmak mı istiyorsunuz? Artık soru almayacaksınız.</string>
+    <string name="leave_confirm">Bu çalışmadan ayrılmak istiyor musunuz? Artık soru almayacaksınız. Yanıtlarınız, “Yanıtlarımı sil” ile silmediğiniz sürece araştırmacılarda kalır.</string>
     <string name="remove_from_list">Listeden kaldır</string>
     <string name="erase_answers">Yanıtlarımı sil</string>
     <string name="erase_confirm">Bu çalışmadaki tüm yanıtlarınız silinsin mi? Yanıtlar araştırmacılarda da silinir ve geri getirilemez. Ardından çalışma uygulamadan kaldırılır.</string>
@@ -70,8 +71,7 @@
     <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Tüm hakları saklıdır.</string>
     <string name="about_oss_title">Açık kaynak yazılım</string>
     <string name="about_oss_intro">Uygulama, her biri Apache License 2.0 kapsamında olan şu kütüphaneleri kullanır:</string>
-    <string name="show_licence">Lisans metnini göster</string>
-    <string name="hide_licence">Lisans metnini gizle</string>
+    <string name="show_licence">Lisans metinlerini göster</string>
     <string name="notif_reminder">Hatırlatma: Kısa bir soru hâlâ sizi bekliyor</string>
     <string name="offline_saved">Kaydedildi. Yanıtlarınız telefon bağlantı kurar kurmaz gönderilecek.</string>
     <plurals name="answers_waiting">
@@ -83,8 +83,7 @@
     <string name="quiet_now">Sessiz saatler: %1$s</string>
     <string name="quiet_from_tomorrow">Yarından itibaren: %1$s</string>
     <string name="quiet_none">yok</string>
-    <string name="quiet_none_button">Yok</string>
-    <string name="quiet_change">Sessiz saatler</string>
+    <string name="quiet_change">Sessiz saatleri değiştir</string>
     <string name="quiet_hint">Sessiz saatlerinizde rastgele zamanlı soru gelmez. Bir değişiklik yarından itibaren ve yalnızca rastgele zamanlı sorular için geçerlidir, sabit saatli sorular için geçerli değildir.</string>
     <string name="quiet_from">Başlangıç</string>
     <string name="quiet_to">Bitiş</string>
@@ -107,13 +106,71 @@
     <string name="clock_off">Bu telefonun saati yanlış. Bağlantı olmadan verilen yanıtlar, tarih ve saat doğru ayarlandığında gönderilecek.</string>
     <string name="rejoin_confirm">Bu telefonda bu çalışmaya zaten katılıyorsunuz. Yeniden katılmak yeni bir katılım başlatır: önceki yanıtlarınızı artık uygulamada silemezsiniz. Önceki katılımın bekleyen yanıtları mümkünse önce gönderilir, değilse silinir. Önceki yanıtlarınızı silmek için iptal edin ve çalışma kartındaki “Yanıtlarımı sil” düğmesini kullanın.</string>
     <string name="rejoin">Yeniden katıl</string>
-    <!-- the details of a study (DetailScreen), the sound per study, home-screen shortcuts (Shortcuts) -->
-    <string name="details">Ayrıntılar</string>
+    <string name="allow_in_settings">Ayarlardan izin ver</string>
+    <string name="notifications_off">Bildirimler kapalı – hiç soru almayacaksınız</string>
+    <string name="remove">Kaldır</string>
+    <string name="remove_title">“%1$s” kaldırılsın mı?</string>
+    <string name="remove_confirm">Çalışma bu telefondan kaldırılır. Ardından yanıtlarınızı artık uygulama üzerinden silemezsiniz.</string>
+    <string name="remove_exit_open">Bu çalışmanın son anketi hâlâ açık.</string>
+    <string name="update_app">Çalışmanız için bu uygulamanın daha yeni bir sürümü gerekiyor. Sorularınızın doğru şekilde gelmeye devam etmesi için lütfen uygulamayı güncelleyin.</string>
+    <string name="update_button">Güncelle</string>
+    <string name="entry_abort_title">Bu giriş iptal edilsin mi?</string>
+    <string name="entry_abort_text">Bu sayfada henüz gönderilmemiş yanıtlar kaybolur.</string>
+    <string name="entry_abort">Girişi iptal et</string>
+    <string name="entry_keep">Yanıtlamaya devam et</string>
+    <string name="retry">Tekrar dene</string>
+    <string name="load_failed">Sayfa yüklenemedi. Lütfen bağlantıyı kontrol edip tekrar deneyin.</string>
+    <string name="loading">Yükleniyor</string>
+    <string name="scan_prompt">Çalışmanın QR kodunu çerçevenin içine getirin</string>
+    <string name="camera_refused">Kameraya erişim olmadan uygulama QR kodunu okuyamaz. Bunun yerine aşağıya katılım kodunu girin; kod, QR kodunun altında yazar.</string>
+    <string name="too_many">Çok fazla deneme. Lütfen tekrar denemeden önce birkaç dakika bekleyin.</string>
+    <string name="looking_up">Çalışma aranıyor</string>
+    <string name="joining">Çalışmaya katılınıyor</string>
+    <string name="more_actions">“%1$s” için diğer işlemler</string>
+    <string name="about_contact_title">İletişim</string>
+    <string name="about_contact">Uygulamanın ve Askurious platformunun sağlayıcısı:</string>
+    <string name="imprint">Künye</string>
+    <string name="allowed">İzin verildi</string>
+    <string name="today_at">bugün, %1$s</string>
+    <string name="tomorrow_at">yarın, %1$s</string>
+    <string name="date_at" formatted="true">%1$s, %2$s</string>
+    <string name="done">Tamam</string>
+    <string name="later">Daha sonra</string>
+    <string name="ended_group">Sona erenler</string>
+    <string name="erase_title">“%1$s” çalışmasındaki yanıtlar silinsin mi?</string>
+    <string name="erased_done">“%1$s” çalışmasındaki yanıtlar silindi.</string>
+    <string name="erasing">Siliniyor…</string>
+    <string name="exit_open">Çalışma dönemi sona erdi. Lütfen son anketi de yanıtlayın.</string>
+    <string name="exit_open_until">Çalışma dönemi sona erdi. Lütfen son anketi de yanıtlayın (%1$s tarihine kadar açık).</string>
+    <string name="fast_forward_spoken">Hızlandırma, %1$d kat</string>
+    <string name="join_code_hint">Çalışmanın QR kodunun altında yazar, ör. k7qm2x</string>
+    <string name="leave_title">“%1$s” çalışmasından ayrılınsın mı?</string>
+    <string name="left_done">“%1$s” çalışmasından ayrıldınız.</string>
+    <string name="removed_done">“%1$s” listeden kaldırıldı.</string>
+    <string name="licence_texts">Lisans metinleri</string>
+    <string name="notif_channel_desc">Günlük çalışmalarınızın, araştırmacıların seçtiği zamanlardaki soruları ve hatırlatmaları</string>
+    <string name="notif_exit_until" formatted="true">Çalışma dönemi sona erdi. Lütfen yanıtlayın: %1$s (%2$s tarihine kadar açık)</string>
+    <string name="notif_reminder_of">Hatırlatma: %1$s</string>
+    <string name="participation_title">Katılım</string>
+    <string name="period_title">Çalışma dönemi</string>
+    <string name="period_from_to" formatted="true">%1$s – %2$s</string>
+    <string name="period_over">Çalışma dönemi sona erdi – güncelleniyor…</string>
+    <string name="quiet_use">Sessiz saatleri kullan</string>
+    <string name="quiet_from_cd">Sessiz saatler başlangıcı %1$s</string>
+    <string name="quiet_to_cd">Sessiz saatler bitişi %1$s</string>
+    <string name="ready_title">Sorular zamanında gelsin diye</string>
+    <string name="ready_intro">Uygulama, çalışmanın sorularını doğru anda bir bildirimle sorar. Bunun için iki izne ihtiyaç duyar; ikisi de daha sonra telefonun ayarlarından değiştirilebilir.</string>
+    <string name="ready_notify_title">Bildirimler</string>
+    <string name="ready_notify_text">Bunlar olmadan hiçbir soru gelmez.</string>
+    <string name="ready_exact_title">Alarmlar ve hatırlatıcılar</string>
+    <string name="ready_exact_text">Bu izin olmadan sorular birkaç dakika geç gelebilir.</string>
+    <string name="state_pending">İlk anket henüz bitmedi</string>
+    <string name="state_running">Devam ediyor</string>
+    <string name="time_about">yaklaşık %1$s</string>
+    <!-- the study page: summary, open-ended period, sound per study, home-screen shortcuts (Shortcuts), after leaving -->
     <string name="day_n" formatted="true">Gün %1$d</string>
-    <string name="period_title">Çalışma süresi</string>
     <string name="period_after_entry">Çalışma süresi, ilk anketi tamamladığınızda başlar.</string>
     <string name="period_start" formatted="true">Başlangıç: %1$s</string>
-    <string name="period_end" formatted="true">Bitiş: %1$s</string>
     <string name="period_open_end">Bitiş: açık, araştırmacılar çalışmayı sonlandırana kadar</string>
     <string name="duration_open_end">Süre: açık, araştırmacılar çalışmayı sonlandırana kadar</string>
     <string name="also_self_module" formatted="true">%1$s: ayrıca istediğiniz zaman</string>
@@ -132,7 +189,6 @@
     <string name="shortcut_failed">Ana ekranınız kısayolu kabul etmedi.</string>
     <string name="shortcut_default">Bildir</string>
     <string name="shortcut_disabled">Bu çalışma sona erdi.</string>
-    <string name="your_participation">Katılımınız</string>
     <string name="after_leave_title">Yanıtlarınız saklansın mı?</string>
     <string name="after_leave_text">Çalışmadan ayrıldınız. Şimdiye kadarki yanıtlarınız, şimdi bıraksanız bile araştırmaya yardımcı olur ve araştırmacılar bunları saklayabilirlerse minnettar olurlar. Yine de silmek istiyor musunuz? Bu işlem geri alınamaz.</string>
     <string name="keep_answers">Yanıtlarımı sakla</string>

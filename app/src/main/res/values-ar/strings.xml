@@ -6,7 +6,7 @@
     <string name="join_study">الانضمام إلى دراسة</string>
     <string name="join_code">رمز الانضمام</string>
     <string name="scan_qr">مسح رمز QR</string>
-    <string name="look_up">بحث</string>
+    <string name="look_up">متابعة</string>
     <string name="join">انضمام</string>
     <string name="cancel">إلغاء</string>
     <string name="back">رجوع</string>
@@ -48,6 +48,7 @@
     <string name="join_privacy">عند الانضمام يُفتح نموذج الموافقة الخاص بالدراسة. لا يحفظ التطبيق أي اسم أو عنوان بريد إلكتروني أو رقم هاتف، ولا تستطيع الدراسة رؤية دراساتك الأخرى.</string>
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
     <string name="join_server" formatted="true">الخادم: %1$s</string>
+    <string name="foreign_server" formatted="true">هذا الرابط لا يؤدي إلى خادم Askurious (%1$s)، لذلك لا يفتحه التطبيق.</string>
     <string name="continue_entry">متابعة الاستبيان الأول</string>
     <string name="day_of">اليوم %1$d من %2$d</string>
     <string name="starts_on">تبدأ في %1$s</string>
@@ -59,7 +60,7 @@
     <string name="left_pending">لقد غادرت هذه الدراسة. سيُبلغ التطبيق الباحثين بذلك فور توفر الاتصال.</string>
     <string name="ended">أنهى الباحثون هذه الدراسة.</string>
     <string name="leave_study">مغادرة الدراسة</string>
-    <string name="leave_confirm">هل تريد مغادرة هذه الدراسة؟ لن تتلقى أسئلة بعد الآن.</string>
+    <string name="leave_confirm">مغادرة هذه الدراسة؟ لن تصل أسئلة أخرى بعد ذلك. تبقى الإجابات لدى الباحثين ما لم تُحذف عبر «حذف إجاباتي».</string>
     <string name="remove_from_list">إزالة من القائمة</string>
     <string name="erase_answers">حذف إجاباتي</string>
     <string name="erase_confirm">حذف جميع إجاباتك في هذه الدراسة؟ ستُحذف أيضًا لدى الباحثين ولا يمكن استعادتها. ثم تُزال الدراسة من التطبيق.</string>
@@ -86,8 +87,7 @@
     <string name="about_copyright">© 2026 Philipp Brauner، RWTH Aachen University. جميع الحقوق محفوظة.</string>
     <string name="about_oss_title">برمجيات مفتوحة المصدر</string>
     <string name="about_oss_intro">يستخدم التطبيق المكتبات التالية، وجميعها مرخّصة بموجب Apache License 2.0:</string>
-    <string name="show_licence">عرض نص الترخيص</string>
-    <string name="hide_licence">إخفاء نص الترخيص</string>
+    <string name="show_licence">عرض نصوص التراخيص</string>
     <string name="notif_reminder">تذكير: لا يزال سؤال قصير بانتظارك</string>
     <string name="offline_saved">تم الحفظ. ستُرسل إجاباتك بمجرد اتصال الهاتف بالإنترنت.</string>
     <plurals name="answers_waiting">
@@ -103,8 +103,7 @@
     <string name="quiet_now">أوقات الهدوء: %1$s</string>
     <string name="quiet_from_tomorrow">ابتداءً من الغد: %1$s</string>
     <string name="quiet_none">لا يوجد</string>
-    <string name="quiet_none_button">لا يوجد</string>
-    <string name="quiet_change">أوقات الهدوء</string>
+    <string name="quiet_change">تغيير ساعات الهدوء</string>
     <string name="quiet_hint">لا تصلك أي أسئلة في أوقات عشوائية خلال أوقات الهدوء. يسري التغيير ابتداءً من الغد، وعلى الأسئلة في أوقات عشوائية فقط، لا على الأسئلة في أوقات ثابتة.</string>
     <string name="quiet_from">من</string>
     <string name="quiet_to">إلى</string>
@@ -135,13 +134,71 @@
     <string name="clock_off">ساعة هذا الهاتف غير مضبوطة. ستُرسل الإجابات المقدَّمة دون اتصال بمجرد ضبط التاريخ والوقت بشكل صحيح.</string>
     <string name="rejoin_confirm">أنت مشارك بالفعل في هذه الدراسة على هذا الهاتف. الانضمام مجددًا يبدأ مشاركة جديدة: لن يعود بالإمكان حذف إجاباتك السابقة من التطبيق. تُرسل الإجابات المنتظرة من المشاركة السابقة أولًا إن أمكن، وإلا تُحذف. لحذف إجاباتك السابقة، ألغِ واستخدم «حذف إجاباتي» في بطاقة الدراسة.</string>
     <string name="rejoin">الانضمام مجددًا</string>
-    <!-- the details of a study (DetailScreen), the sound per study, home-screen shortcuts (Shortcuts) -->
-    <string name="details">التفاصيل</string>
-    <string name="day_n" formatted="true">اليوم %1$d</string>
+    <string name="allow_in_settings">السماح من الإعدادات</string>
+    <string name="notifications_off">الإشعارات متوقفة – لن تصلك أي أسئلة</string>
+    <string name="remove">إزالة</string>
+    <string name="remove_title">إزالة «%1$s»؟</string>
+    <string name="remove_confirm">ستُزال الدراسة من هذا الهاتف. بعد ذلك لن تتمكن من حذف إجاباتك عبر التطبيق.</string>
+    <string name="remove_exit_open">الاستبيان الختامي لهذه الدراسة لا يزال مفتوحًا.</string>
+    <string name="update_app">تحتاج دراستك إلى إصدار أحدث من هذا التطبيق. يرجى تحديث التطبيق حتى تستمر أسئلتك في الوصول بشكل صحيح.</string>
+    <string name="update_button">تحديث</string>
+    <string name="entry_abort_title">إلغاء هذا الإدخال؟</string>
+    <string name="entry_abort_text">ستضيع الإجابات في هذه الصفحة التي لم تُرسل بعد.</string>
+    <string name="entry_abort">إلغاء الإدخال</string>
+    <string name="entry_keep">متابعة الإجابة</string>
+    <string name="retry">إعادة المحاولة</string>
+    <string name="load_failed">تعذّر تحميل الصفحة. يُرجى التحقق من الاتصال والمحاولة مرة أخرى.</string>
+    <string name="loading">جارٍ التحميل</string>
+    <string name="scan_prompt">ضع رمز QR الخاص بالدراسة داخل الإطار</string>
+    <string name="camera_refused">بدون الوصول إلى الكاميرا لا يستطيع التطبيق قراءة رمز QR. أدخل رمز الانضمام أدناه بدلاً من ذلك؛ فهو مكتوب تحت رمز QR.</string>
+    <string name="too_many">محاولات كثيرة جدًا. يُرجى الانتظار بضع دقائق قبل المحاولة مرة أخرى.</string>
+    <string name="looking_up">جارٍ البحث عن الدراسة</string>
+    <string name="joining">جارٍ الانضمام إلى الدراسة</string>
+    <string name="more_actions">إجراءات أخرى لـ «%1$s»</string>
+    <string name="about_contact_title">التواصل</string>
+    <string name="about_contact">مزوّد التطبيق ومنصة Askurious:</string>
+    <string name="imprint">البيانات القانونية</string>
+    <string name="allowed">مسموح</string>
+    <string name="today_at">اليوم، %1$s</string>
+    <string name="tomorrow_at">غدًا، %1$s</string>
+    <string name="date_at" formatted="true">%1$s، %2$s</string>
+    <string name="done">تم</string>
+    <string name="later">لاحقًا</string>
+    <string name="ended_group">المنتهية</string>
+    <string name="erase_title">حذف الإجابات في «%1$s»؟</string>
+    <string name="erased_done">تم حذف الإجابات في «%1$s».</string>
+    <string name="erasing">جارٍ الحذف…</string>
+    <string name="exit_open">انتهت فترة الدراسة. يُرجى الإجابة عن الاستبيان الختامي.</string>
+    <string name="exit_open_until">انتهت فترة الدراسة. يُرجى الإجابة عن الاستبيان الختامي (متاح حتى %1$s).</string>
+    <string name="fast_forward_spoken">تسريع %1$d ضعفًا</string>
+    <string name="join_code_hint">مكتوب تحت رمز QR الخاص بالدراسة، مثل k7qm2x</string>
+    <string name="leave_title">مغادرة «%1$s»؟</string>
+    <string name="left_done">غادرت «%1$s».</string>
+    <string name="removed_done">تمت إزالة «%1$s» من القائمة.</string>
+    <string name="licence_texts">نصوص التراخيص</string>
+    <string name="notif_channel_desc">أسئلة دراسات اليوميات في الأوقات التي اختارها الباحثون، والتذكيرات بها</string>
+    <string name="notif_exit_until" formatted="true">انتهت فترة الدراسة. يُرجى الإجابة عن: %1$s (متاح حتى %2$s)</string>
+    <string name="notif_reminder_of">تذكير: %1$s</string>
+    <string name="participation_title">المشاركة</string>
     <string name="period_title">فترة الدراسة</string>
+    <string name="period_from_to" formatted="true">%1$s – %2$s</string>
+    <string name="period_over">انتهت فترة الدراسة – جارٍ التحديث…</string>
+    <string name="quiet_use">استخدام ساعات الهدوء</string>
+    <string name="quiet_from_cd">ساعات الهدوء من %1$s</string>
+    <string name="quiet_to_cd">ساعات الهدوء حتى %1$s</string>
+    <string name="ready_title">لكي تصل الأسئلة في موعدها</string>
+    <string name="ready_intro">يطرح التطبيق أسئلة الدراسة عبر إشعار في الوقت المناسب. ولذلك يحتاج إلى إذنين، ويمكن تغييرهما لاحقًا في إعدادات الهاتف.</string>
+    <string name="ready_notify_title">الإشعارات</string>
+    <string name="ready_notify_text">بدونها لا يصل أي سؤال.</string>
+    <string name="ready_exact_title">المنبّهات والتذكيرات</string>
+    <string name="ready_exact_text">بدونها قد تصل الأسئلة متأخرة بضع دقائق.</string>
+    <string name="state_pending">الاستبيان الأول لم يكتمل بعد</string>
+    <string name="state_running">جارية</string>
+    <string name="time_about">نحو %1$s</string>
+    <!-- the study page: summary, open-ended period, sound per study, home-screen shortcuts (Shortcuts), after leaving -->
+    <string name="day_n" formatted="true">اليوم %1$d</string>
     <string name="period_after_entry">تبدأ فترة الدراسة بمجرد إكمال الاستبيان الأول.</string>
     <string name="period_start" formatted="true">البداية: %1$s</string>
-    <string name="period_end" formatted="true">النهاية: %1$s</string>
     <string name="period_open_end">النهاية: مفتوحة، حتى ينهي الباحثون الدراسة</string>
     <string name="duration_open_end">المدة: مفتوحة، حتى ينهي الباحثون الدراسة</string>
     <string name="also_self_module" formatted="true">%1$s: أيضًا متى شئت</string>
@@ -160,7 +217,6 @@
     <string name="shortcut_failed">لم تقبل شاشتك الرئيسية الاختصار.</string>
     <string name="shortcut_default">إبلاغ</string>
     <string name="shortcut_disabled">انتهت هذه الدراسة.</string>
-    <string name="your_participation">مشاركتك</string>
     <string name="after_leave_title">هل تحتفظ بإجاباتك؟</string>
     <string name="after_leave_text">لقد غادرت الدراسة. إجاباتك حتى الآن ما زالت تساعد البحث حتى لو توقفت الآن، وسيكون الباحثون ممتنين لو أمكنهم الاحتفاظ بها. هل تريد حذفها رغم ذلك؟ لا يمكن التراجع عن ذلك.</string>
     <string name="keep_answers">الاحتفاظ بإجاباتي</string>

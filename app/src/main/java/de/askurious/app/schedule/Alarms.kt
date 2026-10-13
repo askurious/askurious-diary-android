@@ -23,6 +23,8 @@ import de.askurious.app.data.StudyStore
 import de.askurious.app.data.SyncWorker
 import de.askurious.app.ui.EntryActivity
 import java.time.Instant
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 /**
  * One alarm at a time: the earliest next prompt, reminder or exit notification over all studies
@@ -72,9 +74,12 @@ object Alarms {
         val channel = NotificationChannel(CHANNEL, context.getString(R.string.notif_channel), NotificationManager.IMPORTANCE_HIGH)
         // on the lock screen only the neutral public version (see notify): taking part in a study is nobody's business
         channel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+        // what the channel is for, in the system's notification settings (audit A26)
+        channel.description = context.getString(R.string.notif_channel_desc)
         manager.createNotificationChannel(channel)
         val silent = NotificationChannel(CHANNEL_SILENT, context.getString(R.string.notif_channel_silent), NotificationManager.IMPORTANCE_HIGH)
         silent.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+        silent.description = context.getString(R.string.notif_channel_desc)
         silent.setSound(null, null)
         manager.createNotificationChannel(silent)
     }
@@ -145,7 +150,11 @@ object Alarms {
                 context, id, EntryActivity.intent(context, study.code, EntryActivity.EXIT),
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
             )
-            val text = context.getString(R.string.notif_exit, exit.name.ifBlank { context.getString(R.string.exit_default) })
+            val name = exit.name.ifBlank { context.getString(R.string.exit_default) }
+            // with the last day it can be answered, when the server names one (audit A26)
+            val text = exit.until?.let {
+                context.getString(R.string.notif_exit_until, name, it.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)))
+            } ?: context.getString(R.string.notif_exit, name)
             val n = builder(context, channelOf(study), study.title, text, context.getString(R.string.notif_default)).setContentIntent(tap).build()
             try {
                 NotificationManagerCompat.from(context).notify(id, n)
@@ -171,7 +180,9 @@ object Alarms {
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
             .setContentText(text)
-            .setAutoCancel(true)
+            // not gone with the tap: the entry removes it once its page has loaded, so that a page that did not load
+            // (no connection) can be opened again from it (audit A8)
+            .setAutoCancel(false)
             .setCategory(NotificationCompat.CATEGORY_REMINDER)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
@@ -189,7 +200,8 @@ object Alarms {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
         val neutral = context.getString(if (reminder) R.string.notif_reminder else R.string.notif_default)
-        val text = if (reminder) neutral else module.notify.ifBlank { neutral }
+        // the reminder keeps the researchers' text, marked as a reminder (audit A26); the lock screen stays neutral
+        val text = reminderText(module.notify, reminder, neutral) { context.getString(R.string.notif_reminder_of, it) }
         // the notification goes when the prompt expires: at the real moment of its (study's time) expiry
         val n = builder(context, channelOf(study), study.title, text, neutral)
             .setContentIntent(tap)
@@ -202,17 +214,44 @@ object Alarms {
         }
     }
 
+    /**
+     * The text of a prompt's notification: the researchers' text, for the reminder after "Reminder:"; without a text
+     * of theirs the app's own ([neutral]). Plain Kotlin for the unit tests.
+     */
+    fun reminderText(notify: String, reminder: Boolean, neutral: String, marked: (String) -> String): String = when {
+        notify.isBlank() -> neutral
+        reminder -> marked(notify)
+        else -> notify
+    }
+
     fun cancel(context: Context, id: Int) = NotificationManagerCompat.from(context).cancel(id)
 
     internal fun dueOf(intent: Intent): Long = intent.getLongExtra(EXTRA_DUE, 0L)
 }
 
+/**
+ * Runs [work] off the main thread and keeps the receiver alive until it is done (goAsync): reading the studies opens
+ * them with the Keystore, which must not hold up the main thread (audit 2026-10-13, AN-8).
+ */
+private fun BroadcastReceiver.inBackground(work: () -> Unit) {
+    val pending = goAsync()
+    Thread {
+        try {
+            work()
+        } finally {
+            pending.finish()
+        }
+    }.start()
+}
+
 class PromptReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val at = Alarms.dueOf(intent)
-        // nothing stored may crash the app at every alarm (DiaryApp)
-        if (at > 0) runCatching { Alarms.notify(context, at) }
-        runCatching { Alarms.rearm(context) }
+        inBackground {
+            // nothing stored may crash the app at every alarm (DiaryApp)
+            if (at > 0) runCatching { Alarms.notify(context, at) }
+            runCatching { Alarms.rearm(context) }
+        }
     }
 }
 
@@ -222,7 +261,7 @@ class BootReceiver : BroadcastReceiver() {
         // the receiver is exported for these system broadcasts; anything else (an intent another app sends
         // directly) is ignored
         if (intent.action !in ACTIONS) return
-        runCatching { Alarms.rearm(context) }
+        inBackground { runCatching { Alarms.rearm(context) } }
     }
 
     private companion object {

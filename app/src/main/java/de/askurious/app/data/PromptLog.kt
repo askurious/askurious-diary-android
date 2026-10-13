@@ -1,6 +1,7 @@
 package de.askurious.app.data
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.core.content.edit
 import org.json.JSONObject
 
@@ -11,36 +12,35 @@ import org.json.JSONObject
  * Entries written more than [KEEP_MS] ago (real time: the due time of a fast-forward person is virtual and runs
  * ahead) are pruned at every write: no prompt is open that long, and a log of the days is nothing the phone needs
  * to keep. Apart from that it keeps, per study, whether the exit questionnaire was notified or opened: one
- * notification only, kept until the study goes from the phone.
+ * notification only, kept until the study goes from the phone. The log is stored sealed under the Keystore key and
+ * kept open in memory ([SealedText], audit 2026-10-13, AN-3, AN-8): the times of the prompts tell the course of a day.
  */
-class PromptLog(context: Context) {
-    private val prefs = context.applicationContext.getSharedPreferences("prompts", Context.MODE_PRIVATE)
+class PromptLog internal constructor(private val prefs: SharedPreferences, sealer: Sealer) {
+    constructor(context: Context, sealer: Sealer = KeystoreSealer) :
+        this(context.applicationContext.getSharedPreferences("prompts", Context.MODE_PRIVATE), sealer)
 
-    @Synchronized
-    fun notified(study: String, module: String, due: Long, at: Long) = change { it.entry(key(study, module, due), due).put("notified", at) }
+    private val text = SealedText(prefs, KEY, sealer, AAD)
 
-    @Synchronized
-    fun opened(study: String, module: String, due: Long) = change { it.entry(key(study, module, due), due).put("opened", true) }
+    fun notified(study: String, module: String, due: Long, at: Long): Unit =
+        synchronized(SealedText.LOCK) { change { it.entry(key(study, module, due), due).put("notified", at) } }
 
-    @Synchronized
+    fun opened(study: String, module: String, due: Long): Unit =
+        synchronized(SealedText.LOCK) { change { it.entry(key(study, module, due), due).put("opened", true) } }
+
     fun notifiedAt(study: String, module: String, due: Long): Long? =
         load().optJSONObject(key(study, module, due))?.let { if (it.has("notified")) it.optLong("notified") else null }
 
-    @Synchronized
     fun isOpened(study: String, module: String, due: Long): Boolean =
         load().optJSONObject(key(study, module, due))?.optBoolean("opened", false) == true
 
     /** The exit questionnaire of [study] was notified or opened: no (further) notification for it. */
-    @Synchronized
-    fun exitNotified(study: String) = prefs.edit { putStringSet(EXITS, exits() + study) }
+    fun exitNotified(study: String): Unit = synchronized(SealedText.LOCK) { prefs.edit { putStringSet(EXITS, exits() + study) } }
 
     /** The studies whose exit questionnaire was notified or opened. */
-    @Synchronized
     fun exits(): Set<String> = runCatching { prefs.getStringSet(EXITS, null)?.toSet() }.getOrNull() ?: emptySet()
 
     /** Forgets everything of [study] (deleted or removed from the list). */
-    @Synchronized
-    fun removeStudy(study: String) {
+    fun removeStudy(study: String): Unit = synchronized(SealedText.LOCK) {
         change { all ->
             all.keys().asSequence().toList().filter { it.startsWith("$study|") }.forEach { all.remove(it) }
         }
@@ -59,13 +59,15 @@ class PromptLog(context: Context) {
         all.keys().asSequence().toList()
             .filter { all.optJSONObject(it)?.let { e -> e.optLong("kept", e.optLong("due", 0L)) < oldest } != false }
             .forEach { all.remove(it) }
-        prefs.edit { putString(KEY, all.toString()) }
+        text.write(all.toString())
     }
 
-    private fun load(): JSONObject = runCatching { prefs.getString(KEY, null) }.getOrNull()?.let { runCatching { JSONObject(it) }.getOrNull() } ?: JSONObject()
+    /** A copy of the log (JSONObject is not thread-safe, the text in memory is). */
+    private fun load(): JSONObject = text.read().text?.let { runCatching { JSONObject(it) }.getOrNull() } ?: JSONObject()
 
     private companion object {
         const val KEY = "log"
+        const val AAD = "prompts"
         const val EXITS = "exits"
         const val KEEP_MS = 3L * 24 * 3600 * 1000
 

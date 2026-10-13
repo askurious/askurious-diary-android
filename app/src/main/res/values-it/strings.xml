@@ -6,7 +6,7 @@
     <string name="join_study">Partecipa a uno studio</string>
     <string name="join_code">Codice di accesso</string>
     <string name="scan_qr">Scansiona codice QR</string>
-    <string name="look_up">Cerca</string>
+    <string name="look_up">Avanti</string>
     <string name="join">Partecipa</string>
     <string name="cancel">Annulla</string>
     <string name="back">Indietro</string>
@@ -36,6 +36,7 @@
     <string name="join_privacy">Partecipando si apre il modulo di consenso dello studio. L’app non salva nomi, indirizzi e-mail o numeri di telefono, e lo studio non vede i Suoi altri studi.</string>
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
     <string name="join_server" formatted="true">Server: %1$s</string>
+    <string name="foreign_server" formatted="true">Questo link non porta a un server di Askurious (%1$s), perciò l\'app non lo apre.</string>
     <string name="continue_entry">Continua il primo questionario</string>
     <string name="day_of">Giorno %1$d di %2$d</string>
     <string name="starts_on">Inizia il %1$s</string>
@@ -47,7 +48,7 @@
     <string name="left_pending">Ha lasciato questo studio. L’app lo comunicherà al gruppo di ricerca non appena sarà disponibile una connessione.</string>
     <string name="ended">Il gruppo di ricerca ha concluso questo studio.</string>
     <string name="leave_study">Lascia lo studio</string>
-    <string name="leave_confirm">Lasciare questo studio? Non riceverà più domande.</string>
+    <string name="leave_confirm">Lasciare questo studio? Non riceverà più domande. Le Sue risposte restano al gruppo di ricerca, a meno che non le cancelli con «Cancella le mie risposte».</string>
     <string name="remove_from_list">Rimuovi dall’elenco</string>
     <string name="erase_answers">Cancella le mie risposte</string>
     <string name="erase_confirm">Cancellare tutte le Sue risposte a questo studio? Verranno cancellate anche presso il gruppo di ricerca e non potranno essere recuperate. Lo studio verrà poi rimosso dall’app.</string>
@@ -74,8 +75,7 @@
     <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Tutti i diritti riservati.</string>
     <string name="about_oss_title">Software open source</string>
     <string name="about_oss_intro">L’app utilizza queste librerie, tutte con Apache License 2.0:</string>
-    <string name="show_licence">Mostra il testo della licenza</string>
-    <string name="hide_licence">Nascondi il testo della licenza</string>
+    <string name="show_licence">Mostra i testi delle licenze</string>
     <string name="notif_reminder">Promemoria: c’è ancora una breve domanda per Lei</string>
     <string name="offline_saved">Salvato. Le Sue risposte verranno inviate non appena il telefono avrà una connessione.</string>
     <plurals name="answers_waiting">
@@ -88,8 +88,7 @@
     <string name="quiet_now">Orari di riposo: %1$s</string>
     <string name="quiet_from_tomorrow">Da domani: %1$s</string>
     <string name="quiet_none">nessuno</string>
-    <string name="quiet_none_button">Nessuno</string>
-    <string name="quiet_change">Orari di riposo</string>
+    <string name="quiet_change">Modifica ore di quiete</string>
     <string name="quiet_hint">Durante i Suoi orari di riposo non arriva nessuna domanda a orari casuali. Una modifica vale da domani e solo per le domande a orari casuali, non per quelle a orari fissi.</string>
     <string name="quiet_from">Dalle</string>
     <string name="quiet_to">alle</string>
@@ -114,13 +113,71 @@
     <string name="clock_off">L’orologio di questo telefono non è corretto. Le risposte date senza connessione verranno inviate non appena data e ora saranno corrette.</string>
     <string name="rejoin_confirm">Partecipa già a questo studio su questo telefono. Partecipare di nuovo avvia una nuova partecipazione: dopo non potrà più cancellare nell’app le Sue risposte precedenti. Le risposte ancora in attesa della partecipazione precedente vengono prima inviate, se possibile, altrimenti scartate. Per cancellare le Sue risposte precedenti, annulli e usi «Cancella le mie risposte» sulla scheda dello studio.</string>
     <string name="rejoin">Partecipa di nuovo</string>
-    <!-- the details of a study (DetailScreen), the sound per study, home-screen shortcuts (Shortcuts) -->
-    <string name="details">Dettagli</string>
-    <string name="day_n" formatted="true">Giorno %1$d</string>
+    <string name="allow_in_settings">Consenti nelle impostazioni</string>
+    <string name="notifications_off">Notifiche disattivate – non riceverà alcuna domanda</string>
+    <string name="remove">Rimuovi</string>
+    <string name="remove_title">Rimuovere «%1$s»?</string>
+    <string name="remove_confirm">Lo studio verrà rimosso da questo telefono. In seguito non potrà più cancellare le Sue risposte tramite l’app.</string>
+    <string name="remove_exit_open">Il questionario finale di questo studio è ancora aperto.</string>
+    <string name="update_app">Il suo studio richiede una versione più recente di questa app. Aggiorni l’app affinché le domande continuino ad arrivare correttamente.</string>
+    <string name="update_button">Aggiorna</string>
+    <string name="entry_abort_title">Annullare questa compilazione?</string>
+    <string name="entry_abort_text">Le risposte di questa pagina non ancora inviate andranno perse.</string>
+    <string name="entry_abort">Annulla compilazione</string>
+    <string name="entry_keep">Continua a rispondere</string>
+    <string name="retry">Riprova</string>
+    <string name="load_failed">Impossibile caricare la pagina. Controlli la connessione e riprovi.</string>
+    <string name="loading">Caricamento</string>
+    <string name="scan_prompt">Inquadri il codice QR dello studio nella cornice</string>
+    <string name="camera_refused">Senza accesso alla fotocamera l’app non può leggere un codice QR. Inserisca qui sotto il codice di partecipazione; è riportato sotto il codice QR.</string>
+    <string name="too_many">Troppi tentativi. Attenda qualche minuto prima di riprovare.</string>
+    <string name="looking_up">Ricerca dello studio</string>
+    <string name="joining">Adesione in corso</string>
+    <string name="more_actions">Altre azioni per «%1$s»</string>
+    <string name="about_contact_title">Contatto</string>
+    <string name="about_contact">Fornitore dell’app e della piattaforma Askurious:</string>
+    <string name="imprint">Note legali</string>
+    <string name="allowed">Consentito</string>
+    <string name="today_at">oggi, %1$s</string>
+    <string name="tomorrow_at">domani, %1$s</string>
+    <string name="date_at" formatted="true">%1$s, %2$s</string>
+    <string name="done">Fatto</string>
+    <string name="later">Più tardi</string>
+    <string name="ended_group">Concluse</string>
+    <string name="erase_title">Eliminare le risposte di «%1$s»?</string>
+    <string name="erased_done">Le risposte di «%1$s» sono state eliminate.</string>
+    <string name="erasing">Eliminazione…</string>
+    <string name="exit_open">Il periodo dello studio è terminato. Risponda ancora al questionario finale.</string>
+    <string name="exit_open_until">Il periodo dello studio è terminato. Risponda ancora al questionario finale (aperto fino al %1$s).</string>
+    <string name="fast_forward_spoken">Avanti veloce, %1$d volte</string>
+    <string name="join_code_hint">È riportato sotto il codice QR dello studio, ad es. k7qm2x</string>
+    <string name="leave_title">Abbandonare «%1$s»?</string>
+    <string name="left_done">Ha abbandonato «%1$s».</string>
+    <string name="removed_done">«%1$s» rimosso dall’elenco.</string>
+    <string name="licence_texts">Testi delle licenze</string>
+    <string name="notif_channel_desc">Le domande dei suoi studi diario negli orari scelti dai ricercatori, e i relativi promemoria</string>
+    <string name="notif_exit_until" formatted="true">Il periodo dello studio è terminato. Risponda: %1$s (aperto fino al %2$s)</string>
+    <string name="notif_reminder_of">Promemoria: %1$s</string>
+    <string name="participation_title">Partecipazione</string>
     <string name="period_title">Periodo dello studio</string>
+    <string name="period_from_to" formatted="true">%1$s – %2$s</string>
+    <string name="period_over">Periodo dello studio terminato – aggiornamento…</string>
+    <string name="quiet_use">Usa le ore di quiete</string>
+    <string name="quiet_from_cd">Ore di quiete dalle %1$s</string>
+    <string name="quiet_to_cd">Ore di quiete fino alle %1$s</string>
+    <string name="ready_title">Perché le domande arrivino puntuali</string>
+    <string name="ready_intro">L’app pone le domande dello studio con una notifica al momento giusto. Per questo servono due autorizzazioni; entrambe si possono cambiare in seguito nelle impostazioni del telefono.</string>
+    <string name="ready_notify_title">Notifiche</string>
+    <string name="ready_notify_text">Senza di esse non arriva nessuna domanda.</string>
+    <string name="ready_exact_title">Sveglie e promemoria</string>
+    <string name="ready_exact_text">Senza, le domande possono arrivare con qualche minuto di ritardo.</string>
+    <string name="state_pending">Primo questionario non ancora completato</string>
+    <string name="state_running">In corso</string>
+    <string name="time_about">verso le %1$s</string>
+    <!-- the study page: summary, open-ended period, sound per study, home-screen shortcuts (Shortcuts), after leaving -->
+    <string name="day_n" formatted="true">Giorno %1$d</string>
     <string name="period_after_entry">Il periodo dello studio inizia quando ha completato il primo questionario.</string>
     <string name="period_start" formatted="true">Inizio: %1$s</string>
-    <string name="period_end" formatted="true">Fine: %1$s</string>
     <string name="period_open_end">Fine: aperta, finché i ricercatori non concludono lo studio</string>
     <string name="duration_open_end">Durata: aperta, finché i ricercatori non concludono lo studio</string>
     <string name="also_self_module" formatted="true">%1$s: anche quando vuole</string>
@@ -139,7 +196,6 @@
     <string name="shortcut_failed">La schermata Home non ha accettato il collegamento.</string>
     <string name="shortcut_default">Segnala</string>
     <string name="shortcut_disabled">Questo studio è concluso.</string>
-    <string name="your_participation">La Sua partecipazione</string>
     <string name="after_leave_title">Conservare le Sue risposte?</string>
     <string name="after_leave_text">Ha lasciato lo studio. Le Sue risposte finora aiutano ancora la ricerca, anche se smette adesso, e i ricercatori Le sarebbero grati di poterle conservare. Vuole comunque eliminarle? Non è possibile annullare.</string>
     <string name="keep_answers">Conserva le mie risposte</string>

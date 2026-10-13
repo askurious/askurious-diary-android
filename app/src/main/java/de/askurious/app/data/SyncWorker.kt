@@ -72,9 +72,26 @@ object Sync {
      * in may be out of date (left, or joined again meanwhile). Returns the stored study, or [study] if it is gone.
      */
     suspend fun one(context: Context, study: Study): Study = withContext(Dispatchers.IO) {
-        lock.withLock {
+        val fresh = lock.withLock {
             val current = StudyStore(context).get(study.code)
-            if (current == null) study else oneLocked(context, current)
+            if (current == null) null else oneLocked(context, current)
+        } ?: return@withContext study
+        refreshPages(context, fresh)
+        fresh
+    }
+
+    /**
+     * Brings the kept pages of [study] up to date, after [lock] was let go (audit 2026-10-13, AN-9): downloading them
+     * may take long on a slow network, and "Delete my answers" or leaving must not wait for it. OfflinePages has a
+     * lock of its own, checks that the study is still on the phone, and stops when the study is dropped meanwhile.
+     */
+    private suspend fun refreshPages(context: Context, study: Study) {
+        try {
+            OfflinePages(context).refresh(study)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            // the pages are a fallback: the next sync tries again
         }
     }
 
@@ -83,7 +100,8 @@ object Sync {
      * ([Study.quietPending]); from then on the server's history counts. A 401 (secret unknown) ends the study only
      * when it keeps coming ([Study.unauthorised]); any answer of the server clears it. Other errors (offline, 429,
      * 5xx) change nothing and are thrown. What the participant changed on the phone while the call ran wins over the
-     * server's answer ([merged]). Only with [lock] held.
+     * server's answer ([merged]). Only with [lock] held; the caller brings the kept pages up to date afterwards
+     * ([refreshPages]).
      */
     private suspend fun oneLocked(context: Context, study: Study): Study {
         val sent = study.quietPending
@@ -100,8 +118,7 @@ object Sync {
         // an exit questionnaire that opened after its moment (or whose moment passed while the phone was off)
         Alarms.notifyExits(context)
         Alarms.rearm(context)
-        // the pages for answering without a connection; only while the study is still on the phone
-        if (store.get(fresh.code) != null) OfflinePages(context).refresh(fresh)
+        // the pages for answering without a connection follow once the lock is let go (refreshPages)
         return fresh
     }
 
@@ -326,7 +343,8 @@ object Sync {
      * (an answer of the server this app cannot read) is skipped; the others go on.
      */
     suspend fun all(context: Context): Boolean = withContext(Dispatchers.IO) {
-        lock.withLock {
+        val synced = mutableListOf<Study>()
+        val offline = lock.withLock {
             var offline = false
             val exits = PromptLog(context).exits()
             val store = StudyStore(context)
@@ -337,7 +355,7 @@ object Sync {
                     if (!sendLocked(context, s)) offline = true
                     when {
                         s.leavePending -> if (!leaveLocked(context, s)) offline = true
-                        wanted(s, s.code in exits) -> oneLocked(context, s)
+                        wanted(s, s.code in exits) -> synced += oneLocked(context, s)
                     }
                 } catch (e: CancellationException) {
                     throw e
@@ -350,5 +368,8 @@ object Sync {
             if (!offline) lastAll = System.currentTimeMillis()
             offline
         }
+        // the kept pages without the lock: a leave or a deletion meanwhile does not wait for the downloads (AN-9)
+        for (s in synced) refreshPages(context, s)
+        offline
     }
 }
