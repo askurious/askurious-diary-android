@@ -73,7 +73,7 @@
     <!-- the footer: version and when this APK was built, so one sees which version runs -->
     <string name="build_info" formatted="true">Версия %1$s · сборка %2$s</string>
     <string name="about_privacy_title">Конфиденциальность</string>
-    <string name="about_stores">Приложение хранит на этом телефоне только список Ваших исследований с их расписанием и для каждого исследования случайный секрет — единственный ключ к Вашим ответам в нём. У приложения нет учётной записи, и оно не отправляет ни идентификатор устройства, ни имя, ни адрес электронной почты, ни номер телефона. Ничего из этого не попадает в резервные копии или на новый телефон.</string>
+    <string name="about_stores">Приложение хранит на этом телефоне только список Ваших исследований с их расписанием и для каждого исследования случайный секрет — единственный ключ к Вашим ответам в нём. У приложения нет учётной записи, и оно не отправляет ни идентификатор устройства, ни имя, ни адрес электронной почты, ни номер телефона. Ничего из этого не попадает в резервные копии или на новый телефон. Для каждого исследования оно также хранит, приходят ли уведомления со звуком; названия ярлыков на главном экране хранит главный экран.</string>
     <string name="privacy_statement">Политика конфиденциальности</string>
     <string name="about_licence_title">Лицензия</string>
     <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Все права защищены.</string>
@@ -181,4 +181,29 @@
     <string name="state_pending">Первая анкета ещё не завершена</string>
     <string name="state_running">Идёт</string>
     <string name="time_about">около %1$s</string>
+    <!-- the study page: summary, open-ended period, sound per study, home-screen shortcuts (Shortcuts), after leaving -->
+    <string name="day_n" formatted="true">День %1$d</string>
+    <string name="period_after_entry">Период исследования начинается, как только вы заполните первую анкету.</string>
+    <string name="period_start" formatted="true">Начало: %1$s</string>
+    <string name="period_open_end">Окончание: открыто, пока исследователи не завершат исследование</string>
+    <string name="duration_open_end">Длительность: без срока, пока исследователи не завершат исследование</string>
+    <string name="also_self_module" formatted="true">%1$s: также когда захотите</string>
+    <string name="notifications_title">Уведомления</string>
+    <string name="sound">Звук уведомлений</string>
+    <string name="sound_on_hint">Вопросы этого исследования приходят со звуком уведомлений телефона.</string>
+    <string name="sound_off_hint">Вопросы этого исследования приходят без звука.</string>
+    <string name="notif_channel_silent">Вопросы ваших исследований (без звука)</string>
+    <string name="shortcut_title">Ярлык на главном экране</string>
+    <string name="shortcut_intro">Сообщайте о чём-либо одним нажатием с главного экрана.</string>
+    <string name="shortcut_add">Добавить на главный экран</string>
+    <string name="shortcut_add_for" formatted="true">Добавить на главный экран: %1$s</string>
+    <string name="shortcut_hint">Любой, кто видит ваш главный экран, может прочитать это название. Выберите такое, которое не выдаёт исследование.</string>
+    <string name="shortcut_label">Название</string>
+    <string name="shortcut_create">Добавить</string>
+    <string name="shortcut_failed">Главный экран не принял ярлык.</string>
+    <string name="shortcut_default">Сообщить</string>
+    <string name="shortcut_disabled">Это исследование завершено.</string>
+    <string name="after_leave_title">Сохранить ваши ответы?</string>
+    <string name="after_leave_text">Вы вышли из исследования. Ваши ответы до сих пор по-прежнему помогают исследованию, даже если вы сейчас прекращаете участие, и исследователи были бы благодарны, если бы могли их сохранить. Всё равно удалить их? Это нельзя отменить.</string>
+    <string name="keep_answers">Сохранить мои ответы</string>
 </resources>

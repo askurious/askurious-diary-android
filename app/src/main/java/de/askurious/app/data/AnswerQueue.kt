@@ -109,11 +109,14 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
     /** Whether an answer to the prompt of [module] due at [due] is waiting: it counts as opened for the reminder. */
     fun has(study: String, module: String, due: Long): Boolean = all().any { it.study == study && it.module == module && it.due == due }
 
-    /** How many answers to the self-started [module] were given today without a connection (max_per_day). */
+    /**
+     * How many self-started answers to [module] were given today without a connection (max_per_day); answers to its
+     * prompts (with a due time) do not count, for a prompted module the participant may also start.
+     */
     fun today(study: String, module: String, now: Long, zone: ZoneId = ZoneId.systemDefault()): Int {
         fun date(ms: Long): LocalDate = Instant.ofEpochMilli(ms).atZone(zone).toLocalDate()
         val day = date(now)
-        return all().count { it.study == study && it.module == module && date(it.completed) == day }
+        return all().count { it.study == study && it.module == module && it.due == null && date(it.completed) == day }
     }
 
     private fun save(items: List<Item>) {

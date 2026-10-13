@@ -65,7 +65,7 @@
     <!-- the footer: version and when this APK was built, so one sees which version runs -->
     <string name="build_info" formatted="true">Version %1$s · built %2$s</string>
     <string name="about_privacy_title">Privacy</string>
-    <string name="about_stores">The app keeps on this phone only the list of your studies with their schedules and, for each study, a random secret: the only key to your answers there. It has no account and sends no device ID, name, e-mail address or phone number. Nothing of it goes into backups or to a new phone.</string>
+    <string name="about_stores">The app keeps on this phone only the list of your studies with their schedules and, for each study, a random secret: the only key to your answers there. It has no account and sends no device ID, name, e-mail address or phone number. Nothing of it goes into backups or to a new phone. For each study it also keeps whether its notifications ring with a sound, and the labels of shortcuts you put on your home screen are kept by your home screen.</string>
     <string name="privacy_statement">Privacy statement</string>
     <string name="about_licence_title">Licence</string>
     <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. All rights reserved.</string>
@@ -167,4 +167,29 @@
     <string name="state_pending">First questionnaire not finished yet</string>
     <string name="state_running">Running</string>
     <string name="time_about">about %1$s</string>
+    <!-- the study page: summary, open-ended period, sound per study, home-screen shortcuts (Shortcuts), after leaving -->
+    <string name="day_n" formatted="true">Day %1$d</string>
+    <string name="period_after_entry">The study period begins once you have finished the first questionnaire.</string>
+    <string name="period_start" formatted="true">Start: %1$s</string>
+    <string name="period_open_end">End: open, until the researchers end the study</string>
+    <string name="duration_open_end">Duration: open-ended, until the researchers end the study</string>
+    <string name="also_self_module" formatted="true">%1$s: also whenever you like</string>
+    <string name="notifications_title">Notifications</string>
+    <string name="sound">Notification sound</string>
+    <string name="sound_on_hint">Questions of this study ring with your phone\'s notification sound.</string>
+    <string name="sound_off_hint">Questions of this study arrive without a sound.</string>
+    <string name="notif_channel_silent">Questions of your studies (without sound)</string>
+    <string name="shortcut_title">Shortcut on the home screen</string>
+    <string name="shortcut_intro">Report something with one tap from your home screen.</string>
+    <string name="shortcut_add">Add to home screen</string>
+    <string name="shortcut_add_for" formatted="true">Add to home screen: %1$s</string>
+    <string name="shortcut_hint">Anyone who sees your home screen can read this label. Choose one that does not give away the study.</string>
+    <string name="shortcut_label">Label</string>
+    <string name="shortcut_create">Add</string>
+    <string name="shortcut_failed">Your home screen did not accept the shortcut.</string>
+    <string name="shortcut_default">Report</string>
+    <string name="shortcut_disabled">This study has ended.</string>
+    <string name="after_leave_title">Keep your answers?</string>
+    <string name="after_leave_text">You have left the study. Your answers so far still help the research, even though you stopped, and the researchers would be grateful to keep them. Do you want to delete them anyway? This cannot be undone.</string>
+    <string name="keep_answers">Keep my answers</string>
 </resources>

@@ -122,7 +122,11 @@ import de.askurious.app.data.Trigger
 import de.askurious.app.schedule.Alarms
 import de.askurious.app.schedule.Schedule
 import kotlinx.coroutines.delay
+import androidx.lifecycle.lifecycleScope
+import de.askurious.app.data.StudyStore
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.time.Instant
 import java.time.LocalDate
@@ -136,6 +140,9 @@ import java.util.Locale
 
 class MainActivity : ComponentActivity() {
     private var linkCode by mutableStateOf<String?>(null)
+
+    /** A study whose page a home-screen shortcut opens, when its report cannot start now (see [report]). */
+    private var shortcutStudy by mutableStateOf<String?>(null)
 
     /** The studies, the waiting answers and the calls to the server (MainModel); this activity only draws them. */
     private val model: MainModel by viewModels()
@@ -204,12 +211,33 @@ class MainActivity : ComponentActivity() {
         // the whole link: JoinScreen reads the code and the server from it (joinCode, joinServer); after turning the
         // phone (a new activity, the same intent) the screens come from the saved back stack, not again from the link
         linkCode = if (savedInstanceState == null) intent?.data?.toString()?.takeIf { joinCode(it) != null } else null
+        if (savedInstanceState == null) intent?.let { report(it) }
         setContent { DiaryTheme { App() } }
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         intent.data?.toString()?.takeIf { joinCode(it) != null }?.let { linkCode = it }
+        report(intent)
+    }
+
+    /**
+     * A home-screen shortcut (Shortcuts): opens the entry of its module while the study runs and the module may be
+     * started today; otherwise the page of the study when it is still on the phone, else just the app. Only the stored
+     * study is used (its own server, as for any entry); the extras of the intent pick nothing else. Read off the main
+     * thread, as the stored studies are opened with the Keystore (AN-8).
+     */
+    private fun report(intent: Intent) {
+        if (intent.action != Shortcuts.ACTION_REPORT) return
+        val code = intent.getStringExtra(Shortcuts.EXTRA_STUDY) ?: return
+        val module = intent.getStringExtra(Shortcuts.EXTRA_MODULE)
+        lifecycleScope.launch {
+            val (target, known) = withContext(Dispatchers.IO) {
+                Shortcuts.target(this@MainActivity, code, module) to (StudyStore(this@MainActivity).get(code) != null)
+            }
+            if (target != null) startActivity(EntryActivity.intent(this@MainActivity, target.first, target.second))
+            else if (known) shortcutStudy = code
+        }
     }
 
     override fun onResume() {
@@ -239,6 +267,13 @@ class MainActivity : ComponentActivity() {
             if (link != null) {
                 push(JOIN + link)
                 linkCode = null
+            }
+        }
+        val opened = shortcutStudy
+        LaunchedEffect(opened) {
+            if (opened != null) {
+                if (stack.last() != STUDY + opened) push(STUDY + opened)
+                shortcutStudy = null
             }
         }
         val snackbar = remember { SnackbarHostState() }
@@ -443,6 +478,10 @@ class MainActivity : ComponentActivity() {
                     Text(study.title, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
                     Icon(Icons.AutoMirrored.Outlined.KeyboardArrowRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
+                // the researchers' sentence about the study (server: "summary")
+                if (study.summary.isNotBlank()) {
+                    Text(study.summary, style = MaterialTheme.typography.bodyMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                }
                 StudyNow(study)
                 if (study.code in model.refused) {
                     Text(stringResource(R.string.limit_refused), style = MaterialTheme.typography.bodySmall)
@@ -507,11 +546,11 @@ class MainActivity : ComponentActivity() {
                     )
                 }
             }
-            val dayNow = study.dayIndex(today) ?: 0
-            for (m in study.modules) {
-                val t = m.trigger as? Trigger.Self ?: continue
-                if (dayNow < m.dayFrom || dayNow > m.dayTo) continue
-                Button(onClick = { startActivity(EntryActivity.intent(context, study.code, m.key)) }) { Text(t.label.ifBlank { m.name }) }
+            // the modules the participant starts themselves, also timed ones that may be started on an event
+            for (m in study.selfModules(study.dayIndex(today) ?: 0)) {
+                Button(onClick = { startActivity(EntryActivity.intent(context, study.code, m.key)) }) {
+                    Text(m.selfTrigger?.label?.ifBlank { null } ?: m.name)
+                }
             }
         }
         if (state == StudyState.PENDING) {
@@ -535,7 +574,10 @@ class MainActivity : ComponentActivity() {
             StudyState.PENDING -> Icons.Outlined.Edit to stringResource(R.string.state_pending)
             StudyState.BEFORE_START -> Icons.Outlined.DateRange to stringResource(R.string.starts_on, dateText(study.firstDay!!))
             StudyState.RUNNING -> Icons.Outlined.PlayArrow to
-                (study.dayIndex(today)?.let { d -> study.periodDays?.let { stringResource(R.string.day_of, d, it) } } ?: stringResource(R.string.state_running))
+                (study.dayIndex(today)?.let { d ->
+                    // an open-ended study has no last day: "Day 12"
+                    study.periodDays?.let { stringResource(R.string.day_of, d, it) } ?: if (study.openEnd) stringResource(R.string.day_n, d) else null
+                } ?: stringResource(R.string.state_running))
             StudyState.PERIOD_OVER -> Icons.Outlined.Refresh to stringResource(R.string.period_over)
             StudyState.PAUSED -> Icons.Outlined.Info to stringResource(R.string.paused)
             StudyState.EXIT_OPEN -> Icons.Outlined.Edit to (study.exit?.until?.let { stringResource(R.string.exit_open_until, dateText(it)) }
@@ -596,12 +638,17 @@ class MainActivity : ComponentActivity() {
     }
 
     /**
-     * The detail page of a study (audit SA2): what the card shows, the study period, what is asked, the quiet hours,
+     * The detail page of a study (audit SA2): what the card shows, the researchers' summary, the study period (start,
+     * end or open-ended), what is asked, the quiet hours, the notification sound, a home-screen shortcut for reports,
      * the waiting answers, and the final actions apart from the rest (leaving or removing, deleting the answers), each
-     * asking first (A14, A15).
+     * asking first (A14, A15). After leaving the page asks whether the answers should go too, with a kind word for
+     * keeping them.
      */
     @Composable
     private fun StudyScreen(study: Study, onBack: () -> Unit, snackbar: SnackbarHostState, say: (String) -> Unit) {
+        val context = LocalContext.current
+        var askErase by remember { mutableStateOf(false) }
+        var shortcutFor by remember { mutableStateOf<Module?>(null) }
         var confirmLeave by remember { mutableStateOf(false) }
         var confirmErase by remember { mutableStateOf(false) }
         var confirmRemove by remember { mutableStateOf(false) }
@@ -615,6 +662,7 @@ class MainActivity : ComponentActivity() {
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 Text(study.title, style = MaterialTheme.typography.titleLarge, modifier = Modifier.semantics { heading() })
+                if (study.summary.isNotBlank()) Text(study.summary)
                 StudyNow(study)
                 if (study.code in model.refused) {
                     Text(stringResource(R.string.limit_refused), style = MaterialTheme.typography.bodySmall)
@@ -625,13 +673,23 @@ class MainActivity : ComponentActivity() {
 
                 val first = study.firstDay
                 val last = study.lastDay
-                if (first != null && last != null) {
-                    SectionTitle(stringResource(R.string.period_title))
-                    Text(stringResource(R.string.period_from_to, dateText(first), dateText(last)))
+                SectionTitle(stringResource(R.string.period_title))
+                when {
+                    first == null -> Text(stringResource(R.string.period_after_entry))
+                    last != null && !study.openEnd -> Text(stringResource(R.string.period_from_to, dateText(first), dateText(last)))
+                    else -> {
+                        // open-ended: it runs until the researchers end it
+                        Text(stringResource(R.string.period_start, dateText(first)))
+                        Text(stringResource(R.string.period_open_end))
+                    }
                 }
                 if (study.modules.isNotEmpty()) {
                     SectionTitle(stringResource(R.string.study_modules))
-                    for (m in study.modules) Text("• " + moduleText(m))
+                    for (m in study.modules) {
+                        Text("• " + moduleText(m))
+                        // a timed module the participant may also start themselves
+                        if (m.selfStart != null) Text("• " + stringResource(R.string.also_self_module, m.name))
+                    }
                 }
                 if (study.hasRandom) {
                     SectionTitle(stringResource(R.string.quiet_title))
@@ -640,6 +698,38 @@ class MainActivity : ComponentActivity() {
                     Text(stringResource(R.string.quiet_now, quietText(quietNow)))
                     if (quietNext != quietNow) Text(stringResource(R.string.quiet_from_tomorrow, quietText(quietNext)))
                     if (study.running) OutlinedButton(onClick = { editQuiet = true }) { Text(stringResource(R.string.quiet_change)) }
+                }
+
+                // the sound, while questions or the exit questionnaire can still be notified; kept only on the phone
+                if (Shortcuts.alive(study) || study.exit?.open == true) {
+                    SectionTitle(stringResource(R.string.notifications_title))
+                    val label = stringResource(R.string.sound)
+                    Row(
+                        Modifier.fillMaxWidth().semantics(mergeDescendants = true) {},
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(label, Modifier.weight(1f))
+                        Switch(checked = study.sound, onCheckedChange = { model.setSound(study, it) })
+                    }
+                    Text(
+                        stringResource(if (study.sound) R.string.sound_on_hint else R.string.sound_off_hint),
+                        style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+
+                // a home-screen shortcut per module the participant starts themselves
+                val reports = study.modules.filter { it.selfTrigger != null }
+                if (study.running && reports.isNotEmpty() && Shortcuts.supported(context)) {
+                    SectionTitle(stringResource(R.string.shortcut_title))
+                    Text(stringResource(R.string.shortcut_intro), style = MaterialTheme.typography.bodySmall)
+                    for (m in reports) {
+                        OutlinedButton(onClick = { shortcutFor = m }) {
+                            Text(
+                                if (reports.size == 1) stringResource(R.string.shortcut_add)
+                                else stringResource(R.string.shortcut_add_for, m.selfTrigger?.label?.ifBlank { null } ?: m.name)
+                            )
+                        }
+                    }
                 }
 
                 SectionTitle(stringResource(R.string.participation_title))
@@ -682,11 +772,40 @@ class MainActivity : ComponentActivity() {
                         confirmLeave = false
                         model.leave(study)
                         say(getString(R.string.left_done, study.title))
+                        // then whether the answers should go too; keeping them is the first choice
+                        askErase = true
                     }) { Text(stringResource(R.string.leave_study), color = MaterialTheme.colorScheme.error) }
                 },
                 dismissButton = { TextButton(onClick = { confirmLeave = false }) { Text(stringResource(R.string.cancel)) } },
             )
         }
+        if (askErase) {
+            AlertDialog(
+                onDismissRequest = { askErase = false },
+                title = { Text(stringResource(R.string.after_leave_title)) },
+                text = {
+                    GuardAgainstOverlays()
+                    Text(stringResource(R.string.after_leave_text))
+                },
+                confirmButton = { Button(onClick = { askErase = false }) { Text(stringResource(R.string.keep_answers)) } },
+                dismissButton = {
+                    TextButton(onClick = {
+                        askErase = false
+                        // the question itself was the confirmation; the study stays after an error (its secret)
+                        eraseError = null
+                        model.erase(study) { e ->
+                            if (e == null) {
+                                say(getString(R.string.erased_done, study.title))
+                                onBack()
+                            } else {
+                                eraseError = getString(if (e.key == "offline") R.string.offline else R.string.error)
+                            }
+                        }
+                    }) { Text(stringResource(R.string.erase_answers), color = MaterialTheme.colorScheme.error) }
+                },
+            )
+        }
+        shortcutFor?.let { m -> ShortcutDialog(study, m, onDone = { shortcutFor = null }) }
         if (confirmRemove) {
             // the secret goes with the study: afterwards its answers can no longer be deleted from the phone (audit A4)
             AlertDialog(
@@ -750,6 +869,38 @@ class MainActivity : ComponentActivity() {
                 dismissButton = { TextButton(enabled = !erasing, onClick = { confirmErase = false }) { Text(stringResource(R.string.cancel)) } },
             )
         }
+    }
+
+    /**
+     * The label of a new home-screen shortcut to report [module]: the report's label to begin with, never the study's
+     * title, and the participant may change it, since anyone who sees the home screen reads it.
+     */
+    @Composable
+    private fun ShortcutDialog(study: Study, module: Module, onDone: () -> Unit) {
+        val context = LocalContext.current
+        val fallback = stringResource(R.string.shortcut_default)
+        var label by rememberSaveable { mutableStateOf(module.selfTrigger?.label?.ifBlank { null } ?: module.name.ifBlank { fallback }) }
+        var failed by remember { mutableStateOf(false) }
+        AlertDialog(
+            onDismissRequest = onDone,
+            title = { Text(stringResource(R.string.shortcut_add)) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text(stringResource(R.string.shortcut_hint))
+                    OutlinedTextField(
+                        value = label, onValueChange = { label = it.take(40) }, singleLine = true,
+                        label = { Text(stringResource(R.string.shortcut_label)) },
+                    )
+                    if (failed) Text(stringResource(R.string.shortcut_failed), color = MaterialTheme.colorScheme.error)
+                }
+            },
+            confirmButton = {
+                TextButton(enabled = label.isNotBlank(), onClick = {
+                    if (Shortcuts.request(context, study, module.key, label)) onDone() else failed = true
+                }) { Text(stringResource(R.string.shortcut_create)) }
+            },
+            dismissButton = { TextButton(onClick = onDone) { Text(stringResource(R.string.cancel)) } },
+        )
     }
 
     /**
@@ -1006,7 +1157,9 @@ class MainActivity : ComponentActivity() {
                         Text(i.optString("title"), style = MaterialTheme.typography.titleLarge, modifier = Modifier.semantics { heading() })
                         i.optString("description").takeIf { it.isNotBlank() }?.let { Text(it) }
                         val days = i.optInt("period_days")
-                        Text(pluralStringResource(R.plurals.study_days, days, days))
+                        // an open-ended study runs until the researchers end it
+                        if (i.optBoolean("open_end", false) || days <= 0) Text(stringResource(R.string.duration_open_end))
+                        else Text(pluralStringResource(R.plurals.study_days, days, days))
                         val modules = i.optJSONArray("modules")
                         if (modules != null && modules.length() > 0) {
                             SectionTitle(stringResource(R.string.study_modules))
@@ -1026,6 +1179,10 @@ class MainActivity : ComponentActivity() {
                                         else -> m.optInt("per_week").let { n -> pluralStringResource(R.plurals.fixed_per_week, n, name, n) }
                                     }
                                 )
+                                // a timed module the participant may also start themselves
+                                if (m.optString("trigger") != "self" && (m.optBoolean("self", false) || m.optJSONObject("self") != null)) {
+                                    Text("• " + stringResource(R.string.also_self_module, name))
+                                }
                             }
                         }
                         val minutes = i.optInt("minutes")

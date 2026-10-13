@@ -69,7 +69,7 @@
     <!-- the footer: version and when this APK was built, so one sees which version runs -->
     <string name="build_info" formatted="true">Versión %1$s · compilada %2$s</string>
     <string name="about_privacy_title">Privacidad</string>
-    <string name="about_stores">En este teléfono, la aplicación solo guarda la lista de sus estudios con sus horarios y, para cada estudio, un secreto aleatorio: la única clave de sus respuestas en ese estudio. No tiene cuenta y no envía ningún identificador del dispositivo, nombre, correo electrónico ni número de teléfono. Nada de ello se incluye en copias de seguridad ni pasa a un teléfono nuevo.</string>
+    <string name="about_stores">En este teléfono, la aplicación solo guarda la lista de sus estudios con sus horarios y, para cada estudio, un secreto aleatorio: la única clave de sus respuestas en ese estudio. No tiene cuenta y no envía ningún identificador del dispositivo, nombre, correo electrónico ni número de teléfono. Nada de ello se incluye en copias de seguridad ni pasa a un teléfono nuevo. Para cada estudio guarda también si sus notificaciones suenan; los nombres de los accesos directos que ponga en su pantalla de inicio los guarda la pantalla de inicio.</string>
     <string name="privacy_statement">Declaración de privacidad</string>
     <string name="about_licence_title">Licencia</string>
     <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Todos los derechos reservados.</string>
@@ -174,4 +174,29 @@
     <string name="state_pending">Primer cuestionario aún sin terminar</string>
     <string name="state_running">En curso</string>
     <string name="time_about">hacia las %1$s</string>
+    <!-- the study page: summary, open-ended period, sound per study, home-screen shortcuts (Shortcuts), after leaving -->
+    <string name="day_n" formatted="true">Día %1$d</string>
+    <string name="period_after_entry">El periodo del estudio empieza cuando termine el primer cuestionario.</string>
+    <string name="period_start" formatted="true">Inicio: %1$s</string>
+    <string name="period_open_end">Fin: abierto, hasta que los investigadores terminen el estudio</string>
+    <string name="duration_open_end">Duración: abierta, hasta que los investigadores terminen el estudio</string>
+    <string name="also_self_module" formatted="true">%1$s: también cuando quiera</string>
+    <string name="notifications_title">Notificaciones</string>
+    <string name="sound">Sonido de notificación</string>
+    <string name="sound_on_hint">Las preguntas de este estudio suenan con el sonido de notificación de su teléfono.</string>
+    <string name="sound_off_hint">Las preguntas de este estudio llegan sin sonido.</string>
+    <string name="notif_channel_silent">Preguntas de sus estudios (sin sonido)</string>
+    <string name="shortcut_title">Acceso directo en la pantalla de inicio</string>
+    <string name="shortcut_intro">Informe de algo con un toque desde su pantalla de inicio.</string>
+    <string name="shortcut_add">Añadir a la pantalla de inicio</string>
+    <string name="shortcut_add_for" formatted="true">Añadir a la pantalla de inicio: %1$s</string>
+    <string name="shortcut_hint">Cualquiera que vea su pantalla de inicio puede leer este nombre. Elija uno que no revele el estudio.</string>
+    <string name="shortcut_label">Nombre</string>
+    <string name="shortcut_create">Añadir</string>
+    <string name="shortcut_failed">Su pantalla de inicio no aceptó el acceso directo.</string>
+    <string name="shortcut_default">Informar</string>
+    <string name="shortcut_disabled">Este estudio ha terminado.</string>
+    <string name="after_leave_title">¿Conservar sus respuestas?</string>
+    <string name="after_leave_text">Ha abandonado el estudio. Sus respuestas hasta ahora siguen ayudando a la investigación aunque lo deje ahora, y los investigadores agradecerían poder conservarlas. ¿Quiere borrarlas de todos modos? No se puede deshacer.</string>
+    <string name="keep_answers">Conservar mis respuestas</string>
 </resources>

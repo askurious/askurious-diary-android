@@ -35,6 +35,12 @@ import java.time.format.FormatStyle
  */
 object Alarms {
     const val CHANNEL = "prompts"
+
+    /**
+     * The same notifications without a sound, for a study whose sound the participant switched off (Study.sound). A
+     * channel's sound cannot change once it exists, so the choice picks the channel.
+     */
+    const val CHANNEL_SILENT = "prompts_silent"
     private const val EXTRA_DUE = "due"
 
     fun canExact(context: Context): Boolean {
@@ -64,13 +70,22 @@ object Alarms {
         )
 
     fun createChannel(context: Context) {
+        val manager = context.getSystemService(NotificationManager::class.java)
         val channel = NotificationChannel(CHANNEL, context.getString(R.string.notif_channel), NotificationManager.IMPORTANCE_HIGH)
         // on the lock screen only the neutral public version (see notify): taking part in a study is nobody's business
         channel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
         // what the channel is for, in the system's notification settings (audit A26)
         channel.description = context.getString(R.string.notif_channel_desc)
-        context.getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
+        manager.createNotificationChannel(channel)
+        val silent = NotificationChannel(CHANNEL_SILENT, context.getString(R.string.notif_channel_silent), NotificationManager.IMPORTANCE_HIGH)
+        silent.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+        silent.description = context.getString(R.string.notif_channel_desc)
+        silent.setSound(null, null)
+        manager.createNotificationChannel(silent)
     }
+
+    /** The channel of [study]'s notifications: with or without the sound (Study.sound). */
+    fun channelOf(study: Study): String = if (study.sound) CHANNEL else CHANNEL_SILENT
 
     private fun mayPost(context: Context): Boolean =
         Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
@@ -140,7 +155,7 @@ object Alarms {
             val text = exit.until?.let {
                 context.getString(R.string.notif_exit_until, name, it.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)))
             } ?: context.getString(R.string.notif_exit, name)
-            val n = builder(context, study.title, text, context.getString(R.string.notif_default)).setContentIntent(tap).build()
+            val n = builder(context, channelOf(study), study.title, text, context.getString(R.string.notif_default)).setContentIntent(tap).build()
             try {
                 NotificationManagerCompat.from(context).notify(id, n)
                 log.exitNotified(study.code)
@@ -151,17 +166,17 @@ object Alarms {
     }
 
     /**
-     * A notification of [title] with [text]; the lock screen shows only [neutral] under the app's name: neither the
+     * A notification of [title] with [text] in [channel]; the lock screen shows only [neutral] under the app's name: neither the
      * title of the study nor the researchers' text (which may name the topic) is seen by someone else looking at the
      * phone.
      */
-    private fun builder(context: Context, title: String, text: String, neutral: String): NotificationCompat.Builder {
-        val public = NotificationCompat.Builder(context, CHANNEL)
+    private fun builder(context: Context, channel: String, title: String, text: String, neutral: String): NotificationCompat.Builder {
+        val public = NotificationCompat.Builder(context, channel)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(context.getString(R.string.app_name))
             .setContentText(neutral)
             .build()
-        return NotificationCompat.Builder(context, CHANNEL)
+        return NotificationCompat.Builder(context, channel)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
             .setContentText(text)
@@ -188,7 +203,7 @@ object Alarms {
         // the reminder keeps the researchers' text, marked as a reminder (audit A26); the lock screen stays neutral
         val text = reminderText(module.notify, reminder, neutral) { context.getString(R.string.notif_reminder_of, it) }
         // the notification goes when the prompt expires: at the real moment of its (study's time) expiry
-        val n = builder(context, study.title, text, neutral)
+        val n = builder(context, channelOf(study), study.title, text, neutral)
             .setContentIntent(tap)
             .apply { if (module.expires > 0) setTimeoutAfter(study.realAt(p.due + module.expires * 60_000L) - System.currentTimeMillis()) }
             .build()

@@ -82,6 +82,17 @@ class MainModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** The notification sound of [study] on or off; kept only on the phone (Study.sound, Alarms.channelOf). */
+    fun setSound(study: Study, on: Boolean) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                val store = StudyStore(context)
+                store.get(study.code)?.let { store.update(it.copy(sound = on)) }
+            }
+            reload()
+        }
+    }
+
     /** Shown as left at once, also while a sync runs; the server hears of it as soon as it can. */
     fun leave(study: Study) {
         viewModelScope.launch {

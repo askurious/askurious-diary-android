@@ -73,7 +73,7 @@
     <!-- the footer: version and when this APK was built, so one sees which version runs -->
     <string name="build_info" formatted="true">Wersja %1$s · zbudowana %2$s</string>
     <string name="about_privacy_title">Prywatność</string>
-    <string name="about_stores">Aplikacja przechowuje na tym telefonie tylko listę badań wraz z ich harmonogramami oraz dla każdego badania losowy sekret – jedyny klucz do udzielonych w nim odpowiedzi. Nie ma konta i nie wysyła identyfikatora urządzenia, imienia, adresu e-mail ani numeru telefonu. Nic z tego nie trafia do kopii zapasowych ani na nowy telefon.</string>
+    <string name="about_stores">Aplikacja przechowuje na tym telefonie tylko listę badań wraz z ich harmonogramami oraz dla każdego badania losowy sekret – jedyny klucz do udzielonych w nim odpowiedzi. Nie ma konta i nie wysyła identyfikatora urządzenia, imienia, adresu e-mail ani numeru telefonu. Nic z tego nie trafia do kopii zapasowych ani na nowy telefon. Dla każdego badania zapisuje też, czy powiadomienia mają dźwięk; nazwy skrótów umieszczonych na ekranie głównym przechowuje ekran główny.</string>
     <string name="privacy_statement">Informacja o ochronie danych</string>
     <string name="about_licence_title">Licencja</string>
     <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Wszelkie prawa zastrzeżone.</string>
@@ -181,4 +181,29 @@
     <string name="state_pending">Pierwszy kwestionariusz jeszcze nieukończony</string>
     <string name="state_running">W toku</string>
     <string name="time_about">około %1$s</string>
+    <!-- the study page: summary, open-ended period, sound per study, home-screen shortcuts (Shortcuts), after leaving -->
+    <string name="day_n" formatted="true">Dzień %1$d</string>
+    <string name="period_after_entry">Okres badania zaczyna się po wypełnieniu pierwszego kwestionariusza.</string>
+    <string name="period_start" formatted="true">Początek: %1$s</string>
+    <string name="period_open_end">Koniec: otwarty, do zakończenia badania przez zespół badawczy</string>
+    <string name="duration_open_end">Czas trwania: otwarty, do zakończenia badania przez zespół badawczy</string>
+    <string name="also_self_module" formatted="true">%1$s: także w dowolnym momencie</string>
+    <string name="notifications_title">Powiadomienia</string>
+    <string name="sound">Dźwięk powiadomień</string>
+    <string name="sound_on_hint">Pytania z tego badania przychodzą z dźwiękiem powiadomień telefonu.</string>
+    <string name="sound_off_hint">Pytania z tego badania przychodzą bez dźwięku.</string>
+    <string name="notif_channel_silent">Pytania z badań (bez dźwięku)</string>
+    <string name="shortcut_title">Skrót na ekranie głównym</string>
+    <string name="shortcut_intro">Jedno dotknięcie na ekranie głównym wystarczy, aby coś zgłosić.</string>
+    <string name="shortcut_add">Dodaj do ekranu głównego</string>
+    <string name="shortcut_add_for" formatted="true">Dodaj do ekranu głównego: %1$s</string>
+    <string name="shortcut_hint">Każda osoba, która widzi ekran główny, może przeczytać tę nazwę. Prosimy wybrać nazwę, która nie zdradza badania.</string>
+    <string name="shortcut_label">Nazwa</string>
+    <string name="shortcut_create">Dodaj</string>
+    <string name="shortcut_failed">Ekran główny nie przyjął skrótu.</string>
+    <string name="shortcut_default">Zgłoś</string>
+    <string name="shortcut_disabled">To badanie zostało zakończone.</string>
+    <string name="after_leave_title">Zachować odpowiedzi?</string>
+    <string name="after_leave_text">Badanie zostało opuszczone. Dotychczasowe odpowiedzi nadal pomagają w badaniu, nawet po rezygnacji, a zespół badawczy byłby wdzięczny za możliwość ich zachowania. Czy mimo to usunąć odpowiedzi? Tego nie można cofnąć.</string>
+    <string name="keep_answers">Zachowaj odpowiedzi</string>
 </resources>

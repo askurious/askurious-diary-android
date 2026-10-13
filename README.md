@@ -65,6 +65,22 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   `POST /study` sends `"min_app_version"` (the server's `DIARY_MIN_APP_VERSION`, 0 = every version).
   When a study asks for a newer version than the running `versionCode`, the start page asks the participant to update the app (button to its Play Store page); the app goes on working meanwhile.
   `versionCode` is the number of Git commits up to the build (`git rev-list --count HEAD`), `versionName` "0.1.<that number>", so every later build on main is newer.
+- **Summary, study page.**
+  The card shows below the title the researchers' short summary (`"summary"` of `POST /study`), the day, the next question and the buttons to answer (first questionnaire, reports, exit questionnaire).
+  Tapping a card opens the study's page: the summary, the study period (start and end, or "open, until the researchers end the study"), what is asked, the next question, the quiet hours, the notification sound, a home-screen shortcut and leaving or deleting.
+  Leaving asks first; once left, the app asks whether the answers should be deleted too, says kindly that keeping them still helps the research, and offers "Keep my answers" as the first choice.
+- **Open-ended studies.**
+  `"open_end": true` with `"last_day": null`: prompts go on until the researchers end the study (`Schedule.prompts`); the card shows "Day x" instead of "Day x of n", the join screen "Duration: open-ended" (`public_json` sends `"open_end": true`, `"period_days": 0`).
+- **Reporting at any time.**
+  A self module (`"t": "self"`) and a fixed or random module with `"self": {"label", "max_per_day"}` (prompted and also started by the participant) get a button on the card while their days run (`Module.selfTrigger`, `Study.selfModules`); a self-started entry goes without `due`, and the daily limit counts only self-started answers.
+- **Home-screen shortcut.**
+  For a running study with a module the participant starts, the study's page offers "Add to home screen" (`Shortcuts.kt`, a pinned shortcut).
+  The home screen is seen by others: the label is the report's label by default, never the study's title, and the participant can change it before adding it.
+  The shortcut opens the app with `de.askurious.app.action.REPORT`; the app reads the study from its sealed store off the main thread, and the entry starts only while the study runs and the module may be started today (at the study's own server, as any entry), otherwise the app opens on the study's page.
+  When a study is left, ended, finished, removed or its answers deleted, its shortcuts are disabled (the app cannot take a pinned shortcut off the home screen).
+- **Notification sound.**
+  On by default, switched off per study on the study's page; kept only on the phone (`Study.sound`, never sent, kept over a sync by `Sync.merged`).
+  The sound of a notification channel cannot change once it exists, so the choice picks the channel: `prompts` (the phone's notification sound) or `prompts_silent`.
 - **Quiet hours.**
   A study with a random module shows its quiet hours on its page; "Change quiet hours" opens a dialog with the switch "Use quiet hours", from and to, saved with "Save". They keep the random prompts out of that time, never the fixed ones.
   `POST /study` sends a change (`"quiet": ["22:00", "07:00"]` or `null`), the server keeps it from the person's next day on and answers with the whole history (`"quiet": [{"from", "q"}]`); the app uses exactly that history, the entry of the last `from` on or before a day (`QuietFrom.on`, the server's `quiet_on`).
@@ -115,7 +131,7 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   Deleting or removing a study from the list also deletes its queued answers, its kept pages and the log of its prompts.
   "Remove from list" asks first: with the study its secret goes, so its answers can no longer be deleted through the app; the question says so, and says when the exit questionnaire is still open.
 - **What stays on the phone.**
-  The studies with their secrets, their look (colours), the seed of the random prompts, the quiet hours, the pauses, the exit questionnaire and a fast-forward clock; the log of the prompts of the last three days (notified, opened) and whether the exit questionnaire was notified; the kept pages of offline modules while the study runs (dropped when it ends, is left, or the module is no longer offline); answers given without a connection until they are sent, at most 7 days after the page was opened (the server takes them no later), then they are dropped unsent.
+  The studies with their secrets, their look (colours), the seed of the random prompts, the quiet hours, the pauses, the exit questionnaire, a fast-forward clock and whether its notifications ring with a sound; the labels of home-screen shortcuts are kept by the launcher; the log of the prompts of the last three days (notified, opened) and whether the exit questionnaire was notified; the kept pages of offline modules while the study runs (dropped when it ends, is left, or the module is no longer offline); answers given without a connection until they are sent, at most 7 days after the page was opened (the server takes them no later), then they are dropped unsent.
   Besides, whether the app asked for the notification and the camera permission once (to tell a first request from a refusal for good), and whether the step for the permissions was shown.
   All of it in the app's private storage, in no backup.
   The list of studies (with titles, schedules and secrets), the answers waiting to be sent and the log of the prompts are stored sealed (AES-GCM, `SealedText`, each with its own purpose as associated data) under a key that lives in the Android Keystore and never leaves it (`KeystoreSealer`); a copy of the app's files alone shows neither secrets nor answers nor titles. Each is opened once per process and kept in memory, so the Keystore is not asked at every read; reading them at the start, for an alarm or a boot runs off the main thread.

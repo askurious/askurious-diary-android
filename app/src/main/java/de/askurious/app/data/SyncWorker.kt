@@ -11,6 +11,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import de.askurious.app.schedule.Alarms
+import de.askurious.app.ui.Shortcuts
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
@@ -112,6 +113,8 @@ object Sync {
         val store = StudyStore(context)
         val fresh = merged(fetched, store.get(study.code), sent) ?: return study
         store.update(fresh)
+        // the home-screen shortcuts of a study that ended lead nowhere any more
+        Shortcuts.update(context)
         // an exit questionnaire that opened after its moment (or whose moment passed while the phone was off)
         Alarms.notifyExits(context)
         Alarms.rearm(context)
@@ -123,11 +126,13 @@ object Sync {
      * The study to store after a sync: [fetched] (the server's answer, or the study after a 401) with what the
      * participant did on the phone while the call ran, as [stored] holds it now. Null when the study is gone from the
      * phone or was joined again with another secret: nothing to store. Quiet hours changed again stay pending (after a
-     * 401 they stay anyway); a leave stays, also one the server has not heard of yet ([Study.leavePending]).
+     * 401 they stay anyway); a leave stays, also one the server has not heard of yet ([Study.leavePending]); the
+     * notification sound ([Study.sound]) is the phone's.
      */
     fun merged(fetched: Study, stored: Study?, sentQuiet: QuietFrom?): Study? {
         if (stored == null || stored.secret != fetched.secret) return null
-        var fresh = fetched
+        // the sound is the participant's choice on the phone; the server knows nothing of it
+        var fresh = fetched.copy(sound = stored.sound)
         val pending = stored.quietPending
         if (pending != null && pending != sentQuiet) fresh = fresh.copy(quietPending = pending)
         if (stored.status == "left" || stored.leavePending) fresh = fresh.copy(status = "left", leavePending = stored.leavePending)
@@ -163,6 +168,7 @@ object Sync {
         val current = store.get(study.code) ?: return
         store.update(current.copy(status = "left", leavePending = true))
         Alarms.rearm(context)
+        Shortcuts.update(context)
     }
 
     /**
@@ -224,6 +230,7 @@ object Sync {
         OfflinePages(context).dropStudy(code)
         PromptLog(context).removeStudy(code)
         Alarms.rearm(context)
+        Shortcuts.update(context)
     }
 
     /**

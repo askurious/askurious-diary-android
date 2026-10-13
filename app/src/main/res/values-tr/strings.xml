@@ -65,7 +65,7 @@
     <!-- the footer: version and when this APK was built, so one sees which version runs -->
     <string name="build_info" formatted="true">Sürüm %1$s · derleme %2$s</string>
     <string name="about_privacy_title">Gizlilik</string>
-    <string name="about_stores">Uygulama bu telefonda yalnızca çalışmalarınızın listesini ve programlarını, her çalışma için de rastgele bir gizli anahtarı saklar: Bu anahtar, o çalışmadaki yanıtlarınıza ulaşmanın tek yoludur. Uygulamanın hesabı yoktur ve cihaz kimliği, ad, e-posta adresi veya telefon numarası göndermez. Bunların hiçbiri yedeklere veya yeni bir telefona aktarılmaz.</string>
+    <string name="about_stores">Uygulama bu telefonda yalnızca çalışmalarınızın listesini ve programlarını, her çalışma için de rastgele bir gizli anahtarı saklar: Bu anahtar, o çalışmadaki yanıtlarınıza ulaşmanın tek yoludur. Uygulamanın hesabı yoktur ve cihaz kimliği, ad, e-posta adresi veya telefon numarası göndermez. Bunların hiçbiri yedeklere veya yeni bir telefona aktarılmaz. Her çalışma için bildirimlerinin sesli gelip gelmediğini de saklar; ana ekranınıza koyduğunuz kısayolların etiketlerini ana ekranınız saklar.</string>
     <string name="privacy_statement">Gizlilik bildirimi</string>
     <string name="about_licence_title">Lisans</string>
     <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Tüm hakları saklıdır.</string>
@@ -167,4 +167,29 @@
     <string name="state_pending">İlk anket henüz bitmedi</string>
     <string name="state_running">Devam ediyor</string>
     <string name="time_about">yaklaşık %1$s</string>
+    <!-- the study page: summary, open-ended period, sound per study, home-screen shortcuts (Shortcuts), after leaving -->
+    <string name="day_n" formatted="true">Gün %1$d</string>
+    <string name="period_after_entry">Çalışma süresi, ilk anketi tamamladığınızda başlar.</string>
+    <string name="period_start" formatted="true">Başlangıç: %1$s</string>
+    <string name="period_open_end">Bitiş: açık, araştırmacılar çalışmayı sonlandırana kadar</string>
+    <string name="duration_open_end">Süre: açık, araştırmacılar çalışmayı sonlandırana kadar</string>
+    <string name="also_self_module" formatted="true">%1$s: ayrıca istediğiniz zaman</string>
+    <string name="notifications_title">Bildirimler</string>
+    <string name="sound">Bildirim sesi</string>
+    <string name="sound_on_hint">Bu çalışmanın soruları telefonunuzun bildirim sesiyle gelir.</string>
+    <string name="sound_off_hint">Bu çalışmanın soruları sessiz gelir.</string>
+    <string name="notif_channel_silent">Çalışmalarınızın soruları (sessiz)</string>
+    <string name="shortcut_title">Ana ekranda kısayol</string>
+    <string name="shortcut_intro">Ana ekranınızdan tek dokunuşla bir şey bildirin.</string>
+    <string name="shortcut_add">Ana ekrana ekle</string>
+    <string name="shortcut_add_for" formatted="true">Ana ekrana ekle: %1$s</string>
+    <string name="shortcut_hint">Ana ekranınızı gören herkes bu etiketi okuyabilir. Çalışmayı ele vermeyen bir etiket seçin.</string>
+    <string name="shortcut_label">Etiket</string>
+    <string name="shortcut_create">Ekle</string>
+    <string name="shortcut_failed">Ana ekranınız kısayolu kabul etmedi.</string>
+    <string name="shortcut_default">Bildir</string>
+    <string name="shortcut_disabled">Bu çalışma sona erdi.</string>
+    <string name="after_leave_title">Yanıtlarınız saklansın mı?</string>
+    <string name="after_leave_text">Çalışmadan ayrıldınız. Şimdiye kadarki yanıtlarınız, şimdi bıraksanız bile araştırmaya yardımcı olur ve araştırmacılar bunları saklayabilirlerse minnettar olurlar. Yine de silmek istiyor musunuz? Bu işlem geri alınamaz.</string>
+    <string name="keep_answers">Yanıtlarımı sakla</string>
 </resources>

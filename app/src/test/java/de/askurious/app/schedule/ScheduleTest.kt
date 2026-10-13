@@ -36,6 +36,28 @@ class ScheduleTest {
     }
 
     @Test
+    fun anOpenEndedStudyGoesOnWithoutALastDayAndOneWithoutItsEndHasNone() {
+        val open = study(fixed("m1", "09:00")).copy(lastDay = null, openEnd = true)
+        val due = Schedule.prompts(open, Instant.parse("2027-03-01T00:00:00Z"), Instant.parse("2027-03-03T00:00:00Z"), berlin)
+        assertEquals(listOf("2027-03-01T08:00:00Z", "2027-03-02T08:00:00Z"), due.map { Instant.ofEpochMilli(it.due).toString() })
+        assertEquals(null, open.periodDays)
+        // no last day yet from an older server: nothing is prompted
+        val unknown = open.copy(openEnd = false)
+        assertTrue(Schedule.prompts(unknown, Instant.parse("2027-03-01T00:00:00Z"), Instant.parse("2027-03-03T00:00:00Z"), berlin).isEmpty())
+    }
+
+    @Test
+    fun aPromptedModuleTheParticipantMayAlsoStartIsStillPromptedAndStartable() {
+        val both = fixed("m1", "10:00").copy(selfStart = Trigger.Self("Something happened", 2), dayTo = 2)
+        val s = study(both)
+        val due = Schedule.prompts(s, Instant.parse("2026-10-24T00:00:00Z"), Instant.parse("2026-10-25T00:00:00Z"), berlin)
+        assertEquals(1, due.size)
+        assertEquals(listOf("m1"), s.selfModules(1).map { it.key })
+        assertTrue(s.selfModules(3).isEmpty())
+        assertTrue(s.hasSelf)
+    }
+
+    @Test
     fun weekdaysAndSelfModulesAreRespected() {
         // 24 Oct 2026 is a Saturday (6), 25 a Sunday (7), 26 a Monday (1)
         val self = Module("m2", "m2", Trigger.Self("Report", 3), 0, 1, Int.MAX_VALUE, "")

@@ -69,7 +69,7 @@
     <!-- the footer: version and when this APK was built, so one sees which version runs -->
     <string name="build_info" formatted="true">Version %1$s · compilée le %2$s</string>
     <string name="about_privacy_title">Confidentialité</string>
-    <string name="about_stores">Sur ce téléphone, l’application conserve uniquement la liste de vos études avec leurs calendriers et, pour chaque étude, un secret aléatoire : la seule clé de vos réponses à cette étude. Elle n’a pas de compte et n’envoie ni identifiant de l’appareil, ni nom, ni adresse e-mail, ni numéro de téléphone. Rien de tout cela n’est sauvegardé ni transféré vers un nouveau téléphone.</string>
+    <string name="about_stores">Sur ce téléphone, l’application conserve uniquement la liste de vos études avec leurs calendriers et, pour chaque étude, un secret aléatoire : la seule clé de vos réponses à cette étude. Elle n’a pas de compte et n’envoie ni identifiant de l’appareil, ni nom, ni adresse e-mail, ni numéro de téléphone. Rien de tout cela n’est sauvegardé ni transféré vers un nouveau téléphone. Pour chaque étude, elle garde aussi si ses notifications sonnent ; les noms des raccourcis que vous placez sur l’écran d’accueil sont gardés par l’écran d’accueil.</string>
     <string name="privacy_statement">Déclaration de confidentialité</string>
     <string name="about_licence_title">Licence</string>
     <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Tous droits réservés.</string>
@@ -174,4 +174,29 @@
     <string name="state_pending">Premier questionnaire pas encore terminé</string>
     <string name="state_running">En cours</string>
     <string name="time_about">vers %1$s</string>
+    <!-- the study page: summary, open-ended period, sound per study, home-screen shortcuts (Shortcuts), after leaving -->
+    <string name="day_n" formatted="true">Jour %1$d</string>
+    <string name="period_after_entry">La période de l’étude commence dès que vous avez terminé le premier questionnaire.</string>
+    <string name="period_start" formatted="true">Début : %1$s</string>
+    <string name="period_open_end">Fin : ouverte, jusqu’à ce que les chercheurs terminent l’étude</string>
+    <string name="duration_open_end">Durée : ouverte, jusqu’à ce que les chercheurs terminent l’étude</string>
+    <string name="also_self_module" formatted="true">%1$s : aussi quand vous le souhaitez</string>
+    <string name="notifications_title">Notifications</string>
+    <string name="sound">Son de notification</string>
+    <string name="sound_on_hint">Les questions de cette étude sonnent avec le son de notification de votre téléphone.</string>
+    <string name="sound_off_hint">Les questions de cette étude arrivent sans son.</string>
+    <string name="notif_channel_silent">Questions de vos études (sans son)</string>
+    <string name="shortcut_title">Raccourci sur l’écran d’accueil</string>
+    <string name="shortcut_intro">Signalez quelque chose d’un seul geste depuis votre écran d’accueil.</string>
+    <string name="shortcut_add">Ajouter à l’écran d’accueil</string>
+    <string name="shortcut_add_for" formatted="true">Ajouter à l’écran d’accueil : %1$s</string>
+    <string name="shortcut_hint">Toute personne qui voit votre écran d’accueil peut lire ce nom. Choisissez-en un qui ne révèle pas l’étude.</string>
+    <string name="shortcut_label">Nom</string>
+    <string name="shortcut_create">Ajouter</string>
+    <string name="shortcut_failed">Votre écran d’accueil n’a pas accepté le raccourci.</string>
+    <string name="shortcut_default">Signaler</string>
+    <string name="shortcut_disabled">Cette étude est terminée.</string>
+    <string name="after_leave_title">Conserver vos réponses ?</string>
+    <string name="after_leave_text">Vous avez quitté l’étude. Vos réponses jusqu’ici aident encore la recherche, même si vous arrêtez maintenant, et les chercheurs vous seraient reconnaissants de pouvoir les conserver. Voulez-vous quand même les supprimer ? C’est irréversible.</string>
+    <string name="keep_answers">Conserver mes réponses</string>
 </resources>
