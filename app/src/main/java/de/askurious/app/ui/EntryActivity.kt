@@ -168,20 +168,21 @@ class EntryActivity : ComponentActivity() {
         val m = study.modules.firstOrNull { it.key == module && it.offline } ?: return null
         val page = OfflinePages(this).usable(study.code, module) ?: return null
         val now = study.now()
-        when (val t = m.trigger) {
-            is Trigger.Fixed, is Trigger.Random -> {
-                if (due == null) return null
-                if (!Schedule.open(m, due, now)) {
-                    error = getString(R.string.expired)
-                    return null
-                }
-                if (AnswerQueue(this).has(study.code, module, due)) {
-                    error = getString(R.string.offline_saved)
-                    return null
-                }
-            }
-            is Trigger.Self -> if (t.maxPerDay > 0 && AnswerQueue(this).today(study.code, module, now) >= t.maxPerDay) {
+        if (due == null) {
+            // started by the participant: a self module, or a prompted one that may also be started so
+            val t = m.selfTrigger ?: return null
+            if (t.maxPerDay > 0 && AnswerQueue(this).today(study.code, module, now) >= t.maxPerDay) {
                 error = getString(R.string.limit)
+                return null
+            }
+        } else {
+            if (m.trigger !is Trigger.Fixed && m.trigger !is Trigger.Random) return null
+            if (!Schedule.open(m, due, now)) {
+                error = getString(R.string.expired)
+                return null
+            }
+            if (AnswerQueue(this).has(study.code, module, due)) {
+                error = getString(R.string.offline_saved)
                 return null
             }
         }

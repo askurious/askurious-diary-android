@@ -43,7 +43,7 @@
     <string name="left_pending">Sie haben diese Studie verlassen. Die App teilt das den Forschenden mit, sobald eine Verbindung besteht.</string>
     <string name="ended">Die Forschenden haben diese Studie beendet.</string>
     <string name="leave_study">Studie verlassen</string>
-    <string name="leave_confirm">Diese Studie verlassen? Sie bekommen keine Fragen mehr. Ihre Antworten bleiben bei den Forschenden, außer Sie löschen sie mit „Meine Antworten löschen“.</string>
+    <string name="leave_confirm">Diese Studie verlassen? Sie bekommen dann keine Fragen mehr.</string>
     <string name="remove_from_list">Aus der Liste entfernen</string>
     <string name="erase_answers">Meine Antworten löschen</string>
     <string name="erase_confirm">Alle Ihre Antworten in dieser Studie löschen? Sie werden auch bei den Forschenden gelöscht und lassen sich nicht wiederherstellen. Die Studie verschwindet danach aus der App.</string>
@@ -64,7 +64,7 @@
     <!-- the footer: version and when this APK was built, so one sees which version runs -->
     <string name="build_info" formatted="true">Version %1$s · gebaut %2$s</string>
     <string name="about_privacy_title">Datenschutz</string>
-    <string name="about_stores">Die App speichert auf diesem Telefon nur die Liste Ihrer Studien mit ihren Zeitplänen und für jede Studie ein zufälliges Geheimnis: den einzigen Schlüssel zu Ihren Antworten dort. Sie hat kein Konto und sendet keine Geräte-ID, keinen Namen, keine E-Mail-Adresse und keine Telefonnummer. Nichts davon kommt in Sicherungen oder auf ein neues Telefon.</string>
+    <string name="about_stores">Die App speichert auf diesem Telefon nur die Liste Ihrer Studien mit ihren Zeitplänen und für jede Studie ein zufälliges Geheimnis: den einzigen Schlüssel zu Ihren Antworten dort. Sie hat kein Konto und sendet keine Geräte-ID, keinen Namen, keine E-Mail-Adresse und keine Telefonnummer. Nichts davon kommt in Sicherungen oder auf ein neues Telefon. Je Studie speichert sie außerdem, ob ihre Benachrichtigungen mit Ton kommen; die Bezeichnungen von Verknüpfungen, die Sie auf den Startbildschirm legen, speichert Ihr Startbildschirm.</string>
     <string name="privacy_statement">Datenschutzerklärung</string>
     <string name="about_licence_title">Lizenz</string>
     <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Alle Rechte vorbehalten.</string>
@@ -107,4 +107,33 @@
     <string name="clock_off">Die Uhr dieses Telefons geht falsch. Antworten, die ohne Verbindung gegeben wurden, werden gesendet, sobald Datum und Uhrzeit stimmen.</string>
     <string name="rejoin_confirm">Sie nehmen auf diesem Telefon schon an dieser Studie teil. Ein erneuter Beitritt beginnt eine neue Teilnahme: Ihre früheren Antworten können Sie dann nicht mehr in der App löschen. Noch wartende Antworten der früheren Teilnahme werden vorher gesendet, wenn möglich, sonst verworfen. Um Ihre früheren Antworten zu löschen, brechen Sie ab und nutzen Sie „Meine Antworten löschen“ auf der Karte der Studie.</string>
     <string name="rejoin">Erneut beitreten</string>
+    <!-- the details of a study (DetailScreen), the sound per study, home-screen shortcuts (Shortcuts) -->
+    <string name="details">Details</string>
+    <string name="day_n" formatted="true">Tag %1$d</string>
+    <string name="period_title">Studienzeitraum</string>
+    <string name="period_after_entry">Der Studienzeitraum beginnt, sobald Sie den ersten Fragebogen abgeschlossen haben.</string>
+    <string name="period_start" formatted="true">Beginn: %1$s</string>
+    <string name="period_end" formatted="true">Ende: %1$s</string>
+    <string name="period_open_end">Ende: offen, bis die Forschenden die Studie beenden</string>
+    <string name="duration_open_end">Dauer: offen, bis die Forschenden die Studie beenden</string>
+    <string name="also_self_module" formatted="true">%1$s: auch wann immer Sie möchten</string>
+    <string name="notifications_title">Benachrichtigungen</string>
+    <string name="sound">Benachrichtigungston</string>
+    <string name="sound_on_hint">Fragen dieser Studie kommen mit dem Benachrichtigungston Ihres Telefons.</string>
+    <string name="sound_off_hint">Fragen dieser Studie kommen ohne Ton.</string>
+    <string name="notif_channel_silent">Fragen Ihrer Studien (ohne Ton)</string>
+    <string name="shortcut_title">Verknüpfung auf dem Startbildschirm</string>
+    <string name="shortcut_intro">Melden Sie etwas mit einem Tippen vom Startbildschirm aus.</string>
+    <string name="shortcut_add">Zum Startbildschirm hinzufügen</string>
+    <string name="shortcut_add_for" formatted="true">Zum Startbildschirm hinzufügen: %1$s</string>
+    <string name="shortcut_hint">Wer Ihren Startbildschirm sieht, kann diese Bezeichnung lesen. Wählen Sie eine, die die Studie nicht verrät.</string>
+    <string name="shortcut_label">Bezeichnung</string>
+    <string name="shortcut_create">Hinzufügen</string>
+    <string name="shortcut_failed">Ihr Startbildschirm hat die Verknüpfung nicht angenommen.</string>
+    <string name="shortcut_default">Melden</string>
+    <string name="shortcut_disabled">Diese Studie ist beendet.</string>
+    <string name="your_participation">Ihre Teilnahme</string>
+    <string name="after_leave_title">Antworten behalten?</string>
+    <string name="after_leave_text">Sie haben die Studie verlassen. Ihre bisherigen Antworten helfen der Forschung auch dann, wenn Sie jetzt aufhören, und die Forschenden wären Ihnen dankbar, wenn sie sie behalten dürfen. Möchten Sie sie trotzdem löschen? Das lässt sich nicht rückgängig machen.</string>
+    <string name="keep_answers">Antworten behalten</string>
 </resources>

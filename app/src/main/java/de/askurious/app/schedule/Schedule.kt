@@ -45,7 +45,8 @@ object Schedule {
     fun prompts(study: Study, from: Instant, until: Instant, zone: ZoneId = ZoneId.systemDefault()): List<Prompt> {
         if (!study.running) return emptyList()
         val first = study.firstDay ?: return emptyList()
-        val last = study.lastDay ?: return emptyList()
+        // an open-ended study has no last day: its prompts go on until the researchers end it
+        val last = study.lastDay ?: if (study.openEnd) LocalDate.MAX else return emptyList()
         val out = mutableListOf<Prompt>()
         var date: LocalDate = maxOf(first, from.atZone(zone).toLocalDate())
         val end = minOf(last, until.atZone(zone).toLocalDate())

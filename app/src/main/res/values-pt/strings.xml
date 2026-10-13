@@ -47,7 +47,7 @@
     <string name="left_pending">Saiu deste estudo. A aplicação informará a equipa de investigação assim que houver ligação.</string>
     <string name="ended">A equipa de investigação terminou este estudo.</string>
     <string name="leave_study">Sair do estudo</string>
-    <string name="leave_confirm">Sair deste estudo? Não receberá mais perguntas. As suas respostas ficam com a equipa de investigação, a não ser que as apague com «Apagar as minhas respostas».</string>
+    <string name="leave_confirm">Sair deste estudo? Deixará de receber perguntas.</string>
     <string name="remove_from_list">Remover da lista</string>
     <string name="erase_answers">Apagar as minhas respostas</string>
     <string name="erase_confirm">Apagar todas as suas respostas neste estudo? Também são apagadas junto da equipa de investigação e não podem ser recuperadas. Depois, o estudo desaparece da aplicação.</string>
@@ -68,7 +68,7 @@
     <!-- the footer: version and when this APK was built, so one sees which version runs -->
     <string name="build_info" formatted="true">Versão %1$s · compilada %2$s</string>
     <string name="about_privacy_title">Privacidade</string>
-    <string name="about_stores">Neste telemóvel, a aplicação guarda apenas a lista dos seus estudos com os respetivos horários e, para cada estudo, um segredo aleatório: a única chave para as suas respostas nesse estudo. Não tem conta e não envia nenhum ID do dispositivo, nome, endereço de e-mail ou número de telefone. Nada disto vai para cópias de segurança nem para um novo telemóvel.</string>
+    <string name="about_stores">Neste telemóvel, a aplicação guarda apenas a lista dos seus estudos com os respetivos horários e, para cada estudo, um segredo aleatório: a única chave para as suas respostas nesse estudo. Não tem conta e não envia nenhum ID do dispositivo, nome, endereço de e-mail ou número de telefone. Nada disto vai para cópias de segurança nem para um novo telemóvel. Para cada estudo guarda também se as notificações tocam com som; os nomes dos atalhos que colocar no ecrã principal são guardados pelo ecrã principal.</string>
     <string name="privacy_statement">Política de privacidade</string>
     <string name="about_licence_title">Licença</string>
     <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Todos os direitos reservados.</string>
@@ -114,4 +114,33 @@
     <string name="clock_off">O relógio deste telemóvel está errado. As respostas dadas sem ligação serão enviadas assim que a data e a hora estiverem certas.</string>
     <string name="rejoin_confirm">Já participa neste estudo neste telemóvel. Participar de novo inicia uma nova participação: depois já não poderá apagar as suas respostas anteriores na aplicação. As respostas pendentes da participação anterior são enviadas antes, se possível; caso contrário, são descartadas. Para apagar as suas respostas anteriores, cancele e use «Apagar as minhas respostas» no cartão do estudo.</string>
     <string name="rejoin">Participar de novo</string>
+    <!-- the details of a study (DetailScreen), the sound per study, home-screen shortcuts (Shortcuts) -->
+    <string name="details">Detalhes</string>
+    <string name="day_n" formatted="true">Dia %1$d</string>
+    <string name="period_title">Período do estudo</string>
+    <string name="period_after_entry">O período do estudo começa assim que concluir o primeiro questionário.</string>
+    <string name="period_start" formatted="true">Início: %1$s</string>
+    <string name="period_end" formatted="true">Fim: %1$s</string>
+    <string name="period_open_end">Fim: em aberto, até os investigadores terminarem o estudo</string>
+    <string name="duration_open_end">Duração: em aberto, até os investigadores terminarem o estudo</string>
+    <string name="also_self_module" formatted="true">%1$s: também sempre que quiser</string>
+    <string name="notifications_title">Notificações</string>
+    <string name="sound">Som de notificação</string>
+    <string name="sound_on_hint">As perguntas deste estudo tocam com o som de notificação do seu telemóvel.</string>
+    <string name="sound_off_hint">As perguntas deste estudo chegam sem som.</string>
+    <string name="notif_channel_silent">Perguntas dos seus estudos (sem som)</string>
+    <string name="shortcut_title">Atalho no ecrã principal</string>
+    <string name="shortcut_intro">Relate algo com um toque a partir do ecrã principal.</string>
+    <string name="shortcut_add">Adicionar ao ecrã principal</string>
+    <string name="shortcut_add_for" formatted="true">Adicionar ao ecrã principal: %1$s</string>
+    <string name="shortcut_hint">Quem vir o seu ecrã principal pode ler este nome. Escolha um que não revele o estudo.</string>
+    <string name="shortcut_label">Nome</string>
+    <string name="shortcut_create">Adicionar</string>
+    <string name="shortcut_failed">O seu ecrã principal não aceitou o atalho.</string>
+    <string name="shortcut_default">Relatar</string>
+    <string name="shortcut_disabled">Este estudo terminou.</string>
+    <string name="your_participation">A sua participação</string>
+    <string name="after_leave_title">Manter as suas respostas?</string>
+    <string name="after_leave_text">Saiu do estudo. As suas respostas até agora continuam a ajudar a investigação, mesmo que pare agora, e os investigadores ficariam gratos por as poderem manter. Quer apagá-las mesmo assim? Não é possível anular.</string>
+    <string name="keep_answers">Manter as minhas respostas</string>
 </resources>

@@ -43,7 +43,7 @@
     <string name="left_pending">U bent met dit onderzoek gestopt. De app laat het de onderzoekers weten zodra er verbinding is.</string>
     <string name="ended">De onderzoekers hebben dit onderzoek beëindigd.</string>
     <string name="leave_study">Stoppen met onderzoek</string>
-    <string name="leave_confirm">Stoppen met dit onderzoek? U krijgt geen vragen meer. Uw antwoorden blijven bij de onderzoekers, tenzij u ze verwijdert met ‘Mijn antwoorden verwijderen’.</string>
+    <string name="leave_confirm">Dit onderzoek verlaten? U krijgt dan geen vragen meer.</string>
     <string name="remove_from_list">Uit de lijst verwijderen</string>
     <string name="erase_answers">Mijn antwoorden verwijderen</string>
     <string name="erase_confirm">Al uw antwoorden in dit onderzoek verwijderen? Ze worden ook bij de onderzoekers verwijderd en kunnen niet worden hersteld. Daarna verdwijnt het onderzoek uit de app.</string>
@@ -64,7 +64,7 @@
     <!-- the footer: version and when this APK was built, so one sees which version runs -->
     <string name="build_info" formatted="true">Versie %1$s · gebouwd %2$s</string>
     <string name="about_privacy_title">Privacy</string>
-    <string name="about_stores">De app bewaart op deze telefoon alleen de lijst van uw onderzoeken met hun schema’s en, per onderzoek, een willekeurig geheim: de enige sleutel tot uw antwoorden in dat onderzoek. De app heeft geen account en verstuurt geen apparaat-ID, naam, e-mailadres of telefoonnummer. Niets hiervan komt in back-ups of op een nieuwe telefoon.</string>
+    <string name="about_stores">De app bewaart op deze telefoon alleen de lijst van uw onderzoeken met hun schema’s en, per onderzoek, een willekeurig geheim: de enige sleutel tot uw antwoorden in dat onderzoek. De app heeft geen account en verstuurt geen apparaat-ID, naam, e-mailadres of telefoonnummer. Niets hiervan komt in back-ups of op een nieuwe telefoon. Per onderzoek bewaart ze ook of de meldingen met geluid komen; de labels van snelkoppelingen op uw startscherm bewaart uw startscherm.</string>
     <string name="privacy_statement">Privacyverklaring</string>
     <string name="about_licence_title">Licentie</string>
     <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Alle rechten voorbehouden.</string>
@@ -107,4 +107,33 @@
     <string name="clock_off">De klok van deze telefoon staat verkeerd. Antwoorden die zonder verbinding zijn gegeven, worden verstuurd zodra datum en tijd kloppen.</string>
     <string name="rejoin_confirm">U neemt op deze telefoon al deel aan dit onderzoek. Opnieuw deelnemen start een nieuwe deelname: uw eerdere antwoorden kunt u daarna niet meer in de app verwijderen. Nog wachtende antwoorden van de eerdere deelname worden eerst verstuurd als dat lukt, anders vervallen ze. Om uw eerdere antwoorden te verwijderen, annuleert u en gebruikt u ‘Mijn antwoorden verwijderen’ op de kaart van het onderzoek.</string>
     <string name="rejoin">Opnieuw deelnemen</string>
+    <!-- the details of a study (DetailScreen), the sound per study, home-screen shortcuts (Shortcuts) -->
+    <string name="details">Details</string>
+    <string name="day_n" formatted="true">Dag %1$d</string>
+    <string name="period_title">Onderzoeksperiode</string>
+    <string name="period_after_entry">De onderzoeksperiode begint zodra u de eerste vragenlijst hebt afgerond.</string>
+    <string name="period_start" formatted="true">Begin: %1$s</string>
+    <string name="period_end" formatted="true">Einde: %1$s</string>
+    <string name="period_open_end">Einde: open, totdat de onderzoekers het onderzoek beëindigen</string>
+    <string name="duration_open_end">Duur: open, totdat de onderzoekers het onderzoek beëindigen</string>
+    <string name="also_self_module" formatted="true">%1$s: ook wanneer u maar wilt</string>
+    <string name="notifications_title">Meldingen</string>
+    <string name="sound">Meldingsgeluid</string>
+    <string name="sound_on_hint">Vragen van dit onderzoek komen met het meldingsgeluid van uw telefoon.</string>
+    <string name="sound_off_hint">Vragen van dit onderzoek komen zonder geluid.</string>
+    <string name="notif_channel_silent">Vragen van uw onderzoeken (zonder geluid)</string>
+    <string name="shortcut_title">Snelkoppeling op het startscherm</string>
+    <string name="shortcut_intro">Meld iets met één tik vanaf uw startscherm.</string>
+    <string name="shortcut_add">Toevoegen aan startscherm</string>
+    <string name="shortcut_add_for" formatted="true">Toevoegen aan startscherm: %1$s</string>
+    <string name="shortcut_hint">Iedereen die uw startscherm ziet, kan dit label lezen. Kies er een dat het onderzoek niet verraadt.</string>
+    <string name="shortcut_label">Label</string>
+    <string name="shortcut_create">Toevoegen</string>
+    <string name="shortcut_failed">Uw startscherm heeft de snelkoppeling niet aangenomen.</string>
+    <string name="shortcut_default">Melden</string>
+    <string name="shortcut_disabled">Dit onderzoek is beëindigd.</string>
+    <string name="your_participation">Uw deelname</string>
+    <string name="after_leave_title">Uw antwoorden bewaren?</string>
+    <string name="after_leave_text">U hebt het onderzoek verlaten. Uw antwoorden tot nu toe helpen het onderzoek ook als u nu stopt, en de onderzoekers zouden ze graag bewaren. Wilt u ze toch verwijderen? Dit kan niet ongedaan worden gemaakt.</string>
+    <string name="keep_answers">Mijn antwoorden bewaren</string>
 </resources>

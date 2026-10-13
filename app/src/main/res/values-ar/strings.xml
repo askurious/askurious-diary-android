@@ -59,7 +59,7 @@
     <string name="left_pending">لقد غادرت هذه الدراسة. سيُبلغ التطبيق الباحثين بذلك فور توفر الاتصال.</string>
     <string name="ended">أنهى الباحثون هذه الدراسة.</string>
     <string name="leave_study">مغادرة الدراسة</string>
-    <string name="leave_confirm">مغادرة هذه الدراسة؟ لن تصل أسئلة أخرى بعد ذلك. تبقى الإجابات لدى الباحثين ما لم تُحذف عبر «حذف إجاباتي».</string>
+    <string name="leave_confirm">هل تريد مغادرة هذه الدراسة؟ لن تتلقى أسئلة بعد الآن.</string>
     <string name="remove_from_list">إزالة من القائمة</string>
     <string name="erase_answers">حذف إجاباتي</string>
     <string name="erase_confirm">حذف جميع إجاباتك في هذه الدراسة؟ ستُحذف أيضًا لدى الباحثين ولا يمكن استعادتها. ثم تُزال الدراسة من التطبيق.</string>
@@ -80,7 +80,7 @@
     <!-- the footer: version and when this APK was built, so one sees which version runs -->
     <string name="build_info" formatted="true">الإصدار %1$s · بُني في %2$s</string>
     <string name="about_privacy_title">الخصوصية</string>
-    <string name="about_stores">لا يحفظ التطبيق على هذا الهاتف سوى قائمة دراساتك مع مواعيدها، ولكل دراسة سرًّا عشوائيًا هو المفتاح الوحيد لإجاباتك فيها. لا يوجد حساب، ولا يرسل التطبيق أي معرّف للجهاز أو اسم أو عنوان بريد إلكتروني أو رقم هاتف. ولا يُنقل أي من ذلك إلى النسخ الاحتياطية أو إلى هاتف جديد.</string>
+    <string name="about_stores">لا يحفظ التطبيق على هذا الهاتف سوى قائمة دراساتك مع مواعيدها، ولكل دراسة سرًّا عشوائيًا هو المفتاح الوحيد لإجاباتك فيها. لا يوجد حساب، ولا يرسل التطبيق أي معرّف للجهاز أو اسم أو عنوان بريد إلكتروني أو رقم هاتف. ولا يُنقل أي من ذلك إلى النسخ الاحتياطية أو إلى هاتف جديد. ويحفظ أيضًا لكل دراسة ما إذا كانت إشعاراتها تصدر صوتًا؛ أما أسماء الاختصارات التي تضعها على شاشتك الرئيسية فتحفظها الشاشة الرئيسية.</string>
     <string name="privacy_statement">بيان الخصوصية</string>
     <string name="about_licence_title">الترخيص</string>
     <string name="about_copyright">© 2026 Philipp Brauner، RWTH Aachen University. جميع الحقوق محفوظة.</string>
@@ -135,4 +135,33 @@
     <string name="clock_off">ساعة هذا الهاتف غير مضبوطة. ستُرسل الإجابات المقدَّمة دون اتصال بمجرد ضبط التاريخ والوقت بشكل صحيح.</string>
     <string name="rejoin_confirm">أنت مشارك بالفعل في هذه الدراسة على هذا الهاتف. الانضمام مجددًا يبدأ مشاركة جديدة: لن يعود بالإمكان حذف إجاباتك السابقة من التطبيق. تُرسل الإجابات المنتظرة من المشاركة السابقة أولًا إن أمكن، وإلا تُحذف. لحذف إجاباتك السابقة، ألغِ واستخدم «حذف إجاباتي» في بطاقة الدراسة.</string>
     <string name="rejoin">الانضمام مجددًا</string>
+    <!-- the details of a study (DetailScreen), the sound per study, home-screen shortcuts (Shortcuts) -->
+    <string name="details">التفاصيل</string>
+    <string name="day_n" formatted="true">اليوم %1$d</string>
+    <string name="period_title">فترة الدراسة</string>
+    <string name="period_after_entry">تبدأ فترة الدراسة بمجرد إكمال الاستبيان الأول.</string>
+    <string name="period_start" formatted="true">البداية: %1$s</string>
+    <string name="period_end" formatted="true">النهاية: %1$s</string>
+    <string name="period_open_end">النهاية: مفتوحة، حتى ينهي الباحثون الدراسة</string>
+    <string name="duration_open_end">المدة: مفتوحة، حتى ينهي الباحثون الدراسة</string>
+    <string name="also_self_module" formatted="true">%1$s: أيضًا متى شئت</string>
+    <string name="notifications_title">الإشعارات</string>
+    <string name="sound">صوت الإشعارات</string>
+    <string name="sound_on_hint">تصل أسئلة هذه الدراسة بصوت إشعارات هاتفك.</string>
+    <string name="sound_off_hint">تصل أسئلة هذه الدراسة دون صوت.</string>
+    <string name="notif_channel_silent">أسئلة دراساتك (دون صوت)</string>
+    <string name="shortcut_title">اختصار على الشاشة الرئيسية</string>
+    <string name="shortcut_intro">أبلغ عن شيء بلمسة واحدة من شاشتك الرئيسية.</string>
+    <string name="shortcut_add">إضافة إلى الشاشة الرئيسية</string>
+    <string name="shortcut_add_for" formatted="true">إضافة إلى الشاشة الرئيسية: %1$s</string>
+    <string name="shortcut_hint">يمكن لأي شخص يرى شاشتك الرئيسية قراءة هذا الاسم. اختر اسمًا لا يكشف الدراسة.</string>
+    <string name="shortcut_label">الاسم</string>
+    <string name="shortcut_create">إضافة</string>
+    <string name="shortcut_failed">لم تقبل شاشتك الرئيسية الاختصار.</string>
+    <string name="shortcut_default">إبلاغ</string>
+    <string name="shortcut_disabled">انتهت هذه الدراسة.</string>
+    <string name="your_participation">مشاركتك</string>
+    <string name="after_leave_title">هل تحتفظ بإجاباتك؟</string>
+    <string name="after_leave_text">لقد غادرت الدراسة. إجاباتك حتى الآن ما زالت تساعد البحث حتى لو توقفت الآن، وسيكون الباحثون ممتنين لو أمكنهم الاحتفاظ بها. هل تريد حذفها رغم ذلك؟ لا يمكن التراجع عن ذلك.</string>
+    <string name="keep_answers">الاحتفاظ بإجاباتي</string>
 </resources>

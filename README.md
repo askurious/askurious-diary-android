@@ -28,8 +28,24 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   The free minutes of the day (the windows without the quiet hours) are cut into `per_day` equal slots, each draws one minute at least `min_gap`/2 from its edges.
   All times are local times of that calendar day: a window 20:00–02:00 gives early-morning times of the same day.
   `app/src/test/resources/diary_random_vectors.json` is the server's `tests/diary_random_vectors.json`, unchanged; `RandomTimesTest` checks every case.
+- **Study card and details.**
+  The start page shows per study its title, the researchers' short summary (`"summary"` of `POST /study`), the day, the next question and the buttons to answer (first questionnaire, reports, exit questionnaire).
+  Tapping a card opens its details: the summary, the study period (start and end, or "open, until the researchers end the study"), what is asked, the next question, the quiet hours, the notification sound, a home-screen shortcut and leaving or deleting.
+  Leaving asks first; once left, the app asks whether the answers should be deleted too, says kindly that keeping them still helps the research, and offers "Keep my answers" as the first choice.
+- **Open-ended studies.**
+  `"open_end": true` with `"last_day": null`: prompts go on until the researchers end the study (`Schedule.prompts`); the card shows "Day x" instead of "Day x of n", the join screen "Duration: open-ended" (`public_json` sends `"open_end": true`, `"period_days": 0`).
+- **Reporting at any time.**
+  A self module (`"t": "self"`) and a fixed or random module with `"self": {"label", "max_per_day"}` (prompted and also started by the participant) get a button on the card while their days run (`Module.selfTrigger`, `Study.selfModules`); a self-started entry goes without `due`, and the daily limit counts only self-started answers.
+- **Home-screen shortcut.**
+  For a running study with a module the participant starts, the details offer "Add to home screen" (`Shortcuts.kt`, a pinned shortcut).
+  The home screen is seen by others: the label is the report's label by default, never the study's title, and the participant can change it before adding it.
+  The shortcut opens the app with `de.askurious.app.action.REPORT`; the entry starts only while the study runs and the module may be started today, otherwise the app opens on the study.
+  When a study is left, ended, finished, removed or its answers deleted, its shortcuts are disabled (the app cannot take a pinned shortcut off the home screen).
+- **Notification sound.**
+  On by default, switched off per study in the details; kept only on the phone (`Study.sound`, never sent, kept over a sync by `Sync.merged`).
+  The sound of a notification channel cannot change once it exists, so the choice picks the channel: `prompts` (the phone's notification sound) or `prompts_silent`.
 - **Quiet hours.**
-  A running study with a random module shows its quiet hours on the study card ("Quiet hours", from/to or none); they keep the random prompts out of that time, never the fixed ones.
+  A running study with a random module shows its quiet hours in the details of the study ("Quiet hours", from/to or none); they keep the random prompts out of that time, never the fixed ones.
   `POST /study` sends a change (`"quiet": ["22:00", "07:00"]` or `null`), the server keeps it from the person's next day on and answers with the whole history (`"quiet": [{"from", "q"}]`); the app uses exactly that history, the entry of the last `from` on or before a day (`QuietFrom.on`, the server's `quiet_on`).
   Without a connection the change waits as `quietPending` (valid from the day after it was set, by the server's rule) and goes with the next sync.
 - **Reminder.**
@@ -73,10 +89,10 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   Joining a study that is still on the phone (after leaving it, or with a test or invitation code) asks first: a new participation gets a new secret, and the earlier answers can then no longer be deleted in the app.
   If the participant goes on, the earlier participation is closed with its own secret (its waiting answers are sent, a running one is left) and then removed from the phone (`Sync.rejoin`): nothing of it goes to the new person.
 - **Deleting answers.**
-  "Delete my answers" on every study card calls `POST /api/diary/v1/erase`: the server deletes all answers of this person in this study and the person; the app then removes the study.
+  "Delete my answers" in the details of every study calls `POST /api/diary/v1/erase`: the server deletes all answers of this person in this study and the person; the app then removes the study.
   Deleting or removing a study from the list also deletes its queued answers, its kept pages and the log of its prompts.
 - **What stays on the phone.**
-  The studies with their secrets, the seed of the random prompts, the quiet hours, the pauses, the exit questionnaire and a fast-forward clock; the log of the prompts of the last three days (notified, opened) and whether the exit questionnaire was notified; the kept pages of offline modules while the study runs (dropped when it ends, is left, or the module is no longer offline); answers given without a connection until they are sent, at most 7 days after the page was opened (the server takes them no later), then they are dropped unsent.
+  The studies with their secrets, the seed of the random prompts, the quiet hours, the pauses, the exit questionnaire, a fast-forward clock and whether its notifications ring with a sound; the labels of home-screen shortcuts are kept by the launcher; the log of the prompts of the last three days (notified, opened) and whether the exit questionnaire was notified; the kept pages of offline modules while the study runs (dropped when it ends, is left, or the module is no longer offline); answers given without a connection until they are sent, at most 7 days after the page was opened (the server takes them no later), then they are dropped unsent.
   All of it in the app's private storage, in no backup.
 - **Languages.**
   The survey languages of Askurious: English, German, Spanish, French, Italian, Dutch, Polish, European Portuguese, Russian, Turkish, Simplified Chinese and Arabic (right to left), formal address where the language has it.

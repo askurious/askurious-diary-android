@@ -21,6 +21,12 @@ class SyncTest {
     }
 
     @Test
+    fun theSoundIsThePhonesChoice() {
+        // the server's answer has the sound on (it knows nothing of it); the participant switched it off
+        assertFalse(Sync.merged(fromServer, stored.copy(sound = false), null)!!.sound)
+    }
+
+    @Test
     fun aLeaveDuringTheSyncIsNotOverwritten() {
         val left = stored.copy(status = "left", leavePending = true)
         val merged = Sync.merged(fromServer, left, null)!!

@@ -93,7 +93,18 @@ data class Module(
     val reminder: Int = 0,
     /** the module can be answered without a connection: the app keeps its page (OfflinePages) */
     val offline: Boolean = false,
-)
+    /**
+     * A prompted (fixed or random) module the participant may also start themselves, when something happens (server:
+     * "self" of the module); null for none. A [Trigger.Self] module has its own trigger for that.
+     */
+    val selfStart: Trigger.Self? = null,
+) {
+    /** How the participant starts this module themselves, null when only the schedule asks it. */
+    val selfTrigger: Trigger.Self? get() = trigger as? Trigger.Self ?: selfStart
+
+    /** Whether the participant can start this module on study day [day] (1-based). */
+    fun selfOn(day: Int): Boolean = selfTrigger != null && day >= dayFrom && day <= dayTo
+}
 
 /**
  * The exit questionnaire of a study (server: "exit" of POST /study). [open]: it can be answered now; the server sets
@@ -152,8 +163,23 @@ data class Study(
      * only on the device; every call for the study goes there.
      */
     val server: String = Api.defaultServer,
+    /** A short sentence of the researchers about the study (server: "summary"); blank for none. */
+    val summary: String = "",
+    /** The study period has no last day: it runs until the researchers end it (server: "open_end"). */
+    val openEnd: Boolean = false,
+    /**
+     * Whether the notifications of this study ring with the phone's notification sound. Chosen by the participant
+     * and kept only on the device (the server never sends it; Sync.merged keeps it).
+     */
+    val sound: Boolean = true,
 ) {
     val running get() = status == "active"
+
+    /** The modules the participant can start themselves on study day [day]. */
+    fun selfModules(day: Int): List<Module> = modules.filter { it.selfOn(day) }
+
+    /** Whether the study has a module the participant can start themselves (on some day). */
+    val hasSelf: Boolean get() = modules.any { it.selfTrigger != null }
 
     /** The study's time (epoch milliseconds) at the real moment [real]: virtual for a fast-forward person. */
     fun now(real: Long = System.currentTimeMillis()): Long = clock?.virtual(real) ?: real
@@ -194,7 +220,8 @@ data class Study(
     fun dayIndex(date: LocalDate): Int? =
         firstDay?.let { (date.toEpochDay() - it.toEpochDay()).toInt() + 1 }
 
-    val periodDays: Int? get() = if (firstDay != null && lastDay != null) dayIndex(lastDay) else null
+    /** The length of the study period in days; null before it is known and for an open-ended study. */
+    val periodDays: Int? get() = if (firstDay != null && lastDay != null && !openEnd) dayIndex(lastDay) else null
 
     fun toJson(): JSONObject = JSONObject()
         .put("code", code).put("secret", secret).put("title", title).put("status", status)
@@ -210,6 +237,9 @@ data class Study(
         .put("exit", exit?.toJson() ?: JSONObject.NULL)
         .put("clock", clock?.toJson() ?: JSONObject.NULL)
         .put("server", server)
+        .put("summary", summary)
+        .put("open_end", openEnd)
+        .put("sound", sound)
 
     companion object {
         /** How long the server may answer 401 before the app takes the study as deleted: three days. */
@@ -221,7 +251,8 @@ data class Study(
          * "pauses", "exit" and "clock" have the same shape in both. Defensive: a date that is no date counts as none,
          * and a module that cannot be read is left out (the server may send something newer than this app knows); only
          * a missing "code" throws. The server sends no "server" either: [server] names it (the study's own, kept on the
-         * phone), else the stored one counts, and a study stored before there was one has [Api.defaultServer].
+         * phone), else the stored one counts, and a study stored before there was one has [Api.defaultServer]. "summary" and
+         * "open_end" come from the server; "sound" only from the phone (a server's answer has it on).
          */
         fun fromJson(o: JSONObject, secret: String = o.optString("secret"), server: String? = null): Study = Study(
             code = o.getString("code"),
@@ -245,6 +276,9 @@ data class Study(
             exit = Exit.fromJson(o.optJSONObject("exit")),
             clock = Clock.fromJson(o.optJSONObject("clock")),
             server = server ?: o.optStringOrNull("server") ?: Api.defaultServer,
+            summary = o.optString("summary").trim(),
+            openEnd = o.optBoolean("open_end", false),
+            sound = o.optBoolean("sound", true),
         )
 
         /** ["YYYY-MM-DD", "YYYY-MM-DD" or null]; anything else is no pause. */
@@ -286,6 +320,9 @@ data class Study(
                 }
             }
             val days = o.optJSONArray("days")
+            // a prompted module that may also be started by the participant ("self" of the module); never on a
+            // self module, which has its own label and limit
+            val selfStart = if (trigger.prompted) o.optJSONObject("self")?.let { Trigger.Self(it.optString("label"), it.optInt("max_per_day", 0).coerceAtLeast(0)) } else null
             return Module(
                 key = o.getString("key"),
                 name = o.optString("name"),
@@ -296,6 +333,7 @@ data class Study(
                 notify = o.optString("notify"),
                 reminder = if (trigger.prompted) o.optInt("reminder", 0).coerceAtLeast(0) else 0,
                 offline = o.optBoolean("offline", false),
+                selfStart = selfStart,
             )
         }
 
@@ -312,6 +350,7 @@ data class Study(
             return JSONObject().put("key", m.key).put("name", m.name).put("trigger", t).put("expires", m.expires)
                 .put("days", JSONArray(listOf(m.dayFrom, m.dayTo))).put("notify", m.notify)
                 .put("reminder", m.reminder).put("offline", m.offline)
+                .put("self", m.selfStart?.let { JSONObject().put("label", it.label).put("max_per_day", it.maxPerDay) } ?: JSONObject.NULL)
         }
     }
 }

@@ -47,7 +47,7 @@
     <string name="left_pending">Ha lasciato questo studio. L’app lo comunicherà al gruppo di ricerca non appena sarà disponibile una connessione.</string>
     <string name="ended">Il gruppo di ricerca ha concluso questo studio.</string>
     <string name="leave_study">Lascia lo studio</string>
-    <string name="leave_confirm">Lasciare questo studio? Non riceverà più domande. Le Sue risposte restano al gruppo di ricerca, a meno che non le cancelli con «Cancella le mie risposte».</string>
+    <string name="leave_confirm">Lasciare questo studio? Non riceverà più domande.</string>
     <string name="remove_from_list">Rimuovi dall’elenco</string>
     <string name="erase_answers">Cancella le mie risposte</string>
     <string name="erase_confirm">Cancellare tutte le Sue risposte a questo studio? Verranno cancellate anche presso il gruppo di ricerca e non potranno essere recuperate. Lo studio verrà poi rimosso dall’app.</string>
@@ -68,7 +68,7 @@
     <!-- the footer: version and when this APK was built, so one sees which version runs -->
     <string name="build_info" formatted="true">Versione %1$s · compilata %2$s</string>
     <string name="about_privacy_title">Privacy</string>
-    <string name="about_stores">Su questo telefono l’app conserva solo l’elenco dei Suoi studi con i relativi calendari e, per ogni studio, un segreto casuale: l’unica chiave per le Sue risposte in quello studio. Non ha account e non invia alcun ID del dispositivo, nome, indirizzo e-mail o numero di telefono. Nulla di tutto ciò finisce nei backup o su un nuovo telefono.</string>
+    <string name="about_stores">Su questo telefono l’app conserva solo l’elenco dei Suoi studi con i relativi calendari e, per ogni studio, un segreto casuale: l’unica chiave per le Sue risposte in quello studio. Non ha account e non invia alcun ID del dispositivo, nome, indirizzo e-mail o numero di telefono. Nulla di tutto ciò finisce nei backup o su un nuovo telefono. Per ogni studio conserva anche se le sue notifiche suonano; i nomi dei collegamenti che mette nella schermata Home li conserva la schermata Home.</string>
     <string name="privacy_statement">Informativa sulla privacy</string>
     <string name="about_licence_title">Licenza</string>
     <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Tutti i diritti riservati.</string>
@@ -114,4 +114,33 @@
     <string name="clock_off">L’orologio di questo telefono non è corretto. Le risposte date senza connessione verranno inviate non appena data e ora saranno corrette.</string>
     <string name="rejoin_confirm">Partecipa già a questo studio su questo telefono. Partecipare di nuovo avvia una nuova partecipazione: dopo non potrà più cancellare nell’app le Sue risposte precedenti. Le risposte ancora in attesa della partecipazione precedente vengono prima inviate, se possibile, altrimenti scartate. Per cancellare le Sue risposte precedenti, annulli e usi «Cancella le mie risposte» sulla scheda dello studio.</string>
     <string name="rejoin">Partecipa di nuovo</string>
+    <!-- the details of a study (DetailScreen), the sound per study, home-screen shortcuts (Shortcuts) -->
+    <string name="details">Dettagli</string>
+    <string name="day_n" formatted="true">Giorno %1$d</string>
+    <string name="period_title">Periodo dello studio</string>
+    <string name="period_after_entry">Il periodo dello studio inizia quando ha completato il primo questionario.</string>
+    <string name="period_start" formatted="true">Inizio: %1$s</string>
+    <string name="period_end" formatted="true">Fine: %1$s</string>
+    <string name="period_open_end">Fine: aperta, finché i ricercatori non concludono lo studio</string>
+    <string name="duration_open_end">Durata: aperta, finché i ricercatori non concludono lo studio</string>
+    <string name="also_self_module" formatted="true">%1$s: anche quando vuole</string>
+    <string name="notifications_title">Notifiche</string>
+    <string name="sound">Suono di notifica</string>
+    <string name="sound_on_hint">Le domande di questo studio suonano con il suono di notifica del telefono.</string>
+    <string name="sound_off_hint">Le domande di questo studio arrivano senza suono.</string>
+    <string name="notif_channel_silent">Domande dei Suoi studi (senza suono)</string>
+    <string name="shortcut_title">Collegamento nella schermata Home</string>
+    <string name="shortcut_intro">Segnali qualcosa con un tocco dalla schermata Home.</string>
+    <string name="shortcut_add">Aggiungi alla schermata Home</string>
+    <string name="shortcut_add_for" formatted="true">Aggiungi alla schermata Home: %1$s</string>
+    <string name="shortcut_hint">Chiunque veda la Sua schermata Home può leggere questo nome. Ne scelga uno che non riveli lo studio.</string>
+    <string name="shortcut_label">Nome</string>
+    <string name="shortcut_create">Aggiungi</string>
+    <string name="shortcut_failed">La schermata Home non ha accettato il collegamento.</string>
+    <string name="shortcut_default">Segnala</string>
+    <string name="shortcut_disabled">Questo studio è concluso.</string>
+    <string name="your_participation">La Sua partecipazione</string>
+    <string name="after_leave_title">Conservare le Sue risposte?</string>
+    <string name="after_leave_text">Ha lasciato lo studio. Le Sue risposte finora aiutano ancora la ricerca, anche se smette adesso, e i ricercatori Le sarebbero grati di poterle conservare. Vuole comunque eliminarle? Non è possibile annullare.</string>
+    <string name="keep_answers">Conserva le mie risposte</string>
 </resources>
