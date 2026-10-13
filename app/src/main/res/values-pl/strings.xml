@@ -66,6 +66,8 @@
     <string name="limit">Osiągnięto dzisiejszy limit dla tego zgłoszenia.</string>
     <string name="not_found">Brak badania o tym kodzie.</string>
     <string name="closed">To badanie nie przyjmuje nowych uczestników.</string>
+    <string name="code_used">Ten kod jest już połączony z udziałem. Proszę poprosić zespół badawczy o ponowne udostępnienie go.</string>
+    <string name="rejoin_code">To jest Pana/Pani osobisty kod. Łączy Pana/Pani udział z tym telefonem; dotychczas używany telefon traci dostęp.</string>
     <string name="offline">Brak połączenia. Prosimy spróbować ponownie.</string>
     <string name="error">Coś poszło nie tak. Prosimy spróbować ponownie.</string>
     <string name="about">O aplikacji</string>

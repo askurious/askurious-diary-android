@@ -156,7 +156,10 @@ class MainModel(app: Application) : AndroidViewModel(app) {
             try {
                 val r = Api.enrol(server, code)
                 val secret = r.optString("secret").ifBlank { throw ApiError("error") }
-                val study = Study.fromJson(JSONObject(info.toString()).put("status", "pending").put("modules", JSONArray()), secret, server)
+                // a personal code connected this phone to its participation again ("rejoined"): the server's status,
+                // so that a participation past its entry questionnaire does not begin anew
+                val status = if (r.optBoolean("rejoined")) r.optString("status").ifBlank { "pending" } else "pending"
+                val study = Study.fromJson(JSONObject(info.toString()).put("status", status).put("modules", JSONArray()), secret, server)
                 val store = StudyStore(context)
                 val old = withContext(Dispatchers.IO) { store.get(study.code) }
                 if (old != null) Sync.rejoin(context, old, study) else withContext(Dispatchers.IO) { store.put(study) }

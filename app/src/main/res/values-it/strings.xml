@@ -62,6 +62,8 @@
     <string name="limit">Ha raggiunto il limite di oggi per questa segnalazione.</string>
     <string name="not_found">Nessuno studio con questo codice.</string>
     <string name="closed">Questo studio non accetta nuovi partecipanti.</string>
+    <string name="code_used">Questo codice è già collegato a una partecipazione. Chieda al gruppo di ricerca di sbloccarlo di nuovo.</string>
+    <string name="rejoin_code">Questo è il suo codice personale. Collega la sua partecipazione a questo telefono; il telefono usato finora perde l’accesso.</string>
     <string name="offline">Nessuna connessione. Riprovi.</string>
     <string name="error">Si è verificato un errore. Riprovi.</string>
     <string name="about">Informazioni sull’app</string>

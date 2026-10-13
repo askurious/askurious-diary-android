@@ -58,6 +58,8 @@
     <string name="limit">You have reached today\'s limit for this report.</string>
     <string name="not_found">No study with this code.</string>
     <string name="closed">This study takes no new participants.</string>
+    <string name="code_used">This code is already connected to a participation. Ask the research team to release it again.</string>
+    <string name="rejoin_code">This is your personal code. It connects your participation to this phone; the phone used so far loses access.</string>
     <string name="offline">No connection. Please try again.</string>
     <string name="error">Something went wrong. Please try again.</string>
     <string name="about">About the app</string>

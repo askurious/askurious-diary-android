@@ -1029,6 +1029,7 @@ class MainActivity : ComponentActivity() {
             e.key == Api.FOREIGN -> getString(R.string.foreign_server, server.substringAfter("://"))
             e.key == "unknown" -> getString(R.string.not_found)
             e.key == "closed" -> getString(R.string.closed)
+            e.key == "used" -> getString(R.string.code_used)
             e.key == "offline" -> getString(R.string.offline)
             // the rate limit: trying again at once keeps the lock (audit A12)
             e.status == 429 -> getString(R.string.too_many)
@@ -1067,7 +1068,8 @@ class MainActivity : ComponentActivity() {
             model.enrol(server, code, info) { study, e ->
                 busy = false
                 if (study != null) {
-                    startActivity(EntryActivity.intent(context, study.code, "entry"))
+                    // the entry questionnaire, unless a personal code connected a participation that is past it
+                    if (study.status == "pending") startActivity(EntryActivity.intent(context, study.code, "entry"))
                     onJoined()
                 } else {
                     message = e?.let { errorText(it) }
@@ -1189,11 +1191,15 @@ class MainActivity : ComponentActivity() {
                         if (minutes > 0) Text(pluralStringResource(R.plurals.about_minutes, minutes, minutes))
                         Text(stringResource(R.string.join_privacy), style = MaterialTheme.typography.bodySmall)
                         Text(stringResource(R.string.join_server, server.substringAfter("://")), style = MaterialTheme.typography.bodySmall)
+                        // a personal code someone joined with already: it moves that participation to this phone
+                        val rejoin = i.optBoolean("rejoin", false)
+                        if (rejoin) Text(stringResource(R.string.rejoin_code), style = MaterialTheme.typography.bodySmall)
                         // "Join" counts only while no other app's window lies over the screen (AN-16)
                         GuardAgainstOverlays()
                         Button(enabled = !busy, onClick = {
-                            // the same study on this phone already: joining again replaces its secret, so ask first
-                            if (model.studies.any { it.code == i.optString("code") }) confirmRejoin = true else enrol(i)
+                            // the same study on this phone already: joining again replaces its secret, so ask first;
+                            // a personal code connecting again keeps the same participation, nothing to ask
+                            if (!rejoin && model.studies.any { it.code == i.optString("code") }) confirmRejoin = true else enrol(i)
                         }) { Text(stringResource(R.string.join)) }
                         TextButton(onClick = onDone) { Text(stringResource(R.string.cancel)) }
                     }

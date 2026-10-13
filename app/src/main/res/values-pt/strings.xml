@@ -62,6 +62,8 @@
     <string name="limit">Atingiu o limite de hoje para este registo.</string>
     <string name="not_found">Não existe nenhum estudo com este código.</string>
     <string name="closed">Este estudo não aceita novos participantes.</string>
+    <string name="code_used">Este código já está ligado a uma participação. Peça à equipa de investigação que o volte a libertar.</string>
+    <string name="rejoin_code">Este é o seu código pessoal. Liga a sua participação a este telemóvel; o telemóvel usado até agora perde o acesso.</string>
     <string name="offline">Sem ligação. Tente novamente.</string>
     <string name="error">Algo correu mal. Tente novamente.</string>
     <string name="about">Acerca da aplicação</string>

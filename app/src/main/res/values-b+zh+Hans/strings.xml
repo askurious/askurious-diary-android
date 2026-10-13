@@ -54,6 +54,8 @@
     <string name="limit">今天此项报告的次数已达上限。</string>
     <string name="not_found">没有使用此代码的研究。</string>
     <string name="closed">此研究不再接受新的参与者。</string>
+    <string name="code_used">此代码已与一项参与关联。请联系研究团队重新开放此代码。</string>
+    <string name="rejoin_code">这是您的个人代码。它会将您的参与连接到这部手机；之前使用的手机将失去访问权限。</string>
     <string name="offline">无网络连接。请重试。</string>
     <string name="error">出现问题。请重试。</string>
     <string name="about">关于本应用</string>

@@ -126,6 +126,8 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
 - **Joining again.**
   Joining a study that is still on the phone (after leaving it, or with a test or invitation code) asks first: a new participation gets a new secret, and the earlier answers can then no longer be deleted in the app.
   If the participant goes on, the earlier participation is closed with its own secret (its waiting answers are sent, a running one is left) and then removed from the phone (`Sync.rejoin`): nothing of it goes to the new person.
+  A personal code someone already joined with is different: the server answers `"rejoin": true` and connects this phone to that same participation with a new secret (the phone used so far loses access); the app asks nothing, and opens the entry questionnaire only while it is not done.
+  Whether such a code connects at any time or only after the researchers released it is set on the server; otherwise it answers `"used"`, and the app says to ask the research team.
 - **Deleting answers.**
   "Delete my answers" on the page of every study (beside "Leave study" or "Remove from list") calls `POST /api/diary/v1/erase`: the server deletes all answers of this person in this study and the person; the app then removes the study.
   Deleting or removing a study from the list also deletes its queued answers, its kept pages and the log of its prompts.

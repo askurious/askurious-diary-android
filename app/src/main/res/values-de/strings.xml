@@ -58,6 +58,8 @@
     <string name="limit">Die Höchstzahl dieser Meldung für heute ist erreicht.</string>
     <string name="not_found">Keine Studie mit diesem Code.</string>
     <string name="closed">Diese Studie nimmt keine neuen Teilnehmenden auf.</string>
+    <string name="code_used">Dieser Code ist schon mit einer Teilnahme verbunden. Bitten Sie das Forschungsteam, ihn wieder freizugeben.</string>
+    <string name="rejoin_code">Das ist Ihr persönlicher Code. Er verbindet Ihre Teilnahme mit diesem Telefon; das bisher genutzte Telefon verliert den Zugang.</string>
     <string name="offline">Keine Verbindung. Bitte noch einmal versuchen.</string>
     <string name="error">Etwas ist schiefgegangen. Bitte noch einmal versuchen.</string>
     <string name="about">Über die App</string>

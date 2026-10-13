@@ -58,6 +58,8 @@
     <string name="limit">U hebt het maximum van vandaag voor deze melding bereikt.</string>
     <string name="not_found">Geen onderzoek met deze code.</string>
     <string name="closed">Dit onderzoek neemt geen nieuwe deelnemers meer aan.</string>
+    <string name="code_used">Deze code is al aan een deelname gekoppeld. Vraag het onderzoeksteam om hem opnieuw vrij te geven.</string>
+    <string name="rejoin_code">Dit is uw persoonlijke code. Hij verbindt uw deelname met deze telefoon; de tot nu toe gebruikte telefoon verliest de toegang.</string>
     <string name="offline">Geen verbinding. Probeer het opnieuw.</string>
     <string name="error">Er is iets misgegaan. Probeer het opnieuw.</string>
     <string name="about">Over de app</string>

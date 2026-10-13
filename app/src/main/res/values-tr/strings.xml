@@ -58,6 +58,8 @@
     <string name="limit">Bu bildirim için bugünkü sınıra ulaştınız.</string>
     <string name="not_found">Bu koda sahip bir çalışma yok.</string>
     <string name="closed">Bu çalışma yeni katılımcı kabul etmiyor.</string>
+    <string name="code_used">Bu kod zaten bir katılıma bağlı. Araştırma ekibinden kodu yeniden açmasını isteyin.</string>
+    <string name="rejoin_code">Bu sizin kişisel kodunuz. Katılımınızı bu telefona bağlar; şimdiye kadar kullanılan telefon erişimini kaybeder.</string>
     <string name="offline">Bağlantı yok. Lütfen tekrar deneyin.</string>
     <string name="error">Bir sorun oluştu. Lütfen tekrar deneyin.</string>
     <string name="about">Uygulama hakkında</string>

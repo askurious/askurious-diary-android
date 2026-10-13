@@ -74,6 +74,8 @@
     <string name="limit">تم بلوغ الحد الأقصى لهذا التقرير اليوم.</string>
     <string name="not_found">لا توجد دراسة بهذا الرمز.</string>
     <string name="closed">لا تقبل هذه الدراسة مشاركين جددًا.</string>
+    <string name="code_used">هذا الرمز مرتبط بالفعل بمشاركة. اطلب من فريق البحث إتاحته من جديد.</string>
+    <string name="rejoin_code">هذا رمزك الشخصي. يربط مشاركتك بهذا الهاتف؛ ويفقد الهاتف المستخدم حتى الآن إمكانية الوصول.</string>
     <string name="offline">لا يوجد اتصال. يُرجى المحاولة مرة أخرى.</string>
     <string name="error">حدث خطأ ما. يُرجى المحاولة مرة أخرى.</string>
     <string name="about">حول التطبيق</string>
