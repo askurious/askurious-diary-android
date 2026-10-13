@@ -9,6 +9,8 @@
          <trust group="com.android.tools.build" name="aapt2" file="aapt2-.*-(linux|osx)[.]jar" regex="true"/>
          <trust file=".*-javadoc[.]jar" regex="true"/>
          <trust file=".*-sources[.]jar" regex="true"/>
+         <!-- the sources of Gradle itself, which Android Studio loads on a sync for its editor -->
+         <trust group="gradle" name="gradle" file="gradle-.*-src[.]zip" regex="true"/>
       </trusted-artifacts>
    </configuration>
    <components>
