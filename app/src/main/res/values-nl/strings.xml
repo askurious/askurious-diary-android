@@ -32,6 +32,7 @@
     <string name="join_privacy">Bij deelname opent het toestemmingsformulier van het onderzoek. De app slaat geen naam, e-mailadres of telefoonnummer op, en het onderzoek ziet uw andere onderzoeken niet.</string>
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
     <string name="join_server" formatted="true">Server: %1$s</string>
+    <string name="foreign_server" formatted="true">Deze link leidt niet naar een server van Askurious (%1$s), daarom opent de app hem niet.</string>
     <string name="continue_entry">Eerste vragenlijst voortzetten</string>
     <string name="day_of">Dag %1$d van %2$d</string>
     <string name="starts_on">Begint op %1$s</string>

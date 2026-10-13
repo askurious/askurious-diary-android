@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.text.format.DateFormat
 import android.text.format.DateUtils
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -166,6 +167,21 @@ class MainActivity : ComponentActivity() {
         exactOn = Alarms.canExact(this)
     }
 
+    /**
+     * Whether the picture of the app in "Recents" (and on older Android a screenshot) is hidden (AN-7): from Android 13
+     * only the picture in "Recents" (setRecentsScreenshotEnabled), screenshots for help stay possible; before that
+     * FLAG_SECURE, the only way there.
+     */
+    private fun hideInRecents(hide: Boolean) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            setRecentsScreenshotEnabled(!hide)
+        } else if (hide) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        } else {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        }
+    }
+
     /** Opens [intent] of another app; a phone without an app for it simply gets nothing. */
     private fun openOther(intent: Intent) {
         try {
@@ -241,6 +257,14 @@ class MainActivity : ComponentActivity() {
         }
         if (stack.size > 1) BackHandler { pop() }
         val top = stack.last()
+        // the list of studies, a study's page and a found study show titles ("Diary on drinking"): no picture of them
+        // in "Recents" (audit 2026-10-13, AN-7); the other screens keep theirs
+        val hidden = when {
+            top == HOME -> model.studies.isNotEmpty() || !model.loaded
+            top.startsWith(STUDY) || top.startsWith(JOIN) -> true
+            else -> false
+        }
+        LaunchedEffect(hidden) { hideInRecents(hidden) }
         states.SaveableStateProvider("${stack.size - 1}|$top") {
             when {
                 top.startsWith(JOIN) -> JoinScreen(
@@ -258,7 +282,8 @@ class MainActivity : ComponentActivity() {
                 )
                 top.startsWith(STUDY) -> {
                     val study = model.studies.firstOrNull { it.code == top.removePrefix(STUDY) }
-                    if (study == null) LaunchedEffect(top) { pop() }
+                    // gone from the phone; before the studies were read (they are read off the main thread) nothing yet
+                    if (study == null) { if (model.loaded) LaunchedEffect(top) { pop() } }
                     else StudyTheme(study.look, bars = true) { StudyScreen(study, onBack = { pop() }, snackbar = snackbar, say = say) }
                 }
                 top == ABOUT -> AboutScreen(onBack = { pop() }, onLicence = { push(LICENCE) })
@@ -319,7 +344,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }
                 if (model.clockOff) item(key = "notice-clock") { Notice(stringResource(R.string.clock_off), Icons.Outlined.Warning) }
-                if (studies.isEmpty()) item {
+                if (studies.isEmpty() && model.loaded) item {
                     Column(Modifier.padding(top = 32.dp)) {
                         Text(stringResource(R.string.no_studies))
                         Spacer(Modifier.height(16.dp))
@@ -337,8 +362,9 @@ class MainActivity : ComponentActivity() {
                 items(ended, key = { it.code }) { StudyTheme(it.look) { StudyCard(it) { onStudy(it) } } }
                 item {
                     // which version runs on this phone (version, build time; server of a debug build)
+                    val format = stringResource(R.string.build_info)
                     Text(
-                        buildInfo { v, t -> getString(R.string.build_info, v, t) },
+                        buildInfo { v, t -> String.format(format, v, t) },
                         Modifier.fillMaxWidth().padding(vertical = 16.dp),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -647,7 +673,10 @@ class MainActivity : ComponentActivity() {
             AlertDialog(
                 onDismissRequest = { confirmLeave = false },
                 title = { Text(stringResource(R.string.leave_title, study.title)) },
-                text = { Text(stringResource(R.string.leave_confirm)) },
+                text = {
+                    GuardAgainstOverlays()
+                    Text(stringResource(R.string.leave_confirm))
+                },
                 confirmButton = {
                     TextButton(onClick = {
                         confirmLeave = false
@@ -664,6 +693,7 @@ class MainActivity : ComponentActivity() {
                 onDismissRequest = { confirmRemove = false },
                 title = { Text(stringResource(R.string.remove_title, study.title)) },
                 text = {
+                    GuardAgainstOverlays()
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Text(stringResource(R.string.remove_confirm))
                         if (study.exit?.open == true) {
@@ -689,6 +719,7 @@ class MainActivity : ComponentActivity() {
                 onDismissRequest = { if (!erasing) confirmErase = false },
                 title = { Text(stringResource(R.string.erase_title, study.title)) },
                 text = {
+                    GuardAgainstOverlays()
                     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                         Text(stringResource(R.string.erase_confirm))
                         if (erasing) {
@@ -844,6 +875,7 @@ class MainActivity : ComponentActivity() {
         var cameraRefused by rememberSaveable { mutableStateOf(false) }
 
         fun errorText(e: ApiError) = when {
+            e.key == Api.FOREIGN -> getString(R.string.foreign_server, server.substringAfter("://"))
             e.key == "unknown" -> getString(R.string.not_found)
             e.key == "closed" -> getString(R.string.closed)
             e.key == "offline" -> getString(R.string.offline)
@@ -858,6 +890,12 @@ class MainActivity : ComponentActivity() {
             val at = joinServer(c, BuildConfig.DEBUG) ?: Api.defaultServer
             code = clean
             server = at
+            infoText = null
+            // a server that is not one of Askurious: refused before it is asked anything (audit 2026-10-13, AN-1)
+            if (!Api.isKnown(at)) {
+                message = errorText(ApiError(Api.FOREIGN))
+                return
+            }
             busy = true
             message = null
             model.lookUp(at, clean) { found, e ->
@@ -994,6 +1032,8 @@ class MainActivity : ComponentActivity() {
                         if (minutes > 0) Text(pluralStringResource(R.plurals.about_minutes, minutes, minutes))
                         Text(stringResource(R.string.join_privacy), style = MaterialTheme.typography.bodySmall)
                         Text(stringResource(R.string.join_server, server.substringAfter("://")), style = MaterialTheme.typography.bodySmall)
+                        // "Join" counts only while no other app's window lies over the screen (AN-16)
+                        GuardAgainstOverlays()
                         Button(enabled = !busy, onClick = {
                             // the same study on this phone already: joining again replaces its secret, so ask first
                             if (model.studies.any { it.code == i.optString("code") }) confirmRejoin = true else enrol(i)
@@ -1015,7 +1055,10 @@ class MainActivity : ComponentActivity() {
         if (confirmRejoin && pendingInfo != null) {
             AlertDialog(
                 onDismissRequest = { confirmRejoin = false },
-                text = { Text(stringResource(R.string.rejoin_confirm)) },
+                text = {
+                    GuardAgainstOverlays()
+                    Text(stringResource(R.string.rejoin_confirm))
+                },
                 confirmButton = {
                     TextButton(onClick = {
                         confirmRejoin = false

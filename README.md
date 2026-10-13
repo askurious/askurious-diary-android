@@ -10,8 +10,12 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   Joining returns a random secret per study; the app keeps it in its private storage (no backup) and sends it as a bearer token.
   The server keeps only its hash, and the app sends no device id, so two studies on one phone cannot be linked.
   Nothing of the app goes into cloud backups or to a new phone (`allowBackup="false"`, `res/xml/data_extraction_rules.xml`).
+- **Only servers of Askurious.**
+  A join link (QR code, App Link, a link another app hands over) names its server, but the app asks only a server of Askurious or of one of its brands: `askurious.de`, `ask.askurious.de`, `polltergeist.de`, `ask.polltergeist.de` (`KNOWN_SERVERS` in app/build.gradle.kts, `Api.isKnown`; a debug build also the Flask server on the computer).
+  The link of any other server is refused with a message naming it, before that server is asked anything; a new brand or instance is added to the list in the build.
 - **No shared cookies.**
   Each entry starts with empty WebView cookies, web storage and cache (`EntryActivity`), so the session cookie of one study never travels with the entry of another.
+  They are emptied again when the entry ends (end page, answer saved without a connection) and when its screen goes, and the WebView is destroyed with it, so the session cookie does not stay on the phone after the entry.
 - **Permissions.**
   Without notifications no prompt arrives, and without "Alarms & reminders" it may come late: the start page shows a notice for each right below its heading, read again whenever the app comes back to the front (from the system settings, the dialog, an entry).
   Once the system no longer shows its dialog (denied twice), or the permission is there but the app's notifications or the channel of the prompts are switched off, the notice's button is "Allow in settings" and opens the app's notification settings (`notifyNotice`).
@@ -21,8 +25,11 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
 - **Lock screen.**
   Notifications are private: the lock screen shows only "Askurious – A short question is waiting", never the title of the study or the researchers' notification text.
 - **Thin shell.**
-  The questionnaire pages are the participant pages of Askurious in a WebView (`EntryActivity`), opened with a one-time address per entry.
+  The questionnaire pages are the participant pages of Askurious in a WebView (`EntryActivity`), opened with an address the server makes for each entry (the server accepts it for a few hours, `ENTRY_SECONDS`).
   A release build opens only addresses of its own server (`Api.absolute`); the bridge `AskuriousApp` counts only while the page is the server's (or the kept page under its address); the WebView reaches no files or content providers of the phone, autofill stays out, and the entry screen allows no screenshots (`FLAG_SECURE`).
+  On the server's pages the bridge is a message channel that only the main frame of the study's server reaches (`WebViewCompat.addWebMessageListener` with that origin; a script at the start of each page offers participant.js the same `window.AskuriousApp.done()` and `.offlineSubmit(json)`); a WebView too old for it, and the kept page (which loads nothing from any other origin), use `addJavascriptInterface` as before.
+  The start page, a study's page and the join screen show titles of studies: from Android 13 they leave no picture in "Recents" (`setRecentsScreenshotEnabled(false)`, screenshots stay possible), before that `FLAG_SECURE`; "About" and the licence texts keep theirs.
+  "Join" and the questions before leaving, removing or deleting take a touch only while no window of another app lies over them (`filterTouchesWhenObscured`, `GuardAgainstOverlays`; Android 12 and later block such overlays themselves).
   An open entry is listed in "Recents" as its own task, so that it survives a switch to another app, but without a picture of the page (`setRecentsScreenshotEnabled(false)`, `FLAG_SECURE`).
   Links to other sites open in another app (web, mail and phone links only); turning the phone keeps the page and what was typed.
   The back gesture goes one page back in the questionnaire; on its first page, and with the X at the left of the top bar, the app asks "Cancel this entry?" first.
@@ -111,7 +118,8 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   The studies with their secrets, their look (colours), the seed of the random prompts, the quiet hours, the pauses, the exit questionnaire and a fast-forward clock; the log of the prompts of the last three days (notified, opened) and whether the exit questionnaire was notified; the kept pages of offline modules while the study runs (dropped when it ends, is left, or the module is no longer offline); answers given without a connection until they are sent, at most 7 days after the page was opened (the server takes them no later), then they are dropped unsent.
   Besides, whether the app asked for the notification and the camera permission once (to tell a first request from a refusal for good), and whether the step for the permissions was shown.
   All of it in the app's private storage, in no backup.
-  The secrets are stored sealed (AES-GCM, `StudyStore.sealed`) under a key that lives in the Android Keystore and never leaves it (`KeystoreSealer`); a copy of the app's files alone gives no secret. A study stored before this is sealed the first time it is read. An entry whose secret cannot be opened (the Keystore lost its key) is kept as it is, not overwritten.
+  The list of studies (with titles, schedules and secrets), the answers waiting to be sent and the log of the prompts are stored sealed (AES-GCM, `SealedText`, each with its own purpose as associated data) under a key that lives in the Android Keystore and never leaves it (`KeystoreSealer`); a copy of the app's files alone shows neither secrets nor answers nor titles. Each is opened once per process and kept in memory, so the Keystore is not asked at every read; reading them at the start, for an alarm or a boot runs off the main thread.
+  What an earlier version stored (the list with each secret sealed on its own, the queue and the log in plain text) is sealed the first time it is read. An entry whose secret cannot be opened (the Keystore lost its key) is kept as it is, not overwritten. The kept questionnaire pages and their files stay as files: they hold the questions, not the answers.
 - **Languages.**
   The survey languages of Askurious: English, German, Spanish, French, Italian, Dutch, Polish, European Portuguese, Russian, Turkish, Simplified Chinese and Arabic (right to left), formal address where the language has it, except German: the German texts address nobody directly (neither "Sie" nor "du"), because the start page shows studies whose pages may use either.
   `res/xml/locales_config.xml` lists them for the per-app language setting (Android 13+).
@@ -127,9 +135,13 @@ export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
 ./gradlew testDebugUnitTest assembleDebug
 ```
 
-Toolchain: Gradle 9.5.1, AGP 9.3.3 (with the compatibility flags of the upgrade assistant in gradle.properties, still `android.newDsl=false`), Kotlin 2.2.20, compileSdk and targetSdk 36, minSdk 26.
+Toolchain: Gradle 9.6.0, AGP 9.4.1 (with the compatibility flags of the upgrade assistant in gradle.properties, still `android.newDsl=false`), Kotlin 2.2.20, compileSdk and targetSdk 36, minSdk 26.
 The wrapper checks the SHA-256 of the Gradle download (`distributionSha256Sum`). Compose BOM 2026.06.01 is the newest that builds with compileSdk 36 (Compose UI 1.12 from BOM 2026.08.00 on needs compileSdk 37).
-Not yet: `gradle/verification-metadata.xml` (`./gradlew --write-verification-metadata sha256 help` on a machine with Gradle), and a check of the transitive versions (`./gradlew :app:dependencies`) before the store upload.
+Gradle checks the SHA-256 of every dependency against `gradle/verification-metadata.xml`. After changing a dependency, write it again with the tasks of a release:
+`./gradlew --write-verification-metadata sha256 help lintDebug lintRelease testDebugUnitTest assembleDebug assembleRelease bundleRelease`, and look at what changed before committing it.
+The jars of aapt2 for Linux and macOS are trusted without a checksum (the file was written on Windows), as are sources and javadoc for the IDE.
+The QR scanner is ZXing Android Embedded 4.3.0 (in maintenance, no release since 2021) with the decoder `com.google.zxing:core` raised to 3.5.4, its last release; a scanner on CameraX with ML Kit would need Google's ML Kit terms and a new screen, so it stays for now.
+Not yet: a check of the transitive versions against a vulnerability database (`./gradlew :app:dependencies`, OSV) before the store upload.
 A release build is shrunk with R8 (`proguard-rules.pro` keeps the WebView bridge `EntryActivity.Bridge`).
 Checks: `./gradlew testDebugUnitTest lintDebug`.
 

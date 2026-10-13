@@ -32,6 +32,7 @@
     <string name="join_privacy">Katıldığınızda çalışmanın onam formu açılır. Uygulama ad, e-posta adresi veya telefon numarası kaydetmez ve çalışma diğer çalışmalarınızı göremez.</string>
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
     <string name="join_server" formatted="true">Sunucu: %1$s</string>
+    <string name="foreign_server" formatted="true">Bu bağlantı bir Askurious sunucusuna gitmiyor (%1$s), bu nedenle uygulama onu açmıyor.</string>
     <string name="continue_entry">İlk ankete devam et</string>
     <string name="day_of">Gün %1$d / %2$d</string>
     <string name="starts_on">Başlangıç: %1$s</string>

@@ -2,7 +2,9 @@ package de.askurious.app.ui
 
 import android.webkit.JavascriptInterface
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
@@ -21,5 +23,21 @@ class BridgeContractTest {
             // without the annotation the WebView does not offer the function to the page
             assertNotNull(name, method.getAnnotation(JavascriptInterface::class.java))
         }
+    }
+
+    /**
+     * Audit 2026-10-13, AN-12: on the server's online pages the bridge is a message channel of the main frame; the
+     * script the app puts at the start of each page offers participant.js the same names, and nothing to a frame.
+     */
+    @Test
+    fun theBridgeScriptOffersTheSameNamesOnlyToTheMainFrame() {
+        val script = EntryActivity.BRIDGE_SCRIPT
+        assertTrue(script.contains("window.AskuriousApp = {"))
+        assertTrue(script.contains("done: function ()"))
+        assertTrue(script.contains("offlineSubmit: function (json)"))
+        assertTrue(script.contains("window.top !== window"))
+        assertTrue(script.contains("postMessage(\"done\")"))
+        assertTrue(script.contains("postMessage(\"offline:\" + String(json))"))
+        assertFalse(script.contains("$"))
     }
 }

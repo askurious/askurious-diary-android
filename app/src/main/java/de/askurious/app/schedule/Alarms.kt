@@ -214,12 +214,29 @@ object Alarms {
     internal fun dueOf(intent: Intent): Long = intent.getLongExtra(EXTRA_DUE, 0L)
 }
 
+/**
+ * Runs [work] off the main thread and keeps the receiver alive until it is done (goAsync): reading the studies opens
+ * them with the Keystore, which must not hold up the main thread (audit 2026-10-13, AN-8).
+ */
+private fun BroadcastReceiver.inBackground(work: () -> Unit) {
+    val pending = goAsync()
+    Thread {
+        try {
+            work()
+        } finally {
+            pending.finish()
+        }
+    }.start()
+}
+
 class PromptReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val at = Alarms.dueOf(intent)
-        // nothing stored may crash the app at every alarm (DiaryApp)
-        if (at > 0) runCatching { Alarms.notify(context, at) }
-        runCatching { Alarms.rearm(context) }
+        inBackground {
+            // nothing stored may crash the app at every alarm (DiaryApp)
+            if (at > 0) runCatching { Alarms.notify(context, at) }
+            runCatching { Alarms.rearm(context) }
+        }
     }
 }
 
@@ -229,7 +246,7 @@ class BootReceiver : BroadcastReceiver() {
         // the receiver is exported for these system broadcasts; anything else (an intent another app sends
         // directly) is ignored
         if (intent.action !in ACTIONS) return
-        runCatching { Alarms.rearm(context) }
+        inBackground { runCatching { Alarms.rearm(context) } }
     }
 
     private companion object {

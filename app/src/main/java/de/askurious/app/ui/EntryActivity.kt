@@ -9,9 +9,11 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
+import android.webkit.RenderProcessGoneDetail
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
@@ -61,6 +63,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
+import androidx.webkit.WebViewCompat
+import androidx.webkit.WebViewFeature
 import de.askurious.app.R
 import de.askurious.app.data.AnswerQueue
 import de.askurious.app.data.Api
@@ -94,7 +98,8 @@ import kotlin.coroutines.resume
  *
  * The WebView's cookies and web storage are shared by the whole app. Each entry starts with them empty, so the
  * session cookie of one study never travels with the entry of another and the server cannot link two studies on
- * one phone.
+ * one phone. They are emptied again when the entry ends and when the screen goes, and the WebView is destroyed with
+ * it: the session cookie of an entry does not stay on the phone for days (audit 2026-10-13, AN-4).
  */
 class EntryActivity : ComponentActivity() {
     private var url by mutableStateOf<String?>(null)
@@ -136,6 +141,7 @@ class EntryActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        current = java.lang.ref.WeakReference(this)
         enableEdgeToEdge()
         // the answers are nobody else's business: no screenshots, no picture in the list of recent apps
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
@@ -317,6 +323,53 @@ class EntryActivity : ComponentActivity() {
         WebStorage.getInstance().deleteAllData()
     }
 
+    /**
+     * The entry is over (the end page, an answer saved without a connection) or its screen goes: its session cookie
+     * and web storage go too (AN-4). Not when another entry has started meanwhile (a new prompt opens a new screen,
+     * and this one is destroyed only afterwards): that one's cookie must stay.
+     */
+    private fun forgetWebState() {
+        if (current?.get() !== this) return
+        CookieManager.getInstance().apply {
+            removeAllCookies(null)
+            flush()
+        }
+        WebStorage.getInstance().deleteAllData()
+    }
+
+    /**
+     * The WebView's renderer went (the system took its memory): without this the whole app would crash. The WebView
+     * goes ([release] through Compose), the screen offers "Try again" (a new address, or the kept page again); after
+     * the end page there is nothing left to show.
+     */
+    private fun renderGone(): Boolean {
+        if (done && !saved) {
+            finish()
+            return true
+        }
+        url = null
+        offline = null
+        loadFailed = false
+        if (!saved) {
+            error = getString(R.string.load_failed)
+            retryable = true
+        }
+        return true
+    }
+
+    /** The WebView [w] is no longer shown: it stops, loses the bridge and is destroyed (AN-4). */
+    private fun release(w: WebView) {
+        if (web === w) web = null
+        runCatching {
+            w.stopLoading()
+            stopListening(w)
+            w.removeJavascriptInterface(BRIDGE)
+            w.loadUrl("about:blank")
+            (w.parent as? ViewGroup)?.removeView(w)
+            w.destroy()
+        }
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean(STATE_DONE, done)
@@ -328,7 +381,10 @@ class EntryActivity : ComponentActivity() {
     }
 
     override fun onDestroy() {
+        // the WebView itself is destroyed when Compose lets it go (AndroidView onRelease, [release])
         web = null
+        forgetWebState()
+        if (current?.get() === this) current = null
         super.onDestroy()
     }
 
@@ -361,6 +417,8 @@ class EntryActivity : ComponentActivity() {
     private fun finished() {
         if (done) return
         done = true
+        // the end page is shown: the session of the entry is no longer needed (AN-4)
+        forgetWebState()
         val code = intent.getStringExtra(EXTRA_STUDY) ?: return
         val store = StudyStore(this)
         lifecycleScope.launch {
@@ -383,6 +441,7 @@ class EntryActivity : ComponentActivity() {
         AnswerQueue(this).add(code, module, due, notified, offlineStarted, completed, page.version, form)
         SyncWorker.sendSoon(this)
         saved = true
+        forgetWebState()
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -417,8 +476,16 @@ class EntryActivity : ComponentActivity() {
                 val e = error
                 when {
                     e != null || saved -> Message(e ?: stringResource(R.string.offline_saved), retry = e != null && retryable)
-                    u != null -> AndroidView(modifier = Modifier.fillMaxSize(), factory = { ctx -> webView(ctx, u).apply { setBackgroundColor(page) } })
-                    o != null -> AndroidView(modifier = Modifier.fillMaxSize(), factory = { ctx -> offlineWebView(ctx, o).apply { setBackgroundColor(page) } })
+                    u != null -> AndroidView(
+                        modifier = Modifier.fillMaxSize(),
+                        factory = { ctx -> webView(ctx, u).apply { setBackgroundColor(page) } },
+                        onRelease = { release(it) },
+                    )
+                    o != null -> AndroidView(
+                        modifier = Modifier.fillMaxSize(),
+                        factory = { ctx -> offlineWebView(ctx, o).apply { setBackgroundColor(page) } },
+                        onRelease = { release(it) },
+                    )
                     else -> {
                         val loading = stringResource(R.string.loading)
                         CircularProgressIndicator(Modifier.semantics { contentDescription = loading })
@@ -462,8 +529,15 @@ class EntryActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * [online]: the page comes from the server. Its bridge is a message channel that only the main frame of the
+     * server's own origin reaches (audit 2026-10-13, AN-12): addWebMessageListener with that origin as the only rule,
+     * and a script at the start of each document of that origin that offers participant.js the same names as before
+     * (window.AskuriousApp.done, .offlineSubmit). A WebView too old for it, and the kept page (whose WebView loads
+     * nothing from any other origin, [offlineWebView]), use addJavascriptInterface, which [fromOwnPage] guards.
+     */
     @SuppressLint("SetJavaScriptEnabled")
-    private fun baseWebView(ctx: Context): WebView {
+    private fun baseWebView(ctx: Context, online: Boolean): WebView {
         CookieManager.getInstance().setAcceptCookie(true)
         return WebView(ctx).apply {
             // nothing of an earlier entry (another study) is taken from the cache
@@ -476,14 +550,50 @@ class EntryActivity : ComponentActivity() {
             // autofill services do not see (nor offer) what is typed into a questionnaire
             importantForAutofill = View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS
             settings.userAgentString = settings.userAgentString + " AskuriousDiary/1"
-            addJavascriptInterface(Bridge(), BRIDGE)
+            if (!(online && listenOnMainFrame(this))) addJavascriptInterface(Bridge(), BRIDGE)
             web = this
+        }
+    }
+
+    /** The bridge as a message channel of the main frame of the server's origin (AN-12); false when not supported. */
+    private fun listenOnMainFrame(w: WebView): Boolean {
+        val origin = Api.origin(server) ?: return false
+        if (!WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER)) return false
+        if (!WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)) return false
+        return try {
+            WebViewCompat.addWebMessageListener(w, PORT, setOf(origin)) { _, message, source, isMainFrame, _ ->
+                if (isMainFrame && Api.origin(source.toString()) == origin && fromOwnPage()) bridgeMessage(message.data)
+            }
+            listening.add(w)
+            WebViewCompat.addDocumentStartJavaScript(w, BRIDGE_SCRIPT, setOf(origin))
+            true
+        } catch (e: RuntimeException) {
+            // an origin rule the WebView does not take: the bridge of before
+            stopListening(w)
+            false
+        }
+    }
+
+    /** Removes the message listener of [w], if it has one. */
+    private fun stopListening(w: WebView) {
+        if (!listening.remove(w)) return
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER)) {
+            runCatching { WebViewCompat.removeWebMessageListener(w, PORT) }
+        }
+    }
+
+    /** A message of the bridge script ([BRIDGE_SCRIPT]): "done", or "offline:" with the form as JSON. */
+    private fun bridgeMessage(data: String?) {
+        when {
+            data == null -> {}
+            data == "done" -> finished()
+            data.startsWith("offline:") -> offlineSubmitted(data.removePrefix("offline:"))
         }
     }
 
     private fun webView(ctx: Context, start: String): WebView {
         val host = start.toUri().host
-        return baseWebView(ctx).apply {
+        return baseWebView(ctx, online = true).apply {
             webViewClient = object : WebViewClient() {
                 /** The page now loading failed (its main frame): its onPageFinished is no success. */
                 private var failed = false
@@ -510,6 +620,8 @@ class EntryActivity : ComponentActivity() {
                     if (!cleared && error.errorCode in OFFLINE_ERRORS) toKeptPage()
                 }
 
+                override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean = renderGone()
+
                 override fun onPageFinished(view: WebView, url: String?) {
                     // the first page of the entry is there: now its notification may go (audit A8)
                     if (!failed) clearPrompt()
@@ -532,7 +644,7 @@ class EntryActivity : ComponentActivity() {
     private fun offlineWebView(ctx: Context, page: OfflinePages.Page): WebView {
         val base = server.toUri()
         val pages = OfflinePages(ctx)
-        return baseWebView(ctx).apply {
+        return baseWebView(ctx, online = false).apply {
             webViewClient = object : WebViewClient() {
                 override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse {
                     val u = request.url
@@ -549,6 +661,8 @@ class EntryActivity : ComponentActivity() {
                         ?: if (mime.startsWith("text/")) "utf-8" else null
                     return WebResourceResponse(mime, charset, file.inputStream())
                 }
+
+                override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean = renderGone()
 
                 // links leave the app as on the online page; nothing loads in place of the kept page
                 override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
@@ -583,6 +697,29 @@ class EntryActivity : ComponentActivity() {
          * tests/test_diary_app_bridge.py runs the pages against these names, BridgeContractTest checks them here.
          */
         const val BRIDGE = "AskuriousApp"
+
+        /** The name of the message channel the bridge script talks through (AN-12); participant.js does not see it. */
+        private const val PORT = "AskuriousAppPort"
+
+        /**
+         * Offers participant.js window.AskuriousApp in the main frame of the server's pages, as a message channel
+         * (AN-12). A frame inside the page gets nothing, and the app takes messages only from the main frame anyway.
+         */
+        const val BRIDGE_SCRIPT = """(function () {
+  if (window.top !== window || !window.$PORT) return;
+  var port = window.$PORT;
+  window.$BRIDGE = {
+    done: function () { port.postMessage("done"); },
+    offlineSubmit: function (json) { port.postMessage("offline:" + String(json)); }
+  };
+})();"""
+
+        /** The entry shown now: only it may empty the cookies (a new entry may start before an old one is destroyed). */
+        private var current: java.lang.ref.WeakReference<EntryActivity>? = null
+
+        /** The WebViews with a message listener, to remove it before they are destroyed. */
+        private val listening = java.util.Collections.newSetFromMap(java.util.WeakHashMap<WebView, Boolean>())
+
         private const val EXTRA_STUDY = "study"
         private const val EXTRA_MODULE = "module"
         private const val EXTRA_DUE = "due"

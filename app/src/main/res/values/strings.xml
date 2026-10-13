@@ -32,6 +32,7 @@
     <string name="join_privacy">Joining opens the consent form of the study. The app stores no name, e-mail address or phone number, and the study cannot see your other studies.</string>
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
     <string name="join_server" formatted="true">Server: %1$s</string>
+    <string name="foreign_server" formatted="true">This link does not lead to a server of Askurious (%1$s), so the app does not open it.</string>
     <string name="continue_entry">Continue the first questionnaire</string>
     <string name="day_of">Day %1$d of %2$d</string>
     <string name="starts_on">Starts on %1$s</string>

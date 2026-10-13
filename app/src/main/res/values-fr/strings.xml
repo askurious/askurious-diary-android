@@ -36,6 +36,7 @@
     <string name="join_privacy">En rejoignant l’étude, vous ouvrez son formulaire de consentement. L’application n’enregistre ni nom, ni adresse e-mail, ni numéro de téléphone, et l’étude ne voit pas vos autres études.</string>
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
     <string name="join_server" formatted="true">Serveur : %1$s</string>
+    <string name="foreign_server" formatted="true">Ce lien ne mène pas à un serveur d\'Askurious (%1$s) ; l\'application ne l\'ouvre donc pas.</string>
     <string name="continue_entry">Reprendre le premier questionnaire</string>
     <string name="day_of">Jour %1$d sur %2$d</string>
     <string name="starts_on">Commence le %1$s</string>

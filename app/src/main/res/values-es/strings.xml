@@ -36,6 +36,7 @@
     <string name="join_privacy">Al unirse se abre el formulario de consentimiento del estudio. La aplicación no guarda ningún nombre, dirección de correo electrónico ni número de teléfono, y el estudio no puede ver sus otros estudios.</string>
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
     <string name="join_server" formatted="true">Servidor: %1$s</string>
+    <string name="foreign_server" formatted="true">Este enlace no lleva a un servidor de Askurious (%1$s), por eso la app no lo abre.</string>
     <string name="continue_entry">Continuar el primer cuestionario</string>
     <string name="day_of">Día %1$d de %2$d</string>
     <string name="starts_on">Empieza el %1$s</string>
