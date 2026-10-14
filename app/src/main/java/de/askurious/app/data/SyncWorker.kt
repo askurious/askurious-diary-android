@@ -290,7 +290,7 @@ object Sync {
                 e
             }
             if (error != null) queue.attempted(item.id, if (error.status == 429) "rate_limit" else error.key)
-            when (queue.recordDelivery(queue.of(study.code).firstOrNull { it.id == item.id } ?: item, error, Api.clockSkew)) {
+            when (queue.recordDelivery(queue.get(item.id) ?: item, error, Api.clockSkew)) {
                 AnswerQueue.Fate.KEEP -> kept = true
                 AnswerQueue.Fate.CHANGED -> {
                     OfflinePages(context).drop(study.code, item.module)

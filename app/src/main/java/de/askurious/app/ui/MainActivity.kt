@@ -24,7 +24,6 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.imePadding
 import de.askurious.app.data.PromptLog
 import de.askurious.app.data.AnswerQueue
-import de.askurious.app.data.TransmissionLog
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -126,6 +125,7 @@ import de.askurious.app.data.Quiet
 import de.askurious.app.data.Study
 import de.askurious.app.data.Trigger
 import de.askurious.app.schedule.Alarms
+import de.askurious.app.schedule.Prompt
 import de.askurious.app.schedule.Schedule
 import kotlinx.coroutines.delay
 import androidx.lifecycle.lifecycleScope
@@ -491,7 +491,7 @@ class MainActivity : ComponentActivity() {
                 StudyNow(study)
                 val n = model.waiting[study.code] ?: 0
                 if (n > 0) Message(pluralStringResource(R.plurals.answers_waiting, n, n))
-                if (n > 0 || TransmissionLog(context).of(study.code).isNotEmpty()) TextButton(onClick = { transmissions = true }) { Text(stringResource(R.string.transmissions)) }
+                if (n > 0 || hasStoredReceipts(study.code, model.waiting)) TextButton(onClick = { transmissions = true }) { Text(stringResource(R.string.transmissions)) }
                 if (model.queueUnreadable) Text(stringResource(R.string.queue_unreadable))
                 if (study.code in model.refused) {
                     Text(stringResource(R.string.limit_refused), style = MaterialTheme.typography.bodySmall)
@@ -499,7 +499,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-        if (transmissions) TransmissionDetails(study, AnswerQueue(context).of(study.code), TransmissionLog(context).of(study.code),
+        if (transmissions) StoredTransmissions(study,
             model.transferring, { model.transfer() }, { transmissions = false })
     }
 
@@ -540,17 +540,28 @@ class MainActivity : ComponentActivity() {
         }
         StateLine(study, state, today)
         if (state == StudyState.RUNNING) {
-            val log = PromptLog(context)
-            val queue = AnswerQueue(context)
-            for (prompt in Schedule.available(study, Instant.ofEpochMilli(tick)).filter {
-                !log.isCompleted(study.code, it.module, it.due) && !queue.has(study.code, it.module, it.due)
-            }) {
-                val module = study.modules.first { it.key == prompt.module }
+            var prompts by remember(study.code) { mutableStateOf<List<Pair<Prompt, Long?>>>(emptyList()) }
+            var queueFailed by remember(study.code) { mutableStateOf(false) }
+            LaunchedEffect(study, tick, model.waiting) {
+                try {
+                    prompts = withContext(Dispatchers.IO) {
+                        val log = PromptLog(context)
+                        val queue = AnswerQueue(context)
+                        Schedule.available(study, Instant.ofEpochMilli(tick)).filter {
+                            !log.isCompleted(study.code, it.module, it.due) && !queue.has(study.code, it.module, it.due)
+                        }.map { it to log.notifiedAt(study.code, it.module, it.due) }
+                    }
+                    queueFailed = false
+                } catch (e: java.io.IOException) { prompts = emptyList(); queueFailed = true }
+            }
+            if (queueFailed) Text(stringResource(R.string.queue_unreadable))
+            for ((prompt, notified) in prompts) {
+                val module = study.modules.firstOrNull { it.key == prompt.module } ?: continue
                 SectionTitle(module.name)
                 if (prompt.expires > 0) Text(stringResource(R.string.prompt_until,
                     whenText(Instant.ofEpochMilli(prompt.due + prompt.expires * 60_000L).atZone(ZoneId.systemDefault()), today, false)))
                 Button(onClick = { startActivity(EntryActivity.intent(context, study.code, prompt.module, prompt.due,
-                    log.notifiedAt(study.code, prompt.module, prompt.due))) }) { Text(stringResource(R.string.answer_prompt)) }
+                    notified)) }) { Text(stringResource(R.string.answer_prompt)) }
             }
             if (notifyState != NotifyNotice.NONE) {
                 // without notifications no prompt reaches the participant: no time that would not come (audit A1)
@@ -698,7 +709,7 @@ class MainActivity : ComponentActivity() {
                 }
                 val n = model.waiting[study.code] ?: 0
                 if (n > 0) Message(pluralStringResource(R.plurals.answers_waiting, n, n))
-                if (n > 0 || TransmissionLog(context).of(study.code).isNotEmpty()) TextButton(onClick = { transmissions = true }) {
+                if (n > 0 || hasStoredReceipts(study.code, model.waiting)) TextButton(onClick = { transmissions = true }) {
                     Text(stringResource(R.string.transmissions))
                 }
 
@@ -838,7 +849,7 @@ class MainActivity : ComponentActivity() {
             )
         }
         shortcutFor?.let { m -> ShortcutDialog(study, m, onDone = { shortcutFor = null }) }
-        if (transmissions) TransmissionDetails(study, AnswerQueue(context).of(study.code), TransmissionLog(context).of(study.code),
+        if (transmissions) StoredTransmissions(study,
             model.transferring, { model.transfer() }, { transmissions = false })
         if (confirmRemove) {
             // the secret goes with the study: afterwards its answers can no longer be deleted from the phone (audit A4)

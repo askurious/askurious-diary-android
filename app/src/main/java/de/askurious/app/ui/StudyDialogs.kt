@@ -12,6 +12,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.material3.CircularProgressIndicator
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
@@ -22,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import de.askurious.app.R
 import de.askurious.app.data.AnswerQueue
 import de.askurious.app.data.Study
+import de.askurious.app.data.TransmissionLog
 import org.json.JSONObject
 import java.time.Instant
 import java.time.ZoneId
@@ -46,6 +56,32 @@ fun StudyInformation(study: Study, close: () -> Unit) {
             Text(stringResource(R.string.join_privacy))
         }
     }, confirmButton = { TextButton(onClick = close) { Text(stringResource(R.string.close)) } })
+}
+
+@Composable
+fun StoredTransmissions(study: Study, busy: Boolean, retry: () -> Unit, close: () -> Unit) {
+    val context = LocalContext.current
+    var data by remember(study.code) { mutableStateOf<Pair<List<AnswerQueue.Item>, List<JSONObject>>?>(null) }
+    var failed by remember(study.code) { mutableStateOf(false) }
+    LaunchedEffect(study.code, busy) {
+        try {
+            data = withContext(Dispatchers.IO) { Pair(AnswerQueue(context).of(study.code), TransmissionLog(context).of(study.code)) }
+            failed = false
+        } catch (e: java.io.IOException) { failed = true }
+    }
+    val loaded = data
+    if (loaded != null && !failed) TransmissionDetails(study, loaded.first, loaded.second, busy, retry, close)
+    else AlertDialog(onDismissRequest = close, title = { Text(stringResource(R.string.transmissions)) },
+        text = { if (failed) Text(stringResource(R.string.queue_unreadable)) else CircularProgressIndicator() },
+        confirmButton = { TextButton(onClick = close) { Text(stringResource(R.string.close)) } })
+}
+
+@Composable
+fun hasStoredReceipts(code: String, refresh: Any?): Boolean {
+    val context = LocalContext.current
+    var found by remember(code) { mutableStateOf(false) }
+    LaunchedEffect(code, refresh) { found = withContext(Dispatchers.IO) { TransmissionLog(context).of(code).isNotEmpty() } }
+    return found
 }
 
 @Composable
