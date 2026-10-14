@@ -15,13 +15,13 @@ import java.io.IOException
  * Answers given without a connection (EntryActivity, offline page), waiting to be sent with POST /offline.
  * Kept in the app's private storage like the studies (no backup, not moved to a new phone) and only until the
  * server confirmed durable storage or the participant explicitly removes them. Age and refusals never delete an
- * unacknowledged answer. The answers are stored sealed under the Keystore key and kept open in
- * memory ([SealedText], audit 2026-10-13, AN-3, AN-8); a queue stored in plain text by an earlier version is sealed
- * the first time it is read.
+ * unacknowledged answer. Production uses [QueueDatabase]: individually sealed rows, indexed queries and durable
+ * single-row writes. The preferences constructor retains the legacy codec for migration regression tests.
  */
-class AnswerQueue internal constructor(private val prefs: SharedPreferences, sealer: Sealer) {
+class AnswerQueue internal constructor(private val prefs: SharedPreferences, sealer: Sealer, private val rows: QueueDatabase? = null) {
     constructor(context: Context, sealer: Sealer = KeystoreSealer) :
-        this(context.applicationContext.getSharedPreferences("queue", Context.MODE_PRIVATE), sealer)
+        this(context.applicationContext.getSharedPreferences("queue", Context.MODE_PRIVATE), sealer,
+            QueueDatabase(context, context.applicationContext.getSharedPreferences("queue", Context.MODE_PRIVATE), sealer))
 
     private val text = SealedText(prefs, KEY, sealer, AAD)
 
@@ -79,6 +79,7 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
     }
 
     fun all(): List<Item> = synchronized(SealedText.LOCK) {
+        rows?.let { return@synchronized it.all() }
         val opened = text.read()
         if (opened.unreadable) throw IOException("Queued answers cannot be decrypted")
         val raw = opened.text ?: return emptyList()
@@ -90,11 +91,14 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
         }
     }
 
-    fun of(study: String): List<Item> = all().filter { it.study == study }
+    fun of(study: String): List<Item> = rows?.of(study) ?: all().filter { it.study == study }
+
+    fun get(id: String): Item? = if (rows != null) rows.get(id) else all().firstOrNull { it.id == id }
 
     fun add(study: String, module: String, due: Long?, notified: Long?, started: Long, completed: Long, version: String, form: String,
             id: String = UUID.randomUUID().toString(), moduleName: String = ""): Item =
         synchronized(SealedText.LOCK) {
+            if (rows != null) return@synchronized rows.add(Item(id, study, module, due, notified, started, completed, version, form, moduleName = moduleName))
             val existing = all()
             existing.firstOrNull { it.id == id }?.let { return@synchronized it }
             val item = Item(id, study, module, due, notified, started, completed, version, form, moduleName = moduleName)
@@ -103,18 +107,22 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
         }
 
     fun attempted(id: String, error: String): Unit = synchronized(SealedText.LOCK) {
+        rows?.let { it.update(id) { item -> item.copy(attempted = System.currentTimeMillis(), error = error) }; return@synchronized }
         save(all().map { if (it.id == id) it.copy(attempted = System.currentTimeMillis(), error = error) else it })
     }
 
-    fun remove(id: String): Unit = synchronized(SealedText.LOCK) { save(all().filterNot { it.id == id }) }
+    fun remove(id: String): Unit = synchronized(SealedText.LOCK) {
+        if (rows != null) rows.remove(id) else save(all().filterNot { it.id == id })
+    }
 
     fun removeStudy(study: String): Unit = synchronized(SealedText.LOCK) {
-        save(all().filterNot { it.study == study })
+        if (rows != null) rows.removeStudy(study) else save(all().filterNot { it.study == study })
         clearRefused(study)
     }
 
     /** Stores [item] again in place of the one with its id (the time of a first refusal); nothing if it is gone. */
     fun replace(item: Item): Unit = synchronized(SealedText.LOCK) {
+        rows?.let { it.update(item.id) { item }; return@synchronized }
         val all = all()
         val previous = all.firstOrNull { it.id == item.id }
         if (previous != null && previous != item) save(all.map { if (it.id == item.id) item else it })
@@ -132,16 +140,20 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
     fun clearRefused(study: String): Unit = synchronized(SealedText.LOCK) { prefs.edit { putStringSet(REFUSED, refusedStudies() - study) } }
 
     /** Whether an answer to the prompt of [module] due at [due] is waiting: it counts as opened for the reminder. */
-    fun has(study: String, module: String, due: Long): Boolean = all().any { it.study == study && it.module == module && it.due == due }
+    fun has(study: String, module: String, due: Long): Boolean = rows?.has(study, module, due)
+        ?: all().any { it.study == study && it.module == module && it.due == due }
 
     /**
      * How many self-started answers to [module] were given today without a connection (max_per_day); answers to its
      * prompts (with a due time) do not count, for a prompted module the participant may also start.
      */
     fun today(study: String, module: String, now: Long, zone: ZoneId = ZoneId.systemDefault()): Int {
+        rows?.let { return it.today(study, module, now, zone) }
         fun date(ms: Long): LocalDate = Instant.ofEpochMilli(ms).atZone(zone).toLocalDate()
         val day = date(now)
-        return all().count { it.study == study && it.module == module && it.due == null && date(it.completed) == day }
+        return all().count {
+            it.study == study && it.module == module && it.due == null && date(it.completed) == day
+        }
     }
 
     private fun save(items: List<Item>) {
