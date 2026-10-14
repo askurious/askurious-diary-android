@@ -5,6 +5,10 @@ import android.content.SharedPreferences
 /** SharedPreferences in memory for the unit tests (android.jar has only stubs). */
 class FakePrefs : SharedPreferences {
     val values = HashMap<String, Any?>()
+    val diskValues = HashMap<String, Any?>()
+    var commitSucceeds = true
+    var commits = 0
+    var applies = 0
 
     override fun getAll(): MutableMap<String, *> = HashMap(values)
     override fun getString(key: String, defValue: String?): String? = values[key] as String? ?: defValue
@@ -35,11 +39,21 @@ class FakePrefs : SharedPreferences {
         override fun remove(key: String) = apply { removed += key }
         override fun clear() = apply { clear = true }
         override fun commit(): Boolean {
-            apply()
+            commits++
+            applyChanges()
+            // Android may change its in-memory preferences even when the disk write fails.
+            if (!commitSucceeds) return false
+            diskValues.clear()
+            diskValues.putAll(values)
             return true
         }
 
         override fun apply() {
+            applies++
+            applyChanges()
+        }
+
+        private fun applyChanges() {
             if (clear) values.clear()
             removed.forEach { values.remove(it) }
             values.putAll(changes)

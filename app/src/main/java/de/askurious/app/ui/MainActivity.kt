@@ -483,6 +483,7 @@ class MainActivity : ComponentActivity() {
                     Text(study.summary, style = MaterialTheme.typography.bodyMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 }
                 StudyNow(study)
+                if (model.queueUnreadable) Text(stringResource(R.string.queue_unreadable))
                 if (study.code in model.refused) {
                     Text(stringResource(R.string.limit_refused), style = MaterialTheme.typography.bodySmall)
                     TextButton(onClick = { model.clearRefused(study.code) }) { Text(stringResource(R.string.close)) }
@@ -824,9 +825,12 @@ class MainActivity : ComponentActivity() {
                     TextButton(onClick = {
                         confirmRemove = false
                         // with its queued answers and kept pages: the participant takes the study off the phone
-                        model.remove(study.code)
-                        say(getString(R.string.removed_done, study.title))
-                        onBack()
+                        model.remove(study.code) { error ->
+                            if (error != null) say(getString(R.string.error)) else {
+                                say(getString(R.string.removed_done, study.title))
+                                onBack()
+                            }
+                        }
                     }) { Text(stringResource(R.string.remove), color = MaterialTheme.colorScheme.error) }
                 },
                 dismissButton = { TextButton(onClick = { confirmRemove = false }) { Text(stringResource(R.string.cancel)) } },

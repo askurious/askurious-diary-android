@@ -80,7 +80,7 @@
         <item quantity="one">%d answer waiting to be sent</item>
         <item quantity="other">%d answers waiting to be sent</item>
     </plurals>
-    <string name="about_offline">If a study lets you answer without a connection, the app also keeps the questionnaire pages of those questions and, until they are sent, the answers you gave without a connection; answers that could not be sent within 7 days are deleted.</string>
+    <string name="about_offline">For studies that allow offline answers, the app also keeps questionnaire pages. Offline answers remain encrypted on this phone until the server confirms storage or you explicitly remove the study and its answers. Expiry or refusal does not delete them.</string>
     <string name="quiet_title">Quiet hours</string>
     <string name="quiet_now">Quiet hours: %1$s</string>
     <string name="quiet_from_tomorrow">From tomorrow: %1$s</string>
@@ -104,7 +104,7 @@
     <string name="exit_default">Final survey</string>
     <string name="exit_until">Open until %1$s</string>
     <string name="notif_exit">The study period is over. Please answer: %1$s</string>
-    <string name="limit_refused">An answer you gave without a connection was not stored: today\'s limit for this report had already been reached.</string>
+    <string name="limit_refused">The server has not accepted some answers. They remain on this phone for clarification until you explicitly remove them.</string>
     <string name="clock_off">The clock of this phone is wrong. Answers given without a connection will be sent once the date and time are set correctly.</string>
     <string name="rejoin_confirm">You already take part in this study on this phone. Joining again starts a new participation: your earlier answers can then no longer be deleted in the app. Answers of the earlier participation still waiting are sent first if possible, otherwise discarded. To delete your earlier answers, cancel and use “Delete my answers” on the study’s page.</string>
     <string name="rejoin">Join again</string>
@@ -194,4 +194,6 @@
     <string name="after_leave_title">Keep your answers?</string>
     <string name="after_leave_text">You have left the study. Your answers so far still help the research, even though you stopped, and the researchers would be grateful to keep them. Do you want to delete them anyway? This cannot be undone.</string>
     <string name="keep_answers">Keep my answers</string>
+    <string name="save_failed">Could not save. Your filled questionnaire remains open. Please try submitting again.</string>
+    <string name="queue_unreadable">Stored answers cannot be read. They have not been overwritten. Please contact the study team.</string>
 </resources>

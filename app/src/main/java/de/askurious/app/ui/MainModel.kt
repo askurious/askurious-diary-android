@@ -35,7 +35,7 @@ class MainModel(app: Application) : AndroidViewModel(app) {
     var waiting by mutableStateOf<Map<String, Int>>(emptyMap())
         private set
 
-    /** Studies with an answer the server refused for today's limit, not yet seen by the participant (AnswerQueue). */
+    /** Studies with retained answers needing clarification. */
     var refused by mutableStateOf<Set<String>>(emptySet())
         private set
 
@@ -45,6 +45,8 @@ class MainModel(app: Application) : AndroidViewModel(app) {
 
     /** The studies were read once: until then an empty list means "not read yet", not "no studies". */
     var loaded by mutableStateOf(false)
+        private set
+    var queueUnreadable by mutableStateOf(false)
         private set
 
     /** Counts the reloads: only the newest one sets the state, one started earlier may end later. */
@@ -57,15 +59,18 @@ class MainModel(app: Application) : AndroidViewModel(app) {
     fun reload() {
         val mine = ++reloads
         viewModelScope.launch {
-            val (s, items, r) = withContext(Dispatchers.IO) {
+            val (s, items) = withContext(Dispatchers.IO) {
                 val queue = AnswerQueue(context)
-                Triple(StudyStore(context).all(), queue.all(), queue.refusedStudies())
+                val items = try { queue.all() } catch (e: java.io.IOException) { null }
+                Pair(StudyStore(context).all(), items)
             }
             if (mine != reloads) return@launch
             studies = s
-            waiting = items.groupingBy { it.study }.eachCount()
-            refused = r
-            clockOff = clockOff(items.size, Api.clockSkew)
+            queueUnreadable = items == null
+            waiting = items.orEmpty().groupingBy { it.study }.eachCount()
+            // Legacy refusal notices refer to answers older versions already deleted; never claim those survived.
+            refused = items.orEmpty().filter { it.refusal != null }.map { it.study }.toSet()
+            clockOff = clockOff(items.orEmpty().size, Api.clockSkew)
             loaded = true
         }
     }
@@ -104,10 +109,16 @@ class MainModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** Takes the study off the phone, with its queued answers and kept pages. */
-    fun remove(code: String) {
+    fun remove(code: String, done: (ApiError?) -> Unit) {
         viewModelScope.launch {
-            Sync.forget(context, code)
+            val error = try {
+                Sync.forget(context, code)
+                null
+            } catch (e: java.io.IOException) {
+                ApiError("error")
+            }
             reload()
+            done(error)
         }
     }
 
@@ -122,6 +133,8 @@ class MainModel(app: Application) : AndroidViewModel(app) {
                 null
             } catch (e: ApiError) {
                 e
+            } catch (e: java.io.IOException) {
+                ApiError("error")
             }
             reload()
             done(error)
@@ -167,6 +180,8 @@ class MainModel(app: Application) : AndroidViewModel(app) {
                 done(study, null)
             } catch (e: ApiError) {
                 done(null, e)
+            } catch (e: java.io.IOException) {
+                done(null, ApiError("error"))
             } catch (e: org.json.JSONException) {
                 // the server's answer lacks something this app needs
                 done(null, ApiError("error"))

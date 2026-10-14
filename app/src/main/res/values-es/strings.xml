@@ -85,7 +85,7 @@
         <item quantity="many">%d respuestas pendientes de envío</item>
         <item quantity="other">%d respuestas pendientes de envío</item>
     </plurals>
-    <string name="about_offline">Si un estudio permite responder sin conexión, la aplicación guarda también las páginas del cuestionario de esas preguntas y, hasta que se envíen, las respuestas dadas sin conexión; las respuestas que no hayan podido enviarse en 7 días se eliminan.</string>
+    <string name="about_offline">En estudios que permiten responder sin conexión, la aplicación también guarda páginas del cuestionario. Las respuestas sin conexión permanecen cifradas en este teléfono hasta que el servidor confirme su almacenamiento o usted elimine expresamente el estudio y sus respuestas. El vencimiento o rechazo no las elimina.</string>
     <string name="quiet_title">Horas de descanso</string>
     <string name="quiet_now">Horas de descanso: %1$s</string>
     <string name="quiet_from_tomorrow">A partir de mañana: %1$s</string>
@@ -111,7 +111,7 @@
     <string name="exit_default">Cuestionario final</string>
     <string name="exit_until">Disponible hasta el %1$s</string>
     <string name="notif_exit">El periodo del estudio ha terminado. Por favor, responda: %1$s</string>
-    <string name="limit_refused">Una respuesta que dio sin conexión no se guardó: ya se había alcanzado el límite de hoy para este registro.</string>
+    <string name="limit_refused">El servidor no ha aceptado algunas respuestas. Permanecen en este teléfono para aclararlas hasta que las elimine expresamente.</string>
     <string name="clock_off">El reloj de este teléfono no está bien. Las respuestas dadas sin conexión se enviarán en cuanto la fecha y la hora sean correctas.</string>
     <string name="rejoin_confirm">Ya participa en este estudio en este teléfono. Unirse de nuevo inicia una nueva participación: después ya no podrá borrar sus respuestas anteriores en la aplicación. Las respuestas pendientes de la participación anterior se envían antes si es posible; si no, se descartan. Para borrar sus respuestas anteriores, cancele y use «Borrar mis respuestas» en la tarjeta del estudio.</string>
     <string name="rejoin">Unirse de nuevo</string>
@@ -201,4 +201,6 @@
     <string name="after_leave_title">¿Conservar sus respuestas?</string>
     <string name="after_leave_text">Ha abandonado el estudio. Sus respuestas hasta ahora siguen ayudando a la investigación aunque lo deje ahora, y los investigadores agradecerían poder conservarlas. ¿Quiere borrarlas de todos modos? No se puede deshacer.</string>
     <string name="keep_answers">Conservar mis respuestas</string>
+    <string name="save_failed">No se pudo guardar. El cuestionario cumplimentado sigue abierto. Intente enviarlo de nuevo.</string>
+    <string name="queue_unreadable">No se pueden leer las respuestas guardadas. No se han sobrescrito. Contacte con el equipo del estudio.</string>
 </resources>

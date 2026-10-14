@@ -225,8 +225,9 @@ object Sync {
     }
 
     private suspend fun forgetLocked(context: Context, code: String) {
-        StudyStore(context).remove(code)
         AnswerQueue(context).removeStudy(code)
+        // Keep the participation secret if durable deletion of its queued answers fails.
+        StudyStore(context).remove(code)
         OfflinePages(context).dropStudy(code)
         PromptLog(context).removeStudy(code)
         Alarms.rearm(context)
@@ -264,9 +265,8 @@ object Sync {
 
     /**
      * Sends the queued answers of [study] (POST /offline, each with its uuid). Returns false when some must wait for
-     * the network (no network, 429, 5xx). An answer the questionnaire no longer fits ("changed") is dropped with the
-     * kept page, which the sync of the study fetches again; one over today's limit is dropped and noted for the card;
-     * one refused for now (401, "paused") waits with a grace, one refused for the phone's clock until it is too old.
+     * the network (no network, 429, 5xx). All unacknowledged answers stay encrypted on the phone; refusals are
+     * noted for clarification on the study card. Changed questionnaire pages are fetched again separately.
      * Only with [lock] held.
      */
     private suspend fun sendLocked(context: Context, study: Study): Boolean {
@@ -275,31 +275,21 @@ object Sync {
         for (item in queue.of(study.code)) {
             // "started" is in the study's time (virtual for a fast-forward person)
             if (AnswerQueue.tooOld(item, study.now())) {
-                queue.remove(item.id)
+                if (item.refusal != "expired") queue.replace(item.copy(refusal = "expired"))
                 continue
             }
             val error = try {
-                Api.offlineAnswer(study.server, study.secret, item)
-                null
+                val reply = Api.offlineAnswer(study.server, study.secret, item)
+                if (AnswerQueue.acknowledged(reply)) null else ApiError("unconfirmed", 409)
             } catch (e: ApiError) {
                 e
             }
-            when (AnswerQueue.fate(error, Api.clockSkew)) {
+            when (queue.recordDelivery(item, error, Api.clockSkew)) {
                 AnswerQueue.Fate.KEEP -> kept = true
-                AnswerQueue.Fate.CLOCK -> {}
-                AnswerQueue.Fate.WAIT -> {
-                    val next = AnswerQueue.afterRefusal(item, System.currentTimeMillis())
-                    if (next == null) queue.remove(item.id) else if (next != item) queue.replace(next)
-                }
                 AnswerQueue.Fate.CHANGED -> {
-                    queue.remove(item.id)
                     OfflinePages(context).drop(study.code, item.module)
                 }
-                AnswerQueue.Fate.LIMIT -> {
-                    queue.remove(item.id)
-                    queue.noteRefused(study.code)
-                }
-                AnswerQueue.Fate.SENT, AnswerQueue.Fate.DROP -> queue.remove(item.id)
+                else -> Unit
             }
         }
         return !kept

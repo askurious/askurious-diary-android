@@ -80,7 +80,7 @@
         <item quantity="one">%d antwoord wacht op verzending</item>
         <item quantity="other">%d antwoorden wachten op verzending</item>
     </plurals>
-    <string name="about_offline">Als een onderzoek antwoorden zonder verbinding toestaat, bewaart de app ook de vragenlijstpagina’s van die vragen en, totdat ze verstuurd zijn, de antwoorden die zonder verbinding zijn gegeven; antwoorden die niet binnen 7 dagen konden worden verstuurd, worden verwijderd.</string>
+    <string name="about_offline">Bij onderzoeken met offline antwoorden bewaart de app ook vragenlijstpagina’s. Offline antwoorden blijven versleuteld op deze telefoon totdat de server opslag bevestigt of u het onderzoek en de antwoorden uitdrukkelijk verwijdert. Verlopen of weigering verwijdert ze niet.</string>
     <string name="quiet_title">Rusttijden</string>
     <string name="quiet_now">Rusttijden: %1$s</string>
     <string name="quiet_from_tomorrow">Vanaf morgen: %1$s</string>
@@ -104,7 +104,7 @@
     <string name="exit_default">Afsluitende vragenlijst</string>
     <string name="exit_until">Open tot %1$s</string>
     <string name="notif_exit">De onderzoeksperiode is voorbij. Vult u nog in: %1$s</string>
-    <string name="limit_refused">Een antwoord dat u zonder verbinding gaf, is niet opgeslagen: het maximum van vandaag voor deze melding was al bereikt.</string>
+    <string name="limit_refused">De server heeft sommige antwoorden niet aanvaard. Ze blijven op deze telefoon voor verduidelijking totdat u ze uitdrukkelijk verwijdert.</string>
     <string name="clock_off">De klok van deze telefoon staat verkeerd. Antwoorden die zonder verbinding zijn gegeven, worden verstuurd zodra datum en tijd kloppen.</string>
     <string name="rejoin_confirm">U neemt op deze telefoon al deel aan dit onderzoek. Opnieuw deelnemen start een nieuwe deelname: uw eerdere antwoorden kunt u daarna niet meer in de app verwijderen. Nog wachtende antwoorden van de eerdere deelname worden eerst verstuurd als dat lukt, anders vervallen ze. Om uw eerdere antwoorden te verwijderen, annuleert u en gebruikt u ‘Mijn antwoorden verwijderen’ op de kaart van het onderzoek.</string>
     <string name="rejoin">Opnieuw deelnemen</string>
@@ -194,4 +194,6 @@
     <string name="after_leave_title">Uw antwoorden bewaren?</string>
     <string name="after_leave_text">U hebt het onderzoek verlaten. Uw antwoorden tot nu toe helpen het onderzoek ook als u nu stopt, en de onderzoekers zouden ze graag bewaren. Wilt u ze toch verwijderen? Dit kan niet ongedaan worden gemaakt.</string>
     <string name="keep_answers">Mijn antwoorden bewaren</string>
+    <string name="save_failed">Opslaan mislukt. Uw ingevulde vragenlijst blijft open. Probeer opnieuw in te dienen.</string>
+    <string name="queue_unreadable">Opgeslagen antwoorden kunnen niet worden gelezen. Ze zijn niet overschreven. Neem contact op met het onderzoeksteam.</string>
 </resources>

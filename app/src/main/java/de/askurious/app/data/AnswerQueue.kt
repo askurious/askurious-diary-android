@@ -9,12 +9,13 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.UUID
+import java.io.IOException
 
 /**
  * Answers given without a connection (EntryActivity, offline page), waiting to be sent with POST /offline.
  * Kept in the app's private storage like the studies (no backup, not moved to a new phone) and only until the
- * server took them or refused them for good; the server takes an answer at most [MAX_AGE_MS] after the page was
- * opened, so an older one is dropped unsent. The answers are stored sealed under the Keystore key and kept open in
+ * server confirmed durable storage or the participant explicitly removes them. Age and refusals never delete an
+ * unacknowledged answer. The answers are stored sealed under the Keystore key and kept open in
  * memory ([SealedText], audit 2026-10-13, AN-3, AN-8); a queue stored in plain text by an earlier version is sealed
  * the first time it is read.
  */
@@ -42,6 +43,7 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
         val version: String,
         val form: String,
         val refusedSince: Long? = null,
+        val refusal: String? = null,
     ) {
         /** The body of POST /offline; "uuid" makes sending it again harmless (the server answers as the first time). */
         fun body(): JSONObject = JSONObject().put("uuid", id).put("module", module)
@@ -50,6 +52,7 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
 
         fun toJson(): JSONObject = body().put("id", id).put("study", study)
             .put("refused_since", refusedSince ?: JSONObject.NULL)
+            .put("refusal", refusal ?: JSONObject.NULL)
 
         companion object {
             fun fromJson(o: JSONObject) = Item(
@@ -58,27 +61,37 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
                 module = o.getString("module"),
                 due = if (o.isNull("due")) null else o.optLong("due"),
                 notified = if (o.isNull("notified")) null else o.optLong("notified"),
-                started = o.optLong("started"),
-                completed = o.optLong("completed"),
-                version = o.optString("version"),
-                form = (o.optJSONObject("form") ?: JSONObject()).toString(),
+                started = o.getLong("started"),
+                completed = o.getLong("completed"),
+                version = o.getString("version"),
+                form = o.getJSONObject("form").toString(),
                 refusedSince = if (o.isNull("refused_since")) null else o.optLong("refused_since"),
+                refusal = if (o.isNull("refusal")) null else o.getString("refusal"),
             )
         }
     }
 
     fun all(): List<Item> = synchronized(SealedText.LOCK) {
-        val raw = text.read().text ?: return emptyList()
-        val arr = runCatching { JSONArray(raw) }.getOrNull() ?: return emptyList()
-        return (0 until arr.length()).mapNotNull { runCatching { Item.fromJson(arr.getJSONObject(it)) }.getOrNull() }
+        val opened = text.read()
+        if (opened.unreadable) throw IOException("Queued answers cannot be decrypted")
+        val raw = opened.text ?: return emptyList()
+        return try {
+            val arr = JSONArray(raw)
+            (0 until arr.length()).map { Item.fromJson(arr.getJSONObject(it)) }
+        } catch (e: Exception) {
+            throw IOException("Queued answers cannot be read", e)
+        }
     }
 
     fun of(study: String): List<Item> = all().filter { it.study == study }
 
-    fun add(study: String, module: String, due: Long?, notified: Long?, started: Long, completed: Long, version: String, form: String): Item =
+    fun add(study: String, module: String, due: Long?, notified: Long?, started: Long, completed: Long, version: String, form: String,
+            id: String = UUID.randomUUID().toString()): Item =
         synchronized(SealedText.LOCK) {
-            val item = Item(UUID.randomUUID().toString(), study, module, due, notified, started, completed, version, form)
-            save(all() + item)
+            val existing = all()
+            existing.firstOrNull { it.id == id }?.let { return@synchronized it }
+            val item = Item(id, study, module, due, notified, started, completed, version, form)
+            save(existing + item)
             item
         }
 
@@ -92,7 +105,8 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
     /** Stores [item] again in place of the one with its id (the time of a first refusal); nothing if it is gone. */
     fun replace(item: Item): Unit = synchronized(SealedText.LOCK) {
         val all = all()
-        if (all.any { it.id == item.id }) save(all.map { if (it.id == item.id) item else it })
+        val previous = all.firstOrNull { it.id == item.id }
+        if (previous != null && previous != item) save(all.map { if (it.id == item.id) item else it })
     }
 
     /**
@@ -120,7 +134,23 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
     }
 
     private fun save(items: List<Item>) {
-        if (items.isEmpty()) text.remove() else text.write(JSONArray(items.map { it.toJson() }).toString())
+        if (items.isEmpty()) text.remove(durable = true)
+        else text.write(JSONArray(items.map { it.toJson() }).toString(), durable = true)
+    }
+
+    /** Apply a delivery result atomically to the persisted queue; only acknowledged storage removes data. */
+    fun recordDelivery(item: Item, error: ApiError?, skew: Long? = null, now: Long = System.currentTimeMillis()): Fate {
+        val result = fate(error, skew)
+        when (result) {
+            Fate.SENT -> remove(item.id)
+            Fate.KEEP -> Unit
+            Fate.WAIT -> replace(afterRefusal(item, now).copy(refusal = error?.key ?: "unauthorised"))
+            Fate.CLOCK -> replace(item.copy(refusal = "clock"))
+            Fate.CHANGED -> replace(item.copy(refusal = "changed"))
+            Fate.LIMIT -> replace(item.copy(refusal = "daily_limit"))
+            Fate.REVIEW -> replace(item.copy(refusal = error?.key ?: "unconfirmed"))
+        }
+        return result
     }
 
     /** What becomes of a queued answer after the server's answer to POST /offline. */
@@ -132,25 +162,24 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
         KEEP,
 
         /**
-         * refused for now (401: the server does not know the secret; 409 "paused"): kept with the same grace as the
-         * study itself ([Study.UNAUTHORISED_GRACE_MS], [afterRefusal]), tried again at the next regular sync, not at
-         * once: a server restored from a backup or a pause of the researchers must not cost the answer
+         * refused for now (401 or "paused"): kept indefinitely, tried again at the next regular sync,
+         * without an immediate retry loop
          */
         WAIT,
 
         /**
          * refused because the phone's clock is wrong (a 400 while the server's clock differs by more than
-         * [MAX_SKEW_MS], or "clock"): kept until it is too old ([tooOld]), the app shows a note
+         * [MAX_SKEW_MS], or "clock"): kept for clarification, the app shows a note
          */
         CLOCK,
 
-        /** refused for good (answered already, expired, unknown module): remove it unsent */
-        DROP,
+        /** Not accepted: keep the original for clarification, without an immediate retry loop. */
+        REVIEW,
 
-        /** today's limit of the self-started report was reached (409 daily_limit): remove it, the card says so */
+        /** Daily limit reached: retain the original for clarification, the card says so. */
         LIMIT,
 
-        /** the questionnaire changed since the page was kept: remove the answer and the kept page, fetch it again */
+        /** Questionnaire changed: retain the answer, replace only the cached questionnaire page. */
         CHANGED,
     }
 
@@ -166,7 +195,7 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
         const val MAX_SKEW_MS = 5L * 60 * 1000
 
         /**
-         * [error]: null when the server answered 200. [skew]: the phone's clock minus the server's (milliseconds, from
+         * [error]: null only after an acknowledged stored/review reply. [skew]: the phone's clock minus the server's (milliseconds, from
          * the Date header of the server's answer), null when unknown.
          */
         fun fate(error: ApiError?, skew: Long? = null): Fate = when {
@@ -177,20 +206,19 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
             error.status == 401 || error.key == "paused" -> Fate.WAIT
             error.key == "clock" || (error.status == 400 && skew != null && Math.abs(skew) > MAX_SKEW_MS) -> Fate.CLOCK
             // 409 done, 410 expired, 400 unknown and anything else the server will not take later either
-            else -> Fate.DROP
+            else -> Fate.REVIEW
         }
 
         /**
          * [item] after a refusal that may pass ([Fate.WAIT]) at the real moment [now]: with the time of the first
-         * refusal noted, or null when the server has refused it for more than [Study.UNAUTHORISED_GRACE_MS] (then it
-         * is dropped, like the study itself after that long).
+         * refusal noted. A prolonged refusal never deletes the original.
          */
-        fun afterRefusal(item: Item, now: Long): Item? {
-            val since = item.refusedSince ?: return item.copy(refusedSince = now)
-            return if (now - since > Study.UNAUTHORISED_GRACE_MS) null else item
-        }
+        fun afterRefusal(item: Item, now: Long): Item = item.copy(refusedSince = item.refusedSince ?: now)
 
-        /** Whether [item] is too old for the server at [now]: dropped without trying. */
+        /** Only these replies confirm the server retained the complete original, including review cases. */
+        fun acknowledged(reply: JSONObject): Boolean = reply.optString("status") in setOf("stored", "review")
+
+        /** Whether [item] exceeds the server's acceptance window: retain locally for clarification. */
         fun tooOld(item: Item, now: Long): Boolean = now - item.started > MAX_AGE_MS
     }
 }
