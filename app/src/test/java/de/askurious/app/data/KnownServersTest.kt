@@ -25,7 +25,7 @@ class KnownServersTest {
     fun anyOtherServerIsNot() {
         for (s in listOf(
             "https://askurious-studie.example", "https://ask.askurious.de.example.org", "https://evil.askurious.de",
-            "http://ask.askurious.de", "https://ask.askurious.de:8443", "http://localhost:5060", "ftp://askurious.de", "",
+            "http://ask.askurious.de", "https://ask.askurious.de:8443", "http://localhost:5080", "ftp://askurious.de", "",
         )) {
             assertFalse(s, Api.isKnown(s, release))
         }
@@ -36,7 +36,7 @@ class KnownServersTest {
         // the unit tests run the debug build: the servers of Askurious and the Flask server on the computer
         assertTrue(Api.isKnown("https://ask.askurious.de"))
         assertTrue(Api.isKnown("https://polltergeist.de"))
-        assertTrue(Api.isKnown("http://localhost:5060"))
+        assertTrue(Api.isKnown("http://localhost:5080"))
         assertTrue(Api.isKnown(Api.defaultServer))
         assertFalse(Api.isKnown("https://askurious-studie.example"))
     }
@@ -52,7 +52,7 @@ class KnownServersTest {
     @Test
     fun originsAreNormalised() {
         assertEquals("https://ask.askurious.de", Api.origin("https://Ask.Askurious.de:443/j/abc"))
-        assertEquals("http://localhost:5060", Api.origin("http://localhost:5060/"))
+        assertEquals("http://localhost:5080", Api.origin("http://localhost:5080/"))
         assertNull(Api.origin("askurious://join/abc"))
         assertNull(Api.origin("not a url"))
     }

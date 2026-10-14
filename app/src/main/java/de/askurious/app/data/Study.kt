@@ -176,6 +176,8 @@ data class Study(
      * and kept only on the device (the server never sends it; Sync.merged keeps it).
      */
     val sound: Boolean = true,
+    val contact: String = "",
+    val completedPrompts: Set<String> = emptySet(),
 ) {
     val running get() = status == "active"
 
@@ -249,6 +251,8 @@ data class Study(
         .put("summary", summary)
         .put("open_end", openEnd)
         .put("sound", sound)
+        .put("contact", contact)
+        .put("completed_prompts", JSONArray(completedPrompts.toList()))
 
     companion object {
         /** How long the server may answer 401 before the app takes the study as deleted: three days. */
@@ -290,6 +294,8 @@ data class Study(
             summary = o.optString("summary").trim(),
             openEnd = o.optBoolean("open_end", false),
             sound = o.optBoolean("sound", true),
+            contact = o.optString("contact").trim(),
+            completedPrompts = o.optJSONArray("completed_prompts")?.let { a -> (0 until a.length()).map { a.optString(it) }.toSet() } ?: emptySet(),
         )
 
         /** ["YYYY-MM-DD", "YYYY-MM-DD" or null]; anything else is no pause. */

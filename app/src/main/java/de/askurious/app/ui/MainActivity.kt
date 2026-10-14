@@ -19,6 +19,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.imePadding
+import de.askurious.app.data.PromptLog
+import de.askurious.app.data.AnswerQueue
+import de.askurious.app.data.TransmissionLog
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -340,9 +346,7 @@ class MainActivity : ComponentActivity() {
         val studies = model.studies
         Scaffold(
             topBar = {
-                TopAppBar(title = { Logo() }, actions = {
-                    IconButton(onClick = onAbout) { Icon(Icons.Outlined.Info, contentDescription = stringResource(R.string.about)) }
-                })
+                PageHeader(stringResource(R.string.app_name), onAbout = onAbout)
             },
             // the main action of the start page with its words, not a "+" in the bar (audit A21); the empty page has
             // its own button
@@ -370,7 +374,6 @@ class MainActivity : ComponentActivity() {
                 }
                 // what keeps the prompts from arriving (on time), right below the heading, in view after a cold start
                 // (audit A1, SA3); nothing while all is well
-                if (studies.isNotEmpty()) item(key = "readiness") { Readiness(studies, allowNotifications) }
                 // a study's server needs a newer app (config DIARY_MIN_APP_VERSION): the app keeps working, but asks
                 if (studies.any { it.needsUpdate(BuildConfig.VERSION_CODE) }) item(key = "notice-update") {
                     Notice(stringResource(R.string.update_app), Icons.Outlined.Warning, stringResource(R.string.update_button)) {
@@ -388,6 +391,7 @@ class MainActivity : ComponentActivity() {
                 }
                 // running and not yet over on top, the ended ones under a heading of their own (audit A20)
                 items(now, key = { it.code }) { StudyTheme(it.look) { StudyCard(it) { onStudy(it) } } }
+                if (studies.isNotEmpty()) item(key = "readiness") { Readiness(studies, allowNotifications) }
                 if (ended.isNotEmpty()) item(key = "ended") {
                     Text(
                         stringResource(R.string.ended_group), style = MaterialTheme.typography.titleMedium,
@@ -414,20 +418,20 @@ class MainActivity : ComponentActivity() {
      * permission with the button that leads to it; invisible while all is well. Notifications count for every study,
      * exact alarms only while one runs.
      */
+    @OptIn(ExperimentalLayoutApi::class)
     @Composable
     private fun Readiness(studies: List<Study>, allowNotifications: () -> Unit) {
         val notify = notifyState != NotifyNotice.NONE
         val exact = studies.any { it.running } && !exactOn
         if (!notify && !exact) return
-        NoticeCard {
-            if (notify) NoticeRow(
-                stringResource(R.string.allow_notifications), Icons.Outlined.Notifications,
-                stringResource(if (notifyState == NotifyNotice.SETTINGS) R.string.allow_in_settings else R.string.allow),
-                allowNotifications,
-            )
-            if (notify && exact) HorizontalDivider(color = MaterialTheme.colorScheme.error.copy(alpha = 0.3f))
-            if (exact) NoticeRow(stringResource(R.string.allow_exact), Icons.Outlined.Warning, stringResource(R.string.allow)) { openExactSettings() }
-        }
+        Card(Modifier.fillMaxWidth()) { Column(Modifier.padding(16.dp)) {
+            SectionTitle(stringResource(R.string.reminders_setup))
+            Text(stringResource(R.string.reminders_optional), style = MaterialTheme.typography.bodySmall)
+            FlowRow {
+                if (notify) TextButton(onClick = allowNotifications) { Text(stringResource(R.string.notifications_open)) }
+                if (exact) TextButton(onClick = { openExactSettings() }) { Text(stringResource(R.string.alarms_open)) }
+            }
+        } }
     }
 
     /** A notice of the start page: in the error colours with an icon, unlike a study card (audit A20). */
@@ -466,6 +470,8 @@ class MainActivity : ComponentActivity() {
      */
     @Composable
     private fun StudyCard(study: Study, onOpen: () -> Unit) {
+        val context = LocalContext.current
+        var transmissions by rememberSaveable { mutableStateOf(false) }
         Card(
             onClick = onOpen,
             modifier = Modifier.fillMaxWidth(),
@@ -483,6 +489,9 @@ class MainActivity : ComponentActivity() {
                     Text(study.summary, style = MaterialTheme.typography.bodyMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 }
                 StudyNow(study)
+                val n = model.waiting[study.code] ?: 0
+                if (n > 0) Message(pluralStringResource(R.plurals.answers_waiting, n, n))
+                if (n > 0 || TransmissionLog(context).of(study.code).isNotEmpty()) TextButton(onClick = { transmissions = true }) { Text(stringResource(R.string.transmissions)) }
                 if (model.queueUnreadable) Text(stringResource(R.string.queue_unreadable))
                 if (study.code in model.refused) {
                     Text(stringResource(R.string.limit_refused), style = MaterialTheme.typography.bodySmall)
@@ -490,13 +499,15 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        if (transmissions) TransmissionDetails(study, AnswerQueue(context).of(study.code), TransmissionLog(context).of(study.code),
+            model.transferring, { model.transfer() }, { transmissions = false })
     }
 
     /** The study's date and time now, read again every 15 s for a fast-forward person (a day passes in minutes). */
     @Composable
     private fun studyNow(study: Study): Long {
         var tick by remember { mutableLongStateOf(System.currentTimeMillis()) }
-        if (study.clock != null) LaunchedEffect(study.code) {
+        LaunchedEffect(study.code) {
             while (true) {
                 delay(15_000)
                 tick = System.currentTimeMillis()
@@ -529,10 +540,23 @@ class MainActivity : ComponentActivity() {
         }
         StateLine(study, state, today)
         if (state == StudyState.RUNNING) {
+            val log = PromptLog(context)
+            val queue = AnswerQueue(context)
+            for (prompt in Schedule.available(study, Instant.ofEpochMilli(tick)).filter {
+                !log.isCompleted(study.code, it.module, it.due) && !queue.has(study.code, it.module, it.due)
+            }) {
+                val module = study.modules.first { it.key == prompt.module }
+                SectionTitle(module.name)
+                if (prompt.expires > 0) Text(stringResource(R.string.prompt_until,
+                    whenText(Instant.ofEpochMilli(prompt.due + prompt.expires * 60_000L).atZone(ZoneId.systemDefault()), today, false)))
+                Button(onClick = { startActivity(EntryActivity.intent(context, study.code, prompt.module, prompt.due,
+                    log.notifiedAt(study.code, prompt.module, prompt.due))) }) { Text(stringResource(R.string.answer_prompt)) }
+            }
             if (notifyState != NotifyNotice.NONE) {
                 // without notifications no prompt reaches the participant: no time that would not come (audit A1)
                 Text(stringResource(R.string.notifications_off), color = MaterialTheme.colorScheme.error)
-            } else Schedule.next(listOf(study), Instant.ofEpochMilli(tick)).firstOrNull()?.let {
+            }
+            Schedule.next(listOf(study), Instant.ofEpochMilli(tick)).firstOrNull()?.let {
                 // shown in the study's time, like the day; "about" while the alarm may ring minutes late (A11), "today",
                 // "tomorrow" or the date (A25)
                 val due = Instant.ofEpochMilli(it.due).atZone(ZoneId.systemDefault())
@@ -645,6 +669,7 @@ class MainActivity : ComponentActivity() {
      * asking first (A14, A15). After leaving the page asks whether the answers should go too, with a kind word for
      * keeping them.
      */
+    @OptIn(ExperimentalLayoutApi::class)
     @Composable
     private fun StudyScreen(study: Study, onBack: () -> Unit, snackbar: SnackbarHostState, say: (String) -> Unit) {
         val context = LocalContext.current
@@ -652,7 +677,8 @@ class MainActivity : ComponentActivity() {
         var shortcutFor by remember { mutableStateOf<Module?>(null) }
         var confirmLeave by remember { mutableStateOf(false) }
         var confirmErase by remember { mutableStateOf(false) }
-        var confirmRemove by remember { mutableStateOf(false) }
+        var confirmRemove by rememberSaveable { mutableStateOf(false) }
+        var transmissions by rememberSaveable { mutableStateOf(false) }
         var erasing by remember { mutableStateOf(false) }
         var eraseError by remember { mutableStateOf<String?>(null) }
         var editQuiet by remember { mutableStateOf(false) }
@@ -664,13 +690,17 @@ class MainActivity : ComponentActivity() {
             ) {
                 Text(study.title, style = MaterialTheme.typography.titleLarge, modifier = Modifier.semantics { heading() })
                 if (study.summary.isNotBlank()) Text(study.summary)
+                if (study.contact.isNotBlank()) Text(stringResource(R.string.study_contact, study.contact))
                 StudyNow(study)
                 if (study.code in model.refused) {
                     Text(stringResource(R.string.limit_refused), style = MaterialTheme.typography.bodySmall)
                     TextButton(onClick = { model.clearRefused(study.code) }) { Text(stringResource(R.string.close)) }
                 }
                 val n = model.waiting[study.code] ?: 0
-                if (n > 0) Text(pluralStringResource(R.plurals.answers_waiting, n, n))
+                if (n > 0) Message(pluralStringResource(R.plurals.answers_waiting, n, n))
+                if (n > 0 || TransmissionLog(context).of(study.code).isNotEmpty()) TextButton(onClick = { transmissions = true }) {
+                    Text(stringResource(R.string.transmissions))
+                }
 
                 val first = study.firstDay
                 val last = study.lastDay
@@ -698,6 +728,7 @@ class MainActivity : ComponentActivity() {
                     val quietNext = study.quietOn(today.plusDays(1))
                     Text(stringResource(R.string.quiet_now, quietText(quietNow)))
                     if (quietNext != quietNow) Text(stringResource(R.string.quiet_from_tomorrow, quietText(quietNext)))
+                    if (study.quietPending != null) Message(stringResource(R.string.quiet_pending))
                     if (study.running) OutlinedButton(onClick = { editQuiet = true }) { Text(stringResource(R.string.quiet_change)) }
                 }
 
@@ -807,6 +838,8 @@ class MainActivity : ComponentActivity() {
             )
         }
         shortcutFor?.let { m -> ShortcutDialog(study, m, onDone = { shortcutFor = null }) }
+        if (transmissions) TransmissionDetails(study, AnswerQueue(context).of(study.code), TransmissionLog(context).of(study.code),
+            model.transferring, { model.transfer() }, { transmissions = false })
         if (confirmRemove) {
             // the secret goes with the study: afterwards its answers can no longer be deleted from the phone (audit A4)
             AlertDialog(
@@ -814,8 +847,10 @@ class MainActivity : ComponentActivity() {
                 title = { Text(stringResource(R.string.remove_title, study.title)) },
                 text = {
                     GuardAgainstOverlays()
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Text(stringResource(R.string.remove_confirm))
+                        val waiting = model.waiting[study.code] ?: 0
+                        if (waiting > 0) Message(stringResource(R.string.remove_waiting, waiting), error = true)
                         if (study.exit?.open == true) {
                             Text(stringResource(R.string.remove_exit_open), color = MaterialTheme.colorScheme.error)
                         }
@@ -833,7 +868,12 @@ class MainActivity : ComponentActivity() {
                         }
                     }) { Text(stringResource(R.string.remove), color = MaterialTheme.colorScheme.error) }
                 },
-                dismissButton = { TextButton(onClick = { confirmRemove = false }) { Text(stringResource(R.string.cancel)) } },
+                dismissButton = { FlowRow {
+                    TextButton(onClick = { confirmRemove = false }) { Text(stringResource(R.string.cancel)) }
+                    if ((model.waiting[study.code] ?: 0) > 0) TextButton(onClick = {
+                        confirmRemove = false; transmissions = true; model.transfer()
+                    }) { Text(stringResource(R.string.try_transfer)) }
+                } },
             )
         }
         if (confirmErase) {
@@ -912,6 +952,7 @@ class MainActivity : ComponentActivity() {
      * saved only with "Save". They keep the random prompts out of that time from tomorrow on; the fixed times of the
      * researchers stay as they are.
      */
+    @OptIn(ExperimentalLayoutApi::class)
     @Composable
     private fun QuietDialog(initial: Quiet?, onDismiss: () -> Unit, onSave: (Quiet?) -> Unit) {
         val context = LocalContext.current
@@ -944,7 +985,7 @@ class MainActivity : ComponentActivity() {
                     if (on) {
                         val fromText = stringResource(R.string.quiet_from_cd, timeText(start))
                         val toText = stringResource(R.string.quiet_to_cd, timeText(end))
-                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        FlowRow(verticalArrangement = Arrangement.spacedBy(8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             Text(stringResource(R.string.quiet_from))
                             // "Quiet hours from 23:00", not only "23:00" (audit A16)
                             OutlinedButton(onClick = { pick(start) { start = it } }, Modifier.semantics { contentDescription = fromText }) { Text(timeText(start)) }
@@ -1023,7 +1064,8 @@ class MainActivity : ComponentActivity() {
         var server by rememberSaveable { mutableStateOf(Api.defaultServer) }
         var infoText by rememberSaveable { mutableStateOf<String?>(null) }
         val info = remember(infoText) { infoText?.let { runCatching { JSONObject(it) }.getOrNull() } }
-        var busy by remember { mutableStateOf(false) }
+        val busy = model.joinBusy
+        BackHandler(enabled = busy) {}
         var message by rememberSaveable { mutableStateOf<String?>(null) }
         var confirmRejoin by remember { mutableStateOf(false) }
         // the camera was refused: the scan button says so and points to the field (audit A10)
@@ -1042,6 +1084,7 @@ class MainActivity : ComponentActivity() {
         }
 
         fun lookUp(c: String) {
+            if (busy) return
             val clean = joinCode(c) ?: return
             val at = joinServer(c, BuildConfig.DEBUG) ?: Api.defaultServer
             code = clean
@@ -1052,13 +1095,8 @@ class MainActivity : ComponentActivity() {
                 message = errorText(ApiError(Api.FOREIGN))
                 return
             }
-            busy = true
             message = null
-            model.lookUp(at, clean) { found, e ->
-                infoText = found?.toString()
-                message = e?.let { errorText(it) }
-                busy = false
-            }
+            model.lookUp(at, clean) { _, _ -> }
         }
 
         /**
@@ -1067,17 +1105,20 @@ class MainActivity : ComponentActivity() {
          * never go to the new person.
          */
         fun enrol(info: JSONObject) {
-            busy = true
             message = null
-            model.enrol(server, code, info) { study, e ->
-                busy = false
-                if (study != null) {
-                    // the entry questionnaire, unless a personal code connected a participation that is past it
-                    if (study.status == "pending") startActivity(EntryActivity.intent(context, study.code, "entry"))
-                    onJoined()
-                } else {
-                    message = e?.let { errorText(it) }
-                }
+            model.enrol(server, code, info) { _, _ -> }
+        }
+
+        LaunchedEffect(model.joinInfo, model.joinError) {
+            model.joinInfo?.let { infoText = it }
+            model.joinError?.let { message = errorText(it) }
+        }
+        LaunchedEffect(model.joinedStudy) {
+            model.joinedStudy?.let { study ->
+                val address = model.entryAddress
+                model.consumedJoin()
+                if (study.status == "pending") startActivity(EntryActivity.intent(context, study.code, "entry", address = address))
+                onJoined()
             }
         }
 
@@ -1119,14 +1160,14 @@ class MainActivity : ComponentActivity() {
 
         // once the study is found, the screen wears its look (that of its pages)
         StudyTheme(info?.let { Look.fromJson(it.optJSONObject("look")) }, bars = true) {
-            BackScaffold(stringResource(R.string.join_study), onDone) { pad ->
+            BackScaffold(stringResource(R.string.join_study), { if (!busy) onDone() }) { pad ->
                 Column(
-                    pad.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
+                    pad.fillMaxSize().imePadding().verticalScroll(rememberScrollState()).padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     val i = info
                     if (i == null) {
-                        OutlinedButton(onClick = { scanWithPermission() }) { Text(stringResource(R.string.scan_qr)) }
+                        OutlinedButton(onClick = { scanWithPermission() }, enabled = !busy) { Text(stringResource(R.string.scan_qr)) }
                         if (cameraRefused) {
                             Text(
                                 stringResource(R.string.camera_refused),
@@ -1138,6 +1179,7 @@ class MainActivity : ComponentActivity() {
                         OutlinedTextField(
                             // lowercase only; the hyphen of a test code (k7qm2x-t3f9a) stays, joinCode removes spaces
                             value = code, onValueChange = { code = it.lowercase(); message = null },
+                            enabled = !busy,
                             label = { Text(stringResource(R.string.join_code)) }, singleLine = true,
                             // the whole width, the cursor in it, an example of a code and where it stands (audit A13)
                             modifier = Modifier.fillMaxWidth().focusRequester(focus),
@@ -1162,6 +1204,7 @@ class MainActivity : ComponentActivity() {
                     } else {
                         Text(i.optString("title"), style = MaterialTheme.typography.titleLarge, modifier = Modifier.semantics { heading() })
                         i.optString("description").takeIf { it.isNotBlank() }?.let { Text(it) }
+                        i.optString("contact").takeIf { it.isNotBlank() }?.let { Text(stringResource(R.string.study_contact, it)) }
                         val days = i.optInt("period_days")
                         // an open-ended study runs until the researchers end it
                         if (i.optBoolean("open_end", false) || days <= 0) Text(stringResource(R.string.duration_open_end))
@@ -1205,7 +1248,7 @@ class MainActivity : ComponentActivity() {
                             // a personal code connecting again keeps the same participation, nothing to ask
                             if (!rejoin && model.studies.any { it.code == i.optString("code") }) confirmRejoin = true else enrol(i)
                         }) { Text(stringResource(R.string.join)) }
-                        TextButton(onClick = onDone) { Text(stringResource(R.string.cancel)) }
+                        TextButton(onClick = onDone, enabled = !busy) { Text(stringResource(R.string.cancel)) }
                     }
                     if (busy) {
                         val label = stringResource(if (i == null) R.string.looking_up else R.string.joining)

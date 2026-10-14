@@ -230,6 +230,7 @@ object Sync {
         StudyStore(context).remove(code)
         OfflinePages(context).dropStudy(code)
         PromptLog(context).removeStudy(code)
+        TransmissionLog(context).remove(code)
         Alarms.rearm(context)
         Shortcuts.update(context)
     }
@@ -280,11 +281,16 @@ object Sync {
             }
             val error = try {
                 val reply = Api.offlineAnswer(study.server, study.secret, item)
-                if (AnswerQueue.acknowledged(reply)) null else ApiError("unconfirmed", 409)
+                if (AnswerQueue.acknowledged(reply)) {
+                    TransmissionLog(context).confirmed(study.code, item.module, reply.optString("status") == "review", item.id, item.moduleName.ifBlank { study.modules.firstOrNull { it.key == item.module }?.name.orEmpty() })
+                    item.due?.let { PromptLog(context).completed(study.code, item.module, it) }
+                    null
+                } else ApiError("unconfirmed", 409)
             } catch (e: ApiError) {
                 e
             }
-            when (queue.recordDelivery(item, error, Api.clockSkew)) {
+            if (error != null) queue.attempted(item.id, if (error.status == 429) "rate_limit" else error.key)
+            when (queue.recordDelivery(queue.of(study.code).firstOrNull { it.id == item.id } ?: item, error, Api.clockSkew)) {
                 AnswerQueue.Fate.KEEP -> kept = true
                 AnswerQueue.Fate.CHANGED -> {
                     OfflinePages(context).drop(study.code, item.module)

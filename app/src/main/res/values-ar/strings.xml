@@ -52,7 +52,7 @@
     <string name="continue_entry">متابعة الاستبيان الأول</string>
     <string name="day_of">اليوم %1$d من %2$d</string>
     <string name="starts_on">تبدأ في %1$s</string>
-    <string name="next_prompt">السؤال التالي: %1$s</string>
+    <string name="next_prompt">الاستبيان القصير التالي: %1$s</string>
     <!-- fast forward (test person): when the next question really comes, time of day and "in 6 minutes" -->
     <string name="next_prompt_real" formatted="true">بالوقت الفعلي: %1$s، %2$s</string>
     <string name="finished">اكتملت، شكرًا جزيلًا!</string>
@@ -70,7 +70,7 @@
     <string name="allow_notifications">يُرجى السماح بالإشعارات، وإلا فلن يتمكن التطبيق من طرح الأسئلة في الوقت المناسب.</string>
     <string name="allow_exact">يُرجى السماح بـ«المنبّهات والتذكيرات» حتى تصل الأسئلة في موعدها.</string>
     <string name="allow">سماح</string>
-    <string name="expired">انتهت صلاحية هذا السؤال. سيصل السؤال التالي قريبًا.</string>
+    <string name="expired">انتهى وقت الإجابة. عُد إلى الدراسة.</string>
     <string name="limit">تم بلوغ الحد الأقصى لهذا التقرير اليوم.</string>
     <string name="not_found">لا توجد دراسة بهذا الرمز.</string>
     <string name="closed">لا تقبل هذه الدراسة مشاركين جددًا.</string>
@@ -102,7 +102,7 @@
     </plurals>
     <string name="about_offline">في الدراسات التي تسمح بالإجابة دون اتصال، يحتفظ التطبيق أيضًا بصفحات الاستبيان. تبقى الإجابات دون اتصال مشفرة على هذا الهاتف حتى يؤكد الخادم حفظها أو تزيل الدراسة وإجاباتها صراحةً. انتهاء الصلاحية أو الرفض لا يحذفها.</string>
     <string name="quiet_title">أوقات الهدوء</string>
-    <string name="quiet_now">أوقات الهدوء: %1$s</string>
+    <string name="quiet_now">ساعات الهدوء للتذكيرات العشوائية: %1$s</string>
     <string name="quiet_from_tomorrow">ابتداءً من الغد: %1$s</string>
     <string name="quiet_none">لا يوجد</string>
     <string name="quiet_change">تغيير ساعات الهدوء</string>
@@ -137,7 +137,7 @@
     <string name="rejoin_confirm">أنت مشارك بالفعل في هذه الدراسة على هذا الهاتف. الانضمام مجددًا يبدأ مشاركة جديدة: لن يعود بالإمكان حذف إجاباتك السابقة من التطبيق. تُرسل الإجابات المنتظرة من المشاركة السابقة أولًا إن أمكن، وإلا تُحذف. لحذف إجاباتك السابقة، ألغِ واستخدم «حذف إجاباتي» في بطاقة الدراسة.</string>
     <string name="rejoin">الانضمام مجددًا</string>
     <string name="allow_in_settings">السماح من الإعدادات</string>
-    <string name="notifications_off">الإشعارات متوقفة – لن تصلك أي أسئلة</string>
+    <string name="notifications_off">الإشعارات مُعطلة. يمكنك الإجابة عن الاستبيانات القصيرة المتاحة هنا.</string>
     <string name="remove">إزالة</string>
     <string name="remove_title">إزالة «%1$s»؟</string>
     <string name="remove_confirm">ستُزال الدراسة من هذا الهاتف. بعد ذلك لن تتمكن من حذف إجاباتك عبر التطبيق.</string>
@@ -224,4 +224,39 @@
     <string name="keep_answers">الاحتفاظ بإجاباتي</string>
     <string name="save_failed">تعذر الحفظ. يبقى الاستبيان المكتمل مفتوحًا. يرجى محاولة إرساله مرة أخرى.</string>
     <string name="queue_unreadable">تعذرت قراءة الإجابات المحفوظة. لم تتم الكتابة فوقها. يرجى الاتصال بفريق الدراسة.</string>
+    <string name="hide_licence">إخفاء نص الترخيص</string>
+    <string name="quiet_none_button">لا يوجد</string>
+    <string name="study_info">حول هذه الدراسة</string>
+    <string name="study_contact">جهة اتصال الدراسة: %1$s</string>
+    <string name="open_end">لا يوجد تاريخ انتهاء محدد. يمكنك أو يمكن للباحثين إنهاء المشاركة.</string>
+    <string name="transmissions">إرسال الإجابات</string>
+    <string name="no_waiting">لا توجد إجابات معلّقة على هذا الجهاز.</string>
+    <string name="transfer_waiting">محفوظة على هذا الجهاز؛ لم يؤكد الخادم بعد.</string>
+    <string name="transfer_review">لم تُقبل بعد. يبقى الأصل على هذا الجهاز. إذا استمرت المشكلة فاتصل بفريق الدراسة.</string>
+    <string name="transfer_retry">توقف الإرسال. يبقى الأصل هنا؛ حاول مجددًا.</string>
+    <string name="transfer_confirmed">أكد الخادم الحفظ.</string>
+    <string name="transfer_preserved">حفظها الخادم للمراجعة؛ لم تدخل النتائج العادية بعد.</string>
+    <string name="last_attempt">آخر محاولة: %1$s</string>
+    <string name="try_later">حاول مجددًا بعد بضع دقائق.</string>
+    <string name="already_answered">تمت الإجابة عن هذا الاستبيان القصير بالفعل.</string>
+    <string name="study_unavailable">الدراسة غير متاحة حاليًا. اتصل بفريق الدراسة.</string>
+    <string name="reminders_setup">إعداد التذكيرات</string>
+    <string name="reminders_optional">يمكنك الإجابة هنا عن الاستبيانات المفتوحة حتى دون إشعارات.</string>
+    <string name="notifications_open">تفعيل الإشعارات</string>
+    <string name="alarms_open">إعداد تذكيرات في وقتها</string>
+    <string name="answer_prompt">الإجابة عن الاستبيان القصير</string>
+    <string name="prompt_until">متاح حتى %1$s</string>
+    <string name="quiet_pending">حُفظ محليًا؛ لم يؤكد الخادم تغيير ساعات الهدوء بعد.</string>
+    <string name="remove_warning">إزالة الدراسة من هذا الجهاز؟ تبقى الإجابات المُرسلة لدى الباحثين. تفقد الوصول من هذا الجهاز، بما في ذلك حذفها.</string>
+    <string name="remove_waiting">الإجابات غير المُرسلة: %1$d. ستُفقد نهائيًا. حاول إرسالها أولًا.</string>
+    <string name="rejoined">أُعيد الاتصال بالدراسة.</string>
+    <string name="another_code">استخدام رمز آخر</string>
+    <string name="close_warning">قد تُفقد الإجابات غير المُرسلة عند الإغلاق. هل تواصل أم تتجاهلها؟</string>
+    <string name="discard">تجاهل وإغلاق</string>
+    <string name="permission_needed">يحتاج هذا السؤال إلى الميكروفون أو الموقع. إذا رفضت نهائيًا فافتح إعدادات التطبيق. يمكنك استخدام الإدخال البديل للسؤال.</string>
+    <string name="open_settings">فتح إعدادات التطبيق</string>
+    <string name="restored">تحقق من الإجابات المستعادة. قد تحتاج إلى إعادة التسجيلات والرسومات غير المُرسلة.</string>
+    <string name="media_privacy">يُطلب الميكروفون أو الموقع فقط عند الحاجة لسؤال الدراسة. توضح الموافقة ما يُرسل. يحفظ التطبيق حالة الإرسال على هذا الجهاز أيضًا.</string>
+    <string name="draft_privacy">يحفظ الجهاز أيضًا الملخص وجهة الاتصال ومسودات النماذج مؤقتًا. لا تُنسخ المسودات إلى السحابة.</string>
+    <string name="try_transfer">إرسال الإجابات</string>
 </resources>

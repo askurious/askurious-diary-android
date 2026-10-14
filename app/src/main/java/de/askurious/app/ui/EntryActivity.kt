@@ -4,6 +4,16 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.content.ActivityNotFoundException
 import android.content.Context
+import android.Manifest
+import android.content.pm.PackageManager
+import android.provider.Settings
+import android.webkit.PermissionRequest
+import android.webkit.GeolocationPermissions
+import androidx.activity.viewModels
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -102,28 +112,29 @@ import kotlin.coroutines.resume
  * it: the session cookie of an entry does not stay on the phone for days (audit 2026-10-13, AN-4).
  */
 class EntryActivity : ComponentActivity() {
-    private var url by mutableStateOf<String?>(null)
-    private var offline by mutableStateOf<OfflinePages.Page?>(null)
-    private var error by mutableStateOf<String?>(null)
-    private var saved by mutableStateOf(false)
-    private var done = false
-    private var saving = false
-    private var offlineAnswerId = java.util.UUID.randomUUID().toString()
+    private val session: EntrySession by viewModels()
+    private var url: String? get() = session.url; set(value) { session.url = value; session.state["url"] = value }
+    private var offline: OfflinePages.Page? get() = session.offline; set(value) { session.offline = value }
+    private var error: String? get() = session.error; set(value) { session.error = value }
+    private var saved: Boolean get() = session.saved; set(value) { session.saved = value }
+    private var done: Boolean get() = session.done; set(value) { session.done = value }
+    private var saving: Boolean get() = session.saving; set(value) { session.saving = value }
+    private var offlineAnswerId: String get() = session.offlineAnswerId; set(value) { session.offlineAnswerId = value }
 
     /** [error] is one that may pass (no connection, a fault): the screen offers "Try again" (audit A8). */
-    private var retryable by mutableStateOf(false)
+    private var retryable: Boolean get() = session.retryable; set(value) { session.retryable = value }
 
     /** The page in the WebView did not load (no connection on the way, audit A7): a native error state over it. */
-    private var loadFailed by mutableStateOf(false)
+    private var loadFailed: Boolean get() = session.loadFailed; set(value) { session.loadFailed = value }
 
     /** Loading progress of the page in the WebView, 0..100: a bar under the top bar while below 100. */
-    private var pageProgress by mutableIntStateOf(100)
+    private var pageProgress: Int get() = session.pageProgress; set(value) { session.pageProgress = value }
 
     /** The question before the entry is closed with a page that may hold answers not yet sent (audit A6). */
-    private var askAbort by mutableStateOf(false)
+    private var askAbort: Boolean get() = session.askAbort; set(value) { session.askAbort = value }
 
     /** The prompt's notification is gone: removed only once the entry has opened, so it stays as the way back (A8). */
-    private var cleared = false
+    private var cleared: Boolean get() = session.cleared; set(value) { session.cleared = value }
 
     /** The extras of the intent: the study, the module, the prompt. */
     private var code = ""
@@ -133,16 +144,56 @@ class EntryActivity : ComponentActivity() {
     private var reminded = false
 
     /** When the kept page was shown: "started" of the queued answer. */
-    private var offlineStarted = 0L
+    private var offlineStarted: Long get() = session.offlineStarted; set(value) { session.offlineStarted = value }
 
     /** The server of the study (Study.server): the only site whose pages may use the bridge. */
     private var server = Api.defaultServer
 
     /** The WebView of this entry, to check that a call of the bridge comes from the page of the server. */
-    private var web: WebView? = null
+    private var web: WebView? get() = session.web; set(value) { session.web = value }
+
+
+    private var restored by mutableStateOf(false)
+    private var permissionNotice by mutableStateOf(false)
+    private var mediaRequest: PermissionRequest? = null
+    private var locationRequest: Pair<String, GeolocationPermissions.Callback>? = null
+    private val permissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { grants ->
+        mediaRequest?.let { request ->
+            if (grants[Manifest.permission.RECORD_AUDIO] == true && trusted(request.origin.toString())) request.grant(arrayOf(PermissionRequest.RESOURCE_AUDIO_CAPTURE))
+            else { request.deny(); permissionNotice = true }
+        }; mediaRequest = null
+        locationRequest?.let { (origin, callback) ->
+            val granted = grants[Manifest.permission.ACCESS_COARSE_LOCATION] == true || grants[Manifest.permission.ACCESS_FINE_LOCATION] == true
+            callback.invoke(origin, granted && trusted(origin), false)
+            if (!granted) permissionNotice = true
+        }; locationRequest = null
+    }
+    private fun trusted(address: String): Boolean = runCatching {
+        val uri = java.net.URI(address)
+        uri.userInfo == null && Api.sameOrigin(uri, java.net.URI(server)) && Api.isKnown(server)
+    }.getOrDefault(false)
+    private fun attachChrome(view: WebView) {
+        view.settings.textZoom = (resources.configuration.fontScale * 100).toInt().coerceIn(100, 300)
+        view.webChromeClient = object: WebChromeClient() {
+            override fun onProgressChanged(view: WebView, newProgress: Int) { pageProgress = newProgress }
+            override fun onPermissionRequest(request: PermissionRequest) { runOnUiThread {
+                if (!trusted(request.origin.toString()) || offline != null || PermissionRequest.RESOURCE_AUDIO_CAPTURE !in request.resources) { request.deny(); return@runOnUiThread }
+                if (ContextCompat.checkSelfPermission(this@EntryActivity, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) request.grant(arrayOf(PermissionRequest.RESOURCE_AUDIO_CAPTURE))
+                else { mediaRequest?.deny(); mediaRequest = request; permissions.launch(arrayOf(Manifest.permission.RECORD_AUDIO)) }
+            } }
+            override fun onPermissionRequestCanceled(request: PermissionRequest) { if (mediaRequest == request) mediaRequest = null }
+            override fun onGeolocationPermissionsShowPrompt(origin: String, callback: GeolocationPermissions.Callback) {
+                if (!trusted(origin) || offline != null) { callback.invoke(origin, false, false); return }
+                if (ContextCompat.checkSelfPermission(this@EntryActivity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) callback.invoke(origin, true, false)
+                else { locationRequest = origin to callback; permissions.launch(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)) }
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        restored = savedInstanceState != null && web == null && session.state.get<String>("draft") != null
+        session.activity = java.lang.ref.WeakReference(this)
         current = java.lang.ref.WeakReference(this)
         enableEdgeToEdge()
         // the answers are nobody else's business: no screenshots, no picture in the list of recent apps
@@ -174,6 +225,10 @@ class EntryActivity : ComponentActivity() {
 
         val study = StudyStore(this).get(code) ?: return finish()
         server = study.server
+        if (offline == null) session.state.get<String>("offline_version")?.let { version ->
+            offline = OfflinePages(this).page(code, module)?.takeIf { it.version == version }
+        }
+        web?.let { it.webViewClient = if (offline != null) offlineClient(this.applicationContext) else onlineClient(); attachChrome(it) }
         if (!saved && error == null && url == null && offline == null) open(study)
 
         setContent {
@@ -193,7 +248,7 @@ class EntryActivity : ComponentActivity() {
         retryable = false
         lifecycleScope.launch {
             try {
-                val address = Api.absolute(Api.entry(study.server, study.secret, module, due, notified, reminded), study.server)
+                val address = Api.absolute(intent.getStringExtra(EXTRA_ADDRESS) ?: Api.entry(study.server, study.secret, module, due, notified, reminded), study.server)
                 clearWebState()
                 url = address
             } catch (e: ApiError) {
@@ -203,13 +258,17 @@ class EntryActivity : ComponentActivity() {
                     clearWebState()
                     if (offlineStarted == 0L) offlineStarted = study.now()
                     offline = kept
+                    session.state["offline_version"] = kept.version
                     clearPrompt()
                 } else if (error == null) {
-                    error = when (e.key) {
+                    error = if (e.status == 429) getString(R.string.too_many) else when (e.key) {
                         "expired" -> getString(R.string.expired)
                         // today's limit of a self-started report (409); a 429 "limit" is the rate limit
                         "daily_limit" -> getString(R.string.limit)
                         "paused" -> getString(R.string.paused)
+                        "closed", "ended" -> getString(R.string.closed)
+                        "done" -> getString(R.string.already_answered)
+                        "unauthorised" -> getString(R.string.study_unavailable)
                         "offline" -> getString(R.string.offline)
                         else -> getString(R.string.error)
                     }
@@ -273,7 +332,7 @@ class EntryActivity : ComponentActivity() {
      * Whether closing now may lose something: a page of the questionnaire is open and the entry is not over. The
      * error and "saved" screens hold nothing (audit A6).
      */
-    private val mayLose: Boolean get() = (url != null || offline != null) && !done && !saved && error == null && !loadFailed
+    private val mayLose: Boolean get() = session.dirty && !done && !saved
 
     /** The back gesture: one page back in the questionnaire, else the question before closing (audit A6). */
     private fun back() {
@@ -364,6 +423,7 @@ class EntryActivity : ComponentActivity() {
 
     /** The WebView [w] is no longer shown: it stops, loses the bridge and is destroyed (AN-4). */
     private fun release(w: WebView) {
+        if (isChangingConfigurations && web === w) { (w.parent as? ViewGroup)?.removeView(w); return }
         if (web === w) web = null
         runCatching {
             w.stopLoading()
@@ -388,8 +448,11 @@ class EntryActivity : ComponentActivity() {
 
     override fun onDestroy() {
         // the WebView itself is destroyed when Compose lets it go (AndroidView onRelease, [release])
-        web = null
-        forgetWebState()
+        mediaRequest?.deny(); mediaRequest = null
+        locationRequest?.let { it.second.invoke(it.first, false, false) }; locationRequest = null
+        (web?.parent as? ViewGroup)?.removeView(web)
+        if (isFinishing) forgetWebState()
+        if (session.activity?.get() === this) session.activity = null
         if (current?.get() === this) current = null
         super.onDestroy()
     }
@@ -423,6 +486,8 @@ class EntryActivity : ComponentActivity() {
     private fun finished() {
         if (done) return
         done = true
+        session.dirty = false; session.state["dirty"] = false; session.state.remove<String>("draft")
+        due?.let { PromptLog(this).completed(code, module, it) }
         // the end page is shown: the session of the entry is no longer needed (AN-4)
         forgetWebState()
         val code = intent.getStringExtra(EXTRA_STUDY) ?: return
@@ -447,7 +512,7 @@ class EntryActivity : ComponentActivity() {
         lifecycleScope.launch {
             try {
                 withContext(Dispatchers.IO + kotlinx.coroutines.NonCancellable) {
-                    AnswerQueue(this@EntryActivity).add(code, module, due, notified, offlineStarted, completed, page.version, form, offlineAnswerId)
+                    AnswerQueue(this@EntryActivity).add(code, module, due, notified, offlineStarted, completed, page.version, form, offlineAnswerId, moduleName = StudyStore(this@EntryActivity).get(code)?.modules?.firstOrNull { it.key == module }?.name.orEmpty())
                 }
             } catch (e: kotlinx.coroutines.CancellationException) {
                 throw e
@@ -472,14 +537,7 @@ class EntryActivity : ComponentActivity() {
         BackHandler { back() }
         Scaffold(topBar = {
             Column {
-                TopAppBar(
-                    // one line, cut with "…": a long title of a study took three lines of the page (audit A21)
-                    title = { Text(title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
-                    // the X closes the entry, at the left where a screen has its way out (audit A6)
-                    navigationIcon = {
-                        IconButton(onClick = { close() }) { Icon(Icons.Outlined.Close, contentDescription = stringResource(R.string.close)) }
-                    },
-                )
+                PageHeader(title, onClose = { close() })
                 // a page is loading: the questionnaire has no indicator of its own between its pages (audit A7)
                 val loading = stringResource(R.string.loading)
                 if (url != null && pageProgress < 100 && !loadFailed && error == null) {
@@ -500,18 +558,23 @@ class EntryActivity : ComponentActivity() {
                     e != null || saved -> Message(e ?: stringResource(R.string.offline_saved), retry = e != null && retryable)
                     u != null -> AndroidView(
                         modifier = Modifier.fillMaxSize(),
-                        factory = { ctx -> webView(ctx, u).apply { setBackgroundColor(page) } },
+                        factory = { ctx -> (web ?: webView(ctx.applicationContext, u)).apply { (parent as? ViewGroup)?.removeView(this); setBackgroundColor(page) } },
                         onRelease = { release(it) },
                     )
                     o != null -> AndroidView(
                         modifier = Modifier.fillMaxSize(),
-                        factory = { ctx -> offlineWebView(ctx, o).apply { setBackgroundColor(page) } },
+                        factory = { ctx -> (web ?: offlineWebView(ctx.applicationContext, o)).apply { (parent as? ViewGroup)?.removeView(this); setBackgroundColor(page) } },
                         onRelease = { release(it) },
                     )
                     else -> {
                         val loading = stringResource(R.string.loading)
                         CircularProgressIndicator(Modifier.semantics { contentDescription = loading })
                     }
+                }
+                if (restored) Column(Modifier.align(Alignment.TopCenter)) { de.askurious.app.ui.Message(stringResource(R.string.restored)) }
+                if (permissionNotice) Column(Modifier.align(Alignment.TopCenter)) {
+                    de.askurious.app.ui.Message(stringResource(R.string.permission_needed))
+                    TextButton(onClick = { startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, "package:$packageName".toUri())) }) { Text(stringResource(R.string.open_settings)) }
                 }
                 // the page did not load: the app's own error state over the WebView, never the browser's page (A7)
                 if (loadFailed && e == null && !saved) {
@@ -539,14 +602,14 @@ class EntryActivity : ComponentActivity() {
     /** A message instead of the page; "Try again" as the main button when it may help (audit A8). */
     @androidx.compose.runtime.Composable
     private fun Message(text: String, retry: Boolean) {
-        Column(Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(Modifier.padding(24.dp).verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
             // read out as soon as it shows (it replaces the page or the spinner)
             Text(text, Modifier.semantics { liveRegion = LiveRegionMode.Polite })
             if (retry) {
                 Button(onClick = { retry() }, modifier = Modifier.padding(top = 16.dp)) { Text(stringResource(R.string.retry)) }
-                OutlinedButton(onClick = { finish() }, modifier = Modifier.padding(top = 8.dp)) { Text(stringResource(R.string.close)) }
+                OutlinedButton(onClick = { close() }, modifier = Modifier.padding(top = 8.dp)) { Text(stringResource(R.string.close)) }
             } else {
-                Button(onClick = { finish() }, modifier = Modifier.padding(top = 16.dp)) { Text(stringResource(R.string.close)) }
+                Button(onClick = { close() }, modifier = Modifier.padding(top = 16.dp)) { Text(stringResource(R.string.close)) }
             }
         }
     }
@@ -561,7 +624,7 @@ class EntryActivity : ComponentActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     private fun baseWebView(ctx: Context, online: Boolean): WebView {
         CookieManager.getInstance().setAcceptCookie(true)
-        return WebView(ctx).apply {
+        return WebView(ctx.applicationContext).apply {
             // nothing of an earlier entry (another study) is taken from the cache
             clearCache(true)
             settings.javaScriptEnabled = true
@@ -572,8 +635,10 @@ class EntryActivity : ComponentActivity() {
             // autofill services do not see (nor offer) what is typed into a questionnaire
             importantForAutofill = View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS
             settings.userAgentString = settings.userAgentString + " AskuriousDiary/1"
-            if (!(online && listenOnMainFrame(this))) addJavascriptInterface(Bridge(), BRIDGE)
+            if (!(online && listenOnMainFrame(this))) addJavascriptInterface(Bridge(session), BRIDGE)
+            settings.textZoom = (resources.configuration.fontScale * 100).toInt().coerceIn(100, 300)
             web = this
+            attachChrome(this)
         }
     }
 
@@ -583,8 +648,11 @@ class EntryActivity : ComponentActivity() {
         if (!WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER)) return false
         if (!WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)) return false
         return try {
+            val retained = session
             WebViewCompat.addWebMessageListener(w, PORT, setOf(origin)) { _, message, source, isMainFrame, _ ->
-                if (isMainFrame && Api.origin(source.toString()) == origin && fromOwnPage()) bridgeMessage(message.data)
+                retained.activity?.get()?.let { activity ->
+                    if (isMainFrame && Api.origin(source.toString()) == origin && activity.fromOwnPage()) activity.bridgeMessage(message.data)
+                }
             }
             listening.add(w)
             WebViewCompat.addDocumentStartJavaScript(w, BRIDGE_SCRIPT, setOf(origin))
@@ -609,6 +677,9 @@ class EntryActivity : ComponentActivity() {
         when {
             data == null -> {}
             data == "done" -> finished()
+            data == "changed" -> changed()
+            data.startsWith("loaded:") -> draftPage(data.removePrefix("loaded:"))
+            data.startsWith("draft:") -> draft(data.removePrefix("draft:"))
             data.startsWith("offline:") -> offlineSubmitted(data.removePrefix("offline:"))
         }
     }
@@ -616,14 +687,20 @@ class EntryActivity : ComponentActivity() {
     private fun webView(ctx: Context, start: String): WebView {
         val host = start.toUri().host
         return baseWebView(ctx, online = true).apply {
-            webViewClient = object : WebViewClient() {
+            webViewClient = onlineClient()
+            attachChrome(this)
+            loadUrl(start)
+        }
+    }
+
+    private fun onlineClient(): WebViewClient = object : WebViewClient() {
                 /** The page now loading failed (its main frame): its onPageFinished is no success. */
                 private var failed = false
 
                 // pages of the study stay in the app; any other link (privacy statement of an institution, ...)
                 // opens in the browser
                 override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
-                    if (request.url.host == host) return false
+                    if (trusted(request.url.toString())) return false
                     openOutside(request.url)
                     return true
                 }
@@ -642,21 +719,16 @@ class EntryActivity : ComponentActivity() {
                     if (!cleared && error.errorCode in OFFLINE_ERRORS) toKeptPage()
                 }
 
+                override fun onReceivedHttpError(view: WebView, request: WebResourceRequest, response: WebResourceResponse) {
+                    if (request.isForMainFrame) { failed = true; loadFailed = true }
+                }
                 override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean = renderGone()
 
                 override fun onPageFinished(view: WebView, url: String?) {
                     // the first page of the entry is there: now its notification may go (audit A8)
-                    if (!failed) clearPrompt()
+                    if (!failed) { clearPrompt(); attachDraft(view) }
                 }
             }
-            webChromeClient = object : WebChromeClient() {
-                override fun onProgressChanged(view: WebView, newProgress: Int) {
-                    pageProgress = newProgress
-                }
-            }
-            loadUrl(start)
-        }
-    }
 
     /**
      * The kept page under the server's address, so its absolute paths resolve; its /static/ and /media/ files come
@@ -667,7 +739,16 @@ class EntryActivity : ComponentActivity() {
         val base = server.toUri()
         val pages = OfflinePages(ctx)
         return baseWebView(ctx, online = false).apply {
-            webViewClient = object : WebViewClient() {
+            webViewClient = offlineClient(ctx)
+            // the history URL is the server's too, so that url (fromOwnPage) names it
+            loadDataWithBaseURL("$server/", page.html, "text/html", "utf-8", "$server/")
+        }
+    }
+
+    private fun offlineClient(ctx: Context): WebViewClient {
+        val base = server.toUri()
+        val pages = OfflinePages(ctx)
+        return object : WebViewClient() {
                 override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse {
                     val u = request.url
                     val path = (u.encodedPath ?: "") + (u.encodedQuery?.let { "?$it" } ?: "")
@@ -684,6 +765,8 @@ class EntryActivity : ComponentActivity() {
                     return WebResourceResponse(mime, charset, file.inputStream())
                 }
 
+                override fun onPageFinished(view: WebView, url: String?) { attachDraft(view) }
+
                 override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean = renderGone()
 
                 // links leave the app as on the online page; nothing loads in place of the kept page
@@ -692,25 +775,54 @@ class EntryActivity : ComponentActivity() {
                     return true
                 }
             }
-            // the history URL is the server's too, so that url (fromOwnPage) names it
-            loadDataWithBaseURL("$server/", page.html, "text/html", "utf-8", "$server/")
-        }
     }
 
-    inner class Bridge {
-        @JavascriptInterface
-        fun done() {
-            runOnUiThread { if (fromOwnPage()) finished() }
-        }
+    private fun attachDraft(view: WebView) {
+        val draft = session.state.get<String>("draft") ?: "null"
+        view.evaluateJavascript("""
+            (() => {
+                if (window.__askDraft) return; window.__askDraft = true;
+                const old = $draft;
+                const page = location.href + '|' + (document.querySelector('main')?.dataset.page || '') + '|' +
+                    Array.from(document.querySelectorAll('form input:not([type=hidden]), form textarea, form select')).map(el => el.name).join('|');
+                AskuriousApp.loaded(page);
+                const fields = () => Array.from(document.querySelectorAll('form input, form textarea, form select'));
+                if (old && old.page === page) fields().forEach((el, n) => {
+                    const v = old.values[n]; if (!v || v.name !== el.name || el.type === 'file' || el.type === 'password' || el.type === 'hidden') return;
+                    el.value = v.value; el.checked = v.checked;
+                    if (v.selected) Array.from(el.options).forEach((o, i) => o.selected = v.selected[i]);
+                });
+                const keep = () => AskuriousApp.draft(JSON.stringify({url:location.href,page:page,values:fields().map(el =>
+                    ({name:el.name,value:el.type === 'file' || el.type === 'password' || el.type === 'hidden' ? '' : el.value,checked:el.checked,
+                    selected:el.options ? Array.from(el.options).map(o => o.selected) : null}))}));
+                document.addEventListener('input', keep); document.addEventListener('change', keep);
+                document.addEventListener('pointerdown', e => { if(e.target.closest('form canvas, form svg')) AskuriousApp.changed(); });
+                document.addEventListener('click', e => {if(e.target.closest('form button, form canvas, form svg')) AskuriousApp.changed();});
+            })();
+        """.trimIndent(), null)
+    }
 
-        /**
-         * Called by participant.js on the kept page (form[data-app-offline]) instead of sending the form:
-         * [json] is {field: [values]}. Ignored on an online page.
-         */
-        @JavascriptInterface
-        fun offlineSubmit(json: String) {
-            runOnUiThread { if (fromOwnPage()) offlineSubmitted(json) }
+
+    private fun changed() { if (!done) { session.dirty = true; session.state["dirty"] = true } }
+    private fun draftPage(page: String) {
+        val previous = session.state.get<String>("page")
+        if (previous != null && previous != page) { session.dirty = false; session.state["dirty"] = false; session.state.remove<String>("draft") }
+        session.state["page"] = page
+    }
+    private fun draft(json: String) {
+        if (!done && json.length <= 200_000 && runCatching { JSONObject(json) }.isSuccess) {
+            session.state["draft"] = json; changed()
         }
+    }
+    class Bridge(private val session: EntrySession) {
+        private fun send(data: String) { android.os.Handler(android.os.Looper.getMainLooper()).post {
+            session.activity?.get()?.let { if (it.fromOwnPage()) it.bridgeMessage(data) }
+        } }
+        @JavascriptInterface fun done() = send("done")
+        @JavascriptInterface fun offlineSubmit(json: String) = send("offline:$json")
+        @JavascriptInterface fun loaded(page: String) = send("loaded:$page")
+        @JavascriptInterface fun changed() = send("changed")
+        @JavascriptInterface fun draft(json: String) = send("draft:$json")
     }
 
     companion object {
@@ -732,7 +844,10 @@ class EntryActivity : ComponentActivity() {
   var port = window.$PORT;
   window.$BRIDGE = {
     done: function () { port.postMessage("done"); },
-    offlineSubmit: function (json) { port.postMessage("offline:" + String(json)); }
+    offlineSubmit: function (json) { port.postMessage("offline:" + String(json)); },
+    loaded: function (page) { port.postMessage("loaded:" + String(page)); },
+    changed: function () { port.postMessage("changed"); },
+    draft: function (json) { port.postMessage("draft:" + String(json)); }
   };
 })();"""
 
@@ -742,6 +857,7 @@ class EntryActivity : ComponentActivity() {
         /** The WebViews with a message listener, to remove it before they are destroyed. */
         private val listening = java.util.Collections.newSetFromMap(java.util.WeakHashMap<WebView, Boolean>())
 
+        private const val EXTRA_ADDRESS = "address"
         private const val EXTRA_STUDY = "study"
         private const val EXTRA_MODULE = "module"
         private const val EXTRA_DUE = "due"
@@ -772,9 +888,10 @@ class EntryActivity : ComponentActivity() {
         const val EXIT = "exit"
 
         fun intent(
-            context: Context, study: String, module: String, due: Long? = null, notified: Long? = null, reminded: Boolean = false,
+            context: Context, study: String, module: String, due: Long? = null, notified: Long? = null, reminded: Boolean = false, address: String? = null,
         ): Intent =
             Intent(context, EntryActivity::class.java)
+                .putExtra(EXTRA_ADDRESS, address)
                 .putExtra(EXTRA_STUDY, study).putExtra(EXTRA_MODULE, module)
                 .putExtra(EXTRA_DUE, due ?: 0L).putExtra(EXTRA_NOTIFIED, notified ?: 0L)
                 .putExtra(EXTRA_REMINDED, reminded)

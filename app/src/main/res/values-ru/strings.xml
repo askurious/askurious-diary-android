@@ -44,7 +44,7 @@
     <string name="continue_entry">Продолжить первую анкету</string>
     <string name="day_of">День %1$d из %2$d</string>
     <string name="starts_on">Начало: %1$s</string>
-    <string name="next_prompt">Следующий вопрос: %1$s</string>
+    <string name="next_prompt">Следующий короткий опрос: %1$s</string>
     <!-- fast forward (test person): when the next question really comes, time of day and "in 6 minutes" -->
     <string name="next_prompt_real" formatted="true">в реальном времени: %1$s, %2$s</string>
     <string name="finished">Завершено, большое спасибо!</string>
@@ -62,7 +62,7 @@
     <string name="allow_notifications">Разрешите уведомления, иначе приложение не сможет задать вопрос в нужный момент.</string>
     <string name="allow_exact">Разрешите «Будильники и напоминания», чтобы вопросы приходили вовремя.</string>
     <string name="allow">Разрешить</string>
-    <string name="expired">Время ответа на этот вопрос истекло. Следующий скоро придёт.</string>
+    <string name="expired">Время ответа истекло. Вернитесь к исследованию.</string>
     <string name="limit">На сегодня достигнут лимит для этого отчёта.</string>
     <string name="not_found">Исследование с таким кодом не найдено.</string>
     <string name="closed">Это исследование не принимает новых участников.</string>
@@ -92,7 +92,7 @@
     </plurals>
     <string name="about_offline">В исследованиях с ответами без подключения приложение также хранит страницы анкеты. Ответы без подключения остаются зашифрованными на этом телефоне до подтверждения сохранения сервером или явного удаления исследования и ответов вами. Истечение срока или отказ не удаляют их.</string>
     <string name="quiet_title">Время тишины</string>
-    <string name="quiet_now">Время тишины: %1$s</string>
+    <string name="quiet_now">Тихие часы для случайных напоминаний: %1$s</string>
     <string name="quiet_from_tomorrow">С завтрашнего дня: %1$s</string>
     <string name="quiet_none">нет</string>
     <string name="quiet_change">Изменить часы тишины</string>
@@ -123,7 +123,7 @@
     <string name="rejoin_confirm">Вы уже участвуете в этом исследовании на этом телефоне. Повторное присоединение начинает новое участие: удалить прежние ответы в приложении будет уже нельзя. Ожидающие ответы прежнего участия по возможности сначала отправляются, иначе удаляются. Чтобы удалить прежние ответы, отмените и воспользуйтесь кнопкой «Удалить мои ответы» на карточке исследования.</string>
     <string name="rejoin">Присоединиться снова</string>
     <string name="allow_in_settings">Разрешить в настройках</string>
-    <string name="notifications_off">Уведомления выключены – Вы не будете получать вопросы</string>
+    <string name="notifications_off">Уведомления отключены. Здесь можно ответить на открытые короткие опросы.</string>
     <string name="remove">Убрать</string>
     <string name="remove_title">Убрать «%1$s»?</string>
     <string name="remove_confirm">Исследование будет убрано с этого телефона. После этого Вы уже не сможете удалить свои ответы через приложение.</string>
@@ -210,4 +210,39 @@
     <string name="keep_answers">Сохранить мои ответы</string>
     <string name="save_failed">Не удалось сохранить. Заполненная анкета остаётся открытой. Попробуйте отправить её ещё раз.</string>
     <string name="queue_unreadable">Сохранённые ответы не удаётся прочитать. Они не были перезаписаны. Свяжитесь с командой исследования.</string>
+    <string name="hide_licence">Скрыть текст лицензии</string>
+    <string name="quiet_none_button">Нет</string>
+    <string name="study_info">Об исследовании</string>
+    <string name="study_contact">Контакт исследования: %1$s</string>
+    <string name="open_end">Без установленной даты окончания. Вы или исследователи можете завершить участие.</string>
+    <string name="transmissions">Передача ответов</string>
+    <string name="no_waiting">На устройстве нет ожидающих ответов.</string>
+    <string name="transfer_waiting">Сохранено на устройстве; сервер ещё не подтвердил.</string>
+    <string name="transfer_review">Пока не принято. Оригинал остаётся здесь. При повторении свяжитесь с исследователями.</string>
+    <string name="transfer_retry">Передача прервана. Оригинал остаётся здесь; повторите.</string>
+    <string name="transfer_confirmed">Сервер подтвердил сохранение.</string>
+    <string name="transfer_preserved">Сервер сохранил для проверки; пока не в обычных результатах.</string>
+    <string name="last_attempt">Последняя попытка: %1$s</string>
+    <string name="try_later">Повторите через несколько минут.</string>
+    <string name="already_answered">Этот короткий опрос уже заполнен.</string>
+    <string name="study_unavailable">Исследование недоступно. Свяжитесь с исследователями.</string>
+    <string name="reminders_setup">Настроить напоминания</string>
+    <string name="reminders_optional">Открытые опросы можно заполнить здесь без уведомлений.</string>
+    <string name="notifications_open">Включить уведомления</string>
+    <string name="alarms_open">Настроить точные напоминания</string>
+    <string name="answer_prompt">Ответить на короткий опрос</string>
+    <string name="prompt_until">Доступно до %1$s</string>
+    <string name="quiet_pending">Сохранено локально; сервер ещё не подтвердил изменение тихих часов.</string>
+    <string name="remove_warning">Удалить исследование с устройства? Отправленные ответы остаются у исследователей. Вы потеряете доступ с этого устройства, включая удаление.</string>
+    <string name="remove_waiting">Неотправленные ответы: %1$d. Они будут утрачены навсегда. Сначала попробуйте передать их.</string>
+    <string name="rejoined">Исследование подключено снова.</string>
+    <string name="another_code">Использовать другой код</string>
+    <string name="close_warning">Неотправленные ответы могут быть потеряны. Продолжить или отменить?</string>
+    <string name="discard">Отменить и закрыть</string>
+    <string name="permission_needed">Вопрос требует микрофон или геопозицию. При постоянном отказе откройте настройки. Можно использовать альтернативный ввод.</string>
+    <string name="open_settings">Открыть настройки приложения</string>
+    <string name="restored">Проверьте восстановленные ответы. Неотправленные записи и рисунки может понадобиться повторить.</string>
+    <string name="media_privacy">Микрофон или геопозиция запрашиваются только для соответствующего вопроса. Согласие поясняет передачу данных. Приложение хранит на устройстве и статус передачи.</string>
+    <string name="draft_privacy">Устройство хранит также описание, контакт и временные черновики форм. Черновики не копируются в облако.</string>
+    <string name="try_transfer">Передать ответы</string>
 </resources>

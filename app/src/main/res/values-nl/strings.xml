@@ -36,7 +36,7 @@
     <string name="continue_entry">Eerste vragenlijst voortzetten</string>
     <string name="day_of">Dag %1$d van %2$d</string>
     <string name="starts_on">Begint op %1$s</string>
-    <string name="next_prompt">Volgende vraag: %1$s</string>
+    <string name="next_prompt">Volgende korte vragenlijst: %1$s</string>
     <!-- fast forward (test person): when the next question really comes, time of day and "in 6 minutes" -->
     <string name="next_prompt_real" formatted="true">in echte tijd: %1$s, %2$s</string>
     <string name="finished">Afgerond, hartelijk dank!</string>
@@ -54,7 +54,7 @@
     <string name="allow_notifications">Sta meldingen toe, anders kan de app u niet op het juiste moment iets vragen.</string>
     <string name="allow_exact">Sta ‘Wekkers en herinneringen’ toe, zodat vragen op tijd komen.</string>
     <string name="allow">Toestaan</string>
-    <string name="expired">Deze vraag is verlopen. De volgende komt vanzelf.</string>
+    <string name="expired">De antwoordtijd is verstreken. Ga terug naar het onderzoek.</string>
     <string name="limit">U hebt het maximum van vandaag voor deze melding bereikt.</string>
     <string name="not_found">Geen onderzoek met deze code.</string>
     <string name="closed">Dit onderzoek neemt geen nieuwe deelnemers meer aan.</string>
@@ -82,7 +82,7 @@
     </plurals>
     <string name="about_offline">Bij onderzoeken met offline antwoorden bewaart de app ook vragenlijstpagina’s. Offline antwoorden blijven versleuteld op deze telefoon totdat de server opslag bevestigt of u het onderzoek en de antwoorden uitdrukkelijk verwijdert. Verlopen of weigering verwijdert ze niet.</string>
     <string name="quiet_title">Rusttijden</string>
-    <string name="quiet_now">Rusttijden: %1$s</string>
+    <string name="quiet_now">Stille uren voor willekeurige herinneringen: %1$s</string>
     <string name="quiet_from_tomorrow">Vanaf morgen: %1$s</string>
     <string name="quiet_none">geen</string>
     <string name="quiet_change">Rusttijden wijzigen</string>
@@ -109,7 +109,7 @@
     <string name="rejoin_confirm">U neemt op deze telefoon al deel aan dit onderzoek. Opnieuw deelnemen start een nieuwe deelname: uw eerdere antwoorden kunt u daarna niet meer in de app verwijderen. Nog wachtende antwoorden van de eerdere deelname worden eerst verstuurd als dat lukt, anders vervallen ze. Om uw eerdere antwoorden te verwijderen, annuleert u en gebruikt u ‘Mijn antwoorden verwijderen’ op de kaart van het onderzoek.</string>
     <string name="rejoin">Opnieuw deelnemen</string>
     <string name="allow_in_settings">Toestaan in instellingen</string>
-    <string name="notifications_off">Meldingen uit – u krijgt geen vragen</string>
+    <string name="notifications_off">Meldingen staan uit. U kunt open vragenlijsten hier invullen.</string>
     <string name="remove">Verwijderen</string>
     <string name="remove_title">‘%1$s’ verwijderen?</string>
     <string name="remove_confirm">Het onderzoek wordt van deze telefoon verwijderd. Daarna kunt u uw antwoorden niet meer via de app verwijderen.</string>
@@ -196,4 +196,39 @@
     <string name="keep_answers">Mijn antwoorden bewaren</string>
     <string name="save_failed">Opslaan mislukt. Uw ingevulde vragenlijst blijft open. Probeer opnieuw in te dienen.</string>
     <string name="queue_unreadable">Opgeslagen antwoorden kunnen niet worden gelezen. Ze zijn niet overschreven. Neem contact op met het onderzoeksteam.</string>
+    <string name="hide_licence">Licentietekst verbergen</string>
+    <string name="quiet_none_button">Geen</string>
+    <string name="study_info">Over dit onderzoek</string>
+    <string name="study_contact">Contact van het onderzoek: %1$s</string>
+    <string name="open_end">Geen vaste einddatum. U of de onderzoekers kunnen de deelname beëindigen.</string>
+    <string name="transmissions">Antwoorden versturen</string>
+    <string name="no_waiting">Geen antwoorden in afwachting op dit apparaat.</string>
+    <string name="transfer_waiting">Op dit apparaat opgeslagen; nog niet bevestigd door de server.</string>
+    <string name="transfer_review">Nog niet geaccepteerd. Het origineel blijft hier. Neem bij aanhoudende problemen contact op.</string>
+    <string name="transfer_retry">Versturen onderbroken. Het origineel blijft hier; probeer opnieuw.</string>
+    <string name="transfer_confirmed">Opslag bevestigd door de server.</string>
+    <string name="transfer_preserved">Door de server bewaard voor controle; nog niet in de reguliere resultaten.</string>
+    <string name="last_attempt">Laatste poging: %1$s</string>
+    <string name="try_later">Probeer het over enkele minuten opnieuw.</string>
+    <string name="already_answered">Deze korte vragenlijst is al ingevuld.</string>
+    <string name="study_unavailable">Het onderzoek is niet beschikbaar. Neem contact op met de onderzoekers.</string>
+    <string name="reminders_setup">Herinneringen instellen</string>
+    <string name="reminders_optional">U kunt open vragenlijsten hier ook zonder meldingen invullen.</string>
+    <string name="notifications_open">Meldingen inschakelen</string>
+    <string name="alarms_open">Tijdige herinneringen instellen</string>
+    <string name="answer_prompt">Korte vragenlijst invullen</string>
+    <string name="prompt_until">Beschikbaar tot %1$s</string>
+    <string name="quiet_pending">Lokaal opgeslagen; de wijziging van de stille uren is nog niet bevestigd.</string>
+    <string name="remove_warning">Onderzoek van dit apparaat verwijderen? Verzonden antwoorden blijven bij de onderzoekers. U verliest hier toegang, ook om ze te wissen.</string>
+    <string name="remove_waiting">Niet-verzonden antwoorden: %1$d. Ze gaan voorgoed verloren. Probeer ze eerst te versturen.</string>
+    <string name="rejoined">Onderzoek opnieuw verbonden.</string>
+    <string name="another_code">Andere code gebruiken</string>
+    <string name="close_warning">Niet-verzonden antwoorden kunnen verloren gaan. Doorgaan of verwerpen?</string>
+    <string name="discard">Verwerpen en sluiten</string>
+    <string name="permission_needed">Deze vraag vereist microfoon of locatie. Open de instellingen bij definitieve weigering. Gebruik zo mogelijk de alternatieve invoer.</string>
+    <string name="open_settings">App-instellingen openen</string>
+    <string name="restored">Controleer de herstelde antwoorden. Niet-verzonden opnamen en tekeningen moeten mogelijk opnieuw.</string>
+    <string name="media_privacy">Microfoon of locatie wordt alleen gevraagd voor relevante onderzoeksvragen. Toestemming verklaart wat wordt verstuurd. De app bewaart ook de verzendstatus hier.</string>
+    <string name="draft_privacy">Het apparaat bewaart ook overzicht, contact en tijdelijke concepten. Concepten hebben geen cloudback-up.</string>
+    <string name="try_transfer">Antwoorden versturen</string>
 </resources>

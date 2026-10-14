@@ -84,14 +84,7 @@ fun unwrapped(text: String): String =
 @Composable
 fun BackScaffold(title: String, onBack: () -> Unit, snackbar: SnackbarHostState? = null, content: @Composable (Modifier) -> Unit) {
     Scaffold(snackbarHost = { snackbar?.let { MessageHost(it) } }, topBar = {
-        TopAppBar(
-            title = { Text(title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
-            navigationIcon = {
-                IconButton(onClick = onBack) {
-                    Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = stringResource(R.string.back))
-                }
-            },
-        )
+        PageHeader(title, onBack = onBack)
     }) { pad -> content(Modifier.padding(pad)) }
 }
 
@@ -136,6 +129,8 @@ fun AboutScreen(onBack: () -> Unit, onLicence: () -> Unit) {
             Text(stringResource(R.string.about_stores))
             Text(stringResource(R.string.about_offline))
             Text(stringResource(R.string.about_quiet))
+            Text(stringResource(R.string.media_privacy))
+            Text(stringResource(R.string.draft_privacy))
             OutlinedButton(onClick = { open(privacyUrl()) }) { Text(stringResource(R.string.privacy_statement)) }
 
             SectionTitle(stringResource(R.string.about_contact_title))

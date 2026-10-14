@@ -40,7 +40,7 @@
     <string name="continue_entry">Reprendre le premier questionnaire</string>
     <string name="day_of">Jour %1$d sur %2$d</string>
     <string name="starts_on">Commence le %1$s</string>
-    <string name="next_prompt">Prochaine question : %1$s</string>
+    <string name="next_prompt">Prochain bref questionnaire : %1$s</string>
     <!-- fast forward (test person): when the next question really comes, time of day and "in 6 minutes" -->
     <string name="next_prompt_real" formatted="true">en temps réel : %1$s, %2$s</string>
     <string name="finished">Terminé, merci beaucoup !</string>
@@ -58,7 +58,7 @@
     <string name="allow_notifications">Autorisez les notifications, sinon l’application ne peut pas vous interroger au bon moment.</string>
     <string name="allow_exact">Autorisez « Alarmes et rappels » pour que les questions arrivent à l’heure.</string>
     <string name="allow">Autoriser</string>
-    <string name="expired">Cette question a expiré. La prochaine arrivera bientôt.</string>
+    <string name="expired">Le délai de réponse est écoulé. Revenez à l’étude.</string>
     <string name="limit">Vous avez atteint la limite d’aujourd’hui pour cette saisie.</string>
     <string name="not_found">Aucune étude avec ce code.</string>
     <string name="closed">Cette étude n’accepte plus de nouveaux participants.</string>
@@ -87,7 +87,7 @@
     </plurals>
     <string name="about_offline">Pour les études permettant de répondre hors connexion, l’application conserve aussi les pages du questionnaire. Les réponses hors connexion restent chiffrées sur ce téléphone jusqu’à confirmation du stockage par le serveur ou suppression explicite de l’étude et de ses réponses. Leur expiration ou refus ne les supprime pas.</string>
     <string name="quiet_title">Heures de tranquillité</string>
-    <string name="quiet_now">Heures de tranquillité : %1$s</string>
+    <string name="quiet_now">Heures de repos pour rappels aléatoires : %1$s</string>
     <string name="quiet_from_tomorrow">À partir de demain : %1$s</string>
     <string name="quiet_none">aucune</string>
     <string name="quiet_change">Modifier les heures de calme</string>
@@ -116,7 +116,7 @@
     <string name="rejoin_confirm">Vous participez déjà à cette étude sur ce téléphone. Rejoindre à nouveau commence une nouvelle participation : vous ne pourrez alors plus supprimer vos réponses précédentes dans l’application. Les réponses en attente de la participation précédente sont d’abord envoyées si possible, sinon supprimées. Pour supprimer vos réponses précédentes, annulez et utilisez « Supprimer mes réponses » sur la carte de l’étude.</string>
     <string name="rejoin">Rejoindre à nouveau</string>
     <string name="allow_in_settings">Autoriser dans les paramètres</string>
-    <string name="notifications_off">Notifications désactivées – vous ne recevrez aucune question</string>
+    <string name="notifications_off">Les notifications sont désactivées. Vous pouvez répondre ici aux questionnaires ouverts.</string>
     <string name="remove">Retirer</string>
     <string name="remove_title">Retirer « %1$s » ?</string>
     <string name="remove_confirm">L’étude sera retirée de ce téléphone. Vous ne pourrez ensuite plus supprimer vos réponses depuis l’application.</string>
@@ -203,4 +203,39 @@
     <string name="keep_answers">Conserver mes réponses</string>
     <string name="save_failed">Enregistrement impossible. Votre questionnaire rempli reste ouvert. Essayez de le soumettre à nouveau.</string>
     <string name="queue_unreadable">Les réponses enregistrées sont illisibles. Elles n’ont pas été écrasées. Contactez l’équipe de l’étude.</string>
+    <string name="hide_licence">Masquer le texte de la licence</string>
+    <string name="quiet_none_button">Aucune</string>
+    <string name="study_info">À propos de cette étude</string>
+    <string name="study_contact">Contact de l’étude : %1$s</string>
+    <string name="open_end">Sans date de fin fixe. Vous ou l’équipe pouvez mettre fin à la participation.</string>
+    <string name="transmissions">Envoi des réponses</string>
+    <string name="no_waiting">Aucune réponse en attente sur cet appareil.</string>
+    <string name="transfer_waiting">Enregistrée sur cet appareil ; pas encore confirmée par le serveur.</string>
+    <string name="transfer_review">Pas encore acceptée. L’original reste ici. Si le problème persiste, contactez l’équipe.</string>
+    <string name="transfer_retry">Envoi interrompu. L’original reste ici ; réessayez.</string>
+    <string name="transfer_confirmed">Enregistrement confirmé par le serveur.</string>
+    <string name="transfer_preserved">Conservée par le serveur pour vérification ; pas encore dans les résultats habituels.</string>
+    <string name="last_attempt">Dernier essai : %1$s</string>
+    <string name="try_later">Veuillez réessayer dans quelques minutes.</string>
+    <string name="already_answered">Ce bref questionnaire a déjà reçu une réponse.</string>
+    <string name="study_unavailable">L’étude est indisponible. Contactez l’équipe.</string>
+    <string name="reminders_setup">Configurer les rappels</string>
+    <string name="reminders_optional">Vous pouvez répondre ici aux questionnaires ouverts sans notifications.</string>
+    <string name="notifications_open">Activer les notifications</string>
+    <string name="alarms_open">Configurer des rappels ponctuels</string>
+    <string name="answer_prompt">Répondre au bref questionnaire</string>
+    <string name="prompt_until">Disponible jusqu’au %1$s</string>
+    <string name="quiet_pending">Enregistré ici ; le serveur n’a pas encore confirmé le changement des heures de repos.</string>
+    <string name="remove_warning">Retirer l’étude de cet appareil ? Les réponses envoyées restent chez les chercheurs. Vous perdez l’accès ici, y compris pour les supprimer.</string>
+    <string name="remove_waiting">Réponses non envoyées : %1$d. Elles seront perdues définitivement. Essayez d’abord de les envoyer.</string>
+    <string name="rejoined">Étude reconnectée.</string>
+    <string name="another_code">Utiliser un autre code</string>
+    <string name="close_warning">Les réponses non envoyées peuvent être perdues. Continuer ou les abandonner ?</string>
+    <string name="discard">Abandonner et fermer</string>
+    <string name="permission_needed">Cette question nécessite le micro ou la localisation. En cas de refus permanent, ouvrez les paramètres. Une saisie alternative peut aussi être disponible.</string>
+    <string name="open_settings">Ouvrir les paramètres</string>
+    <string name="restored">Vérifiez les réponses restaurées. Les enregistrements et dessins non envoyés peuvent devoir être refaits.</string>
+    <string name="media_privacy">Le micro ou la localisation ne sont demandés que pour une question concernée. Le consentement explique les données envoyées. L’application garde aussi l’état d’envoi ici.</string>
+    <string name="draft_privacy">L’appareil garde aussi résumé, contact et brouillons temporaires. Les brouillons n’ont pas de sauvegarde cloud.</string>
+    <string name="try_transfer">Envoyer les réponses</string>
 </resources>

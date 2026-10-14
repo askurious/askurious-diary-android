@@ -33,6 +33,12 @@ class PromptLog internal constructor(private val prefs: SharedPreferences, seale
     fun isOpened(study: String, module: String, due: Long): Boolean =
         load().optJSONObject(key(study, module, due))?.optBoolean("opened", false) == true
 
+    fun completed(study: String, module: String, due: Long): Unit =
+        synchronized(SealedText.LOCK) { change { it.entry(key(study, module, due), due).put("completed", true) } }
+
+    fun isCompleted(study: String, module: String, due: Long): Boolean =
+        load().optJSONObject(key(study, module, due))?.optBoolean("completed", false) == true
+
     /** The exit questionnaire of [study] was notified or opened: no (further) notification for it. */
     fun exitNotified(study: String): Unit = synchronized(SealedText.LOCK) { prefs.edit { putStringSet(EXITS, exits() + study) } }
 

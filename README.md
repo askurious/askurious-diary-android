@@ -164,8 +164,8 @@ Not yet: a check of the transitive versions against a vulnerability database (`.
 A release build is shrunk with R8 (`proguard-rules.pro` keeps the WebView bridge `EntryActivity.Bridge`).
 Checks: `./gradlew testDebugUnitTest lintDebug`.
 
-A **debug build** talks to `http://localhost:5060`, the Flask server on the computer (`.venv/bin/python run.py` in the Askurious repository).
-Run `adb reverse tcp:5060 tcp:5060` once per start of the emulator, so that its `localhost:5060` is the computer's: the server answers only under `localhost` while it runs with the development key.
+A **debug build** talks to `http://127.0.0.1:5080`, the Flask server on the computer (`.venv/bin/python run.py` in the Askurious repository).
+Run `adb reverse tcp:5080 tcp:5060` once per start of the emulator, so that its `127.0.0.1:5080` is the computer's: the server answers only under `localhost` while it runs with the development key.
 A **release build** talks to `https://askurious.de` for a typed join code (the main address, where the diary studies run for now; `BASE_URL` in app/build.gradle.kts), and to the server a QR code names.
 
 ## Trying it on the emulator
@@ -198,3 +198,27 @@ The entry part without a connection, iOS (concept, section 10), an open-source l
 © 2026 Philipp Brauner, RWTH Aachen University.
 No open-source licence has been chosen for the code yet; until then all rights are reserved (`LICENSE`).
 The libraries and their licences: `THIRD_PARTY_NOTICES.md`.
+
+
+## Android UI audit: open questionnaires and interruptions
+
+The home screen offers still-open scheduled questionnaires independently of notification permissions; opened
+notifications are not counted as completed answers. Confirmed prompt keys and study contact are provided by the
+diary API. Study details retain the purpose, contact, period and participation controls.
+
+Removal warns about unsent answers as well as loss of access, and offers transferring answers first. A transfer
+view shows individual outstanding answers, last attempts and the last twenty server confirmations per study.
+Confirmation metadata is encrypted with the same Keystore mechanism as the existing local study/answer stores.
+Headers grow with system text size, dialogs scroll and actions wrap. Native palette roles enforce readable text
+and controls; the study's existing fixed/automatic palette choice and shape are retained.
+
+A retained application-context WebView preserves live input across Activity recreation. Ordinary form fields
+also use a bounded Android saved-state draft; unsubmitted files, recordings and drawings cannot reliably be
+recovered after process termination. Closing changed input asks first. The secure origin/main-frame message
+channel remains in use for drafts and completion. Microphone/location rights are requested only by questions
+from the configured known server, with no background recording/location permission. About/privacy texts explain
+local drafts and transfer metadata in all twelve languages.
+
+Debug uses loopback port 5080 because WebView blocks SIP port 5060. Forward `adb reverse tcp:5080 tcp:5060` to
+Flask's unchanged server port. `UiInstrumentation` checks dirty close, Activity recreation and saved-state
+recovery using synthetic local fixtures; no participant data or external service is needed.

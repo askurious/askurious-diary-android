@@ -32,7 +32,7 @@
     <string name="continue_entry">继续填写第一份问卷</string>
     <string name="day_of">第 %1$d 天，共 %2$d 天</string>
     <string name="starts_on">开始日期：%1$s</string>
-    <string name="next_prompt">下一个问题：%1$s</string>
+    <string name="next_prompt">下一次简短问卷：%1$s</string>
     <!-- fast forward (test person): when the next question really comes, time of day and "in 6 minutes" -->
     <string name="next_prompt_real" formatted="true">实际时间：%1$s，%2$s</string>
     <string name="finished">已完成，非常感谢！</string>
@@ -50,7 +50,7 @@
     <string name="allow_notifications">请允许通知，否则本应用无法在合适的时刻向您提问。</string>
     <string name="allow_exact">请允许“闹钟和提醒”，以便问题准时送达。</string>
     <string name="allow">允许</string>
-    <string name="expired">此问题已过期。下一个问题很快就会到来。</string>
+    <string name="expired">回答时间已结束。请返回研究。</string>
     <string name="limit">今天此项报告的次数已达上限。</string>
     <string name="not_found">没有使用此代码的研究。</string>
     <string name="closed">此研究不再接受新的参与者。</string>
@@ -77,7 +77,7 @@
     </plurals>
     <string name="about_offline">对于支持离线作答的研究，应用还会保存问卷页面。离线答案会加密保留在此手机上，直到服务器确认保存，或您明确移除研究及其答案。过期或被拒绝不会删除答案。</string>
     <string name="quiet_title">免打扰时段</string>
-    <string name="quiet_now">免打扰时段：%1$s</string>
+    <string name="quiet_now">随机提醒的静默时间：%1$s</string>
     <string name="quiet_from_tomorrow">自明天起：%1$s</string>
     <string name="quiet_none">无</string>
     <string name="quiet_change">更改免打扰时段</string>
@@ -102,7 +102,7 @@
     <string name="rejoin_confirm">您已在此手机上参加了该研究。再次加入将开始一次新的参与：之后您将无法在应用中删除之前的回答。之前参与中尚在等待的回答会尽可能先发送，否则将被丢弃。如需删除之前的回答，请取消并使用研究卡片上的“删除我的回答”。</string>
     <string name="rejoin">再次加入</string>
     <string name="allow_in_settings">在设置中允许</string>
-    <string name="notifications_off">通知已关闭——您将不会收到任何问题</string>
+    <string name="notifications_off">通知已关闭。您可以在此回答开放的简短问卷。</string>
     <string name="remove">移除</string>
     <string name="remove_title">要移除“%1$s”吗？</string>
     <string name="remove_confirm">该研究将从此手机中移除。之后您将无法再通过本应用删除您的回答。</string>
@@ -189,4 +189,39 @@
     <string name="keep_answers">保留我的回答</string>
     <string name="save_failed">保存失败。您已填写的问卷仍保持打开。请尝试重新提交。</string>
     <string name="queue_unreadable">无法读取已保存的答案。它们未被覆盖。请联系研究团队。</string>
+    <string name="hide_licence">隐藏许可文本</string>
+    <string name="quiet_none_button">无</string>
+    <string name="study_info">关于此研究</string>
+    <string name="study_contact">研究联系方式：%1$s</string>
+    <string name="open_end">没有固定结束日期。您或研究人员可以结束参与。</string>
+    <string name="transmissions">答案传输</string>
+    <string name="no_waiting">此设备上没有待发送的答案。</string>
+    <string name="transfer_waiting">已保存在此设备上；服务器尚未确认。</string>
+    <string name="transfer_review">尚未接受。原始答案仍保存在此设备上。如问题持续，请联系研究团队。</string>
+    <string name="transfer_retry">传输中断。原始答案仍在此设备上；请重试。</string>
+    <string name="transfer_confirmed">服务器已确认保存。</string>
+    <string name="transfer_preserved">服务器已保留以供检查；尚未纳入常规结果。</string>
+    <string name="last_attempt">上次尝试：%1$s</string>
+    <string name="try_later">请几分钟后重试。</string>
+    <string name="already_answered">此简短问卷已回答。</string>
+    <string name="study_unavailable">研究暂时不可用。请联系研究团队。</string>
+    <string name="reminders_setup">设置提醒</string>
+    <string name="reminders_optional">即使没有通知，您也可以在此回答开放的简短问卷。</string>
+    <string name="notifications_open">开启通知</string>
+    <string name="alarms_open">设置准时提醒</string>
+    <string name="answer_prompt">回答简短问卷</string>
+    <string name="prompt_until">开放至 %1$s</string>
+    <string name="quiet_pending">已本地保存；服务器尚未确认静默时间的更改。</string>
+    <string name="remove_warning">从此设备移除研究？已发送的答案仍由研究人员保留。您将失去此设备上的访问和删除权限。</string>
+    <string name="remove_waiting">未发送答案：%1$d。将永久丢失。请先尝试传输。</string>
+    <string name="rejoined">已重新连接研究。</string>
+    <string name="another_code">使用其他代码</string>
+    <string name="close_warning">未提交的答案可能在关闭后丢失。继续回答还是放弃？</string>
+    <string name="discard">放弃并关闭</string>
+    <string name="permission_needed">此问题需要麦克风或位置权限。如已永久拒绝，请打开应用设置。也可使用问题提供的替代输入。</string>
+    <string name="open_settings">打开应用设置</string>
+    <string name="restored">请检查恢复的答案。未提交的录音和绘图可能需要重新输入。</string>
+    <string name="media_privacy">仅在相应研究问题需要时请求麦克风或位置权限。知情同意说明传输内容。应用还在此设备上保存传输状态。</string>
+    <string name="draft_privacy">设备也保存研究概述、联系方式和临时表单草稿。草稿无云备份。</string>
+    <string name="try_transfer">传输答案</string>
 </resources>
