@@ -90,7 +90,7 @@
         <item quantity="many">%d odpowiedzi czeka na wysłanie</item>
         <item quantity="other">%d odpowiedzi czeka na wysłanie</item>
     </plurals>
-    <string name="about_offline">Jeśli badanie pozwala odpowiadać bez połączenia, aplikacja przechowuje też strony kwestionariusza tych pytań oraz – do czasu wysłania – odpowiedzi udzielone bez połączenia; odpowiedzi, których nie udało się wysłać w ciągu 7 dni, są usuwane.</string>
+    <string name="about_offline">W badaniach umożliwiających odpowiedzi offline aplikacja przechowuje także strony kwestionariusza. Odpowiedzi offline pozostają zaszyfrowane na tym telefonie, dopóki serwer nie potwierdzi zapisu lub wyraźnie nie usuniesz badania i odpowiedzi. Wygaśnięcie lub odmowa ich nie usuwa.</string>
     <string name="quiet_title">Godziny ciszy</string>
     <string name="quiet_now">Godziny ciszy: %1$s</string>
     <string name="quiet_from_tomorrow">Od jutra: %1$s</string>
@@ -118,7 +118,7 @@
     <string name="exit_default">Ankieta końcowa</string>
     <string name="exit_until">Dostępna do %1$s</string>
     <string name="notif_exit">Okres badania dobiegł końca. Prosimy wypełnić: %1$s</string>
-    <string name="limit_refused">Odpowiedź udzielona bez połączenia nie została zapisana: dzisiejszy limit dla tego zgłoszenia był już osiągnięty.</string>
+    <string name="limit_refused">Serwer nie przyjął niektórych odpowiedzi. Pozostają na tym telefonie do wyjaśnienia, dopóki nie usuniesz ich wyraźnie.</string>
     <string name="clock_off">Zegar tego telefonu jest ustawiony nieprawidłowo. Odpowiedzi udzielone bez połączenia zostaną wysłane, gdy data i godzina będą prawidłowe.</string>
     <string name="rejoin_confirm">To badanie jest już na tym telefonie. Ponowne dołączenie rozpoczyna nowy udział: wcześniejszych odpowiedzi nie będzie można już usunąć w aplikacji. Oczekujące odpowiedzi z wcześniejszego udziału zostaną najpierw wysłane, jeśli to możliwe, w przeciwnym razie odrzucone. Aby usunąć wcześniejsze odpowiedzi, prosimy anulować i użyć przycisku „Usuń moje odpowiedzi” na karcie badania.</string>
     <string name="rejoin">Dołącz ponownie</string>
@@ -208,4 +208,6 @@
     <string name="after_leave_title">Zachować odpowiedzi?</string>
     <string name="after_leave_text">Badanie zostało opuszczone. Dotychczasowe odpowiedzi nadal pomagają w badaniu, nawet po rezygnacji, a zespół badawczy byłby wdzięczny za możliwość ich zachowania. Czy mimo to usunąć odpowiedzi? Tego nie można cofnąć.</string>
     <string name="keep_answers">Zachowaj odpowiedzi</string>
+    <string name="save_failed">Nie udało się zapisać. Wypełniony kwestionariusz pozostaje otwarty. Spróbuj wysłać go ponownie.</string>
+    <string name="queue_unreadable">Nie można odczytać zapisanych odpowiedzi. Nie zostały nadpisane. Skontaktuj się z zespołem badania.</string>
 </resources>

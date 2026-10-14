@@ -80,7 +80,7 @@
         <item quantity="one">%d yanıt gönderilmeyi bekliyor</item>
         <item quantity="other">%d yanıt gönderilmeyi bekliyor</item>
     </plurals>
-    <string name="about_offline">Bir çalışma bağlantı olmadan yanıt vermeye izin veriyorsa uygulama bu soruların anket sayfalarını ve gönderilene kadar bağlantı olmadan verilen yanıtları da saklar; 7 gün içinde gönderilemeyen yanıtlar silinir.</string>
+    <string name="about_offline">Çevrimdışı yanıtları destekleyen çalışmalarda uygulama anket sayfalarını da saklar. Çevrimdışı yanıtlar, sunucu kaydı onaylayana veya siz çalışmayı ve yanıtlarını açıkça kaldırana kadar bu telefonda şifreli kalır. Sürenin dolması veya ret onları silmez.</string>
     <string name="quiet_title">Sessiz saatler</string>
     <string name="quiet_now">Sessiz saatler: %1$s</string>
     <string name="quiet_from_tomorrow">Yarından itibaren: %1$s</string>
@@ -104,7 +104,7 @@
     <string name="exit_default">Son anket</string>
     <string name="exit_until">%1$s tarihine kadar açık</string>
     <string name="notif_exit">Çalışma süresi sona erdi. Lütfen şunu yanıtlayın: %1$s</string>
-    <string name="limit_refused">Bağlantı olmadan verdiğiniz bir yanıt kaydedilmedi: bu bildirim için bugünkü sınıra zaten ulaşılmıştı.</string>
+    <string name="limit_refused">Sunucu bazı yanıtları kabul etmedi. Açıklığa kavuşturulmak üzere, siz açıkça kaldırana kadar bu telefonda kalırlar.</string>
     <string name="clock_off">Bu telefonun saati yanlış. Bağlantı olmadan verilen yanıtlar, tarih ve saat doğru ayarlandığında gönderilecek.</string>
     <string name="rejoin_confirm">Bu telefonda bu çalışmaya zaten katılıyorsunuz. Yeniden katılmak yeni bir katılım başlatır: önceki yanıtlarınızı artık uygulamada silemezsiniz. Önceki katılımın bekleyen yanıtları mümkünse önce gönderilir, değilse silinir. Önceki yanıtlarınızı silmek için iptal edin ve çalışma kartındaki “Yanıtlarımı sil” düğmesini kullanın.</string>
     <string name="rejoin">Yeniden katıl</string>
@@ -194,4 +194,6 @@
     <string name="after_leave_title">Yanıtlarınız saklansın mı?</string>
     <string name="after_leave_text">Çalışmadan ayrıldınız. Şimdiye kadarki yanıtlarınız, şimdi bıraksanız bile araştırmaya yardımcı olur ve araştırmacılar bunları saklayabilirlerse minnettar olurlar. Yine de silmek istiyor musunuz? Bu işlem geri alınamaz.</string>
     <string name="keep_answers">Yanıtlarımı sakla</string>
+    <string name="save_failed">Kaydedilemedi. Doldurduğunuz anket açık kalır. Lütfen yeniden göndermeyi deneyin.</string>
+    <string name="queue_unreadable">Kayıtlı yanıtlar okunamıyor. Üzerlerine yazılmadı. Lütfen çalışma ekibiyle iletişime geçin.</string>
 </resources>

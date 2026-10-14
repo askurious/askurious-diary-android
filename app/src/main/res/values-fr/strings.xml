@@ -85,7 +85,7 @@
         <item quantity="many">%d réponses en attente d’envoi</item>
         <item quantity="other">%d réponses en attente d’envoi</item>
     </plurals>
-    <string name="about_offline">Si une étude permet de répondre sans connexion, l’application conserve aussi les pages du questionnaire de ces questions et, jusqu’à leur envoi, les réponses données sans connexion ; les réponses qui n’ont pas pu être envoyées dans un délai de 7 jours sont supprimées.</string>
+    <string name="about_offline">Pour les études permettant de répondre hors connexion, l’application conserve aussi les pages du questionnaire. Les réponses hors connexion restent chiffrées sur ce téléphone jusqu’à confirmation du stockage par le serveur ou suppression explicite de l’étude et de ses réponses. Leur expiration ou refus ne les supprime pas.</string>
     <string name="quiet_title">Heures de tranquillité</string>
     <string name="quiet_now">Heures de tranquillité : %1$s</string>
     <string name="quiet_from_tomorrow">À partir de demain : %1$s</string>
@@ -111,7 +111,7 @@
     <string name="exit_default">Questionnaire final</string>
     <string name="exit_until">Disponible jusqu’au %1$s</string>
     <string name="notif_exit">La période de l’étude est terminée. Merci de remplir : %1$s</string>
-    <string name="limit_refused">Une réponse donnée sans connexion n’a pas été enregistrée : la limite d’aujourd’hui pour cette saisie était déjà atteinte.</string>
+    <string name="limit_refused">Le serveur n’a pas accepté certaines réponses. Elles restent sur ce téléphone pour clarification jusqu’à leur suppression explicite.</string>
     <string name="clock_off">L’horloge de ce téléphone n’est pas à l’heure. Les réponses données sans connexion seront envoyées dès que la date et l’heure seront correctes.</string>
     <string name="rejoin_confirm">Vous participez déjà à cette étude sur ce téléphone. Rejoindre à nouveau commence une nouvelle participation : vous ne pourrez alors plus supprimer vos réponses précédentes dans l’application. Les réponses en attente de la participation précédente sont d’abord envoyées si possible, sinon supprimées. Pour supprimer vos réponses précédentes, annulez et utilisez « Supprimer mes réponses » sur la carte de l’étude.</string>
     <string name="rejoin">Rejoindre à nouveau</string>
@@ -201,4 +201,6 @@
     <string name="after_leave_title">Conserver vos réponses ?</string>
     <string name="after_leave_text">Vous avez quitté l’étude. Vos réponses jusqu’ici aident encore la recherche, même si vous arrêtez maintenant, et les chercheurs vous seraient reconnaissants de pouvoir les conserver. Voulez-vous quand même les supprimer ? C’est irréversible.</string>
     <string name="keep_answers">Conserver mes réponses</string>
+    <string name="save_failed">Enregistrement impossible. Votre questionnaire rempli reste ouvert. Essayez de le soumettre à nouveau.</string>
+    <string name="queue_unreadable">Les réponses enregistrées sont illisibles. Elles n’ont pas été écrasées. Contactez l’équipe de l’étude.</string>
 </resources>

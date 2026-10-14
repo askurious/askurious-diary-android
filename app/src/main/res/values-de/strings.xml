@@ -80,7 +80,7 @@
         <item quantity="one">%d Antwort wartet auf das Senden</item>
         <item quantity="other">%d Antworten warten auf das Senden</item>
     </plurals>
-    <string name="about_offline">Wenn eine Studie Antworten ohne Verbindung erlaubt, speichert die App auch die Fragebogenseiten dieser Fragen und, bis sie gesendet sind, die ohne Verbindung gegebenen Antworten; Antworten, die nicht innerhalb von 7 Tagen gesendet werden konnten, werden gelöscht.</string>
+    <string name="about_offline">Bei Studien mit Offlineantworten speichert die App auch Fragebogenseiten. Offlineantworten bleiben verschlüsselt auf diesem Gerät, bis der Server die Speicherung bestätigt oder Sie die Studie und ihre Antworten ausdrücklich entfernen. Ablauf oder Ablehnung löschen sie nicht.</string>
     <string name="quiet_title">Ruhezeiten</string>
     <string name="quiet_now">Ruhezeiten: %1$s</string>
     <string name="quiet_from_tomorrow">Ab morgen: %1$s</string>
@@ -104,7 +104,7 @@
     <string name="exit_default">Abschlussbefragung</string>
     <string name="exit_until">Offen bis %1$s</string>
     <string name="notif_exit">Der Studienzeitraum ist vorbei. Bitte noch beantworten: %1$s</string>
-    <string name="limit_refused">Eine ohne Verbindung gegebene Antwort wurde nicht gespeichert: Die Höchstzahl dieser Meldung für heute war schon erreicht.</string>
+    <string name="limit_refused">Einige Antworten wurden vom Server nicht angenommen. Sie bleiben zur Klärung auf diesem Gerät, bis Sie sie ausdrücklich entfernen.</string>
     <string name="clock_off">Die Uhr dieses Telefons geht falsch. Antworten, die ohne Verbindung gegeben wurden, werden gesendet, sobald Datum und Uhrzeit stimmen.</string>
     <string name="rejoin_confirm">Auf diesem Telefon läuft schon eine Teilnahme an dieser Studie. Ein erneuter Beitritt beginnt eine neue Teilnahme: Die früheren Antworten lassen sich dann nicht mehr in der App löschen. Noch wartende Antworten der früheren Teilnahme werden vorher gesendet, wenn möglich, sonst verworfen. Wer die früheren Antworten löschen möchte, bricht hier ab und nutzt „Meine Antworten löschen“ auf der Seite der Studie.</string>
     <string name="rejoin">Erneut beitreten</string>
@@ -194,4 +194,6 @@
     <string name="after_leave_title">Antworten behalten?</string>
     <string name="after_leave_text">Die Studie ist verlassen. Die bisherigen Antworten helfen der Forschung auch dann, wenn die Teilnahme jetzt endet, und die Forschenden wären dankbar, sie behalten zu dürfen. Trotzdem löschen? Das lässt sich nicht rückgängig machen.</string>
     <string name="keep_answers">Antworten behalten</string>
+    <string name="save_failed">Speichern fehlgeschlagen. Ihr ausgefüllter Fragebogen bleibt geöffnet. Bitte senden Sie ihn erneut ab.</string>
+    <string name="queue_unreadable">Gespeicherte Antworten können nicht gelesen werden. Sie wurden nicht überschrieben. Bitte kontaktieren Sie das Studienteam.</string>
 </resources>

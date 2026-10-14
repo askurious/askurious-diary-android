@@ -107,6 +107,8 @@ class EntryActivity : ComponentActivity() {
     private var error by mutableStateOf<String?>(null)
     private var saved by mutableStateOf(false)
     private var done = false
+    private var saving = false
+    private var offlineAnswerId = java.util.UUID.randomUUID().toString()
 
     /** [error] is one that may pass (no connection, a fault): the screen offers "Try again" (audit A8). */
     private var retryable by mutableStateOf(false)
@@ -150,6 +152,7 @@ class EntryActivity : ComponentActivity() {
         // turning the phone does not recreate the activity (android:configChanges); anything else that does (the
         // system took the app's memory, a change of language) keeps what was answered already
         if (savedInstanceState != null) {
+            offlineAnswerId = savedInstanceState.getString("offline_answer_id") ?: offlineAnswerId
             done = savedInstanceState.getBoolean(STATE_DONE)
             saved = savedInstanceState.getBoolean(STATE_SAVED)
             error = savedInstanceState.getString(STATE_ERROR)
@@ -280,6 +283,7 @@ class EntryActivity : ComponentActivity() {
 
     /** The X in the top bar and the last step of the back gesture. */
     private fun close() {
+        if (saving) return
         if (mayLose) askAbort = true else finish()
     }
 
@@ -374,6 +378,7 @@ class EntryActivity : ComponentActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean(STATE_DONE, done)
+        outState.putString("offline_answer_id", offlineAnswerId)
         outState.putBoolean(STATE_SAVED, saved)
         outState.putString(STATE_ERROR, error)
         outState.putBoolean(STATE_RETRY, retryable)
@@ -430,7 +435,7 @@ class EntryActivity : ComponentActivity() {
     /** The kept page was submitted: the answer waits in the queue, the participant sees that it was saved. */
     private fun offlineSubmitted(json: String) {
         val page = offline ?: return
-        if (done) return
+        if (done || saving) return
         // only a JSON object goes into the queue: the server takes nothing else
         val form = runCatching { JSONObject(json) }.getOrNull()?.toString() ?: return
         val code = intent.getStringExtra(EXTRA_STUDY) ?: return
@@ -438,11 +443,27 @@ class EntryActivity : ComponentActivity() {
         val due = intent.getLongExtra(EXTRA_DUE, 0L).takeIf { it > 0 }
         val notified = intent.getLongExtra(EXTRA_NOTIFIED, 0L).takeIf { it > 0 }
         val completed = StudyStore(this).get(code)?.now() ?: System.currentTimeMillis()
-        done = true
-        AnswerQueue(this).add(code, module, due, notified, offlineStarted, completed, page.version, form)
-        SyncWorker.sendSoon(this)
-        saved = true
-        forgetWebState()
+        saving = true
+        lifecycleScope.launch {
+            try {
+                withContext(Dispatchers.IO + kotlinx.coroutines.NonCancellable) {
+                    AnswerQueue(this@EntryActivity).add(code, module, due, notified, offlineStarted, completed, page.version, form, offlineAnswerId)
+                }
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                // Keep the filled WebView open. A failed write must never show the saved screen.
+                android.widget.Toast.makeText(this@EntryActivity, R.string.save_failed, android.widget.Toast.LENGTH_LONG).show()
+                return@launch
+            } finally {
+                saving = false
+            }
+            done = true
+            saved = true
+            forgetWebState()
+            // A scheduling failure cannot turn an already durable save into a failed save.
+            runCatching { SyncWorker.sendSoon(this@EntryActivity) }
+        }
     }
 
     @OptIn(ExperimentalMaterial3Api::class)

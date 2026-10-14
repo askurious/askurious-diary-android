@@ -1,8 +1,8 @@
 package de.askurious.app.data
 
 import android.content.SharedPreferences
-import androidx.core.content.edit
 import java.util.WeakHashMap
+import java.io.IOException
 
 /**
  * One text in the app's SharedPreferences, stored sealed ([Sealer], AES-GCM under the Keystore key, with [aad] naming
@@ -20,7 +20,9 @@ class SealedText(private val prefs: SharedPreferences, private val key: String, 
     fun read(): Opened = synchronized(LOCK) {
         val cache = cache()
         if (cache.containsKey(key)) return Opened(cache[key])
-        val raw = runCatching { prefs.getString(key, null) }.getOrNull()
+        val raw = try { prefs.getString(key, null) } catch (e: Exception) {
+            return Opened(null, unreadable = true)
+        }
         when {
             raw == null -> {
                 cache[key] = null
@@ -41,13 +43,22 @@ class SealedText(private val prefs: SharedPreferences, private val key: String, 
         }
     }
 
-    fun write(plain: String): Unit = synchronized(LOCK) {
-        prefs.edit { putString(key, sealer.seal(plain, aad)) }
+    fun write(plain: String, durable: Boolean = false): Unit = synchronized(LOCK) {
+        val sealed = try { sealer.seal(plain, aad) } catch (e: Exception) {
+            if (durable) throw IOException("Could not encrypt sealed text", e) else throw e
+        }
+        val editor = prefs.edit().putString(key, sealed)
+        if (durable) {
+            if (!editor.commit()) throw IOException("Could not persist sealed text")
+        } else editor.apply()
         cache()[key] = plain
     }
 
-    fun remove(): Unit = synchronized(LOCK) {
-        prefs.edit { remove(key) }
+    fun remove(durable: Boolean = false): Unit = synchronized(LOCK) {
+        val editor = prefs.edit().remove(key)
+        if (durable) {
+            if (!editor.commit()) throw IOException("Could not remove sealed text")
+        } else editor.apply()
         cache()[key] = null
     }
 

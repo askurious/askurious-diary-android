@@ -85,7 +85,7 @@
         <item quantity="many">%d respostas à espera de envio</item>
         <item quantity="other">%d respostas à espera de envio</item>
     </plurals>
-    <string name="about_offline">Se um estudo permitir responder sem ligação, a aplicação guarda também as páginas do questionário dessas perguntas e, até serem enviadas, as respostas dadas sem ligação; as respostas que não puderem ser enviadas no prazo de 7 dias são eliminadas.</string>
+    <string name="about_offline">Nos estudos com respostas offline, a aplicação também guarda páginas do questionário. As respostas offline permanecem encriptadas neste telefone até o servidor confirmar o armazenamento ou remover explicitamente o estudo e as respostas. A expiração ou recusa não as elimina.</string>
     <string name="quiet_title">Horas de silêncio</string>
     <string name="quiet_now">Horas de silêncio: %1$s</string>
     <string name="quiet_from_tomorrow">A partir de amanhã: %1$s</string>
@@ -111,7 +111,7 @@
     <string name="exit_default">Questionário final</string>
     <string name="exit_until">Disponível até %1$s</string>
     <string name="notif_exit">O período do estudo terminou. Por favor, responda: %1$s</string>
-    <string name="limit_refused">Uma resposta dada sem ligação não foi guardada: o limite de hoje para este registo já tinha sido atingido.</string>
+    <string name="limit_refused">O servidor não aceitou algumas respostas. Permanecem neste telefone para esclarecimento até as remover explicitamente.</string>
     <string name="clock_off">O relógio deste telemóvel está errado. As respostas dadas sem ligação serão enviadas assim que a data e a hora estiverem certas.</string>
     <string name="rejoin_confirm">Já participa neste estudo neste telemóvel. Participar de novo inicia uma nova participação: depois já não poderá apagar as suas respostas anteriores na aplicação. As respostas pendentes da participação anterior são enviadas antes, se possível; caso contrário, são descartadas. Para apagar as suas respostas anteriores, cancele e use «Apagar as minhas respostas» no cartão do estudo.</string>
     <string name="rejoin">Participar de novo</string>
@@ -201,4 +201,6 @@
     <string name="after_leave_title">Manter as suas respostas?</string>
     <string name="after_leave_text">Saiu do estudo. As suas respostas até agora continuam a ajudar a investigação, mesmo que pare agora, e os investigadores ficariam gratos por as poderem manter. Quer apagá-las mesmo assim? Não é possível anular.</string>
     <string name="keep_answers">Manter as minhas respostas</string>
+    <string name="save_failed">Não foi possível guardar. O questionário preenchido permanece aberto. Tente enviá-lo novamente.</string>
+    <string name="queue_unreadable">Não é possível ler as respostas guardadas. Não foram substituídas. Contacte a equipa do estudo.</string>
 </resources>

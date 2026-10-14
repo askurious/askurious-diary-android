@@ -85,7 +85,7 @@
         <item quantity="many">%d risposte in attesa di invio</item>
         <item quantity="other">%d risposte in attesa di invio</item>
     </plurals>
-    <string name="about_offline">Se uno studio consente di rispondere senza connessione, l’app conserva anche le pagine del questionario di quelle domande e, finché non vengono inviate, le risposte date senza connessione; le risposte che non è stato possibile inviare entro 7 giorni vengono eliminate.</string>
+    <string name="about_offline">Per gli studi con risposte offline, l’app conserva anche le pagine del questionario. Le risposte offline restano crittografate su questo telefono finché il server non conferma il salvataggio o rimuovi esplicitamente lo studio e le risposte. Scadenza o rifiuto non le eliminano.</string>
     <string name="quiet_title">Orari di riposo</string>
     <string name="quiet_now">Orari di riposo: %1$s</string>
     <string name="quiet_from_tomorrow">Da domani: %1$s</string>
@@ -111,7 +111,7 @@
     <string name="exit_default">Questionario finale</string>
     <string name="exit_until">Disponibile fino al %1$s</string>
     <string name="notif_exit">Il periodo dello studio è terminato. La preghiamo di compilare: %1$s</string>
-    <string name="limit_refused">Una risposta data senza connessione non è stata salvata: il limite di oggi per questa segnalazione era già stato raggiunto.</string>
+    <string name="limit_refused">Il server non ha accettato alcune risposte. Restano su questo telefono per chiarimenti finché non le rimuovi esplicitamente.</string>
     <string name="clock_off">L’orologio di questo telefono non è corretto. Le risposte date senza connessione verranno inviate non appena data e ora saranno corrette.</string>
     <string name="rejoin_confirm">Partecipa già a questo studio su questo telefono. Partecipare di nuovo avvia una nuova partecipazione: dopo non potrà più cancellare nell’app le Sue risposte precedenti. Le risposte ancora in attesa della partecipazione precedente vengono prima inviate, se possibile, altrimenti scartate. Per cancellare le Sue risposte precedenti, annulli e usi «Cancella le mie risposte» sulla scheda dello studio.</string>
     <string name="rejoin">Partecipa di nuovo</string>
@@ -201,4 +201,6 @@
     <string name="after_leave_title">Conservare le Sue risposte?</string>
     <string name="after_leave_text">Ha lasciato lo studio. Le Sue risposte finora aiutano ancora la ricerca, anche se smette adesso, e i ricercatori Le sarebbero grati di poterle conservare. Vuole comunque eliminarle? Non è possibile annullare.</string>
     <string name="keep_answers">Conserva le mie risposte</string>
+    <string name="save_failed">Salvataggio non riuscito. Il questionario compilato resta aperto. Prova a inviarlo di nuovo.</string>
+    <string name="queue_unreadable">Le risposte salvate non possono essere lette. Non sono state sovrascritte. Contatta il gruppo dello studio.</string>
 </resources>
