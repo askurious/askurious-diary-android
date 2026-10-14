@@ -87,6 +87,16 @@ object Schedule {
         return all.filter { it.ring == first }
     }
 
+    /** Only today's unanswered, still valid prompts; opened does not mean answered. */
+    fun available(study: Study, now: Instant, zone: ZoneId = ZoneId.systemDefault()): List<Prompt> {
+        val v = study.at(now)
+        val start = v.atZone(zone).toLocalDate().atStartOfDay(zone).toInstant()
+        return prompts(study, start.minusSeconds(24 * 3600), v.plusMillis(1), zone).filter { p ->
+            val m = study.modules.first { it.key == p.module }
+            (m.expires > 0 || p.due >= start.toEpochMilli()) && open(m, p.due, v.toEpochMilli()) && "${p.module}|${p.due}" !in study.completedPrompts
+        }
+    }
+
     /**
      * The prompts of [study] whose reminder rings in [from, until), ordered by that moment. A reminder belongs to a
      * prompt up to [Module.reminder] minutes earlier, so the prompts are looked for that much before [from].

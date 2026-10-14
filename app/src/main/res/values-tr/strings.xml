@@ -36,7 +36,7 @@
     <string name="continue_entry">İlk ankete devam et</string>
     <string name="day_of">Gün %1$d / %2$d</string>
     <string name="starts_on">Başlangıç: %1$s</string>
-    <string name="next_prompt">Sonraki soru: %1$s</string>
+    <string name="next_prompt">Sonraki kısa anket: %1$s</string>
     <!-- fast forward (test person): when the next question really comes, time of day and "in 6 minutes" -->
     <string name="next_prompt_real" formatted="true">gerçek zamanda: %1$s, %2$s</string>
     <string name="finished">Tamamlandı, çok teşekkür ederiz!</string>
@@ -54,7 +54,7 @@
     <string name="allow_notifications">Bildirimlere izin verin, aksi halde uygulama size doğru anda soru soramaz.</string>
     <string name="allow_exact">Soruların zamanında gelmesi için “Alarmlar ve hatırlatıcılar” iznini verin.</string>
     <string name="allow">İzin ver</string>
-    <string name="expired">Bu sorunun süresi doldu. Bir sonraki yakında gelecek.</string>
+    <string name="expired">Yanıt süresi doldu. Çalışmaya dönün.</string>
     <string name="limit">Bu bildirim için bugünkü sınıra ulaştınız.</string>
     <string name="not_found">Bu koda sahip bir çalışma yok.</string>
     <string name="closed">Bu çalışma yeni katılımcı kabul etmiyor.</string>
@@ -82,7 +82,7 @@
     </plurals>
     <string name="about_offline">Çevrimdışı yanıtları destekleyen çalışmalarda uygulama anket sayfalarını da saklar. Çevrimdışı yanıtlar, sunucu kaydı onaylayana veya siz çalışmayı ve yanıtlarını açıkça kaldırana kadar bu telefonda şifreli kalır. Sürenin dolması veya ret onları silmez.</string>
     <string name="quiet_title">Sessiz saatler</string>
-    <string name="quiet_now">Sessiz saatler: %1$s</string>
+    <string name="quiet_now">Rastgele hatırlatıcılar için sessiz saatler: %1$s</string>
     <string name="quiet_from_tomorrow">Yarından itibaren: %1$s</string>
     <string name="quiet_none">yok</string>
     <string name="quiet_change">Sessiz saatleri değiştir</string>
@@ -109,7 +109,7 @@
     <string name="rejoin_confirm">Bu telefonda bu çalışmaya zaten katılıyorsunuz. Yeniden katılmak yeni bir katılım başlatır: önceki yanıtlarınızı artık uygulamada silemezsiniz. Önceki katılımın bekleyen yanıtları mümkünse önce gönderilir, değilse silinir. Önceki yanıtlarınızı silmek için iptal edin ve çalışma kartındaki “Yanıtlarımı sil” düğmesini kullanın.</string>
     <string name="rejoin">Yeniden katıl</string>
     <string name="allow_in_settings">Ayarlardan izin ver</string>
-    <string name="notifications_off">Bildirimler kapalı – hiç soru almayacaksınız</string>
+    <string name="notifications_off">Bildirimler kapalı. Açık kısa anketleri burada yanıtlayabilirsiniz.</string>
     <string name="remove">Kaldır</string>
     <string name="remove_title">“%1$s” kaldırılsın mı?</string>
     <string name="remove_confirm">Çalışma bu telefondan kaldırılır. Ardından yanıtlarınızı artık uygulama üzerinden silemezsiniz.</string>
@@ -196,4 +196,39 @@
     <string name="keep_answers">Yanıtlarımı sakla</string>
     <string name="save_failed">Kaydedilemedi. Doldurduğunuz anket açık kalır. Lütfen yeniden göndermeyi deneyin.</string>
     <string name="queue_unreadable">Kayıtlı yanıtlar okunamıyor. Üzerlerine yazılmadı. Lütfen çalışma ekibiyle iletişime geçin.</string>
+    <string name="hide_licence">Lisans metnini gizle</string>
+    <string name="quiet_none_button">Yok</string>
+    <string name="study_info">Bu çalışma hakkında</string>
+    <string name="study_contact">Çalışma iletişim bilgisi: %1$s</string>
+    <string name="open_end">Sabit bitiş tarihi yok. Siz veya araştırmacılar katılımı sonlandırabilirsiniz.</string>
+    <string name="transmissions">Yanıt aktarımı</string>
+    <string name="no_waiting">Bu cihazda bekleyen yanıt yok.</string>
+    <string name="transfer_waiting">Bu cihazda kaydedildi; sunucu henüz doğrulamadı.</string>
+    <string name="transfer_review">Henüz kabul edilmedi. Asıl yanıt burada kalır. Sorun sürerse çalışma ekibine başvurun.</string>
+    <string name="transfer_retry">Aktarım kesildi. Asıl yanıt burada kalır; tekrar deneyin.</string>
+    <string name="transfer_confirmed">Sunucu kaydı doğruladı.</string>
+    <string name="transfer_preserved">Sunucu inceleme için sakladı; henüz normal sonuçlara dahil değil.</string>
+    <string name="last_attempt">Son deneme: %1$s</string>
+    <string name="try_later">Birkaç dakika sonra tekrar deneyin.</string>
+    <string name="already_answered">Bu kısa anket zaten yanıtlandı.</string>
+    <string name="study_unavailable">Çalışma şu anda kullanılamıyor. Çalışma ekibine başvurun.</string>
+    <string name="reminders_setup">Hatırlatıcıları ayarla</string>
+    <string name="reminders_optional">Açık anketleri bildirim olmadan da burada yanıtlayabilirsiniz.</string>
+    <string name="notifications_open">Bildirimleri aç</string>
+    <string name="alarms_open">Zamanında hatırlatıcıları ayarla</string>
+    <string name="answer_prompt">Kısa anketi yanıtla</string>
+    <string name="prompt_until">%1$s tarihine kadar açık</string>
+    <string name="quiet_pending">Yerel olarak kaydedildi; sunucu sessiz saat değişikliğini henüz doğrulamadı.</string>
+    <string name="remove_warning">Çalışma bu cihazdan kaldırılsın mı? Gönderilen yanıtlar araştırmacılarda kalır. Silme dahil bu cihazdaki erişimi kaybedersiniz.</string>
+    <string name="remove_waiting">Gönderilmemiş yanıtlar: %1$d. Kalıcı olarak kaybolacaklar. Önce aktarmayı deneyin.</string>
+    <string name="rejoined">Çalışmaya yeniden bağlanıldı.</string>
+    <string name="another_code">Başka kod kullan</string>
+    <string name="close_warning">Gönderilmeyen yanıtlar kaybolabilir. Devam edilsin mi, vazgeçilsin mi?</string>
+    <string name="discard">Vazgeç ve kapat</string>
+    <string name="permission_needed">Bu soru mikrofon veya konum erişimi gerektirir. Kalıcı reddettiyseniz ayarları açın. Alternatif girişi de kullanabilirsiniz.</string>
+    <string name="open_settings">Uygulama ayarlarını aç</string>
+    <string name="restored">Geri yüklenen yanıtları kontrol edin. Gönderilmeyen kayıt ve çizimler tekrar gerekebilir.</string>
+    <string name="media_privacy">Mikrofon veya konum yalnızca ilgili soru için istenir. Onam gönderilen verileri açıklar. Uygulama aktarım durumunu da bu cihazda saklar.</string>
+    <string name="draft_privacy">Cihaz özet, iletişim bilgisi ve geçici form taslaklarını da saklar. Taslakların bulut yedeği yoktur.</string>
+    <string name="try_transfer">Yanıtları aktar</string>
 </resources>

@@ -44,6 +44,9 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
         val form: String,
         val refusedSince: Long? = null,
         val refusal: String? = null,
+        val attempted: Long? = null,
+        val error: String? = null,
+        val moduleName: String = "",
     ) {
         /** The body of POST /offline; "uuid" makes sending it again harmless (the server answers as the first time). */
         fun body(): JSONObject = JSONObject().put("uuid", id).put("module", module)
@@ -53,6 +56,7 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
         fun toJson(): JSONObject = body().put("id", id).put("study", study)
             .put("refused_since", refusedSince ?: JSONObject.NULL)
             .put("refusal", refusal ?: JSONObject.NULL)
+            .put("attempted", attempted ?: JSONObject.NULL).put("error", error ?: JSONObject.NULL).put("module_name", moduleName)
 
         companion object {
             fun fromJson(o: JSONObject) = Item(
@@ -67,6 +71,9 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
                 form = o.getJSONObject("form").toString(),
                 refusedSince = if (o.isNull("refused_since")) null else o.optLong("refused_since"),
                 refusal = if (o.isNull("refusal")) null else o.getString("refusal"),
+                attempted = if (o.isNull("attempted")) null else o.optLong("attempted"),
+                error = if (o.isNull("error")) null else o.optString("error"),
+                moduleName = o.optString("module_name"),
             )
         }
     }
@@ -86,14 +93,18 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
     fun of(study: String): List<Item> = all().filter { it.study == study }
 
     fun add(study: String, module: String, due: Long?, notified: Long?, started: Long, completed: Long, version: String, form: String,
-            id: String = UUID.randomUUID().toString()): Item =
+            id: String = UUID.randomUUID().toString(), moduleName: String = ""): Item =
         synchronized(SealedText.LOCK) {
             val existing = all()
             existing.firstOrNull { it.id == id }?.let { return@synchronized it }
-            val item = Item(id, study, module, due, notified, started, completed, version, form)
+            val item = Item(id, study, module, due, notified, started, completed, version, form, moduleName = moduleName)
             save(existing + item)
             item
         }
+
+    fun attempted(id: String, error: String): Unit = synchronized(SealedText.LOCK) {
+        save(all().map { if (it.id == id) it.copy(attempted = System.currentTimeMillis(), error = error) else it })
+    }
 
     fun remove(id: String): Unit = synchronized(SealedText.LOCK) { save(all().filterNot { it.id == id }) }
 

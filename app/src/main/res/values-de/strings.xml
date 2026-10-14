@@ -36,7 +36,7 @@
     <string name="continue_entry">Ersten Fragebogen fortsetzen</string>
     <string name="day_of">Tag %1$d von %2$d</string>
     <string name="starts_on">Beginnt am %1$s</string>
-    <string name="next_prompt">Nächste Frage: %1$s</string>
+    <string name="next_prompt">Nächste Kurzbefragung: %1$s</string>
     <!-- fast forward (test person): when the next question really comes, time of day and "in 6 minutes" -->
     <string name="next_prompt_real" formatted="true">in Echtzeit: %1$s, %2$s</string>
     <string name="finished">Abgeschlossen, vielen Dank!</string>
@@ -54,7 +54,7 @@
     <string name="allow_notifications">Benachrichtigungen erlauben, sonst kann die App nicht im richtigen Moment fragen.</string>
     <string name="allow_exact">„Wecker und Erinnerungen“ erlauben, damit Fragen pünktlich kommen.</string>
     <string name="allow">Erlauben</string>
-    <string name="expired">Diese Frage ist abgelaufen. Die nächste kommt bestimmt.</string>
+    <string name="expired">Die Antwortzeit ist abgelaufen. Kehren Sie zur Studie zurück.</string>
     <string name="limit">Die Höchstzahl dieser Meldung für heute ist erreicht.</string>
     <string name="not_found">Keine Studie mit diesem Code.</string>
     <string name="closed">Diese Studie nimmt keine neuen Teilnehmenden auf.</string>
@@ -82,7 +82,7 @@
     </plurals>
     <string name="about_offline">Bei Studien mit Offlineantworten speichert die App auch Fragebogenseiten. Offlineantworten bleiben verschlüsselt auf diesem Gerät, bis der Server die Speicherung bestätigt oder Sie die Studie und ihre Antworten ausdrücklich entfernen. Ablauf oder Ablehnung löschen sie nicht.</string>
     <string name="quiet_title">Ruhezeiten</string>
-    <string name="quiet_now">Ruhezeiten: %1$s</string>
+    <string name="quiet_now">Ruhezeiten für zufällige Erinnerungen: %1$s</string>
     <string name="quiet_from_tomorrow">Ab morgen: %1$s</string>
     <string name="quiet_none">keine</string>
     <string name="quiet_change">Ruhezeiten ändern</string>
@@ -109,7 +109,7 @@
     <string name="rejoin_confirm">Auf diesem Telefon läuft schon eine Teilnahme an dieser Studie. Ein erneuter Beitritt beginnt eine neue Teilnahme: Die früheren Antworten lassen sich dann nicht mehr in der App löschen. Noch wartende Antworten der früheren Teilnahme werden vorher gesendet, wenn möglich, sonst verworfen. Wer die früheren Antworten löschen möchte, bricht hier ab und nutzt „Meine Antworten löschen“ auf der Seite der Studie.</string>
     <string name="rejoin">Erneut beitreten</string>
     <string name="allow_in_settings">In den Einstellungen erlauben</string>
-    <string name="notifications_off">Benachrichtigungen aus – es kommen keine Fragen</string>
+    <string name="notifications_off">Benachrichtigungen sind ausgeschaltet. Offene Kurzbefragungen können Sie hier beantworten.</string>
     <string name="remove">Entfernen</string>
     <string name="remove_title">„%1$s“ entfernen?</string>
     <string name="remove_confirm">Die Studie wird von diesem Telefon entfernt. Danach lassen sich die Antworten nicht mehr über die App löschen.</string>
@@ -196,4 +196,39 @@
     <string name="keep_answers">Antworten behalten</string>
     <string name="save_failed">Speichern fehlgeschlagen. Ihr ausgefüllter Fragebogen bleibt geöffnet. Bitte senden Sie ihn erneut ab.</string>
     <string name="queue_unreadable">Gespeicherte Antworten können nicht gelesen werden. Sie wurden nicht überschrieben. Bitte kontaktieren Sie das Studienteam.</string>
+    <string name="hide_licence">Lizenztext ausblenden</string>
+    <string name="quiet_none_button">Keine</string>
+    <string name="study_info">Über diese Studie</string>
+    <string name="study_contact">Kontakt der Studie: %1$s</string>
+    <string name="open_end">Ohne festes Enddatum. Sie oder die Forschenden können die Teilnahme beenden.</string>
+    <string name="transmissions">Antwortübertragung</string>
+    <string name="no_waiting">Keine ausstehenden Antworten auf diesem Gerät.</string>
+    <string name="transfer_waiting">Auf diesem Gerät gespeichert; noch nicht vom Server bestätigt.</string>
+    <string name="transfer_review">Noch nicht angenommen. Das Original bleibt auf diesem Gerät. Bei anhaltendem Problem kontaktieren Sie die Studie.</string>
+    <string name="transfer_retry">Übertragung unterbrochen. Das Original bleibt hier; versuchen Sie es erneut.</string>
+    <string name="transfer_confirmed">Speicherung vom Server bestätigt.</string>
+    <string name="transfer_preserved">Vom Server zur Prüfung erhalten; noch nicht in den regulären Ergebnissen.</string>
+    <string name="last_attempt">Letzter Versuch: %1$s</string>
+    <string name="try_later">Bitte versuchen Sie es in einigen Minuten erneut.</string>
+    <string name="already_answered">Diese Kurzbefragung wurde bereits beantwortet.</string>
+    <string name="study_unavailable">Die Studie ist derzeit nicht erreichbar. Bitte kontaktieren Sie die Studie.</string>
+    <string name="reminders_setup">Erinnerungen einrichten</string>
+    <string name="reminders_optional">Offene Kurzbefragungen können Sie auch ohne Benachrichtigungen hier beantworten.</string>
+    <string name="notifications_open">Benachrichtigungen einschalten</string>
+    <string name="alarms_open">Pünktliche Erinnerungen einrichten</string>
+    <string name="answer_prompt">Kurzbefragung beantworten</string>
+    <string name="prompt_until">Offen bis %1$s</string>
+    <string name="quiet_pending">Lokal gespeichert; die Änderung der Ruhezeiten ist noch nicht vom Server bestätigt.</string>
+    <string name="remove_warning">Studie von diesem Gerät entfernen? Bereits gesendete Antworten bleiben bei den Forschenden. Sie verlieren auf diesem Gerät den Zugang, auch zum Löschen.</string>
+    <string name="remove_waiting">Ungesendete Antworten: %1$d. Diese gehen unwiederbringlich verloren. Versuchen Sie zuerst die Übertragung.</string>
+    <string name="rejoined">Studie wieder verbunden.</string>
+    <string name="another_code">Anderen Code verwenden</string>
+    <string name="close_warning">Nicht abgeschickte Antworten können beim Schließen verloren gehen. Weiter beantworten oder verwerfen?</string>
+    <string name="discard">Verwerfen und schließen</string>
+    <string name="permission_needed">Diese Frage benötigt Mikrofon- oder Standortzugriff. Bei dauerhafter Ablehnung öffnen Sie die App-Einstellungen. Nutzen Sie gegebenenfalls die alternative Eingabe der Frage.</string>
+    <string name="open_settings">App-Einstellungen öffnen</string>
+    <string name="restored">Bitte prüfen Sie die wiederhergestellten Antworten. Nicht abgeschickte Aufnahmen und Zeichnungen müssen gegebenenfalls erneut eingegeben werden.</string>
+    <string name="media_privacy">Mikrofon- oder Standortzugriff wird nur für eine entsprechende Studienfrage angefragt. Die Einwilligung erklärt, was übertragen wird. Die App speichert außerdem den Übertragungsstatus auf diesem Gerät.</string>
+    <string name="draft_privacy">Das Gerät speichert auch Studienübersicht, Kontakt und vorübergehende Formulareingaben. Entwürfe haben kein Cloud-Backup.</string>
+    <string name="try_transfer">Antworten übertragen</string>
 </resources>

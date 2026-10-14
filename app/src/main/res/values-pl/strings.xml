@@ -44,7 +44,7 @@
     <string name="continue_entry">Kontynuuj pierwszy kwestionariusz</string>
     <string name="day_of">Dzień %1$d z %2$d</string>
     <string name="starts_on">Początek: %1$s</string>
-    <string name="next_prompt">Następne pytanie: %1$s</string>
+    <string name="next_prompt">Następny krótki kwestionariusz: %1$s</string>
     <!-- fast forward (test person): when the next question really comes, time of day and "in 6 minutes" -->
     <string name="next_prompt_real" formatted="true">w czasie rzeczywistym: %1$s, %2$s</string>
     <string name="finished">Zakończono, dziękujemy!</string>
@@ -62,7 +62,7 @@
     <string name="allow_notifications">Prosimy zezwolić na powiadomienia, w przeciwnym razie aplikacja nie może zadawać pytań we właściwym momencie.</string>
     <string name="allow_exact">Prosimy zezwolić na „Alarmy i przypomnienia”, aby pytania przychodziły na czas.</string>
     <string name="allow">Zezwól</string>
-    <string name="expired">To pytanie wygasło. Wkrótce pojawi się następne.</string>
+    <string name="expired">Czas odpowiedzi minął. Wróć do badania.</string>
     <string name="limit">Osiągnięto dzisiejszy limit dla tego zgłoszenia.</string>
     <string name="not_found">Brak badania o tym kodzie.</string>
     <string name="closed">To badanie nie przyjmuje nowych uczestników.</string>
@@ -92,7 +92,7 @@
     </plurals>
     <string name="about_offline">W badaniach umożliwiających odpowiedzi offline aplikacja przechowuje także strony kwestionariusza. Odpowiedzi offline pozostają zaszyfrowane na tym telefonie, dopóki serwer nie potwierdzi zapisu lub wyraźnie nie usuniesz badania i odpowiedzi. Wygaśnięcie lub odmowa ich nie usuwa.</string>
     <string name="quiet_title">Godziny ciszy</string>
-    <string name="quiet_now">Godziny ciszy: %1$s</string>
+    <string name="quiet_now">Godziny ciszy dla losowych przypomnień: %1$s</string>
     <string name="quiet_from_tomorrow">Od jutra: %1$s</string>
     <string name="quiet_none">brak</string>
     <string name="quiet_change">Zmień godziny ciszy</string>
@@ -123,7 +123,7 @@
     <string name="rejoin_confirm">To badanie jest już na tym telefonie. Ponowne dołączenie rozpoczyna nowy udział: wcześniejszych odpowiedzi nie będzie można już usunąć w aplikacji. Oczekujące odpowiedzi z wcześniejszego udziału zostaną najpierw wysłane, jeśli to możliwe, w przeciwnym razie odrzucone. Aby usunąć wcześniejsze odpowiedzi, prosimy anulować i użyć przycisku „Usuń moje odpowiedzi” na karcie badania.</string>
     <string name="rejoin">Dołącz ponownie</string>
     <string name="allow_in_settings">Zezwól w ustawieniach</string>
-    <string name="notifications_off">Powiadomienia wyłączone – pytania nie będą przychodzić</string>
+    <string name="notifications_off">Powiadomienia są wyłączone. Otwarte kwestionariusze można wypełnić tutaj.</string>
     <string name="remove">Usuń</string>
     <string name="remove_title">Usunąć „%1$s”?</string>
     <string name="remove_confirm">Badanie zostanie usunięte z tego telefonu. Potem nie będzie już można usunąć odpowiedzi przez aplikację.</string>
@@ -210,4 +210,39 @@
     <string name="keep_answers">Zachowaj odpowiedzi</string>
     <string name="save_failed">Nie udało się zapisać. Wypełniony kwestionariusz pozostaje otwarty. Spróbuj wysłać go ponownie.</string>
     <string name="queue_unreadable">Nie można odczytać zapisanych odpowiedzi. Nie zostały nadpisane. Skontaktuj się z zespołem badania.</string>
+    <string name="hide_licence">Ukryj tekst licencji</string>
+    <string name="quiet_none_button">Brak</string>
+    <string name="study_info">O badaniu</string>
+    <string name="study_contact">Kontakt do badaczy: %1$s</string>
+    <string name="open_end">Bez ustalonej daty końcowej. Uczestnik lub badacze mogą zakończyć udział.</string>
+    <string name="transmissions">Przesyłanie odpowiedzi</string>
+    <string name="no_waiting">Brak oczekujących odpowiedzi na urządzeniu.</string>
+    <string name="transfer_waiting">Zapisano na urządzeniu; serwer jeszcze nie potwierdził.</string>
+    <string name="transfer_review">Jeszcze nie przyjęto. Oryginał pozostaje tutaj. Jeśli problem nie ustąpi, skontaktuj się z badaczami.</string>
+    <string name="transfer_retry">Przesyłanie przerwane. Oryginał pozostaje tutaj; spróbuj ponownie.</string>
+    <string name="transfer_confirmed">Serwer potwierdził zapis.</string>
+    <string name="transfer_preserved">Serwer zachował do sprawdzenia; jeszcze poza zwykłymi wynikami.</string>
+    <string name="last_attempt">Ostatnia próba: %1$s</string>
+    <string name="try_later">Spróbuj ponownie za kilka minut.</string>
+    <string name="already_answered">Na ten krótki kwestionariusz już udzielono odpowiedzi.</string>
+    <string name="study_unavailable">Badanie jest niedostępne. Skontaktuj się z badaczami.</string>
+    <string name="reminders_setup">Ustaw przypomnienia</string>
+    <string name="reminders_optional">Otwarte kwestionariusze można wypełnić tutaj także bez powiadomień.</string>
+    <string name="notifications_open">Włącz powiadomienia</string>
+    <string name="alarms_open">Ustaw punktualne przypomnienia</string>
+    <string name="answer_prompt">Wypełnij krótki kwestionariusz</string>
+    <string name="prompt_until">Dostępne do %1$s</string>
+    <string name="quiet_pending">Zapisano lokalnie; serwer nie potwierdził jeszcze zmiany godzin ciszy.</string>
+    <string name="remove_warning">Usunąć badanie z urządzenia? Wysłane odpowiedzi pozostają u badaczy. Utracisz tu dostęp, także do ich usuwania.</string>
+    <string name="remove_waiting">Niewysłane odpowiedzi: %1$d. Zostaną bezpowrotnie utracone. Najpierw spróbuj je przesłać.</string>
+    <string name="rejoined">Ponownie połączono badanie.</string>
+    <string name="another_code">Użyj innego kodu</string>
+    <string name="close_warning">Niewysłane odpowiedzi mogą zostać utracone. Kontynuować czy odrzucić?</string>
+    <string name="discard">Odrzuć i zamknij</string>
+    <string name="permission_needed">To pytanie wymaga mikrofonu lub lokalizacji. Przy trwałej odmowie otwórz ustawienia. Można też użyć alternatywnej odpowiedzi.</string>
+    <string name="open_settings">Otwórz ustawienia aplikacji</string>
+    <string name="restored">Sprawdź przywrócone odpowiedzi. Niewysłane nagrania i rysunki mogą wymagać ponownego wprowadzenia.</string>
+    <string name="media_privacy">Mikrofon lub lokalizacja są wymagane tylko przy odpowiednim pytaniu. Zgoda wyjaśnia przesyłane dane. Aplikacja zapisuje też status przesyłania tutaj.</string>
+    <string name="draft_privacy">Urządzenie zapisuje też opis, kontakt i tymczasowe szkice formularza. Szkice nie mają kopii w chmurze.</string>
+    <string name="try_transfer">Prześlij odpowiedzi</string>
 </resources>

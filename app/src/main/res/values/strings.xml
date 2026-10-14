@@ -36,7 +36,7 @@
     <string name="continue_entry">Continue the first questionnaire</string>
     <string name="day_of">Day %1$d of %2$d</string>
     <string name="starts_on">Starts on %1$s</string>
-    <string name="next_prompt">Next question: %1$s</string>
+    <string name="next_prompt">Next short survey: %1$s</string>
     <!-- fast forward (test person): when the next question really comes, time of day and "in 6 minutes" -->
     <string name="next_prompt_real" formatted="true">real time: %1$s, %2$s</string>
     <string name="finished">Finished, thank you!</string>
@@ -54,7 +54,7 @@
     <string name="allow_notifications">Allow notifications, otherwise the app cannot ask you at the right moment.</string>
     <string name="allow_exact">Allow \"Alarms &amp; reminders\" so that questions arrive on time.</string>
     <string name="allow">Allow</string>
-    <string name="expired">This question has expired. The next one will come.</string>
+    <string name="expired">The answer time has expired. Return to the study.</string>
     <string name="limit">You have reached today\'s limit for this report.</string>
     <string name="not_found">No study with this code.</string>
     <string name="closed">This study takes no new participants.</string>
@@ -82,7 +82,7 @@
     </plurals>
     <string name="about_offline">For studies that allow offline answers, the app also keeps questionnaire pages. Offline answers remain encrypted on this phone until the server confirms storage or you explicitly remove the study and its answers. Expiry or refusal does not delete them.</string>
     <string name="quiet_title">Quiet hours</string>
-    <string name="quiet_now">Quiet hours: %1$s</string>
+    <string name="quiet_now">Quiet hours for random reminders: %1$s</string>
     <string name="quiet_from_tomorrow">From tomorrow: %1$s</string>
     <string name="quiet_none">none</string>
     <string name="quiet_change">Change quiet hours</string>
@@ -109,7 +109,7 @@
     <string name="rejoin_confirm">You already take part in this study on this phone. Joining again starts a new participation: your earlier answers can then no longer be deleted in the app. Answers of the earlier participation still waiting are sent first if possible, otherwise discarded. To delete your earlier answers, cancel and use “Delete my answers” on the study’s page.</string>
     <string name="rejoin">Join again</string>
     <string name="allow_in_settings">Allow in settings</string>
-    <string name="notifications_off">Notifications off – you will not get any questions</string>
+    <string name="notifications_off">Notifications are off. You can answer open short surveys here.</string>
     <string name="remove">Remove</string>
     <string name="remove_title">Remove “%1$s”?</string>
     <string name="remove_confirm">The study is removed from this phone. Afterwards you can no longer delete your answers through the app.</string>
@@ -196,4 +196,39 @@
     <string name="keep_answers">Keep my answers</string>
     <string name="save_failed">Could not save. Your filled questionnaire remains open. Please try submitting again.</string>
     <string name="queue_unreadable">Stored answers cannot be read. They have not been overwritten. Please contact the study team.</string>
+    <string name="hide_licence">Hide licence text</string>
+    <string name="quiet_none_button">None</string>
+    <string name="study_info">About this study</string>
+    <string name="study_contact">Study contact: %1$s</string>
+    <string name="open_end">No fixed end date. You or the researchers can end participation.</string>
+    <string name="transmissions">Answer transfers</string>
+    <string name="no_waiting">No answers waiting on this device.</string>
+    <string name="transfer_waiting">Saved on this device; not yet confirmed by the server.</string>
+    <string name="transfer_review">Not accepted yet. The original remains on this device. Contact the study team if this persists.</string>
+    <string name="transfer_retry">Transfer interrupted. The original remains here; try again.</string>
+    <string name="transfer_confirmed">Storage confirmed by the server.</string>
+    <string name="transfer_preserved">Preserved by the server for review; not yet part of the regular results.</string>
+    <string name="last_attempt">Last attempt: %1$s</string>
+    <string name="try_later">Please try again in a few minutes.</string>
+    <string name="already_answered">This short survey has already been answered.</string>
+    <string name="study_unavailable">The study is currently unavailable. Please contact the study team.</string>
+    <string name="reminders_setup">Set up reminders</string>
+    <string name="reminders_optional">You can still answer open short surveys here without notifications.</string>
+    <string name="notifications_open">Enable notifications</string>
+    <string name="alarms_open">Set up timely reminders</string>
+    <string name="answer_prompt">Answer short survey</string>
+    <string name="prompt_until">Available until %1$s</string>
+    <string name="quiet_pending">Saved locally; the server has not confirmed the quiet-hours change yet.</string>
+    <string name="remove_warning">Remove this study from this device? Answers already sent remain with the researchers. You lose this device’s access to them, including deletion access.</string>
+    <string name="remove_waiting">Unsent answers: %1$d. They will be permanently lost. Try transferring them first.</string>
+    <string name="rejoined">Study reconnected.</string>
+    <string name="another_code">Use another code</string>
+    <string name="close_warning">Your unsubmitted answers may be lost if you close. Continue answering or discard them?</string>
+    <string name="discard">Discard and close</string>
+    <string name="permission_needed">This question needs microphone or location access. If you declined permanently, open the app settings. You can also use the question’s alternative input.</string>
+    <string name="open_settings">Open app settings</string>
+    <string name="restored">Please check your restored answers. Unsubmitted recordings and drawings may need to be entered again.</string>
+    <string name="media_privacy">Microphone or location access is requested only when a study question needs it. The study’s consent explains what is sent. The app also keeps transfer status on this device.</string>
+    <string name="draft_privacy">This device also keeps the study overview and contact and temporary form drafts. Drafts have no cloud backup.</string>
+    <string name="try_transfer">Transfer answers</string>
 </resources>

@@ -40,7 +40,7 @@
     <string name="continue_entry">Continua il primo questionario</string>
     <string name="day_of">Giorno %1$d di %2$d</string>
     <string name="starts_on">Inizia il %1$s</string>
-    <string name="next_prompt">Prossima domanda: %1$s</string>
+    <string name="next_prompt">Prossimo breve questionario: %1$s</string>
     <!-- fast forward (test person): when the next question really comes, time of day and "in 6 minutes" -->
     <string name="next_prompt_real" formatted="true">in tempo reale: %1$s, %2$s</string>
     <string name="finished">Concluso, grazie mille!</string>
@@ -58,7 +58,7 @@
     <string name="allow_notifications">Consenta le notifiche, altrimenti l’app non può farLe domande al momento giusto.</string>
     <string name="allow_exact">Consenta «Sveglie e promemoria» affinché le domande arrivino puntuali.</string>
     <string name="allow">Consenti</string>
-    <string name="expired">Questa domanda è scaduta. La prossima arriverà presto.</string>
+    <string name="expired">Il tempo per rispondere è scaduto. Torni allo studio.</string>
     <string name="limit">Ha raggiunto il limite di oggi per questa segnalazione.</string>
     <string name="not_found">Nessuno studio con questo codice.</string>
     <string name="closed">Questo studio non accetta nuovi partecipanti.</string>
@@ -87,7 +87,7 @@
     </plurals>
     <string name="about_offline">Per gli studi con risposte offline, l’app conserva anche le pagine del questionario. Le risposte offline restano crittografate su questo telefono finché il server non conferma il salvataggio o rimuovi esplicitamente lo studio e le risposte. Scadenza o rifiuto non le eliminano.</string>
     <string name="quiet_title">Orari di riposo</string>
-    <string name="quiet_now">Orari di riposo: %1$s</string>
+    <string name="quiet_now">Ore di silenzio per promemoria casuali: %1$s</string>
     <string name="quiet_from_tomorrow">Da domani: %1$s</string>
     <string name="quiet_none">nessuno</string>
     <string name="quiet_change">Modifica ore di quiete</string>
@@ -116,7 +116,7 @@
     <string name="rejoin_confirm">Partecipa già a questo studio su questo telefono. Partecipare di nuovo avvia una nuova partecipazione: dopo non potrà più cancellare nell’app le Sue risposte precedenti. Le risposte ancora in attesa della partecipazione precedente vengono prima inviate, se possibile, altrimenti scartate. Per cancellare le Sue risposte precedenti, annulli e usi «Cancella le mie risposte» sulla scheda dello studio.</string>
     <string name="rejoin">Partecipa di nuovo</string>
     <string name="allow_in_settings">Consenti nelle impostazioni</string>
-    <string name="notifications_off">Notifiche disattivate – non riceverà alcuna domanda</string>
+    <string name="notifications_off">Le notifiche sono disattivate. Può compilare qui i questionari aperti.</string>
     <string name="remove">Rimuovi</string>
     <string name="remove_title">Rimuovere «%1$s»?</string>
     <string name="remove_confirm">Lo studio verrà rimosso da questo telefono. In seguito non potrà più cancellare le Sue risposte tramite l’app.</string>
@@ -203,4 +203,39 @@
     <string name="keep_answers">Conserva le mie risposte</string>
     <string name="save_failed">Salvataggio non riuscito. Il questionario compilato resta aperto. Prova a inviarlo di nuovo.</string>
     <string name="queue_unreadable">Le risposte salvate non possono essere lette. Non sono state sovrascritte. Contatta il gruppo dello studio.</string>
+    <string name="hide_licence">Nascondi il testo della licenza</string>
+    <string name="quiet_none_button">Nessuno</string>
+    <string name="study_info">Informazioni sullo studio</string>
+    <string name="study_contact">Contatto dello studio: %1$s</string>
+    <string name="open_end">Senza una data finale fissa. Lei o il gruppo di ricerca potete terminare la partecipazione.</string>
+    <string name="transmissions">Invio delle risposte</string>
+    <string name="no_waiting">Nessuna risposta in attesa su questo dispositivo.</string>
+    <string name="transfer_waiting">Salvata su questo dispositivo; non ancora confermata dal server.</string>
+    <string name="transfer_review">Non ancora accettata. L’originale rimane qui. Se persiste, contatti il gruppo.</string>
+    <string name="transfer_retry">Invio interrotto. L’originale resta qui; riprovi.</string>
+    <string name="transfer_confirmed">Salvataggio confermato dal server.</string>
+    <string name="transfer_preserved">Conservata dal server per verifica; non ancora nei risultati ordinari.</string>
+    <string name="last_attempt">Ultimo tentativo: %1$s</string>
+    <string name="try_later">Riprovi tra qualche minuto.</string>
+    <string name="already_answered">Questo breve questionario è già stato compilato.</string>
+    <string name="study_unavailable">Lo studio non è disponibile. Contatti il gruppo.</string>
+    <string name="reminders_setup">Configura i promemoria</string>
+    <string name="reminders_optional">Può compilare qui i questionari aperti anche senza notifiche.</string>
+    <string name="notifications_open">Attiva le notifiche</string>
+    <string name="alarms_open">Imposta promemoria puntuali</string>
+    <string name="answer_prompt">Compila il breve questionario</string>
+    <string name="prompt_until">Disponibile fino a %1$s</string>
+    <string name="quiet_pending">Salvato localmente; il server non ha ancora confermato le ore di silenzio.</string>
+    <string name="remove_warning">Rimuovere lo studio dal dispositivo? Le risposte inviate restano ai ricercatori. Perde l’accesso qui, anche per eliminarle.</string>
+    <string name="remove_waiting">Risposte non inviate: %1$d. Andranno perse definitivamente. Provi prima a inviarle.</string>
+    <string name="rejoined">Studio riconnesso.</string>
+    <string name="another_code">Usa un altro codice</string>
+    <string name="close_warning">Le risposte non inviate possono andare perse. Continuare o scartarle?</string>
+    <string name="discard">Scarta e chiudi</string>
+    <string name="permission_needed">Questa domanda richiede microfono o posizione. Se negati definitivamente, apra le impostazioni. Può usare un eventuale metodo alternativo.</string>
+    <string name="open_settings">Apri le impostazioni</string>
+    <string name="restored">Controlli le risposte ripristinate. Registrazioni e disegni non inviati potrebbero dover essere ripetuti.</string>
+    <string name="media_privacy">Microfono o posizione sono richiesti solo per domande pertinenti. Il consenso spiega i dati inviati. L’app conserva anche lo stato di invio qui.</string>
+    <string name="draft_privacy">Il dispositivo conserva anche riepilogo, contatto e bozze temporanee. Le bozze non hanno backup cloud.</string>
+    <string name="try_transfer">Invia risposte</string>
 </resources>

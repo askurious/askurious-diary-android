@@ -80,6 +80,13 @@ class MainModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch { if (Sync.allIfDue(context) != null) reload() }
     }
 
+    var transferring by mutableStateOf(false); private set
+    fun transfer() {
+        if (transferring) return
+        transferring = true
+        viewModelScope.launch { try { Sync.all(context) } finally { transferring = false; reload() } }
+    }
+
     fun setQuiet(study: Study, quiet: Quiet?) {
         viewModelScope.launch {
             Sync.setQuiet(context, study, quiet)
@@ -148,14 +155,24 @@ class MainModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    var joinBusy by mutableStateOf(false); private set
+    var joinInfo by mutableStateOf<String?>(null); private set
+    var joinError by mutableStateOf<ApiError?>(null); private set
+    var joinedStudy by mutableStateOf<Study?>(null); private set
+    var entryAddress: String? = null; private set
+    fun consumedJoin() { joinedStudy = null; entryAddress = null; joinInfo = null; joinError = null }
+
     /** The public information of a study for the join screen; [done] gets it or the error. */
     fun lookUp(server: String, code: String, done: (JSONObject?, ApiError?) -> Unit) {
+        if (joinBusy) return
+        joinBusy = true; joinInfo = null; joinError = null
         viewModelScope.launch {
             try {
-                done(Api.join(server, code), null)
+                val info = Api.join(server, code)
+                joinInfo = info.toString(); done(info, null)
             } catch (e: ApiError) {
-                done(null, e)
-            }
+                joinError = e; done(null, e)
+            } finally { joinBusy = false }
         }
     }
 
@@ -165,6 +182,8 @@ class MainModel(app: Application) : AndroidViewModel(app) {
      * its waiting answers never go to the new person. [done] gets the new study or the error.
      */
     fun enrol(server: String, code: String, info: JSONObject, done: (Study?, ApiError?) -> Unit) {
+        if (joinBusy) return
+        joinBusy = true; joinError = null; joinedStudy = null
         viewModelScope.launch {
             try {
                 val r = Api.enrol(server, code)
@@ -172,20 +191,24 @@ class MainModel(app: Application) : AndroidViewModel(app) {
                 // a personal code connected this phone to its participation again ("rejoined"): the server's status,
                 // so that a participation past its entry questionnaire does not begin anew
                 val status = if (r.optBoolean("rejoined")) r.optString("status").ifBlank { "pending" } else "pending"
-                val study = Study.fromJson(JSONObject(info.toString()).put("status", status).put("modules", JSONArray()), secret, server)
+                val study = Study.fromJson(JSONObject(info.toString()).put("status", status).put("summary", info.optString("description")).put("modules", JSONArray()), secret, server)
                 val store = StudyStore(context)
                 val old = withContext(Dispatchers.IO) { store.get(study.code) }
                 if (old != null) Sync.rejoin(context, old, study) else withContext(Dispatchers.IO) { store.put(study) }
+                val fresh = try { Study.fromJson(Api.study(server, secret), secret, server).copy(sound = old?.sound ?: study.sound).also { withContext(Dispatchers.IO) { store.update(it) } } }
+                            catch (_: ApiError) { study }
+                entryAddress = r.optString("url").takeIf { it.isNotBlank() && it != "null" }
+                joinedStudy = fresh
                 reload()
-                done(study, null)
+                done(fresh, null)
             } catch (e: ApiError) {
-                done(null, e)
+                joinError = e; done(null, e)
             } catch (e: java.io.IOException) {
-                done(null, ApiError("error"))
+                joinError = ApiError("error"); done(null, joinError)
             } catch (e: org.json.JSONException) {
                 // the server's answer lacks something this app needs
-                done(null, ApiError("error"))
-            }
+                joinError = ApiError("error"); done(null, joinError)
+            } finally { joinBusy = false }
         }
     }
 

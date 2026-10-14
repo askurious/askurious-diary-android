@@ -16,7 +16,7 @@ val gitCommitCount: Int = runCatching {
 val knownServers = listOf(
     "https://askurious.de", "https://ask.askurious.de", "https://polltergeist.de", "https://ask.polltergeist.de",
 ).joinToString(",")
-val debugServers = listOf("http://localhost:5060", "http://127.0.0.1:5060", "http://10.0.2.2:5060").joinToString(",")
+val debugServers = listOf("http://localhost:5080", "http://127.0.0.1:5080", "http://10.0.2.2:5080").joinToString(",")
 
 /**
  * The upload key for the Play Store (Play App Signing keeps the app signing key): keystore.properties in the project
@@ -42,6 +42,7 @@ android {
 
     defaultConfig {
         applicationId = "de.askurious.app"
+        testInstrumentationRunner = "de.askurious.app.test.UiInstrumentation"
         minSdk = 26
         targetSdk = 36
         // the version from Git: every commit on main counts up, so a newer build always has a higher versionCode (the
@@ -50,7 +51,7 @@ android {
         versionName = "0.1.$gitCommitCount"
         // the server of a join code typed by hand (a QR code names its own server): the main address of Askurious, where
         // the diary studies run for now (server: config DIARY_ON_MAIN_ADDRESS, 2026-10-12); a debug build talks to
-        // the Flask server on the computer through `adb reverse tcp:5060 tcp:5060` (the server answers only under
+        // the Flask server on the computer through `adb reverse tcp:5080 tcp:5060` (the server answers only under
         // localhost while it runs with the development key)
         buildConfigField("String", "BASE_URL", "\"https://askurious.de\"")
         // the servers of Askurious a join link (QR code, App Link) may name (audit 2026-10-13, AN-1): the domains of
@@ -63,7 +64,7 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "BASE_URL", "\"http://localhost:5060\"")
+            buildConfigField("String", "BASE_URL", "\"http://127.0.0.1:5080\"")
             // and the Flask server on the computer (adb reverse; 10.0.2.2 is the computer seen from the emulator)
             buildConfigField("String", "KNOWN_SERVERS", "\"$knownServers,$debugServers\"")
         }
