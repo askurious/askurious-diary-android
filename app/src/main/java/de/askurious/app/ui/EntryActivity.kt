@@ -39,6 +39,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
@@ -548,7 +549,9 @@ class EntryActivity : ComponentActivity() {
                 }
             }
         }) { pad ->
-            Box(Modifier.padding(pad).fillMaxSize(), contentAlignment = Alignment.Center) {
+            // imePadding: the window does not resize for the keyboard (edge to edge), so the page is shortened here;
+            // otherwise the WebView scrolls the caret into view anew with every letter of a long text answer
+            Box(Modifier.padding(pad).imePadding().fillMaxSize(), contentAlignment = Alignment.Center) {
                 val u = url
                 val o = offline
                 // no white flash before a dark page has loaded
