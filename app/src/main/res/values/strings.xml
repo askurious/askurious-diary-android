@@ -196,6 +196,8 @@
     <string name="keep_answers">Keep my answers</string>
     <string name="save_failed">Could not save. Your filled questionnaire remains open. Please try submitting again.</string>
     <string name="queue_unreadable">Stored answers cannot be read. They have not been overwritten. Please contact the study team.</string>
+    <string name="queue_discard">Discard unreadable answers</string>
+    <string name="queue_discard_confirm">These answers can no longer be read on this phone and can never be sent. Discard them so that the app can keep new answers again? Your studies and the answers already sent are not affected.</string>
     <string name="hide_licence">Hide licence text</string>
     <string name="quiet_none_button">None</string>
     <string name="study_info">About this study</string>

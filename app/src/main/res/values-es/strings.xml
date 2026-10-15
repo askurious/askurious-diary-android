@@ -203,6 +203,8 @@
     <string name="keep_answers">Conservar mis respuestas</string>
     <string name="save_failed">No se pudo guardar. El cuestionario cumplimentado sigue abierto. Intente enviarlo de nuevo.</string>
     <string name="queue_unreadable">No se pueden leer las respuestas guardadas. No se han sobrescrito. Contacte con el equipo del estudio.</string>
+    <string name="queue_discard">Descartar respuestas ilegibles</string>
+    <string name="queue_discard_confirm">Estas respuestas ya no se pueden leer en este teléfono y nunca se podrán enviar. ¿Descartarlas para que la aplicación pueda guardar nuevas respuestas? Sus estudios y las respuestas ya enviadas no se ven afectados.</string>
     <string name="hide_licence">Ocultar el texto de la licencia</string>
     <string name="quiet_none_button">Ninguna</string>
     <string name="study_info">Sobre este estudio</string>

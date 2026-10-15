@@ -148,6 +148,15 @@ class MainModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** "Discard unreadable answers": the queue that cannot be read goes, new answers can be kept again (T07-N-2). */
+    fun discardQueue(done: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            val ok = withContext(Dispatchers.IO) { runCatching { AnswerQueue(context).discardUnreadable() }.isSuccess }
+            reload()
+            done(ok)
+        }
+    }
+
     fun clearRefused(code: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) { AnswerQueue(context).clearRefused(code) }

@@ -203,6 +203,8 @@
     <string name="keep_answers">Manter as minhas respostas</string>
     <string name="save_failed">Não foi possível guardar. O questionário preenchido permanece aberto. Tente enviá-lo novamente.</string>
     <string name="queue_unreadable">Não é possível ler as respostas guardadas. Não foram substituídas. Contacte a equipa do estudo.</string>
+    <string name="queue_discard">Descartar respostas ilegíveis</string>
+    <string name="queue_discard_confirm">Estas respostas já não podem ser lidas neste telefone e nunca poderão ser enviadas. Descartá-las para que a aplicação possa voltar a guardar novas respostas? Os seus estudos e as respostas já enviadas não são afetados.</string>
     <string name="hide_licence">Ocultar o texto da licença</string>
     <string name="quiet_none_button">Nenhuma</string>
     <string name="study_info">Sobre este estudo</string>

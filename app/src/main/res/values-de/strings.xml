@@ -196,6 +196,8 @@
     <string name="keep_answers">Antworten behalten</string>
     <string name="save_failed">Speichern fehlgeschlagen. Ihr ausgefüllter Fragebogen bleibt geöffnet. Bitte senden Sie ihn erneut ab.</string>
     <string name="queue_unreadable">Gespeicherte Antworten können nicht gelesen werden. Sie wurden nicht überschrieben. Bitte kontaktieren Sie das Studienteam.</string>
+    <string name="queue_discard">Unlesbare Antworten verwerfen</string>
+    <string name="queue_discard_confirm">Diese Antworten lassen sich auf diesem Telefon nicht mehr lesen und nie mehr senden. Verwerfen, damit die App wieder neue Antworten aufbewahren kann? Ihre Studien und die schon gesendeten Antworten bleiben.</string>
     <string name="hide_licence">Lizenztext ausblenden</string>
     <string name="quiet_none_button">Keine</string>
     <string name="study_info">Über diese Studie</string>

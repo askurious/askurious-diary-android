@@ -189,6 +189,8 @@
     <string name="keep_answers">保留我的回答</string>
     <string name="save_failed">保存失败。您已填写的问卷仍保持打开。请尝试重新提交。</string>
     <string name="queue_unreadable">无法读取已保存的答案。它们未被覆盖。请联系研究团队。</string>
+    <string name="queue_discard">丢弃无法读取的答案</string>
+    <string name="queue_discard_confirm">这些答案在此手机上已无法读取，也永远无法发送。是否丢弃它们，以便应用可以重新保存新的答案？您的研究和已发送的答案不受影响。</string>
     <string name="hide_licence">隐藏许可文本</string>
     <string name="quiet_none_button">无</string>
     <string name="study_info">关于此研究</string>

@@ -2,7 +2,9 @@ package de.askurious.app.ui
 
 import de.askurious.app.data.Study
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /** The ids of the home-screen shortcuts and which of them lead nowhere any more (Shortcuts). */
@@ -11,6 +13,15 @@ class ShortcutsTest {
         code = code, secret = "s", title = "T", status = status, firstDay = null, lastDay = null, modules = emptyList(),
         leavePending = leavePending,
     )
+
+    /** Abgleich 2026-10-15, T07-N-1: only an intent with the app's own token starts an entry. */
+    @Test
+    fun onlyTheAppsOwnTokenIsTrusted() {
+        assertTrue(Shortcuts.trusted("secret-token", "secret-token"))
+        assertFalse(Shortcuts.trusted(null, "secret-token"))
+        assertFalse(Shortcuts.trusted("", "secret-token"))
+        assertFalse(Shortcuts.trusted("secret-tokeN", "secret-token"))
+    }
 
     @Test
     fun theIdNamesTheStudy() {

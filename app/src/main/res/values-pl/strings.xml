@@ -210,6 +210,8 @@
     <string name="keep_answers">Zachowaj odpowiedzi</string>
     <string name="save_failed">Nie udało się zapisać. Wypełniony kwestionariusz pozostaje otwarty. Spróbuj wysłać go ponownie.</string>
     <string name="queue_unreadable">Nie można odczytać zapisanych odpowiedzi. Nie zostały nadpisane. Skontaktuj się z zespołem badania.</string>
+    <string name="queue_discard">Odrzuć nieczytelne odpowiedzi</string>
+    <string name="queue_discard_confirm">Tych odpowiedzi nie można już odczytać na tym telefonie i nigdy nie zostaną wysłane. Odrzucić je, aby aplikacja mogła znowu przechowywać nowe odpowiedzi? Twoje badania i już wysłane odpowiedzi pozostają.</string>
     <string name="hide_licence">Ukryj tekst licencji</string>
     <string name="quiet_none_button">Brak</string>
     <string name="study_info">O badaniu</string>
