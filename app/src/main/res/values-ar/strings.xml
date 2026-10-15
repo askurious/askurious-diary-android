@@ -224,6 +224,8 @@
     <string name="keep_answers">الاحتفاظ بإجاباتي</string>
     <string name="save_failed">تعذر الحفظ. يبقى الاستبيان المكتمل مفتوحًا. يرجى محاولة إرساله مرة أخرى.</string>
     <string name="queue_unreadable">تعذرت قراءة الإجابات المحفوظة. لم تتم الكتابة فوقها. يرجى الاتصال بفريق الدراسة.</string>
+    <string name="queue_discard">تجاهل الإجابات غير القابلة للقراءة</string>
+    <string name="queue_discard_confirm">لم يعد من الممكن قراءة هذه الإجابات على هذا الهاتف ولن يمكن إرسالها أبدًا. هل تريد تجاهلها حتى يتمكن التطبيق من حفظ إجابات جديدة مرة أخرى؟ لا تتأثر دراساتك والإجابات المرسلة بالفعل.</string>
     <string name="hide_licence">إخفاء نص الترخيص</string>
     <string name="quiet_none_button">لا يوجد</string>
     <string name="study_info">حول هذه الدراسة</string>

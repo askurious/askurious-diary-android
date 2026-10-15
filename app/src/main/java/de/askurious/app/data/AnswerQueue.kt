@@ -118,6 +118,41 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
     fun removeStudy(study: String): Unit = synchronized(SealedText.LOCK) {
         if (rows != null) rows.removeStudy(study) else save(all().filterNot { it.study == study })
         clearRefused(study)
+        if (study in forgetLater()) prefs.edit { putStringSet(FORGET, forgetLater() - study) }
+    }
+
+    /**
+     * Removes the answers of [study] for "Remove from list" and "Delete my answers"; false when the queue cannot be
+     * read: the study is then noted ([retryForget]) and its answers go as soon as the queue can be read again or is
+     * discarded, so that taking the study off the phone never hangs on an unreadable queue (Abgleich 2026-10-15,
+     * T07-N-2).
+     */
+    fun forgetStudy(study: String): Boolean = synchronized(SealedText.LOCK) {
+        try {
+            removeStudy(study)
+            true
+        } catch (e: IOException) {
+            if (!prefs.edit().putStringSet(FORGET, forgetLater() + study).commit()) throw e
+            clearRefused(study)
+            false
+        }
+    }
+
+    /** The answers of studies taken off the phone while the queue could not be read ([forgetStudy]) go now. */
+    fun retryForget(): Unit = synchronized(SealedText.LOCK) {
+        forgetLater().forEach { runCatching { removeStudy(it) } }
+    }
+
+    private fun forgetLater(): Set<String> = runCatching { prefs.getStringSet(FORGET, null)?.toSet() }.getOrNull() ?: emptySet()
+
+    /**
+     * Discards every queued answer: the participant's explicit choice when the queue cannot be read any more (the
+     * phone's key was lost, the file is damaged). Those answers could never be sent; without this no new answer could
+     * be kept either (Abgleich 2026-10-15, T07-N-2).
+     */
+    fun discardUnreadable(): Unit = synchronized(SealedText.LOCK) {
+        if (rows != null) rows.discard() else text.remove(durable = true)
+        prefs.edit { remove(FORGET) }
     }
 
     /** Stores [item] again in place of the one with its id (the time of a first refusal); nothing if it is gone. */
@@ -210,6 +245,7 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
         private const val KEY = "items"
         private const val AAD = "queue"
         private const val REFUSED = "refused"
+        private const val FORGET = "forget"
 
         /** The server takes an answer up to 7 days after "started". */
         const val MAX_AGE_MS = 7L * 24 * 3600 * 1000

@@ -225,8 +225,10 @@ object Sync {
     }
 
     private suspend fun forgetLocked(context: Context, code: String) {
-        AnswerQueue(context).removeStudy(code)
-        // Keep the participation secret if durable deletion of its queued answers fails.
+        // A queue that cannot be read does not keep the study on the phone: its answers could never be sent, and
+        // "Delete my answers" has already deleted them on the server. They go once the queue can be read again or the
+        // participant discards it (AnswerQueue.forgetStudy; Abgleich 2026-10-15, T07-N-2).
+        AnswerQueue(context).forgetStudy(code)
         StudyStore(context).remove(code)
         OfflinePages(context).dropStudy(code)
         PromptLog(context).removeStudy(code)
@@ -342,6 +344,8 @@ object Sync {
         val synced = mutableListOf<Study>()
         val offline = lock.withLock {
             var offline = false
+            // answers of studies taken off the phone while the queue could not be read (T07-N-2)
+            runCatching { AnswerQueue(context).retryForget() }
             val exits = PromptLog(context).exits()
             val store = StudyStore(context)
             for (code in store.all().map { it.code }) {

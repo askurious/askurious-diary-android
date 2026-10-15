@@ -30,6 +30,39 @@ class QueueDatabaseTest {
     }
     @After fun close() { QueueDatabase.closeForTest() }
 
+    /** Abgleich 2026-10-15, T07-N-2: an unreadable queue no longer blocks removing a study, and can be discarded. */
+    @Test fun anUnreadableQueueLetsStudiesGoAndCanBeDiscarded() {
+        add("one", study = "abc")
+        add("two", study = "xyz")
+        QueueDatabase.closeForTest()
+        val lost = object : Sealer {  // the index key cannot be opened any more (lost Keystore key)
+            override fun seal(plain: String, aad: String) = sealer.seal(plain, aad)
+            override fun open(sealed: String, aad: String): String? = null
+        }
+        val broken = AnswerQueue(context, lost)
+        assertThrows(IOException::class.java) { broken.all() }
+        assertFalse(broken.forgetStudy("abc"))  // noted, not thrown: the study can still go
+        broken.discardUnreadable()
+        QueueDatabase.closeForTest()
+        assertTrue(queue().all().isEmpty())
+        add("new", study = "xyz")  // new answers can be kept again
+        assertEquals(listOf("new"), queue().all().map { it.id })
+    }
+
+    @Test fun aStudyRemovedWhileTheQueueWasUnreadableLosesItsAnswersLater() {
+        add("one", study = "abc")
+        add("two", study = "xyz")
+        QueueDatabase.closeForTest()
+        val lost = object : Sealer {
+            override fun seal(plain: String, aad: String) = sealer.seal(plain, aad)
+            override fun open(sealed: String, aad: String): String? = null
+        }
+        assertFalse(AnswerQueue(context, lost).forgetStudy("abc"))
+        QueueDatabase.closeForTest()
+        queue().retryForget()  // readable again: the noted study's answers go, the others stay
+        assertEquals(listOf("two"), queue().all().map { it.id })
+    }
+
     @Test fun migrationIsDurableAndRemovedAnswersNeverResurrect() {
         val item = AnswerQueue.Item("old", "abc", "m1", null, null, 1L, 2L, "v", "{}")
         val raw = sealer.seal(JSONArray(listOf(item.toJson())).toString(), "queue")

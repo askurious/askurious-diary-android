@@ -22,7 +22,8 @@ import java.time.ZoneOffset
  * crash between the two stores. Corruption fails closed: SQLite's default delete-and-recreate is forbidden.
  */
 internal class QueueDatabase(context: Context, private val prefs: SharedPreferences, private val sealer: Sealer) {
-    private val helper = helper(context.applicationContext)
+    private val app = context.applicationContext
+    private val helper = helper(app)
     private var indexKey: ByteArray? = null
 
     private fun tag(kind: String, value: String): String {
@@ -120,6 +121,20 @@ internal class QueueDatabase(context: Context, private val prefs: SharedPreferen
     }
 
     fun remove(id: String): Unit = access { it.delete("answers", "id=?", arrayOf(id)); Unit }
+
+    /**
+     * Deletes the whole queue (the database file with its index key, and the legacy store): only on the participant's
+     * explicit "discard" of a queue that cannot be read any more (Abgleich 2026-10-15, T07-N-2). The next access
+     * creates an empty queue, so new answers can be kept again.
+     */
+    fun discard(): Unit = synchronized(SealedText.LOCK) {
+        indexKey = null
+        runCatching { helper.close() }
+        if (!app.deleteDatabase("answers.db") && app.getDatabasePath("answers.db").exists()) {
+            throw IOException("Queue database could not be deleted")
+        }
+        SealedText(prefs, "items", sealer, "queue").remove(durable = true)
+    }
     fun removeStudy(study: String): Unit = access { it.delete("answers", "study=?", arrayOf(tag("study", study))); Unit }
 
     fun update(id: String, transform: (AnswerQueue.Item) -> AnswerQueue.Item): Unit = access { db ->

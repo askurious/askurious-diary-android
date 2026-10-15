@@ -231,14 +231,18 @@ class MainActivity : ComponentActivity() {
      * A home-screen shortcut (Shortcuts): opens the entry of its module while the study runs and the module may be
      * started today; otherwise the page of the study when it is still on the phone, else just the app. Only the stored
      * study is used (its own server, as for any entry); the extras of the intent pick nothing else. Read off the main
-     * thread, as the stored studies are opened with the Keystore (AN-8).
+     * thread, as the stored studies are opened with the Keystore (AN-8). Only an intent with the app's own token
+     * ([Shortcuts.trusted]): another app cannot start entries and so neither use up the daily limit nor make empty
+     * entries (Abgleich 2026-10-15, T07-N-1); without it the app just opens.
      */
     private fun report(intent: Intent) {
         if (intent.action != Shortcuts.ACTION_REPORT) return
         val code = intent.getStringExtra(Shortcuts.EXTRA_STUDY) ?: return
         val module = intent.getStringExtra(Shortcuts.EXTRA_MODULE)
+        val given = intent.getStringExtra(Shortcuts.EXTRA_TOKEN)
         lifecycleScope.launch {
             val (target, known) = withContext(Dispatchers.IO) {
+                if (!Shortcuts.trusted(given, Shortcuts.token(this@MainActivity))) return@withContext null to false
                 Shortcuts.target(this@MainActivity, code, module) to (StudyStore(this@MainActivity).get(code) != null)
             }
             if (target != null) startActivity(EntryActivity.intent(this@MainActivity, target.first, target.second))
@@ -472,6 +476,7 @@ class MainActivity : ComponentActivity() {
     private fun StudyCard(study: Study, onOpen: () -> Unit) {
         val context = LocalContext.current
         var transmissions by rememberSaveable { mutableStateOf(false) }
+        var confirmDiscard by rememberSaveable { mutableStateOf(false) }
         Card(
             onClick = onOpen,
             modifier = Modifier.fillMaxWidth(),
@@ -492,7 +497,10 @@ class MainActivity : ComponentActivity() {
                 val n = model.waiting[study.code] ?: 0
                 if (n > 0) Message(pluralStringResource(R.plurals.answers_waiting, n, n))
                 if (n > 0 || hasStoredReceipts(study.code, model.waiting)) TextButton(onClick = { transmissions = true }) { Text(stringResource(R.string.transmissions)) }
-                if (model.queueUnreadable) Text(stringResource(R.string.queue_unreadable))
+                if (model.queueUnreadable) {
+                    Text(stringResource(R.string.queue_unreadable))
+                    TextButton(onClick = { confirmDiscard = true }) { Text(stringResource(R.string.queue_discard)) }
+                }
                 if (study.code in model.refused) {
                     Text(stringResource(R.string.limit_refused), style = MaterialTheme.typography.bodySmall)
                     TextButton(onClick = { model.clearRefused(study.code) }) { Text(stringResource(R.string.close)) }
@@ -501,6 +509,20 @@ class MainActivity : ComponentActivity() {
         }
         if (transmissions) StoredTransmissions(study,
             model.transferring, { model.transfer() }, { transmissions = false })
+        if (confirmDiscard) {
+            AlertDialog(
+                onDismissRequest = { confirmDiscard = false },
+                title = { Text(stringResource(R.string.queue_discard)) },
+                text = { GuardAgainstOverlays(); Text(stringResource(R.string.queue_discard_confirm)) },
+                confirmButton = {
+                    TextButton(onClick = {
+                        confirmDiscard = false
+                        model.discardQueue { ok -> if (!ok) android.widget.Toast.makeText(context, R.string.error, android.widget.Toast.LENGTH_LONG).show() }
+                    }) { Text(stringResource(R.string.queue_discard), color = MaterialTheme.colorScheme.error) }
+                },
+                dismissButton = { TextButton(onClick = { confirmDiscard = false }) { Text(stringResource(R.string.cancel)) } },
+            )
+        }
     }
 
     /** The study's date and time now, read again every 15 s for a fast-forward person (a day passes in minutes). */

@@ -196,6 +196,8 @@
     <string name="keep_answers">Mijn antwoorden bewaren</string>
     <string name="save_failed">Opslaan mislukt. Uw ingevulde vragenlijst blijft open. Probeer opnieuw in te dienen.</string>
     <string name="queue_unreadable">Opgeslagen antwoorden kunnen niet worden gelezen. Ze zijn niet overschreven. Neem contact op met het onderzoeksteam.</string>
+    <string name="queue_discard">Onleesbare antwoorden verwijderen</string>
+    <string name="queue_discard_confirm">Deze antwoorden kunnen op deze telefoon niet meer worden gelezen en nooit meer worden verzonden. Verwijderen zodat de app weer nieuwe antwoorden kan bewaren? Uw onderzoeken en de al verzonden antwoorden blijven.</string>
     <string name="hide_licence">Licentietekst verbergen</string>
     <string name="quiet_none_button">Geen</string>
     <string name="study_info">Over dit onderzoek</string>

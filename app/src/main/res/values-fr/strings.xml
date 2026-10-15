@@ -203,6 +203,8 @@
     <string name="keep_answers">Conserver mes réponses</string>
     <string name="save_failed">Enregistrement impossible. Votre questionnaire rempli reste ouvert. Essayez de le soumettre à nouveau.</string>
     <string name="queue_unreadable">Les réponses enregistrées sont illisibles. Elles n’ont pas été écrasées. Contactez l’équipe de l’étude.</string>
+    <string name="queue_discard">Supprimer les réponses illisibles</string>
+    <string name="queue_discard_confirm">Ces réponses ne peuvent plus être lues sur ce téléphone et ne pourront jamais être envoyées. Les supprimer pour que l’application puisse à nouveau conserver de nouvelles réponses ? Vos études et les réponses déjà envoyées ne sont pas concernées.</string>
     <string name="hide_licence">Masquer le texte de la licence</string>
     <string name="quiet_none_button">Aucune</string>
     <string name="study_info">À propos de cette étude</string>

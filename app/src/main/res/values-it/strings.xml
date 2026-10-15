@@ -203,6 +203,8 @@
     <string name="keep_answers">Conserva le mie risposte</string>
     <string name="save_failed">Salvataggio non riuscito. Il questionario compilato resta aperto. Prova a inviarlo di nuovo.</string>
     <string name="queue_unreadable">Le risposte salvate non possono essere lette. Non sono state sovrascritte. Contatta il gruppo dello studio.</string>
+    <string name="queue_discard">Scarta le risposte illeggibili</string>
+    <string name="queue_discard_confirm">Queste risposte non possono più essere lette su questo telefono e non potranno mai essere inviate. Scartarle perché l’app possa conservare di nuovo nuove risposte? I tuoi studi e le risposte già inviate non cambiano.</string>
     <string name="hide_licence">Nascondi il testo della licenza</string>
     <string name="quiet_none_button">Nessuno</string>
     <string name="study_info">Informazioni sullo studio</string>

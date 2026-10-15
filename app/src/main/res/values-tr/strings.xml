@@ -196,6 +196,8 @@
     <string name="keep_answers">Yanıtlarımı sakla</string>
     <string name="save_failed">Kaydedilemedi. Doldurduğunuz anket açık kalır. Lütfen yeniden göndermeyi deneyin.</string>
     <string name="queue_unreadable">Kayıtlı yanıtlar okunamıyor. Üzerlerine yazılmadı. Lütfen çalışma ekibiyle iletişime geçin.</string>
+    <string name="queue_discard">Okunamayan yanıtları at</string>
+    <string name="queue_discard_confirm">Bu yanıtlar artık bu telefonda okunamıyor ve hiçbir zaman gönderilemez. Uygulamanın yeniden yeni yanıtları saklayabilmesi için atılsın mı? Çalışmalarınız ve gönderilmiş yanıtlar etkilenmez.</string>
     <string name="hide_licence">Lisans metnini gizle</string>
     <string name="quiet_none_button">Yok</string>
     <string name="study_info">Bu çalışma hakkında</string>
