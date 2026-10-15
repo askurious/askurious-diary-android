@@ -13,6 +13,16 @@ data class Look(val colors: Map<String, Int>, val dark: Map<String, Int>?, val r
     /** The colours to show: the dark palette on a dark phone if there is one, else the only one. */
     fun palette(phoneDark: Boolean): Map<String, Int> = if (phoneDark && dark != null) dark else colors
 
+    /**
+     * The look for a card in the list of studies. A study with one fixed, light palette would show a bright white card
+     * on a dark phone; there the card wears the app's own dark palette instead (keeping the study's corner radius). A
+     * look that has a dark partner, or is dark itself, stays as it is. The study's own screens keep its look.
+     */
+    fun forList(phoneDark: Boolean): Look =
+        if (phoneDark && dark == null && colors["background"]?.let { luminance(it) >= 0.18 } == true) {
+            Look(DEFAULT.dark ?: colors, null, radius)
+        } else this
+
     fun toJson(): JSONObject = JSONObject()
         .put("colors", paletteJson(colors))
         .put("colors_dark", dark?.let(::paletteJson) ?: JSONObject.NULL)

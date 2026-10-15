@@ -394,7 +394,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }
                 // running and not yet over on top, the ended ones under a heading of their own (audit A20)
-                items(now, key = { it.code }) { StudyTheme(it.look) { StudyCard(it) { onStudy(it) } } }
+                items(now, key = { it.code }) { ListTheme(it.look) { StudyCard(it) { onStudy(it) } } }
                 if (studies.isNotEmpty()) item(key = "readiness") { Readiness(studies, allowNotifications) }
                 if (ended.isNotEmpty()) item(key = "ended") {
                     Text(
@@ -402,7 +402,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(top = 12.dp).semantics { heading() },
                     )
                 }
-                items(ended, key = { it.code }) { StudyTheme(it.look) { StudyCard(it) { onStudy(it) } } }
+                items(ended, key = { it.code }) { ListTheme(it.look) { StudyCard(it) { onStudy(it) } } }
                 item {
                     // which version runs on this phone (version, build time; server of a debug build)
                     val format = stringResource(R.string.build_info)

@@ -23,6 +23,10 @@ import de.askurious.app.data.Look
 @Composable
 fun DiaryTheme(content: @Composable () -> Unit) = StudyTheme(null, content = content)
 
+/** The look of a study for its card in the list of studies: a bright fixed look is dimmed on a dark phone (Look.forList). */
+@Composable
+fun ListTheme(look: Look?, content: @Composable () -> Unit) = StudyTheme(look?.forList(isSystemInDarkTheme()), content = content)
+
 /**
  * The look of a study (its participant pages) on the app's screens around them: the study card and its detail page,
  * the bar above an entry, the join screen. Without a look (an older server) the app's own ([Look.DEFAULT]). A look that

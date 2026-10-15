@@ -41,4 +41,18 @@ class LookTest {
         assertNull(Study.fromJson(JSONObject("""{"code": "abc"}"""), "secret").look)
         assertNull(Look.fromJson(JSONObject("""{"colors": {"background": "white"}}""")))
     }
+
+    @Test
+    fun aBrightFixedLookIsDimmedForTheListOnADarkPhoneOnly() {
+        val bright = Look.fromJson(JSONObject("""{"colors": {"background": "#ffffff", "accent": "#0a7d5a"}, "colors_dark": null, "radius": 4}"""))!!
+        assertEquals(bright, bright.forList(phoneDark = false))
+        val dimmed = bright.forList(phoneDark = true)
+        assertTrue(Look.luminance(dimmed.colors["background"]!!) < 0.18)
+        assertEquals(4, dimmed.radius)
+        // a look with a dark partner and a dark fixed look stay as they are
+        val paired = Study.fromJson(sent, "secret").look!!
+        assertEquals(paired, paired.forList(phoneDark = true))
+        val dark = Look.fromJson(JSONObject("""{"colors": {"background": "#101a33"}, "colors_dark": null, "radius": 10}"""))!!
+        assertEquals(dark, dark.forList(phoneDark = true))
+    }
 }
