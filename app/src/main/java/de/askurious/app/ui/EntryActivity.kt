@@ -335,16 +335,24 @@ class EntryActivity : ComponentActivity() {
      */
     private val mayLose: Boolean get() = session.dirty && !done && !saved
 
-    /** The back gesture: one page back in the questionnaire, else the question before closing (audit A6). */
-    private fun back() {
-        val w = web
-        if (url != null && mayLose && w != null && w.canGoBack()) w.goBack() else close()
-    }
+    /**
+     * Whether closing asks first (UX audit 2026-10-16, B3): with input on the open page, and online from the second
+     * page on even without, since the participant may have meant "one page back" and the entry is half done.
+     */
+    private val askFirst: Boolean get() =
+        !done && !saved && error == null && (mayLose || (offline == null && url != null && (session.state.get<Int>("pages") ?: 0) > 0))
 
-    /** The X in the top bar and the last step of the back gesture. */
+    /**
+     * The back gesture: the same as the X (B3). It no longer steps back in the WebView's history: that dropped the
+     * input of the open page unasked and showed a page the server had already left behind; the questionnaire's own
+     * "Back" button goes one page back.
+     */
+    private fun back() = close()
+
+    /** The X in the top bar and the back gesture: the question before closing when something may be lost (A6, B3). */
     private fun close() {
         if (saving) return
-        if (mayLose) askAbort = true else finish()
+        if (askFirst) askAbort = true else finish()
     }
 
     /**
@@ -518,12 +526,14 @@ class EntryActivity : ComponentActivity() {
             } catch (e: kotlinx.coroutines.CancellationException) {
                 throw e
             } catch (e: Exception) {
-                // Keep the filled WebView open. A failed write must never show the saved screen.
-                android.widget.Toast.makeText(this@EntryActivity, R.string.save_failed, android.widget.Toast.LENGTH_LONG).show()
+                // Keep the filled WebView open. A failed write must never show the saved screen. The banner above
+                // the page stays until the answer is saved; "Save again" sends the same form (UX audit 2026-10-16, B8)
+                session.unsaved = form
                 return@launch
             } finally {
                 saving = false
             }
+            session.unsaved = null
             done = true
             saved = true
             forgetWebState()
@@ -538,7 +548,7 @@ class EntryActivity : ComponentActivity() {
         BackHandler { back() }
         Scaffold(topBar = {
             Column {
-                PageHeader(title, onClose = { close() })
+                PageHeader(title, onClose = { close() }, compact = true)
                 // a page is loading: the questionnaire has no indicator of its own between its pages (audit A7)
                 val loading = stringResource(R.string.loading)
                 if (url != null && pageProgress < 100 && !loadFailed && error == null) {
@@ -551,7 +561,22 @@ class EntryActivity : ComponentActivity() {
         }) { pad ->
             // imePadding: the window does not resize for the keyboard (edge to edge), so the page is shortened here;
             // otherwise the WebView scrolls the caret into view anew with every letter of a long text answer
-            Box(Modifier.padding(pad).imePadding().fillMaxSize(), contentAlignment = Alignment.Center) {
+            Column(Modifier.padding(pad).imePadding().fillMaxSize()) {
+            // the notices of the entry as banners between the top bar and the page, never over its questions; each
+            // can be closed (UX audit 2026-10-16, B2), the failed save only by saving (B8)
+            session.unsaved?.let { form ->
+                Banner(
+                    stringResource(R.string.save_failed), error = true, action = stringResource(R.string.save_again),
+                    actionEnabled = !saving, onAction = { offlineSubmitted(form) },
+                )
+            }
+            if (restored) Banner(stringResource(R.string.restored), onClose = { restored = false })
+            if (permissionNotice) Banner(
+                stringResource(R.string.permission_needed), action = stringResource(R.string.open_settings),
+                onAction = { startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, "package:$packageName".toUri())) },
+                onClose = { permissionNotice = false },
+            )
+            Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
                 val u = url
                 val o = offline
                 // no white flash before a dark page has loaded
@@ -574,11 +599,6 @@ class EntryActivity : ComponentActivity() {
                         CircularProgressIndicator(Modifier.semantics { contentDescription = loading })
                     }
                 }
-                if (restored) Column(Modifier.align(Alignment.TopCenter)) { de.askurious.app.ui.Message(stringResource(R.string.restored)) }
-                if (permissionNotice) Column(Modifier.align(Alignment.TopCenter)) {
-                    de.askurious.app.ui.Message(stringResource(R.string.permission_needed))
-                    TextButton(onClick = { startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, "package:$packageName".toUri())) }) { Text(stringResource(R.string.open_settings)) }
-                }
                 // the page did not load: the app's own error state over the WebView, never the browser's page (A7)
                 if (loadFailed && e == null && !saved) {
                     Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
@@ -586,12 +606,18 @@ class EntryActivity : ComponentActivity() {
                     }
                 }
             }
+            }
         }
         if (askAbort) {
             AlertDialog(
                 onDismissRequest = { askAbort = false },
                 title = { Text(stringResource(R.string.entry_abort_title)) },
-                text = { Text(stringResource(R.string.entry_abort_text)) },
+                text = {
+                    // what goes, and whether the entry can be continued (B3): the server keeps the pages sent so far
+                    // and opens the same entry again while it is open; a kept page sends nothing before its end
+                    val lost = if (mayLose) stringResource(R.string.entry_abort_text) + " " else ""
+                    Text(lost + stringResource(if (offline != null) R.string.entry_abort_offline else R.string.entry_abort_resume))
+                },
                 confirmButton = {
                     TextButton(onClick = { askAbort = false; finish() }) {
                         Text(stringResource(R.string.entry_abort), color = MaterialTheme.colorScheme.error)
@@ -809,7 +835,12 @@ class EntryActivity : ComponentActivity() {
     private fun changed() { if (!done) { session.dirty = true; session.state["dirty"] = true } }
     private fun draftPage(page: String) {
         val previous = session.state.get<String>("page")
-        if (previous != null && previous != page) { session.dirty = false; session.state["dirty"] = false; session.state.remove<String>("draft") }
+        if (previous != null && previous != page) {
+            session.dirty = false; session.state["dirty"] = false; session.state.remove<String>("draft")
+            // a further page of the questionnaire: closing asks from now on (B3); the restored answers were seen (B2)
+            session.state["pages"] = (session.state.get<Int>("pages") ?: 0) + 1
+            restored = false
+        }
         session.state["page"] = page
     }
     private fun draft(json: String) {

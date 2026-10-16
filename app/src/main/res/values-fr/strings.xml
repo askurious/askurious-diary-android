@@ -37,7 +37,7 @@
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
     <string name="join_server" formatted="true">Serveur : %1$s</string>
     <string name="foreign_server" formatted="true">Ce lien ne mène pas à un serveur d\'Askurious (%1$s) ; l\'application ne l\'ouvre donc pas.</string>
-    <string name="continue_entry">Reprendre le premier questionnaire</string>
+    <string name="continue_entry">Reprendre le questionnaire initial</string>
     <string name="day_of">Jour %1$d sur %2$d</string>
     <string name="starts_on">Commence le %1$s</string>
     <string name="next_prompt">Prochain bref questionnaire : %1$s</string>
@@ -48,13 +48,13 @@
     <string name="left_pending">Vous avez quitté cette étude. L’application en informera l’équipe de recherche dès qu’une connexion sera disponible.</string>
     <string name="ended">L’équipe de recherche a mis fin à cette étude.</string>
     <string name="leave_study">Quitter l’étude</string>
-    <string name="leave_confirm">Quitter cette étude ? Vous ne recevrez plus de questions. Vos réponses restent auprès de l’équipe de recherche, sauf si vous les supprimez avec « Supprimer mes réponses ».</string>
+    <string name="leave_confirm">Vous ne recevrez plus de brefs questionnaires. Vos réponses restent auprès de l’équipe de recherche, sauf si vous les supprimez avec « Supprimer mes réponses ».</string>
     <string name="remove_from_list">Retirer de la liste</string>
     <string name="erase_answers">Supprimer mes réponses</string>
     <string name="erase_confirm">Supprimer toutes vos réponses à cette étude ? Elles seront aussi supprimées auprès de l’équipe de recherche et ne pourront pas être restaurées. L’étude disparaîtra ensuite de l’application.</string>
     <string name="erase">Supprimer</string>
-    <string name="notif_channel">Questions de vos études</string>
-    <string name="notif_default">Une courte question vous attend</string>
+    <string name="notif_channel">Brefs questionnaires de vos études</string>
+    <string name="notif_default">Un bref questionnaire vous attend</string>
     <string name="allow_notifications">Autorisez les notifications, sinon l’application ne peut pas vous interroger au bon moment.</string>
     <string name="allow_exact">Autorisez « Alarmes et rappels » pour que les questions arrivent à l’heure.</string>
     <string name="allow">Autoriser</string>
@@ -78,24 +78,24 @@
     <string name="about_oss_title">Logiciels open source</string>
     <string name="about_oss_intro">L’application utilise ces bibliothèques et cette police ; la licence figure à côté de chacune.</string>
     <string name="show_licence">Afficher les textes des licences</string>
-    <string name="notif_reminder">Rappel : une courte question vous attend toujours</string>
+    <string name="notif_reminder">Rappel : un bref questionnaire vous attend toujours</string>
     <string name="offline_saved">Enregistré. Vos réponses seront envoyées dès que le téléphone aura une connexion.</string>
     <plurals name="answers_waiting">
         <item quantity="one">%d réponse en attente d’envoi</item>
         <item quantity="many">%d réponses en attente d’envoi</item>
         <item quantity="other">%d réponses en attente d’envoi</item>
     </plurals>
-    <string name="about_offline">Pour les études permettant de répondre hors connexion, l’application conserve aussi les pages du questionnaire. Les réponses hors connexion restent chiffrées sur ce téléphone jusqu’à confirmation du stockage par le serveur ou suppression explicite de l’étude et de ses réponses. Leur expiration ou refus ne les supprime pas.</string>
+    <string name="about_offline">Pour les études permettant de répondre hors connexion, l’application conserve aussi les pages du questionnaire. Les réponses hors connexion restent chiffrées sur ce téléphone jusqu’à ce que le serveur confirme leur enregistrement, ou que vous les supprimiez explicitement ou retiriez l’étude. Leur expiration ou leur refus ne les supprime pas.</string>
     <string name="quiet_title">Heures de tranquillité</string>
-    <string name="quiet_now">Heures de repos pour rappels aléatoires : %1$s</string>
+    <string name="quiet_now">Heures de tranquillité pour les brefs questionnaires à heure aléatoire : %1$s</string>
     <string name="quiet_from_tomorrow">À partir de demain : %1$s</string>
     <string name="quiet_none">aucune</string>
     <string name="quiet_change">Modifier les heures de calme</string>
-    <string name="quiet_hint">Pendant vos heures de tranquillité, aucune question à heure aléatoire ne vous parvient. Une modification s’applique à partir de demain et uniquement aux questions à heures aléatoires, pas à celles à heures fixes.</string>
+    <string name="quiet_hint">Pendant vos heures de tranquillité, aucun bref questionnaire à heure aléatoire ne vous parvient. Une modification s’applique à partir de demain et uniquement aux brefs questionnaires à heure aléatoire, pas à ceux à heure fixe.</string>
     <string name="quiet_from">De</string>
     <string name="quiet_to">à</string>
     <string name="save">Enregistrer</string>
-    <string name="about_quiet">Si vous définissez des heures de tranquillité pour une étude, l’application les conserve et les envoie au serveur de l’étude, afin qu’aucune question à heure aléatoire ne vous parvienne pendant ce temps.</string>
+    <string name="about_quiet">Si vous définissez des heures de tranquillité pour une étude, l’application les conserve et les envoie au serveur de l’étude, afin qu’aucun bref questionnaire à heure aléatoire ne vous parvienne pendant ce temps.</string>
     <plurals name="random_per_day">
         <item quantity="one">%1$s : %2$d fois par jour à des heures aléatoires</item>
         <item quantity="many">%1$s : %2$d fois par jour à des heures aléatoires</item>
@@ -111,7 +111,7 @@
     <string name="exit_default">Questionnaire final</string>
     <string name="exit_until">Disponible jusqu’au %1$s</string>
     <string name="notif_exit">La période de l’étude est terminée. Merci de remplir : %1$s</string>
-    <string name="limit_refused">Le serveur n’a pas accepté certaines réponses. Elles restent sur ce téléphone pour clarification jusqu’à leur suppression explicite.</string>
+    <string name="limit_refused">Le serveur n’a pas accepté certaines réponses. Elles restent sur ce téléphone pour clarification jusqu’à ce que vous les supprimiez sous « Envoi des réponses ».</string>
     <string name="clock_off">L’horloge de ce téléphone n’est pas à l’heure. Les réponses données sans connexion seront envoyées dès que la date et l’heure seront correctes.</string>
     <string name="rejoin_confirm">Vous participez déjà à cette étude sur ce téléphone. Rejoindre à nouveau commence une nouvelle participation : vous ne pourrez alors plus supprimer vos réponses précédentes dans l’application. Les réponses en attente de la participation précédente sont d’abord envoyées si possible, sinon supprimées. Pour supprimer vos réponses précédentes, annulez et utilisez « Supprimer mes réponses » sur la carte de l’étude.</string>
     <string name="rejoin">Rejoindre à nouveau</string>
@@ -121,7 +121,7 @@
     <string name="remove_title">Retirer « %1$s » ?</string>
     <string name="remove_confirm">L’étude sera retirée de ce téléphone. Vous ne pourrez ensuite plus supprimer vos réponses depuis l’application.</string>
     <string name="remove_exit_open">Le questionnaire final de cette étude est encore ouvert.</string>
-    <string name="update_app">Votre étude nécessite une version plus récente de cette application. Veuillez mettre à jour l’application afin que vos questions continuent d’arriver correctement.</string>
+    <string name="update_app">Votre étude nécessite une version plus récente de cette application. Veuillez mettre à jour l’application afin que vos brefs questionnaires continuent d’arriver correctement.</string>
     <string name="update_button">Mettre à jour</string>
     <string name="entry_abort_title">Annuler cette saisie ?</string>
     <string name="entry_abort_text">Les réponses de cette page qui n’ont pas encore été envoyées seront perdues.</string>
@@ -160,7 +160,7 @@
     <string name="licence_title_apache">Apache License 2.0</string>
     <string name="licence_title_font">SIL Open Font License 1.1 (police PT Serif)</string>
     <string name="licence_title_notices">Avis (NOTICE) de ZXing et de kotlinx.coroutines, BSD 3-Clause License de ThreeTen-bp</string>
-    <string name="notif_channel_desc">Les questions de vos études de journal aux moments choisis par les chercheurs, et leurs rappels</string>
+    <string name="notif_channel_desc">Les brefs questionnaires de vos études de journal de bord aux moments choisis par l’équipe de recherche, et leurs rappels</string>
     <string name="notif_exit_until" formatted="true">La période de l’étude est terminée. Veuillez répondre : %1$s (ouvert jusqu’au %2$s)</string>
     <string name="notif_reminder_of">Rappel : %1$s</string>
     <string name="participation_title">Participation</string>
@@ -170,27 +170,27 @@
     <string name="quiet_use">Utiliser des heures de calme</string>
     <string name="quiet_from_cd">Heures de calme à partir de %1$s</string>
     <string name="quiet_to_cd">Heures de calme jusqu’à %1$s</string>
-    <string name="ready_title">Pour que les questions arrivent à l’heure</string>
-    <string name="ready_intro">L’application pose les questions de l’étude par une notification au bon moment. Pour cela, elle a besoin de deux autorisations ; toutes deux se modifient plus tard dans les réglages du téléphone.</string>
+    <string name="ready_title">Pour que les brefs questionnaires arrivent à l’heure</string>
+    <string name="ready_intro">L’application annonce les brefs questionnaires de l’étude par une notification au bon moment. Pour cela, elle a besoin de deux autorisations ; un troisième réglage est facultatif. Vous pourrez tout modifier plus tard dans les paramètres du téléphone.</string>
     <string name="ready_notify_title">Notifications</string>
-    <string name="ready_notify_text">Sans elles, aucune question n’arrive.</string>
+    <string name="ready_notify_text">Sans elles, aucun bref questionnaire n’arrive.</string>
     <string name="ready_exact_title">Alarmes et rappels</string>
-    <string name="ready_exact_text">Sans cela, les questions peuvent arriver avec quelques minutes de retard.</string>
-    <string name="state_pending">Premier questionnaire pas encore terminé</string>
+    <string name="ready_exact_text">Sans elle, les brefs questionnaires peuvent arriver avec quelques minutes de retard.</string>
+    <string name="state_pending">Questionnaire initial pas encore terminé</string>
     <string name="state_running">En cours</string>
     <string name="time_about">vers %1$s</string>
     <!-- the study page: summary, open-ended period, sound per study, home-screen shortcuts (Shortcuts), after leaving -->
     <string name="day_n" formatted="true">Jour %1$d</string>
-    <string name="period_after_entry">La période de l’étude commence dès que vous avez terminé le premier questionnaire.</string>
+    <string name="period_after_entry">La période de l’étude commence dès que vous avez terminé le questionnaire initial.</string>
     <string name="period_start" formatted="true">Début : %1$s</string>
     <string name="period_open_end">Fin : ouverte, jusqu’à ce que les chercheurs terminent l’étude</string>
     <string name="duration_open_end">Durée : ouverte, jusqu’à ce que les chercheurs terminent l’étude</string>
     <string name="also_self_module" formatted="true">%1$s : aussi quand vous le souhaitez</string>
     <string name="notifications_title">Notifications</string>
     <string name="sound">Son de notification</string>
-    <string name="sound_on_hint">Les questions de cette étude sonnent avec le son de notification de votre téléphone.</string>
-    <string name="sound_off_hint">Les questions de cette étude arrivent sans son.</string>
-    <string name="notif_channel_silent">Questions de vos études (sans son)</string>
+    <string name="sound_on_hint">Les brefs questionnaires de cette étude sonnent avec le son de notification de votre téléphone.</string>
+    <string name="sound_off_hint">Les brefs questionnaires de cette étude arrivent sans son.</string>
+    <string name="notif_channel_silent">Brefs questionnaires de vos études (sans son)</string>
     <string name="shortcut_title">Raccourci sur l’écran d’accueil</string>
     <string name="shortcut_intro">Signalez quelque chose d’un seul geste depuis votre écran d’accueil.</string>
     <string name="shortcut_add">Ajouter à l’écran d’accueil</string>
@@ -201,11 +201,11 @@
     <string name="shortcut_failed">Votre écran d’accueil n’a pas accepté le raccourci.</string>
     <string name="shortcut_default">Signaler</string>
     <string name="shortcut_disabled">Cette étude est terminée.</string>
-    <string name="after_leave_title">Conserver vos réponses ?</string>
-    <string name="after_leave_text">Vous avez quitté l’étude. Vos réponses jusqu’ici aident encore la recherche, même si vous arrêtez maintenant, et les chercheurs vous seraient reconnaissants de pouvoir les conserver. Voulez-vous quand même les supprimer ? C’est irréversible.</string>
+    <string name="after_leave_title">Vos réponses jusqu’ici</string>
+    <string name="after_leave_text">Vous avez quitté l’étude. Vos réponses jusqu’ici restent auprès de l’équipe de recherche si vous ne faites rien d’autre. Vous pouvez les supprimer maintenant, ou plus tard sur cette page avec « Supprimer mes réponses ». La suppression est irréversible.</string>
     <string name="keep_answers">Conserver mes réponses</string>
-    <string name="save_failed">Enregistrement impossible. Votre questionnaire rempli reste ouvert. Essayez de le soumettre à nouveau.</string>
-    <string name="queue_unreadable">Les réponses enregistrées sont illisibles. Elles n’ont pas été écrasées. Contactez l’équipe de l’étude.</string>
+    <string name="save_failed">Enregistrement impossible. Votre questionnaire rempli reste ouvert ; rien de ce que vous avez saisi n’est perdu.</string>
+    <string name="queue_unreadable">Les réponses enregistrées sont illisibles. Elles n’ont pas été écrasées. Veuillez contacter l’équipe de recherche.</string>
     <string name="queue_discard">Supprimer les réponses illisibles</string>
     <string name="queue_discard_confirm">Ces réponses ne peuvent plus être lues sur ce téléphone et ne pourront jamais être envoyées. Les supprimer pour que l’application puisse à nouveau conserver de nouvelles réponses ? Vos études et les réponses déjà envoyées ne sont pas concernées.</string>
     <string name="hide_licence">Masquer le texte de la licence</string>
@@ -214,20 +214,20 @@
     <string name="study_contact">Contact de l’étude : %1$s</string>
     <string name="open_end">Sans date de fin fixe. Vous ou l’équipe pouvez mettre fin à la participation.</string>
     <string name="transmissions">Envoi des réponses</string>
-    <string name="no_waiting">Aucune réponse en attente sur cet appareil.</string>
-    <string name="transfer_waiting">Enregistrée sur cet appareil ; pas encore confirmée par le serveur.</string>
-    <string name="transfer_review">Pas encore acceptée. L’original reste ici. Si le problème persiste, contactez l’équipe.</string>
+    <string name="no_waiting">Aucune réponse en attente sur ce téléphone.</string>
+    <string name="transfer_waiting">Enregistrée sur ce téléphone ; pas encore confirmée par le serveur.</string>
+    <string name="transfer_review">Pas encore acceptée. L’original reste sur ce téléphone. Pour toute question, contactez l’équipe de recherche.</string>
     <string name="transfer_retry">Envoi interrompu. L’original reste ici ; réessayez.</string>
     <string name="transfer_confirmed">Enregistrement confirmé par le serveur.</string>
     <string name="transfer_preserved">Conservée par le serveur pour vérification ; pas encore dans les résultats habituels.</string>
     <string name="last_attempt">Dernier essai : %1$s</string>
     <string name="try_later">Veuillez réessayer dans quelques minutes.</string>
     <string name="already_answered">Ce bref questionnaire a déjà reçu une réponse.</string>
-    <string name="study_unavailable">L’étude est indisponible. Contactez l’équipe.</string>
-    <string name="reminders_setup">Configurer les rappels</string>
+    <string name="study_unavailable">L’étude est actuellement indisponible. Veuillez contacter l’équipe de recherche.</string>
+    <string name="reminders_setup">Configurer le téléphone pour les brefs questionnaires</string>
     <string name="reminders_optional">Vous pouvez répondre ici aux questionnaires ouverts sans notifications.</string>
-    <string name="notifications_open">Activer les notifications</string>
-    <string name="alarms_open">Configurer des rappels ponctuels</string>
+    <string name="notifications_open">Autoriser les notifications</string>
+    <string name="alarms_open">Autoriser « Alarmes et rappels »</string>
     <string name="answer_prompt">Répondre au bref questionnaire</string>
     <string name="prompt_until">Disponible jusqu’au %1$s</string>
     <string name="quiet_pending">Enregistré ici ; le serveur n’a pas encore confirmé le changement des heures de repos.</string>
@@ -240,7 +240,26 @@
     <string name="permission_needed">Cette question nécessite le micro ou la localisation. En cas de refus permanent, ouvrez les paramètres. Une saisie alternative peut aussi être disponible.</string>
     <string name="open_settings">Ouvrir les paramètres</string>
     <string name="restored">Vérifiez les réponses restaurées. Les enregistrements et dessins non envoyés peuvent devoir être refaits.</string>
-    <string name="media_privacy">Le micro ou la localisation ne sont demandés que pour une question concernée. Le consentement explique les données envoyées. L’application garde aussi l’état d’envoi ici.</string>
-    <string name="draft_privacy">L’appareil garde aussi résumé, contact et brouillons temporaires. Les brouillons n’ont pas de sauvegarde cloud.</string>
+    <string name="media_privacy">L’accès au micro ou à la localisation n’est demandé que lorsqu’une question de l’étude en a besoin. Le consentement de l’étude explique ce qui est envoyé. L’application conserve aussi l’état des envois sur ce téléphone.</string>
+    <string name="draft_privacy">Ce téléphone conserve aussi l’aperçu de l’étude, le contact et des saisies de formulaire temporaires. Les brouillons n’ont pas de sauvegarde dans le cloud.</string>
     <string name="try_transfer">Envoyer les réponses</string>
+    <string name="close_entry">Fermer la saisie</string>
+    <string name="save_again">Enregistrer à nouveau</string>
+    <string name="entry_abort_resume">Les pages déjà envoyées sont conservées. Tant que la saisie est ouverte, vous pouvez la reprendre plus tard.</string>
+    <string name="entry_abort_offline">Sans connexion, rien n’a encore été envoyé : si vous annulez, tout ce que vous avez saisi dans cette saisie est perdu.</string>
+    <string name="refusal_expired">Motif : le délai de réponse était déjà écoulé.</string>
+    <string name="refusal_limit">Motif : le nombre maximal pour ce jour était déjà atteint.</string>
+    <string name="refusal_changed">Motif : le questionnaire a été modifié entre-temps.</string>
+    <string name="refusal_clock">Motif : l’horloge de ce téléphone n’était pas à l’heure. L’application renverra la réponse dès que la date et l’heure seront correctes.</string>
+    <string name="refusal_paused">Motif : l’étude est en pause. L’application renverra la réponse plus tard.</string>
+    <string name="refusal_unauthorised">Motif : le serveur n’a pas reconnu la participation. L’application réessaiera plus tard.</string>
+    <string name="refusal_closed">Motif : l’étude n’accepte plus de réponses.</string>
+    <string name="refusal_done">Motif : ce bref questionnaire avait déjà reçu une réponse.</string>
+    <string name="refusal_other">Motif : le serveur n’a pas accepté la réponse.</string>
+    <string name="discard_answer">Supprimer la réponse</string>
+    <string name="discard_answer_title">Supprimer cette réponse ?</string>
+    <string name="discard_answer_confirm">La réponse est supprimée de ce téléphone et ne sera jamais envoyée. Cette action est irréversible.</string>
+    <string name="battery_open">Ouvrir l’optimisation de la batterie</string>
+    <string name="ready_battery_title">Optimisation de la batterie (facultatif)</string>
+    <string name="ready_battery_text">Certains téléphones arrêtent les applications en arrière-plan pour économiser la batterie ; les brefs questionnaires arrivent alors en retard, voire pas du tout. Dans la liste « Optimisation de la batterie », réglez Askurious sur « Ne pas optimiser ». Sur certains téléphones, le réglage se trouve dans les infos de l’application, sous « Batterie ».</string>
 </resources>

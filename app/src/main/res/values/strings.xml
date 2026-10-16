@@ -33,7 +33,7 @@
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
     <string name="join_server" formatted="true">Server: %1$s</string>
     <string name="foreign_server" formatted="true">This link does not lead to a server of Askurious (%1$s), so the app does not open it.</string>
-    <string name="continue_entry">Continue the first questionnaire</string>
+    <string name="continue_entry">Continue the entry survey</string>
     <string name="day_of">Day %1$d of %2$d</string>
     <string name="starts_on">Starts on %1$s</string>
     <string name="next_prompt">Next short survey: %1$s</string>
@@ -44,13 +44,13 @@
     <string name="left_pending">You left this study. The app will tell the researchers as soon as it has a connection.</string>
     <string name="ended">The researchers have ended this study.</string>
     <string name="leave_study">Leave study</string>
-    <string name="leave_confirm">You will get no more questions. Your answers stay with the researchers unless you delete them with “Delete my answers”.</string>
+    <string name="leave_confirm">You will get no more short surveys. Your answers stay with the researchers unless you delete them with “Delete my answers”.</string>
     <string name="remove_from_list">Remove from list</string>
     <string name="erase_answers">Delete my answers</string>
     <string name="erase_confirm">All your answers in this study are deleted, at the researchers too, and cannot be restored. The study is then removed from the app.</string>
     <string name="erase">Delete</string>
-    <string name="notif_channel">Questions of your studies</string>
-    <string name="notif_default">A short question is waiting</string>
+    <string name="notif_channel">Short surveys of your studies</string>
+    <string name="notif_default">A short survey is waiting</string>
     <string name="allow_notifications">Allow notifications, otherwise the app cannot ask you at the right moment.</string>
     <string name="allow_exact">Allow \"Alarms &amp; reminders\" so that questions arrive on time.</string>
     <string name="allow">Allow</string>
@@ -58,7 +58,7 @@
     <string name="limit">You have reached today\'s limit for this report.</string>
     <string name="not_found">No study with this code.</string>
     <string name="closed">This study takes no new participants.</string>
-    <string name="code_used">This code is already connected to a participation. Ask the research team to release it again.</string>
+    <string name="code_used">This code is already connected to a participation. Ask the researchers to release it again.</string>
     <string name="rejoin_code">This is your personal code. It connects your participation to this phone; the phone used so far loses access.</string>
     <string name="offline">No connection. Please try again.</string>
     <string name="error">Something went wrong. Please try again.</string>
@@ -74,23 +74,23 @@
     <string name="about_oss_title">Open-source software</string>
     <string name="about_oss_intro">The app uses these libraries and this font; the licence stands with each.</string>
     <string name="show_licence">Show licence texts</string>
-    <string name="notif_reminder">Reminder: a short question is still waiting</string>
+    <string name="notif_reminder">Reminder: a short survey is still waiting</string>
     <string name="offline_saved">Saved. Your answers will be sent as soon as the phone has a connection.</string>
     <plurals name="answers_waiting">
         <item quantity="one">%d answer waiting to be sent</item>
         <item quantity="other">%d answers waiting to be sent</item>
     </plurals>
-    <string name="about_offline">For studies that allow offline answers, the app also keeps questionnaire pages. Offline answers remain encrypted on this phone until the server confirms storage or you explicitly remove the study and its answers. Expiry or refusal does not delete them.</string>
+    <string name="about_offline">For studies that allow offline answers, the app also keeps questionnaire pages. Offline answers remain encrypted on this phone until the server confirms storage or you explicitly discard them or remove the study. Expiry or refusal does not delete them.</string>
     <string name="quiet_title">Quiet hours</string>
-    <string name="quiet_now">Quiet hours for random reminders: %1$s</string>
+    <string name="quiet_now">Quiet hours for short surveys at random times: %1$s</string>
     <string name="quiet_from_tomorrow">From tomorrow: %1$s</string>
     <string name="quiet_none">none</string>
     <string name="quiet_change">Change quiet hours</string>
-    <string name="quiet_hint">No question at a random time comes during your quiet hours. A change applies from tomorrow and only to the questions at random times, not to those at fixed times.</string>
+    <string name="quiet_hint">No short survey at a random time comes during your quiet hours. A change applies from tomorrow and only to the short surveys at random times, not to those at fixed times.</string>
     <string name="quiet_from">From</string>
     <string name="quiet_to">to</string>
     <string name="save">Save</string>
-    <string name="about_quiet">If you set quiet hours for a study, the app keeps them and sends them to the server of the study, so that no question at a random time comes during them.</string>
+    <string name="about_quiet">If you set quiet hours for a study, the app keeps them and sends them to the server of the study, so that no short survey at a random time comes during them.</string>
     <plurals name="random_per_day">
         <item quantity="one">%1$s: %2$d× a day at random times</item>
         <item quantity="other">%1$s: %2$d× a day at random times</item>
@@ -101,10 +101,10 @@
     </plurals>
     <string name="paused">Paused by the researchers</string>
     <string name="fast_forward">Fast-forward ×%1$d</string>
-    <string name="exit_default">Final survey</string>
+    <string name="exit_default">Exit survey</string>
     <string name="exit_until">Open until %1$s</string>
     <string name="notif_exit">The study period is over. Please answer: %1$s</string>
-    <string name="limit_refused">The server has not accepted some answers. They remain on this phone for clarification until you explicitly remove them.</string>
+    <string name="limit_refused">The server has not accepted some answers. They remain on this phone for clarification until you discard them under “Answer transfers”.</string>
     <string name="clock_off">The clock of this phone is wrong. Answers given without a connection will be sent once the date and time are set correctly.</string>
     <string name="rejoin_confirm">You already take part in this study on this phone. Joining again starts a new participation: your earlier answers can then no longer be deleted in the app. Answers of the earlier participation still waiting are sent first if possible, otherwise discarded. To delete your earlier answers, cancel and use “Delete my answers” on the study’s page.</string>
     <string name="rejoin">Join again</string>
@@ -113,8 +113,8 @@
     <string name="remove">Remove</string>
     <string name="remove_title">Remove “%1$s”?</string>
     <string name="remove_confirm">The study is removed from this phone. Afterwards you can no longer delete your answers through the app.</string>
-    <string name="remove_exit_open">The final survey of this study is still open.</string>
-    <string name="update_app">A newer version of this app is needed for your study. Please update the app so that your questions keep arriving correctly.</string>
+    <string name="remove_exit_open">The exit survey of this study is still open.</string>
+    <string name="update_app">A newer version of this app is needed for your study. Please update the app so that your short surveys keep arriving correctly.</string>
     <string name="update_button">Update</string>
     <string name="entry_abort_title">Cancel this entry?</string>
     <string name="entry_abort_text">Answers on this page that have not been sent yet will be lost.</string>
@@ -142,8 +142,8 @@
     <string name="erase_title">Delete the answers in “%1$s”?</string>
     <string name="erased_done">The answers in “%1$s” have been deleted.</string>
     <string name="erasing">Deleting …</string>
-    <string name="exit_open">The study period is over. Please still answer the final survey.</string>
-    <string name="exit_open_until">The study period is over. Please still answer the final survey (open until %1$s).</string>
+    <string name="exit_open">The study period is over. Please still answer the exit survey.</string>
+    <string name="exit_open_until">The study period is over. Please still answer the exit survey (open until %1$s).</string>
     <string name="fast_forward_spoken">Fast-forward, %1$d times</string>
     <string name="join_code_hint">Printed under the study’s QR code, e.g. k7qm2x</string>
     <string name="leave_title">Leave “%1$s”?</string>
@@ -153,7 +153,7 @@
     <string name="licence_title_apache">Apache License 2.0</string>
     <string name="licence_title_font">SIL Open Font License 1.1 (font PT Serif)</string>
     <string name="licence_title_notices">Notices of ZXing and kotlinx.coroutines, BSD 3-Clause License of ThreeTen-bp</string>
-    <string name="notif_channel_desc">The questions of your diary studies at the times the researchers chose, and their reminders</string>
+    <string name="notif_channel_desc">The short surveys of your diary studies at the times the researchers chose, and their reminders</string>
     <string name="notif_exit_until" formatted="true">The study period is over. Please answer: %1$s (open until %2$s)</string>
     <string name="notif_reminder_of">Reminder: %1$s</string>
     <string name="participation_title">Participation</string>
@@ -163,27 +163,27 @@
     <string name="quiet_use">Use quiet hours</string>
     <string name="quiet_from_cd">Quiet hours from %1$s</string>
     <string name="quiet_to_cd">Quiet hours until %1$s</string>
-    <string name="ready_title">So that questions arrive on time</string>
-    <string name="ready_intro">The app asks the study’s questions with a notification at the right moment. For that it needs two permissions; both can be changed later in the phone’s settings.</string>
+    <string name="ready_title">So that short surveys arrive on time</string>
+    <string name="ready_intro">The app announces the study’s short surveys with a notification at the right moment. For that it needs two permissions; a third setting is optional. You can change all of them later in the phone’s settings.</string>
     <string name="ready_notify_title">Notifications</string>
-    <string name="ready_notify_text">Without them no question arrives.</string>
+    <string name="ready_notify_text">Without them no short survey arrives.</string>
     <string name="ready_exact_title">Alarms &amp; reminders</string>
-    <string name="ready_exact_text">Without it questions may come a few minutes late.</string>
-    <string name="state_pending">First questionnaire not finished yet</string>
+    <string name="ready_exact_text">Without it short surveys may come a few minutes late.</string>
+    <string name="state_pending">Entry survey not finished yet</string>
     <string name="state_running">Running</string>
     <string name="time_about">about %1$s</string>
     <!-- the study page: summary, open-ended period, sound per study, home-screen shortcuts (Shortcuts), after leaving -->
     <string name="day_n" formatted="true">Day %1$d</string>
-    <string name="period_after_entry">The study period begins once you have finished the first questionnaire.</string>
+    <string name="period_after_entry">The study period begins once you have finished the entry survey.</string>
     <string name="period_start" formatted="true">Start: %1$s</string>
     <string name="period_open_end">End: open, until the researchers end the study</string>
     <string name="duration_open_end">Duration: open-ended, until the researchers end the study</string>
     <string name="also_self_module" formatted="true">%1$s: also whenever you like</string>
     <string name="notifications_title">Notifications</string>
     <string name="sound">Notification sound</string>
-    <string name="sound_on_hint">Questions of this study ring with your phone\'s notification sound.</string>
-    <string name="sound_off_hint">Questions of this study arrive without a sound.</string>
-    <string name="notif_channel_silent">Questions of your studies (without sound)</string>
+    <string name="sound_on_hint">Short surveys of this study ring with your phone\'s notification sound.</string>
+    <string name="sound_off_hint">Short surveys of this study arrive without a sound.</string>
+    <string name="notif_channel_silent">Short surveys of your studies (without sound)</string>
     <string name="shortcut_title">Shortcut on the home screen</string>
     <string name="shortcut_intro">Report something with one tap from your home screen.</string>
     <string name="shortcut_add">Add to home screen</string>
@@ -194,11 +194,11 @@
     <string name="shortcut_failed">Your home screen did not accept the shortcut.</string>
     <string name="shortcut_default">Report</string>
     <string name="shortcut_disabled">This study has ended.</string>
-    <string name="after_leave_title">Keep your answers?</string>
-    <string name="after_leave_text">You have left the study. Your answers so far still help the research, even though you stopped, and the researchers would be grateful to keep them. Do you want to delete them anyway? This cannot be undone.</string>
+    <string name="after_leave_title">Your answers so far</string>
+    <string name="after_leave_text">You have left the study. Your answers so far stay with the researchers unless you do anything else. You can delete them now, or later on this page with “Delete my answers”. Deleting cannot be undone.</string>
     <string name="keep_answers">Keep my answers</string>
-    <string name="save_failed">Could not save. Your filled questionnaire remains open. Please try submitting again.</string>
-    <string name="queue_unreadable">Stored answers cannot be read. They have not been overwritten. Please contact the study team.</string>
+    <string name="save_failed">Could not save. Your filled questionnaire remains open; nothing you entered is lost.</string>
+    <string name="queue_unreadable">Stored answers cannot be read. They have not been overwritten. Please contact the researchers.</string>
     <string name="queue_discard">Discard unreadable answers</string>
     <string name="queue_discard_confirm">These answers can no longer be read on this phone and can never be sent. Discard them so that the app can keep new answers again? Your studies and the answers already sent are not affected.</string>
     <string name="hide_licence">Hide licence text</string>
@@ -207,20 +207,20 @@
     <string name="study_contact">Study contact: %1$s</string>
     <string name="open_end">No fixed end date. You or the researchers can end participation.</string>
     <string name="transmissions">Answer transfers</string>
-    <string name="no_waiting">No answers waiting on this device.</string>
-    <string name="transfer_waiting">Saved on this device; not yet confirmed by the server.</string>
-    <string name="transfer_review">Not accepted yet. The original remains on this device. Contact the study team if this persists.</string>
+    <string name="no_waiting">No answers waiting on this phone.</string>
+    <string name="transfer_waiting">Saved on this phone; not yet confirmed by the server.</string>
+    <string name="transfer_review">Not accepted yet. The original remains on this phone. If you have questions, contact the researchers.</string>
     <string name="transfer_retry">Transfer interrupted. The original remains here; try again.</string>
     <string name="transfer_confirmed">Storage confirmed by the server.</string>
     <string name="transfer_preserved">Preserved by the server for review; not yet part of the regular results.</string>
     <string name="last_attempt">Last attempt: %1$s</string>
     <string name="try_later">Please try again in a few minutes.</string>
     <string name="already_answered">This short survey has already been answered.</string>
-    <string name="study_unavailable">The study is currently unavailable. Please contact the study team.</string>
-    <string name="reminders_setup">Set up reminders</string>
+    <string name="study_unavailable">The study is currently unavailable. Please contact the researchers.</string>
+    <string name="reminders_setup">Set up your phone for short surveys</string>
     <string name="reminders_optional">You can still answer open short surveys here without notifications.</string>
-    <string name="notifications_open">Enable notifications</string>
-    <string name="alarms_open">Set up timely reminders</string>
+    <string name="notifications_open">Allow notifications</string>
+    <string name="alarms_open">Allow “Alarms &amp; reminders”</string>
     <string name="answer_prompt">Answer short survey</string>
     <string name="prompt_until">Available until %1$s</string>
     <string name="quiet_pending">Saved locally; the server has not confirmed the quiet-hours change yet.</string>
@@ -233,7 +233,26 @@
     <string name="permission_needed">This question needs microphone or location access. If you declined permanently, open the app settings. You can also use the question’s alternative input.</string>
     <string name="open_settings">Open app settings</string>
     <string name="restored">Please check your restored answers. Unsubmitted recordings and drawings may need to be entered again.</string>
-    <string name="media_privacy">Microphone or location access is requested only when a study question needs it. The study’s consent explains what is sent. The app also keeps transfer status on this device.</string>
-    <string name="draft_privacy">This device also keeps the study overview and contact and temporary form drafts. Drafts have no cloud backup.</string>
+    <string name="media_privacy">Microphone or location access is requested only when a study question needs it. The study’s consent explains what is sent. The app also keeps transfer status on this phone.</string>
+    <string name="draft_privacy">This phone also keeps the study overview and contact and temporary form drafts. Drafts have no cloud backup.</string>
     <string name="try_transfer">Transfer answers</string>
+    <string name="close_entry">Close entry</string>
+    <string name="save_again">Save again</string>
+    <string name="entry_abort_resume">Pages already sent are kept. While the entry is open, you can continue it later.</string>
+    <string name="entry_abort_offline">Without a connection nothing has been sent yet: if you cancel, everything you entered in this entry is lost.</string>
+    <string name="refusal_expired">Reason: the time to answer had already run out.</string>
+    <string name="refusal_limit">Reason: the limit for that day had already been reached.</string>
+    <string name="refusal_changed">Reason: the questionnaire has been changed in the meantime.</string>
+    <string name="refusal_clock">Reason: the clock of this phone was wrong. The app sends the answer again once the date and time are right.</string>
+    <string name="refusal_paused">Reason: the study is paused. The app sends the answer again later.</string>
+    <string name="refusal_unauthorised">Reason: the server did not recognise the participation. The app tries again later.</string>
+    <string name="refusal_closed">Reason: the study no longer accepts answers.</string>
+    <string name="refusal_done">Reason: this short survey had already been answered.</string>
+    <string name="refusal_other">Reason: the server did not accept the answer.</string>
+    <string name="discard_answer">Discard answer</string>
+    <string name="discard_answer_title">Discard this answer?</string>
+    <string name="discard_answer_confirm">The answer is deleted from this phone and never sent. This cannot be undone.</string>
+    <string name="battery_open">Open battery optimisation</string>
+    <string name="ready_battery_title">Battery optimisation (optional)</string>
+    <string name="ready_battery_text">Some phones stop apps in the background to save battery; short surveys then arrive late or not at all. In the list “Battery optimisation”, set Askurious to “Don’t optimise”. On some phones the setting is in the app info under “Battery”.</string>
 </resources>

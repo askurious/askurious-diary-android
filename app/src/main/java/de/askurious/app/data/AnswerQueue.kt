@@ -174,6 +174,21 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
 
     fun clearRefused(study: String): Unit = synchronized(SealedText.LOCK) { prefs.edit { putStringSet(REFUSED, refusedStudies() - study) } }
 
+    /**
+     * The refused answers whose notice the participant closed ("Close" on the study card): their ids. The notice
+     * stays away for them and comes back with the next refusal (UX audit 2026-10-16, B5).
+     */
+    fun seenRefusals(): Set<String> = runCatching { prefs.getStringSet(SEEN, null)?.toSet() }.getOrNull() ?: emptySet()
+
+    /** Closes the notice of the refused answers of [study]; ids of answers no longer kept are dropped on the way. */
+    fun dismissRefused(study: String): Unit = synchronized(SealedText.LOCK) {
+        val items = all()
+        val kept = items.map { it.id }.toSet()
+        val now = items.filter { it.study == study && it.refusal != null }.map { it.id }
+        prefs.edit { putStringSet(SEEN, (seenRefusals() intersect kept) + now) }
+        clearRefused(study)
+    }
+
     /** Whether an answer to the prompt of [module] due at [due] is waiting: it counts as opened for the reminder. */
     fun has(study: String, module: String, due: Long): Boolean = rows?.has(study, module, due)
         ?: all().any { it.study == study && it.module == module && it.due == due }
@@ -246,6 +261,7 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
         private const val AAD = "queue"
         private const val REFUSED = "refused"
         private const val FORGET = "forget"
+        private const val SEEN = "refusals_seen"
 
         /** The server takes an answer up to 7 days after "started". */
         const val MAX_AGE_MS = 7L * 24 * 3600 * 1000

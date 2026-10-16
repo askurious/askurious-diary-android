@@ -33,7 +33,7 @@
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
     <string name="join_server" formatted="true">Server: %1$s</string>
     <string name="foreign_server" formatted="true">Deze link leidt niet naar een server van Askurious (%1$s), daarom opent de app hem niet.</string>
-    <string name="continue_entry">Eerste vragenlijst voortzetten</string>
+    <string name="continue_entry">Beginvragenlijst voortzetten</string>
     <string name="day_of">Dag %1$d van %2$d</string>
     <string name="starts_on">Begint op %1$s</string>
     <string name="next_prompt">Volgende korte vragenlijst: %1$s</string>
@@ -44,13 +44,13 @@
     <string name="left_pending">U bent met dit onderzoek gestopt. De app laat het de onderzoekers weten zodra er verbinding is.</string>
     <string name="ended">De onderzoekers hebben dit onderzoek beëindigd.</string>
     <string name="leave_study">Stoppen met onderzoek</string>
-    <string name="leave_confirm">Stoppen met dit onderzoek? U krijgt geen vragen meer. Uw antwoorden blijven bij de onderzoekers, tenzij u ze verwijdert met ‘Mijn antwoorden verwijderen’.</string>
+    <string name="leave_confirm">U krijgt geen korte vragenlijsten meer. Uw antwoorden blijven bij de onderzoekers, tenzij u ze verwijdert met ‘Mijn antwoorden verwijderen’.</string>
     <string name="remove_from_list">Uit de lijst verwijderen</string>
     <string name="erase_answers">Mijn antwoorden verwijderen</string>
     <string name="erase_confirm">Al uw antwoorden in dit onderzoek verwijderen? Ze worden ook bij de onderzoekers verwijderd en kunnen niet worden hersteld. Daarna verdwijnt het onderzoek uit de app.</string>
     <string name="erase">Verwijderen</string>
-    <string name="notif_channel">Vragen van uw onderzoeken</string>
-    <string name="notif_default">Er wacht een korte vraag</string>
+    <string name="notif_channel">Korte vragenlijsten van uw onderzoeken</string>
+    <string name="notif_default">Er wacht een korte vragenlijst</string>
     <string name="allow_notifications">Sta meldingen toe, anders kan de app u niet op het juiste moment iets vragen.</string>
     <string name="allow_exact">Sta ‘Wekkers en herinneringen’ toe, zodat vragen op tijd komen.</string>
     <string name="allow">Toestaan</string>
@@ -58,7 +58,7 @@
     <string name="limit">U hebt het maximum van vandaag voor deze melding bereikt.</string>
     <string name="not_found">Geen onderzoek met deze code.</string>
     <string name="closed">Dit onderzoek neemt geen nieuwe deelnemers meer aan.</string>
-    <string name="code_used">Deze code is al aan een deelname gekoppeld. Vraag het onderzoeksteam om hem opnieuw vrij te geven.</string>
+    <string name="code_used">Deze code is al aan een deelname gekoppeld. Vraag de onderzoekers om hem opnieuw vrij te geven.</string>
     <string name="rejoin_code">Dit is uw persoonlijke code. Hij verbindt uw deelname met deze telefoon; de tot nu toe gebruikte telefoon verliest de toegang.</string>
     <string name="offline">Geen verbinding. Probeer het opnieuw.</string>
     <string name="error">Er is iets misgegaan. Probeer het opnieuw.</string>
@@ -74,23 +74,23 @@
     <string name="about_oss_title">Opensourcesoftware</string>
     <string name="about_oss_intro">De app gebruikt deze bibliotheken en dit lettertype; de licentie staat er telkens bij.</string>
     <string name="show_licence">Licentieteksten tonen</string>
-    <string name="notif_reminder">Herinnering: er wacht nog een korte vraag</string>
+    <string name="notif_reminder">Herinnering: er wacht nog een korte vragenlijst</string>
     <string name="offline_saved">Opgeslagen. Uw antwoorden worden verstuurd zodra de telefoon verbinding heeft.</string>
     <plurals name="answers_waiting">
         <item quantity="one">%d antwoord wacht op verzending</item>
         <item quantity="other">%d antwoorden wachten op verzending</item>
     </plurals>
-    <string name="about_offline">Bij onderzoeken met offline antwoorden bewaart de app ook vragenlijstpagina’s. Offline antwoorden blijven versleuteld op deze telefoon totdat de server opslag bevestigt of u het onderzoek en de antwoorden uitdrukkelijk verwijdert. Verlopen of weigering verwijdert ze niet.</string>
+    <string name="about_offline">Bij onderzoeken met offline antwoorden bewaart de app ook vragenlijstpagina’s. Offline antwoorden blijven versleuteld op deze telefoon totdat de server de opslag bevestigt of u ze uitdrukkelijk verwerpt of het onderzoek verwijdert. Verlopen of weigering verwijdert ze niet.</string>
     <string name="quiet_title">Rusttijden</string>
-    <string name="quiet_now">Stille uren voor willekeurige herinneringen: %1$s</string>
+    <string name="quiet_now">Rusttijden voor korte vragenlijsten op willekeurige tijdstippen: %1$s</string>
     <string name="quiet_from_tomorrow">Vanaf morgen: %1$s</string>
     <string name="quiet_none">geen</string>
     <string name="quiet_change">Rusttijden wijzigen</string>
-    <string name="quiet_hint">Tijdens uw rusttijden komt er geen vraag op een willekeurig tijdstip. Een wijziging geldt vanaf morgen en alleen voor de vragen op willekeurige tijdstippen, niet voor die op vaste tijden.</string>
+    <string name="quiet_hint">Tijdens uw rusttijden komt er geen korte vragenlijst op een willekeurig tijdstip. Een wijziging geldt vanaf morgen en alleen voor de korte vragenlijsten op willekeurige tijdstippen, niet voor die op vaste tijden.</string>
     <string name="quiet_from">Van</string>
     <string name="quiet_to">tot</string>
     <string name="save">Opslaan</string>
-    <string name="about_quiet">Als u voor een onderzoek rusttijden instelt, bewaart de app ze en stuurt ze naar de server van het onderzoek, zodat er in die tijd geen vraag op een willekeurig tijdstip komt.</string>
+    <string name="about_quiet">Als u voor een onderzoek rusttijden instelt, bewaart de app ze en stuurt ze naar de server van het onderzoek, zodat er in die tijd geen korte vragenlijst op een willekeurig tijdstip komt.</string>
     <plurals name="random_per_day">
         <item quantity="one">%1$s: %2$d× per dag op willekeurige tijdstippen</item>
         <item quantity="other">%1$s: %2$d× per dag op willekeurige tijdstippen</item>
@@ -104,7 +104,7 @@
     <string name="exit_default">Afsluitende vragenlijst</string>
     <string name="exit_until">Open tot %1$s</string>
     <string name="notif_exit">De onderzoeksperiode is voorbij. Vult u nog in: %1$s</string>
-    <string name="limit_refused">De server heeft sommige antwoorden niet aanvaard. Ze blijven op deze telefoon voor verduidelijking totdat u ze uitdrukkelijk verwijdert.</string>
+    <string name="limit_refused">De server heeft sommige antwoorden niet aanvaard. Ze blijven ter verduidelijking op deze telefoon totdat u ze verwerpt onder ‘Antwoorden versturen’.</string>
     <string name="clock_off">De klok van deze telefoon staat verkeerd. Antwoorden die zonder verbinding zijn gegeven, worden verstuurd zodra datum en tijd kloppen.</string>
     <string name="rejoin_confirm">U neemt op deze telefoon al deel aan dit onderzoek. Opnieuw deelnemen start een nieuwe deelname: uw eerdere antwoorden kunt u daarna niet meer in de app verwijderen. Nog wachtende antwoorden van de eerdere deelname worden eerst verstuurd als dat lukt, anders vervallen ze. Om uw eerdere antwoorden te verwijderen, annuleert u en gebruikt u ‘Mijn antwoorden verwijderen’ op de kaart van het onderzoek.</string>
     <string name="rejoin">Opnieuw deelnemen</string>
@@ -114,7 +114,7 @@
     <string name="remove_title">‘%1$s’ verwijderen?</string>
     <string name="remove_confirm">Het onderzoek wordt van deze telefoon verwijderd. Daarna kunt u uw antwoorden niet meer via de app verwijderen.</string>
     <string name="remove_exit_open">De afsluitende vragenlijst van dit onderzoek staat nog open.</string>
-    <string name="update_app">Voor uw onderzoek is een nieuwere versie van deze app nodig. Werk de app bij zodat uw vragen correct blijven binnenkomen.</string>
+    <string name="update_app">Voor uw onderzoek is een nieuwere versie van deze app nodig. Werk de app bij, zodat uw korte vragenlijsten correct blijven binnenkomen.</string>
     <string name="update_button">Bijwerken</string>
     <string name="entry_abort_title">Deze invulling afbreken?</string>
     <string name="entry_abort_text">Antwoorden op deze pagina die nog niet zijn verzonden, gaan verloren.</string>
@@ -142,8 +142,8 @@
     <string name="erase_title">Antwoorden in ‘%1$s’ verwijderen?</string>
     <string name="erased_done">De antwoorden in ‘%1$s’ zijn verwijderd.</string>
     <string name="erasing">Bezig met verwijderen…</string>
-    <string name="exit_open">De onderzoeksperiode is voorbij. Vul nog de slotvragenlijst in.</string>
-    <string name="exit_open_until">De onderzoeksperiode is voorbij. Vul nog de slotvragenlijst in (open tot %1$s).</string>
+    <string name="exit_open">De onderzoeksperiode is voorbij. Vul nog de afsluitende vragenlijst in.</string>
+    <string name="exit_open_until">De onderzoeksperiode is voorbij. Vul nog de afsluitende vragenlijst in (open tot %1$s).</string>
     <string name="fast_forward_spoken">Versneld, %1$d keer</string>
     <string name="join_code_hint">Staat onder de QR-code van het onderzoek, bijv. k7qm2x</string>
     <string name="leave_title">‘%1$s’ verlaten?</string>
@@ -153,7 +153,7 @@
     <string name="licence_title_apache">Apache License 2.0</string>
     <string name="licence_title_font">SIL Open Font License 1.1 (lettertype PT Serif)</string>
     <string name="licence_title_notices">Kennisgevingen (NOTICE) van ZXing en kotlinx.coroutines, BSD 3-Clause License van ThreeTen-bp</string>
-    <string name="notif_channel_desc">De vragen van uw dagboekonderzoeken op de tijden die de onderzoekers kozen, en de herinneringen</string>
+    <string name="notif_channel_desc">De korte vragenlijsten van uw dagboekonderzoeken op de tijden die de onderzoekers kozen, en hun herinneringen</string>
     <string name="notif_exit_until" formatted="true">De onderzoeksperiode is voorbij. Vul nog in: %1$s (open tot %2$s)</string>
     <string name="notif_reminder_of">Herinnering: %1$s</string>
     <string name="participation_title">Deelname</string>
@@ -163,27 +163,27 @@
     <string name="quiet_use">Rusttijden gebruiken</string>
     <string name="quiet_from_cd">Rusttijden vanaf %1$s</string>
     <string name="quiet_to_cd">Rusttijden tot %1$s</string>
-    <string name="ready_title">Zodat vragen op tijd komen</string>
-    <string name="ready_intro">De app stelt de vragen van het onderzoek op het juiste moment met een melding. Daarvoor zijn twee toestemmingen nodig; beide kunt u later in de instellingen van de telefoon wijzigen.</string>
+    <string name="ready_title">Zodat korte vragenlijsten op tijd komen</string>
+    <string name="ready_intro">De app kondigt de korte vragenlijsten van het onderzoek op het juiste moment aan met een melding. Daarvoor zijn twee toestemmingen nodig; een derde instelling is optioneel. U kunt alles later wijzigen in de instellingen van de telefoon.</string>
     <string name="ready_notify_title">Meldingen</string>
-    <string name="ready_notify_text">Zonder meldingen komt er geen vraag aan.</string>
+    <string name="ready_notify_text">Zonder meldingen komt er geen korte vragenlijst aan.</string>
     <string name="ready_exact_title">Wekkers en herinneringen</string>
-    <string name="ready_exact_text">Zonder deze toestemming kunnen vragen enkele minuten te laat komen.</string>
-    <string name="state_pending">Eerste vragenlijst nog niet afgerond</string>
+    <string name="ready_exact_text">Zonder deze toestemming kunnen korte vragenlijsten enkele minuten te laat komen.</string>
+    <string name="state_pending">Beginvragenlijst nog niet afgerond</string>
     <string name="state_running">Loopt</string>
     <string name="time_about">rond %1$s</string>
     <!-- the study page: summary, open-ended period, sound per study, home-screen shortcuts (Shortcuts), after leaving -->
     <string name="day_n" formatted="true">Dag %1$d</string>
-    <string name="period_after_entry">De onderzoeksperiode begint zodra u de eerste vragenlijst hebt afgerond.</string>
+    <string name="period_after_entry">De onderzoeksperiode begint zodra u de beginvragenlijst hebt afgerond.</string>
     <string name="period_start" formatted="true">Begin: %1$s</string>
     <string name="period_open_end">Einde: open, totdat de onderzoekers het onderzoek beëindigen</string>
     <string name="duration_open_end">Duur: open, totdat de onderzoekers het onderzoek beëindigen</string>
     <string name="also_self_module" formatted="true">%1$s: ook wanneer u maar wilt</string>
     <string name="notifications_title">Meldingen</string>
     <string name="sound">Meldingsgeluid</string>
-    <string name="sound_on_hint">Vragen van dit onderzoek komen met het meldingsgeluid van uw telefoon.</string>
-    <string name="sound_off_hint">Vragen van dit onderzoek komen zonder geluid.</string>
-    <string name="notif_channel_silent">Vragen van uw onderzoeken (zonder geluid)</string>
+    <string name="sound_on_hint">Korte vragenlijsten van dit onderzoek komen met het meldingsgeluid van uw telefoon.</string>
+    <string name="sound_off_hint">Korte vragenlijsten van dit onderzoek komen zonder geluid.</string>
+    <string name="notif_channel_silent">Korte vragenlijsten van uw onderzoeken (zonder geluid)</string>
     <string name="shortcut_title">Snelkoppeling op het startscherm</string>
     <string name="shortcut_intro">Meld iets met één tik vanaf uw startscherm.</string>
     <string name="shortcut_add">Toevoegen aan startscherm</string>
@@ -194,11 +194,11 @@
     <string name="shortcut_failed">Uw startscherm heeft de snelkoppeling niet aangenomen.</string>
     <string name="shortcut_default">Melden</string>
     <string name="shortcut_disabled">Dit onderzoek is beëindigd.</string>
-    <string name="after_leave_title">Uw antwoorden bewaren?</string>
-    <string name="after_leave_text">U hebt het onderzoek verlaten. Uw antwoorden tot nu toe helpen het onderzoek ook als u nu stopt, en de onderzoekers zouden ze graag bewaren. Wilt u ze toch verwijderen? Dit kan niet ongedaan worden gemaakt.</string>
+    <string name="after_leave_title">Uw antwoorden tot nu toe</string>
+    <string name="after_leave_text">U hebt het onderzoek verlaten. Uw antwoorden tot nu toe blijven bij de onderzoekers als u verder niets doet. U kunt ze nu verwijderen, of later op deze pagina met ‘Mijn antwoorden verwijderen’. Verwijderen kan niet ongedaan worden gemaakt.</string>
     <string name="keep_answers">Mijn antwoorden bewaren</string>
-    <string name="save_failed">Opslaan mislukt. Uw ingevulde vragenlijst blijft open. Probeer opnieuw in te dienen.</string>
-    <string name="queue_unreadable">Opgeslagen antwoorden kunnen niet worden gelezen. Ze zijn niet overschreven. Neem contact op met het onderzoeksteam.</string>
+    <string name="save_failed">Opslaan mislukt. Uw ingevulde vragenlijst blijft open; niets van wat u hebt ingevoerd gaat verloren.</string>
+    <string name="queue_unreadable">Opgeslagen antwoorden kunnen niet worden gelezen. Ze zijn niet overschreven. Neem contact op met de onderzoekers.</string>
     <string name="queue_discard">Onleesbare antwoorden verwijderen</string>
     <string name="queue_discard_confirm">Deze antwoorden kunnen op deze telefoon niet meer worden gelezen en nooit meer worden verzonden. Verwijderen zodat de app weer nieuwe antwoorden kan bewaren? Uw onderzoeken en de al verzonden antwoorden blijven.</string>
     <string name="hide_licence">Licentietekst verbergen</string>
@@ -207,20 +207,20 @@
     <string name="study_contact">Contact van het onderzoek: %1$s</string>
     <string name="open_end">Geen vaste einddatum. U of de onderzoekers kunnen de deelname beëindigen.</string>
     <string name="transmissions">Antwoorden versturen</string>
-    <string name="no_waiting">Geen antwoorden in afwachting op dit apparaat.</string>
-    <string name="transfer_waiting">Op dit apparaat opgeslagen; nog niet bevestigd door de server.</string>
-    <string name="transfer_review">Nog niet geaccepteerd. Het origineel blijft hier. Neem bij aanhoudende problemen contact op.</string>
+    <string name="no_waiting">Geen wachtende antwoorden op deze telefoon.</string>
+    <string name="transfer_waiting">Op deze telefoon opgeslagen; nog niet bevestigd door de server.</string>
+    <string name="transfer_review">Nog niet aanvaard. Het origineel blijft op deze telefoon. Neem bij vragen contact op met de onderzoekers.</string>
     <string name="transfer_retry">Versturen onderbroken. Het origineel blijft hier; probeer opnieuw.</string>
     <string name="transfer_confirmed">Opslag bevestigd door de server.</string>
     <string name="transfer_preserved">Door de server bewaard voor controle; nog niet in de reguliere resultaten.</string>
     <string name="last_attempt">Laatste poging: %1$s</string>
     <string name="try_later">Probeer het over enkele minuten opnieuw.</string>
     <string name="already_answered">Deze korte vragenlijst is al ingevuld.</string>
-    <string name="study_unavailable">Het onderzoek is niet beschikbaar. Neem contact op met de onderzoekers.</string>
-    <string name="reminders_setup">Herinneringen instellen</string>
+    <string name="study_unavailable">Het onderzoek is momenteel niet bereikbaar. Neem contact op met de onderzoekers.</string>
+    <string name="reminders_setup">Telefoon instellen voor korte vragenlijsten</string>
     <string name="reminders_optional">U kunt open vragenlijsten hier ook zonder meldingen invullen.</string>
-    <string name="notifications_open">Meldingen inschakelen</string>
-    <string name="alarms_open">Tijdige herinneringen instellen</string>
+    <string name="notifications_open">Meldingen toestaan</string>
+    <string name="alarms_open">‘Wekkers en herinneringen’ toestaan</string>
     <string name="answer_prompt">Korte vragenlijst invullen</string>
     <string name="prompt_until">Beschikbaar tot %1$s</string>
     <string name="quiet_pending">Lokaal opgeslagen; de wijziging van de stille uren is nog niet bevestigd.</string>
@@ -233,7 +233,26 @@
     <string name="permission_needed">Deze vraag vereist microfoon of locatie. Open de instellingen bij definitieve weigering. Gebruik zo mogelijk de alternatieve invoer.</string>
     <string name="open_settings">App-instellingen openen</string>
     <string name="restored">Controleer de herstelde antwoorden. Niet-verzonden opnamen en tekeningen moeten mogelijk opnieuw.</string>
-    <string name="media_privacy">Microfoon of locatie wordt alleen gevraagd voor relevante onderzoeksvragen. Toestemming verklaart wat wordt verstuurd. De app bewaart ook de verzendstatus hier.</string>
-    <string name="draft_privacy">Het apparaat bewaart ook overzicht, contact en tijdelijke concepten. Concepten hebben geen cloudback-up.</string>
+    <string name="media_privacy">Toegang tot microfoon of locatie wordt alleen gevraagd als een onderzoeksvraag die nodig heeft. De toestemmingsverklaring van het onderzoek legt uit wat wordt verstuurd. De app bewaart ook de verzendstatus op deze telefoon.</string>
+    <string name="draft_privacy">Deze telefoon bewaart ook het onderzoeksoverzicht, de contactgegevens en tijdelijke formulierconcepten. Concepten hebben geen cloudback-up.</string>
     <string name="try_transfer">Antwoorden versturen</string>
+    <string name="close_entry">Invulling sluiten</string>
+    <string name="save_again">Opnieuw opslaan</string>
+    <string name="entry_abort_resume">Al verzonden pagina’s blijven bewaard. Zolang de invulling open is, kunt u deze later voortzetten.</string>
+    <string name="entry_abort_offline">Zonder verbinding is nog niets verzonden: als u afbreekt, gaat alles wat u in deze invulling hebt ingevoerd verloren.</string>
+    <string name="refusal_expired">Reden: de antwoordtijd was al verstreken.</string>
+    <string name="refusal_limit">Reden: het maximum voor die dag was al bereikt.</string>
+    <string name="refusal_changed">Reden: de vragenlijst is intussen gewijzigd.</string>
+    <string name="refusal_clock">Reden: de klok van deze telefoon stond verkeerd. De app verstuurt het antwoord opnieuw zodra datum en tijd kloppen.</string>
+    <string name="refusal_paused">Reden: het onderzoek is gepauzeerd. De app verstuurt het antwoord later opnieuw.</string>
+    <string name="refusal_unauthorised">Reden: de server herkende de deelname niet. De app probeert het later opnieuw.</string>
+    <string name="refusal_closed">Reden: het onderzoek neemt geen antwoorden meer aan.</string>
+    <string name="refusal_done">Reden: deze korte vragenlijst was al ingevuld.</string>
+    <string name="refusal_other">Reden: de server heeft het antwoord niet aanvaard.</string>
+    <string name="discard_answer">Antwoord verwerpen</string>
+    <string name="discard_answer_title">Dit antwoord verwerpen?</string>
+    <string name="discard_answer_confirm">Het antwoord wordt van deze telefoon verwijderd en nooit verzonden. Dit kan niet ongedaan worden gemaakt.</string>
+    <string name="battery_open">Batterijoptimalisatie openen</string>
+    <string name="ready_battery_title">Batterijoptimalisatie (optioneel)</string>
+    <string name="ready_battery_text">Sommige telefoons stoppen apps op de achtergrond om batterij te sparen; korte vragenlijsten komen dan te laat of helemaal niet. Zet Askurious in de lijst ‘Batterijoptimalisatie’ op ‘Niet optimaliseren’. Op sommige telefoons staat de instelling in de app-info onder ‘Batterij’.</string>
 </resources>

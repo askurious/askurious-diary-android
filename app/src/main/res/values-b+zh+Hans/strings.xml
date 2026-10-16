@@ -29,7 +29,7 @@
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
     <string name="join_server" formatted="true">服务器：%1$s</string>
     <string name="foreign_server" formatted="true">此链接不指向 Askurious 的服务器（%1$s），因此应用不会打开它。</string>
-    <string name="continue_entry">继续填写第一份问卷</string>
+    <string name="continue_entry">继续填写初始问卷</string>
     <string name="day_of">第 %1$d 天，共 %2$d 天</string>
     <string name="starts_on">开始日期：%1$s</string>
     <string name="next_prompt">下一次简短问卷：%1$s</string>
@@ -40,13 +40,13 @@
     <string name="left_pending">您已退出此研究。一旦有网络连接，本应用将通知研究人员。</string>
     <string name="ended">研究人员已结束此研究。</string>
     <string name="leave_study">退出研究</string>
-    <string name="leave_confirm">要退出此研究吗？您将不再收到问题。除非您通过“删除我的回答”将其删除，否则您的回答将保留在研究人员处。</string>
+    <string name="leave_confirm">您将不再收到简短问卷。除非您通过“删除我的回答”将其删除，否则您的回答将保留在研究人员处。</string>
     <string name="remove_from_list">从列表中移除</string>
     <string name="erase_answers">删除我的回答</string>
     <string name="erase_confirm">要删除您在此研究中的全部回答吗？这些回答在研究人员处也会被删除，且无法恢复。随后该研究将从本应用中移除。</string>
     <string name="erase">删除</string>
-    <string name="notif_channel">您的研究中的问题</string>
-    <string name="notif_default">有一个简短的问题等待您回答</string>
+    <string name="notif_channel">您的研究中的简短问卷</string>
+    <string name="notif_default">有一份简短问卷等待您填写</string>
     <string name="allow_notifications">请允许通知，否则本应用无法在合适的时刻向您提问。</string>
     <string name="allow_exact">请允许“闹钟和提醒”，以便问题准时送达。</string>
     <string name="allow">允许</string>
@@ -54,7 +54,7 @@
     <string name="limit">今天此项报告的次数已达上限。</string>
     <string name="not_found">没有使用此代码的研究。</string>
     <string name="closed">此研究不再接受新的参与者。</string>
-    <string name="code_used">此代码已与一项参与关联。请联系研究团队重新开放此代码。</string>
+    <string name="code_used">此代码已与一项参与关联。请联系研究人员将其重新开放。</string>
     <string name="rejoin_code">这是您的个人代码。它会将您的参与连接到这部手机；之前使用的手机将失去访问权限。</string>
     <string name="offline">无网络连接。请重试。</string>
     <string name="error">出现问题。请重试。</string>
@@ -70,22 +70,22 @@
     <string name="about_oss_title">开源软件</string>
     <string name="about_oss_intro">本应用使用以下库和字体，各自的许可证列于其后。</string>
     <string name="show_licence">显示许可证文本</string>
-    <string name="notif_reminder">提醒：还有一个简短的问题等待您回答</string>
+    <string name="notif_reminder">提醒：还有一份简短问卷等待您填写</string>
     <string name="offline_saved">已保存。手机一旦联网，您的回答就会被发送。</string>
     <plurals name="answers_waiting">
         <item quantity="other">%d 个回答等待发送</item>
     </plurals>
-    <string name="about_offline">对于支持离线作答的研究，应用还会保存问卷页面。离线答案会加密保留在此手机上，直到服务器确认保存，或您明确移除研究及其答案。过期或被拒绝不会删除答案。</string>
+    <string name="about_offline">对于支持离线作答的研究，应用还会保存问卷页面。离线答案会加密保留在此手机上，直到服务器确认保存，或您明确丢弃这些答案或移除该研究。过期或被拒绝不会删除答案。</string>
     <string name="quiet_title">免打扰时段</string>
-    <string name="quiet_now">随机提醒的静默时间：%1$s</string>
+    <string name="quiet_now">随机时间简短问卷的免打扰时段：%1$s</string>
     <string name="quiet_from_tomorrow">自明天起：%1$s</string>
     <string name="quiet_none">无</string>
     <string name="quiet_change">更改免打扰时段</string>
-    <string name="quiet_hint">在您的免打扰时段内，不会收到随机时间的问题。更改自明天起生效，且仅适用于随机时间的问题，不适用于固定时间的问题。</string>
+    <string name="quiet_hint">在您的免打扰时段内，不会收到随机时间的简短问卷。更改自明天起生效，且仅适用于随机时间的简短问卷，不适用于固定时间的简短问卷。</string>
     <string name="quiet_from">从</string>
     <string name="quiet_to">至</string>
     <string name="save">保存</string>
-    <string name="about_quiet">如果您为某项研究设置了免打扰时段，本应用会保存该时段并将其发送到该研究的服务器，以免在此期间收到随机时间的问题。</string>
+    <string name="about_quiet">如果您为某项研究设置了免打扰时段，本应用会保存该时段并将其发送到该研究的服务器，以免在此期间收到随机时间的简短问卷。</string>
     <plurals name="random_per_day">
         <item quantity="other">%1$s：每天 %2$d 次，时间随机</item>
     </plurals>
@@ -97,7 +97,7 @@
     <string name="exit_default">结束问卷</string>
     <string name="exit_until">开放至 %1$s</string>
     <string name="notif_exit">研究期已结束。请填写：%1$s</string>
-    <string name="limit_refused">服务器尚未接受部分答案。这些答案会留在此手机上等待核实，直到您明确删除。</string>
+    <string name="limit_refused">服务器未接受部分答案。这些答案会留在此手机上等待核实，直到您在“答案传输”中将其丢弃。</string>
     <string name="clock_off">此手机的时钟不准确。日期和时间设置正确后，无网络时给出的回答才会被发送。</string>
     <string name="rejoin_confirm">您已在此手机上参加了该研究。再次加入将开始一次新的参与：之后您将无法在应用中删除之前的回答。之前参与中尚在等待的回答会尽可能先发送，否则将被丢弃。如需删除之前的回答，请取消并使用研究卡片上的“删除我的回答”。</string>
     <string name="rejoin">再次加入</string>
@@ -107,7 +107,7 @@
     <string name="remove_title">要移除“%1$s”吗？</string>
     <string name="remove_confirm">该研究将从此手机中移除。之后您将无法再通过本应用删除您的回答。</string>
     <string name="remove_exit_open">此研究的结束问卷仍处于开放状态。</string>
-    <string name="update_app">您的研究需要此应用的较新版本。请更新应用，以便您的问题继续正确送达。</string>
+    <string name="update_app">您的研究需要此应用的较新版本。请更新应用，以便您的简短问卷继续正确送达。</string>
     <string name="update_button">更新</string>
     <string name="entry_abort_title">要取消本次填写吗？</string>
     <string name="entry_abort_text">本页尚未发送的回答将会丢失。</string>
@@ -135,8 +135,8 @@
     <string name="erase_title">要删除“%1$s”中的回答吗？</string>
     <string name="erased_done">“%1$s”中的回答已删除。</string>
     <string name="erasing">正在删除…</string>
-    <string name="exit_open">研究期已结束。请完成最后的问卷。</string>
-    <string name="exit_open_until">研究期已结束。请完成最后的问卷（开放至 %1$s）。</string>
+    <string name="exit_open">研究期已结束。请您仍完成结束问卷。</string>
+    <string name="exit_open_until">研究期已结束。请您仍完成结束问卷（开放至 %1$s）。</string>
     <string name="fast_forward_spoken">快进 %1$d 倍</string>
     <string name="join_code_hint">印在研究二维码下方，例如 k7qm2x</string>
     <string name="leave_title">要退出“%1$s”吗？</string>
@@ -146,7 +146,7 @@
     <string name="licence_title_apache">Apache License 2.0</string>
     <string name="licence_title_font">SIL Open Font License 1.1（PT Serif 字体）</string>
     <string name="licence_title_notices">ZXing 和 kotlinx.coroutines 的声明（NOTICE），ThreeTen-bp 的 BSD 3-Clause License</string>
-    <string name="notif_channel_desc">日记研究在研究人员设定的时间提出的问题及其提醒</string>
+    <string name="notif_channel_desc">日记研究在研究人员设定的时间发出的简短问卷及其提醒</string>
     <string name="notif_exit_until" formatted="true">研究期已结束。请回答：%1$s（开放至 %2$s）</string>
     <string name="notif_reminder_of">提醒：%1$s</string>
     <string name="participation_title">参与</string>
@@ -156,27 +156,27 @@
     <string name="quiet_use">使用免打扰时段</string>
     <string name="quiet_from_cd">免打扰开始时间 %1$s</string>
     <string name="quiet_to_cd">免打扰结束时间 %1$s</string>
-    <string name="ready_title">让问题准时送达</string>
-    <string name="ready_intro">应用会在合适的时刻通过通知提出研究的问题。为此需要两项权限，之后都可以在手机设置中更改。</string>
+    <string name="ready_title">让简短问卷准时送达</string>
+    <string name="ready_intro">应用会在合适的时刻通过通知告知您研究的简短问卷。为此需要两项权限；第三项设置为可选。您之后可以在手机设置中更改所有这些设置。</string>
     <string name="ready_notify_title">通知</string>
-    <string name="ready_notify_text">没有通知，问题就无法送达。</string>
+    <string name="ready_notify_text">没有通知，简短问卷就无法送达。</string>
     <string name="ready_exact_title">闹钟和提醒</string>
-    <string name="ready_exact_text">否则问题可能会晚几分钟送达。</string>
-    <string name="state_pending">第一份问卷尚未完成</string>
+    <string name="ready_exact_text">否则简短问卷可能会晚几分钟送达。</string>
+    <string name="state_pending">初始问卷尚未完成</string>
     <string name="state_running">进行中</string>
     <string name="time_about">约 %1$s</string>
     <!-- the study page: summary, open-ended period, sound per study, home-screen shortcuts (Shortcuts), after leaving -->
     <string name="day_n" formatted="true">第 %1$d 天</string>
-    <string name="period_after_entry">完成第一份问卷后，研究期间即开始。</string>
+    <string name="period_after_entry">您完成初始问卷后，研究期即开始。</string>
     <string name="period_start" formatted="true">开始：%1$s</string>
     <string name="period_open_end">结束：不定，直到研究人员结束研究</string>
     <string name="duration_open_end">时长：不定，直到研究人员结束研究</string>
     <string name="also_self_module" formatted="true">%1$s：也可随时填写</string>
     <string name="notifications_title">通知</string>
     <string name="sound">通知提示音</string>
-    <string name="sound_on_hint">此研究的问题会使用手机的通知提示音。</string>
-    <string name="sound_off_hint">此研究的问题将静音送达。</string>
-    <string name="notif_channel_silent">您的研究中的问题（静音）</string>
+    <string name="sound_on_hint">此研究的简短问卷会使用手机的通知提示音。</string>
+    <string name="sound_off_hint">此研究的简短问卷将静音送达。</string>
+    <string name="notif_channel_silent">您的研究中的简短问卷（静音）</string>
     <string name="shortcut_title">主屏幕快捷方式</string>
     <string name="shortcut_intro">在主屏幕上轻点一下即可报告。</string>
     <string name="shortcut_add">添加到主屏幕</string>
@@ -187,11 +187,11 @@
     <string name="shortcut_failed">您的主屏幕未接受此快捷方式。</string>
     <string name="shortcut_default">报告</string>
     <string name="shortcut_disabled">此研究已结束。</string>
-    <string name="after_leave_title">保留您的回答？</string>
-    <string name="after_leave_text">您已退出研究。即使您现在停止，您目前的回答仍对研究有帮助，研究人员会很感激能保留它们。您仍要删除吗？此操作无法撤销。</string>
+    <string name="after_leave_title">您目前的回答</string>
+    <string name="after_leave_text">您已退出研究。如果您不做其他操作，您目前的回答将保留在研究人员处。您可以现在删除它们，也可以稍后在此页面通过“删除我的回答”删除。删除后无法撤销。</string>
     <string name="keep_answers">保留我的回答</string>
-    <string name="save_failed">保存失败。您已填写的问卷仍保持打开。请尝试重新提交。</string>
-    <string name="queue_unreadable">无法读取已保存的答案。它们未被覆盖。请联系研究团队。</string>
+    <string name="save_failed">保存失败。您已填写的问卷仍保持打开，您输入的内容不会丢失。</string>
+    <string name="queue_unreadable">无法读取已保存的答案。它们未被覆盖。请联系研究人员。</string>
     <string name="queue_discard">丢弃无法读取的答案</string>
     <string name="queue_discard_confirm">这些答案在此手机上已无法读取，也永远无法发送。是否丢弃它们，以便应用可以重新保存新的答案？您的研究和已发送的答案不受影响。</string>
     <string name="hide_licence">隐藏许可文本</string>
@@ -200,20 +200,20 @@
     <string name="study_contact">研究联系方式：%1$s</string>
     <string name="open_end">没有固定结束日期。您或研究人员可以结束参与。</string>
     <string name="transmissions">答案传输</string>
-    <string name="no_waiting">此设备上没有待发送的答案。</string>
-    <string name="transfer_waiting">已保存在此设备上；服务器尚未确认。</string>
-    <string name="transfer_review">尚未接受。原始答案仍保存在此设备上。如问题持续，请联系研究团队。</string>
+    <string name="no_waiting">此手机上没有待发送的答案。</string>
+    <string name="transfer_waiting">已保存在此手机上；服务器尚未确认。</string>
+    <string name="transfer_review">尚未被接受。原始答案仍保存在此手机上。如有疑问，请联系研究人员。</string>
     <string name="transfer_retry">传输中断。原始答案仍在此设备上；请重试。</string>
     <string name="transfer_confirmed">服务器已确认保存。</string>
     <string name="transfer_preserved">服务器已保留以供检查；尚未纳入常规结果。</string>
     <string name="last_attempt">上次尝试：%1$s</string>
     <string name="try_later">请几分钟后重试。</string>
     <string name="already_answered">此简短问卷已回答。</string>
-    <string name="study_unavailable">研究暂时不可用。请联系研究团队。</string>
-    <string name="reminders_setup">设置提醒</string>
+    <string name="study_unavailable">研究暂时无法访问。请联系研究人员。</string>
+    <string name="reminders_setup">设置手机以接收简短问卷</string>
     <string name="reminders_optional">即使没有通知，您也可以在此回答开放的简短问卷。</string>
-    <string name="notifications_open">开启通知</string>
-    <string name="alarms_open">设置准时提醒</string>
+    <string name="notifications_open">允许通知</string>
+    <string name="alarms_open">允许“闹钟和提醒”</string>
     <string name="answer_prompt">回答简短问卷</string>
     <string name="prompt_until">开放至 %1$s</string>
     <string name="quiet_pending">已本地保存；服务器尚未确认静默时间的更改。</string>
@@ -226,7 +226,26 @@
     <string name="permission_needed">此问题需要麦克风或位置权限。如已永久拒绝，请打开应用设置。也可使用问题提供的替代输入。</string>
     <string name="open_settings">打开应用设置</string>
     <string name="restored">请检查恢复的答案。未提交的录音和绘图可能需要重新输入。</string>
-    <string name="media_privacy">仅在相应研究问题需要时请求麦克风或位置权限。知情同意说明传输内容。应用还在此设备上保存传输状态。</string>
-    <string name="draft_privacy">设备也保存研究概述、联系方式和临时表单草稿。草稿无云备份。</string>
+    <string name="media_privacy">仅在研究问题需要时才会请求麦克风或位置权限。研究的知情同意书说明会发送哪些内容。应用还会在此手机上保存传输状态。</string>
+    <string name="draft_privacy">此手机还会保存研究概览、联系方式和临时表单草稿。草稿没有云端备份。</string>
     <string name="try_transfer">传输答案</string>
+    <string name="close_entry">关闭本次填写</string>
+    <string name="save_again">再次保存</string>
+    <string name="entry_abort_resume">已发送的页面会被保留。只要本次填写仍处于开放状态，您就可以稍后继续。</string>
+    <string name="entry_abort_offline">没有网络连接时，尚未发送任何内容：如果您取消，本次填写中输入的所有内容都将丢失。</string>
+    <string name="refusal_expired">原因：回答时间已经结束。</string>
+    <string name="refusal_limit">原因：当天的次数已达上限。</string>
+    <string name="refusal_changed">原因：问卷在此期间已被修改。</string>
+    <string name="refusal_clock">原因：此手机的时钟不准确。日期和时间正确后，应用会再次发送该回答。</string>
+    <string name="refusal_paused">原因：此研究已暂停。应用稍后会再次发送该回答。</string>
+    <string name="refusal_unauthorised">原因：服务器未能识别此参与。应用稍后会重试。</string>
+    <string name="refusal_closed">原因：此研究不再接受回答。</string>
+    <string name="refusal_done">原因：此简短问卷已被回答。</string>
+    <string name="refusal_other">原因：服务器未接受该回答。</string>
+    <string name="discard_answer">丢弃回答</string>
+    <string name="discard_answer_title">要丢弃此回答吗？</string>
+    <string name="discard_answer_confirm">该回答将从此手机中删除，且永远不会被发送。此操作无法撤销。</string>
+    <string name="battery_open">打开电池优化</string>
+    <string name="ready_battery_title">电池优化（可选）</string>
+    <string name="ready_battery_text">有些手机会为了省电而停止后台应用，这样简短问卷会延迟送达或根本无法送达。请在“电池优化”列表中将 Askurious 设为“不优化”。在某些手机上，此设置位于应用信息的“电池”下。</string>
 </resources>
