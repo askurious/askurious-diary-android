@@ -196,7 +196,7 @@ The entry part without a connection, iOS (concept, section 10), an open-source l
 
 ## Licence
 
-© 2026 Philipp Brauner, RWTH Aachen University.
+© 2026 Philipp Brauner and Ralf Philipsen, RWTH Aachen University.
 No open-source licence has been chosen for the code yet; until then all rights are reserved (`LICENSE`).
 The libraries and their licences: `THIRD_PARTY_NOTICES.md`.
 

@@ -74,9 +74,9 @@
     <string name="about_stores">En este teléfono, la aplicación solo guarda la lista de sus estudios con sus horarios y, para cada estudio, un secreto aleatorio: la única clave de sus respuestas en ese estudio. No tiene cuenta y no envía ningún identificador del dispositivo, nombre, correo electrónico ni número de teléfono. Nada de ello se incluye en copias de seguridad ni pasa a un teléfono nuevo. Para cada estudio guarda también si sus notificaciones suenan; los nombres de los accesos directos que ponga en su pantalla de inicio los guarda la pantalla de inicio.</string>
     <string name="privacy_statement">Declaración de privacidad</string>
     <string name="about_licence_title">Licencia</string>
-    <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Todos los derechos reservados.</string>
+    <string name="about_copyright">© 2026 Philipp Brauner y Ralf Philipsen, RWTH Aachen University. Todos los derechos reservados.</string>
     <string name="about_oss_title">Software de código abierto</string>
-    <string name="about_oss_intro">La aplicación utiliza estas bibliotecas, todas bajo la Apache License 2.0:</string>
+    <string name="about_oss_intro">La aplicación utiliza estas bibliotecas y esta fuente; la licencia figura junto a cada una.</string>
     <string name="show_licence">Mostrar textos de licencia</string>
     <string name="notif_reminder">Recordatorio: todavía le espera una pregunta breve</string>
     <string name="offline_saved">Guardado. Sus respuestas se enviarán en cuanto el teléfono tenga conexión.</string>
@@ -157,6 +157,9 @@
     <string name="left_done">Ha abandonado «%1$s».</string>
     <string name="removed_done">«%1$s» se ha quitado de la lista.</string>
     <string name="licence_texts">Textos de licencia</string>
+    <string name="licence_title_apache">Apache License 2.0</string>
+    <string name="licence_title_font">SIL Open Font License 1.1 (fuente PT Serif)</string>
+    <string name="licence_title_notices">Avisos (NOTICE) de ZXing y kotlinx.coroutines, BSD 3-Clause License de ThreeTen-bp</string>
     <string name="notif_channel_desc">Las preguntas de sus estudios de diario en los momentos fijados por los investigadores, y sus recordatorios</string>
     <string name="notif_exit_until" formatted="true">El periodo del estudio ha terminado. Responda: %1$s (abierta hasta el %2$s)</string>
     <string name="notif_reminder_of">Recordatorio: %1$s</string>

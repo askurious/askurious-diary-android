@@ -70,9 +70,9 @@
     <string name="about_stores">Uygulama bu telefonda yalnızca çalışmalarınızın listesini ve programlarını, her çalışma için de rastgele bir gizli anahtarı saklar: Bu anahtar, o çalışmadaki yanıtlarınıza ulaşmanın tek yoludur. Uygulamanın hesabı yoktur ve cihaz kimliği, ad, e-posta adresi veya telefon numarası göndermez. Bunların hiçbiri yedeklere veya yeni bir telefona aktarılmaz. Her çalışma için bildirimlerinin sesli gelip gelmediğini de saklar; ana ekranınıza koyduğunuz kısayolların etiketlerini ana ekranınız saklar.</string>
     <string name="privacy_statement">Gizlilik bildirimi</string>
     <string name="about_licence_title">Lisans</string>
-    <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Tüm hakları saklıdır.</string>
+    <string name="about_copyright">© 2026 Philipp Brauner ve Ralf Philipsen, RWTH Aachen University. Tüm hakları saklıdır.</string>
     <string name="about_oss_title">Açık kaynak yazılım</string>
-    <string name="about_oss_intro">Uygulama, her biri Apache License 2.0 kapsamında olan şu kütüphaneleri kullanır:</string>
+    <string name="about_oss_intro">Uygulama bu kütüphaneleri ve bu yazı tipini kullanır; lisans her birinin yanında belirtilmiştir.</string>
     <string name="show_licence">Lisans metinlerini göster</string>
     <string name="notif_reminder">Hatırlatma: Kısa bir soru hâlâ sizi bekliyor</string>
     <string name="offline_saved">Kaydedildi. Yanıtlarınız telefon bağlantı kurar kurmaz gönderilecek.</string>
@@ -150,6 +150,9 @@
     <string name="left_done">“%1$s” çalışmasından ayrıldınız.</string>
     <string name="removed_done">“%1$s” listeden kaldırıldı.</string>
     <string name="licence_texts">Lisans metinleri</string>
+    <string name="licence_title_apache">Apache License 2.0</string>
+    <string name="licence_title_font">SIL Open Font License 1.1 (PT Serif yazı tipi)</string>
+    <string name="licence_title_notices">ZXing ve kotlinx.coroutines bildirimleri (NOTICE), ThreeTen-bp için BSD 3-Clause License</string>
     <string name="notif_channel_desc">Günlük çalışmalarınızın, araştırmacıların seçtiği zamanlardaki soruları ve hatırlatmaları</string>
     <string name="notif_exit_until" formatted="true">Çalışma dönemi sona erdi. Lütfen yanıtlayın: %1$s (%2$s tarihine kadar açık)</string>
     <string name="notif_reminder_of">Hatırlatma: %1$s</string>

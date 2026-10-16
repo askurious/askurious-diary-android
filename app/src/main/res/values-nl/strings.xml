@@ -70,9 +70,9 @@
     <string name="about_stores">De app bewaart op deze telefoon alleen de lijst van uw onderzoeken met hun schema’s en, per onderzoek, een willekeurig geheim: de enige sleutel tot uw antwoorden in dat onderzoek. De app heeft geen account en verstuurt geen apparaat-ID, naam, e-mailadres of telefoonnummer. Niets hiervan komt in back-ups of op een nieuwe telefoon. Per onderzoek bewaart ze ook of de meldingen met geluid komen; de labels van snelkoppelingen op uw startscherm bewaart uw startscherm.</string>
     <string name="privacy_statement">Privacyverklaring</string>
     <string name="about_licence_title">Licentie</string>
-    <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Alle rechten voorbehouden.</string>
+    <string name="about_copyright">© 2026 Philipp Brauner en Ralf Philipsen, RWTH Aachen University. Alle rechten voorbehouden.</string>
     <string name="about_oss_title">Opensourcesoftware</string>
-    <string name="about_oss_intro">De app gebruikt deze bibliotheken, elk onder de Apache License 2.0:</string>
+    <string name="about_oss_intro">De app gebruikt deze bibliotheken en dit lettertype; de licentie staat er telkens bij.</string>
     <string name="show_licence">Licentieteksten tonen</string>
     <string name="notif_reminder">Herinnering: er wacht nog een korte vraag</string>
     <string name="offline_saved">Opgeslagen. Uw antwoorden worden verstuurd zodra de telefoon verbinding heeft.</string>
@@ -150,6 +150,9 @@
     <string name="left_done">U hebt ‘%1$s’ verlaten.</string>
     <string name="removed_done">‘%1$s’ uit de lijst verwijderd.</string>
     <string name="licence_texts">Licentieteksten</string>
+    <string name="licence_title_apache">Apache License 2.0</string>
+    <string name="licence_title_font">SIL Open Font License 1.1 (lettertype PT Serif)</string>
+    <string name="licence_title_notices">Kennisgevingen (NOTICE) van ZXing en kotlinx.coroutines, BSD 3-Clause License van ThreeTen-bp</string>
     <string name="notif_channel_desc">De vragen van uw dagboekonderzoeken op de tijden die de onderzoekers kozen, en de herinneringen</string>
     <string name="notif_exit_until" formatted="true">De onderzoeksperiode is voorbij. Vul nog in: %1$s (open tot %2$s)</string>
     <string name="notif_reminder_of">Herinnering: %1$s</string>

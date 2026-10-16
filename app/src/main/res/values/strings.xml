@@ -70,9 +70,9 @@
     <string name="about_stores">The app keeps on this phone only the list of your studies with their schedules and, for each study, a random secret: the only key to your answers there. It has no account and sends no device ID, name, e-mail address or phone number. Nothing of it goes into backups or to a new phone. For each study it also keeps whether its notifications ring with a sound, and the labels of shortcuts you put on your home screen are kept by your home screen.</string>
     <string name="privacy_statement">Privacy statement</string>
     <string name="about_licence_title">Licence</string>
-    <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. All rights reserved.</string>
+    <string name="about_copyright">© 2026 Philipp Brauner and Ralf Philipsen, RWTH Aachen University. All rights reserved.</string>
     <string name="about_oss_title">Open-source software</string>
-    <string name="about_oss_intro">The app uses these libraries, each under the Apache License 2.0:</string>
+    <string name="about_oss_intro">The app uses these libraries and this font; the licence stands with each.</string>
     <string name="show_licence">Show licence texts</string>
     <string name="notif_reminder">Reminder: a short question is still waiting</string>
     <string name="offline_saved">Saved. Your answers will be sent as soon as the phone has a connection.</string>
@@ -150,6 +150,9 @@
     <string name="left_done">You left “%1$s”.</string>
     <string name="removed_done">“%1$s” removed from the list.</string>
     <string name="licence_texts">Licence texts</string>
+    <string name="licence_title_apache">Apache License 2.0</string>
+    <string name="licence_title_font">SIL Open Font License 1.1 (font PT Serif)</string>
+    <string name="licence_title_notices">Notices of ZXing and kotlinx.coroutines, BSD 3-Clause License of ThreeTen-bp</string>
     <string name="notif_channel_desc">The questions of your diary studies at the times the researchers chose, and their reminders</string>
     <string name="notif_exit_until" formatted="true">The study period is over. Please answer: %1$s (open until %2$s)</string>
     <string name="notif_reminder_of">Reminder: %1$s</string>
