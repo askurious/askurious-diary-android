@@ -57,16 +57,22 @@ private val PROVIDER = listOf(
     "52074 Aachen",
 )
 
-/** The libraries in the app, all under the Apache License 2.0 (THIRD_PARTY_NOTICES.md in the repository). */
+/** The libraries and the font in the app, each with its licence (THIRD_PARTY_NOTICES.md in the repository). */
 private val LIBRARIES = listOf(
-    "AndroidX (Core, Activity, Lifecycle, WebKit) – The Android Open Source Project",
-    "Jetpack Compose (UI, Material 3, Material Icons) – The Android Open Source Project",
-    "Material Components for Android – The Android Open Source Project",
-    "WorkManager – The Android Open Source Project",
-    "ZXing Android Embedded – JourneyApps",
-    "ZXing – ZXing authors",
-    "Kotlin standard library, kotlinx.coroutines – JetBrains s.r.o. and Kotlin contributors",
-    "PT Serif (font of the logo and the app icon) – ParaType Ltd, ParaType Free Font License",
+    "AndroidX (Core, Activity, Lifecycle, WebKit) – The Android Open Source Project, Apache License 2.0",
+    "Jetpack Compose (UI, Material 3, Material Icons) – The Android Open Source Project, Apache License 2.0",
+    "Material Components for Android – The Android Open Source Project, Apache License 2.0",
+    "WorkManager – The Android Open Source Project, Apache License 2.0",
+    "ZXing Android Embedded – JourneyApps, Apache License 2.0",
+    "ZXing – ZXing authors, Apache License 2.0",
+    "Kotlin standard library – JetBrains s.r.o. and Kotlin contributors, Apache License 2.0",
+    "ThreeTen-bp (in the Kotlin standard library, kotlin.time) – © 2007-present Stephen Colebourne & Michael Nascimento Santos, BSD 3-Clause License",
+    "kotlinx.coroutines, kotlinx.serialization – JetBrains s.r.o. and contributors, Apache License 2.0",
+    "JetBrains Java Annotations – JetBrains s.r.o., Apache License 2.0",
+    "JSpecify – The JSpecify Authors, Apache License 2.0",
+    "Error Prone annotations – The Error Prone Authors, Apache License 2.0",
+    "Guava ListenableFuture – The Guava Authors, Apache License 2.0",
+    "PT Serif (font of the logo and the app icon) – ParaType Ltd, SIL Open Font License 1.1",
 )
 
 /**
@@ -149,20 +155,30 @@ fun AboutScreen(onBack: () -> Unit, onLicence: () -> Unit) {
     }
 }
 
-/** The licence texts of the libraries and the font, readable at any width (audit A24). */
+/**
+ * The licence texts of the libraries and the font, each under its title, readable at any width (audit A24): the
+ * Apache License 2.0, the SIL Open Font License 1.1 of PT Serif, and the NOTICE files of ZXing and kotlinx.coroutines
+ * with the BSD 3-Clause License of ThreeTen-bp.
+ */
 @Composable
 fun LicenceScreen(onBack: () -> Unit) {
     val context = LocalContext.current
     val texts = remember {
-        listOf(R.raw.apache_license_2_0, R.raw.pt_serif_licence)
-            .map { id -> unwrapped(context.resources.openRawResource(id).bufferedReader().use { it.readText() }) }
+        listOf(
+            R.string.licence_title_apache to R.raw.apache_license_2_0,
+            R.string.licence_title_font to R.raw.pt_serif_licence,
+            R.string.licence_title_notices to R.raw.notices,
+        ).map { (title, id) -> title to unwrapped(context.resources.openRawResource(id).bufferedReader().use { it.readText() }) }
     }
     BackScaffold(stringResource(R.string.licence_texts), onBack) { pad ->
         Column(
             pad.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
-            for (t in texts) Text(t, style = MaterialTheme.typography.bodyMedium)
+            for ((title, t) in texts) {
+                SectionTitle(stringResource(title))
+                Text(t, style = MaterialTheme.typography.bodyMedium)
+            }
         }
     }
 }

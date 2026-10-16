@@ -70,9 +70,9 @@
     <string name="about_stores">Die App speichert auf diesem Telefon nur die Liste der Studien mit ihren Zeitplänen und für jede Studie ein zufälliges Geheimnis: den einzigen Schlüssel zu den Antworten dort. Sie hat kein Konto und sendet keine Geräte-ID, keinen Namen, keine E-Mail-Adresse und keine Telefonnummer. Nichts davon kommt in Sicherungen oder auf ein neues Telefon. Je Studie speichert sie außerdem, ob ihre Benachrichtigungen mit Ton kommen; die Bezeichnungen von Verknüpfungen auf dem Startbildschirm speichert der Startbildschirm.</string>
     <string name="privacy_statement">Datenschutzerklärung</string>
     <string name="about_licence_title">Lizenz</string>
-    <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Alle Rechte vorbehalten.</string>
+    <string name="about_copyright">© 2026 Philipp Brauner und Ralf Philipsen, RWTH Aachen University. Alle Rechte vorbehalten.</string>
     <string name="about_oss_title">Open-Source-Software</string>
-    <string name="about_oss_intro">Die App nutzt diese Bibliotheken, jeweils unter der Apache License 2.0:</string>
+    <string name="about_oss_intro">Die App nutzt diese Bibliotheken und diese Schrift; die Lizenz steht jeweils dabei.</string>
     <string name="show_licence">Lizenztexte anzeigen</string>
     <string name="notif_reminder">Erinnerung: Eine kurze Frage wartet noch</string>
     <string name="offline_saved">Gespeichert. Die Antworten werden gesendet, sobald das Telefon eine Verbindung hat.</string>
@@ -150,6 +150,9 @@
     <string name="left_done">„%1$s“ verlassen.</string>
     <string name="removed_done">„%1$s“ aus der Liste entfernt.</string>
     <string name="licence_texts">Lizenztexte</string>
+    <string name="licence_title_apache">Apache License 2.0</string>
+    <string name="licence_title_font">SIL Open Font License 1.1 (Schrift PT Serif)</string>
+    <string name="licence_title_notices">Hinweise (NOTICE) von ZXing und kotlinx.coroutines, BSD 3-Clause License von ThreeTen-bp</string>
     <string name="notif_channel_desc">Die Fragen der Tagebuchstudien zu den Zeiten der Forschenden und ihre Erinnerungen</string>
     <string name="notif_exit_until" formatted="true">Der Studienzeitraum ist vorbei. Bitte noch beantworten: %1$s (offen bis %2$s)</string>
     <string name="notif_reminder_of">Erinnerung: %1$s</string>

@@ -86,9 +86,9 @@
     <string name="about_stores">لا يحفظ التطبيق على هذا الهاتف سوى قائمة دراساتك مع مواعيدها، ولكل دراسة سرًّا عشوائيًا هو المفتاح الوحيد لإجاباتك فيها. لا يوجد حساب، ولا يرسل التطبيق أي معرّف للجهاز أو اسم أو عنوان بريد إلكتروني أو رقم هاتف. ولا يُنقل أي من ذلك إلى النسخ الاحتياطية أو إلى هاتف جديد. ويحفظ أيضًا لكل دراسة ما إذا كانت إشعاراتها تصدر صوتًا؛ أما أسماء الاختصارات التي تضعها على شاشتك الرئيسية فتحفظها الشاشة الرئيسية.</string>
     <string name="privacy_statement">بيان الخصوصية</string>
     <string name="about_licence_title">الترخيص</string>
-    <string name="about_copyright">© 2026 Philipp Brauner، RWTH Aachen University. جميع الحقوق محفوظة.</string>
+    <string name="about_copyright">© 2026 Philipp Brauner و Ralf Philipsen، RWTH Aachen University. جميع الحقوق محفوظة.</string>
     <string name="about_oss_title">برمجيات مفتوحة المصدر</string>
-    <string name="about_oss_intro">يستخدم التطبيق المكتبات التالية، وجميعها مرخّصة بموجب Apache License 2.0:</string>
+    <string name="about_oss_intro">يستخدم التطبيق هذه المكتبات وهذا الخط؛ والترخيص مذكور بجانب كلّ منها.</string>
     <string name="show_licence">عرض نصوص التراخيص</string>
     <string name="notif_reminder">تذكير: لا يزال سؤال قصير بانتظارك</string>
     <string name="offline_saved">تم الحفظ. ستُرسل إجاباتك بمجرد اتصال الهاتف بالإنترنت.</string>
@@ -178,6 +178,9 @@
     <string name="left_done">غادرت «%1$s».</string>
     <string name="removed_done">تمت إزالة «%1$s» من القائمة.</string>
     <string name="licence_texts">نصوص التراخيص</string>
+    <string name="licence_title_apache">Apache License 2.0</string>
+    <string name="licence_title_font">SIL Open Font License 1.1 (الخط PT Serif)</string>
+    <string name="licence_title_notices">إشعارات (NOTICE) ZXing وkotlinx.coroutines، وترخيص BSD 3-Clause License لـ ThreeTen-bp</string>
     <string name="notif_channel_desc">أسئلة دراسات اليوميات في الأوقات التي اختارها الباحثون، والتذكيرات بها</string>
     <string name="notif_exit_until" formatted="true">انتهت فترة الدراسة. يُرجى الإجابة عن: %1$s (متاح حتى %2$s)</string>
     <string name="notif_reminder_of">تذكير: %1$s</string>

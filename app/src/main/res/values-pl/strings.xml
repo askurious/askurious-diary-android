@@ -78,9 +78,9 @@
     <string name="about_stores">Aplikacja przechowuje na tym telefonie tylko listę badań wraz z ich harmonogramami oraz dla każdego badania losowy sekret – jedyny klucz do udzielonych w nim odpowiedzi. Nie ma konta i nie wysyła identyfikatora urządzenia, imienia, adresu e-mail ani numeru telefonu. Nic z tego nie trafia do kopii zapasowych ani na nowy telefon. Dla każdego badania zapisuje też, czy powiadomienia mają dźwięk; nazwy skrótów umieszczonych na ekranie głównym przechowuje ekran główny.</string>
     <string name="privacy_statement">Informacja o ochronie danych</string>
     <string name="about_licence_title">Licencja</string>
-    <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Wszelkie prawa zastrzeżone.</string>
+    <string name="about_copyright">© 2026 Philipp Brauner i Ralf Philipsen, RWTH Aachen University. Wszelkie prawa zastrzeżone.</string>
     <string name="about_oss_title">Oprogramowanie open source</string>
-    <string name="about_oss_intro">Aplikacja korzysta z następujących bibliotek, każdej na licencji Apache License 2.0:</string>
+    <string name="about_oss_intro">Aplikacja korzysta z tych bibliotek i tej czcionki; licencja jest podana przy każdej pozycji.</string>
     <string name="show_licence">Pokaż teksty licencji</string>
     <string name="notif_reminder">Przypomnienie: wciąż czeka krótkie pytanie</string>
     <string name="offline_saved">Zapisano. Odpowiedzi zostaną wysłane, gdy tylko telefon uzyska połączenie.</string>
@@ -164,6 +164,9 @@
     <string name="left_done">Opuszczono „%1$s”.</string>
     <string name="removed_done">Usunięto „%1$s” z listy.</string>
     <string name="licence_texts">Teksty licencji</string>
+    <string name="licence_title_apache">Apache License 2.0</string>
+    <string name="licence_title_font">SIL Open Font License 1.1 (czcionka PT Serif)</string>
+    <string name="licence_title_notices">Informacje (NOTICE) ZXing i kotlinx.coroutines, BSD 3-Clause License ThreeTen-bp</string>
     <string name="notif_channel_desc">Pytania z badań dzienniczkowych w terminach wybranych przez badaczy oraz przypomnienia</string>
     <string name="notif_exit_until" formatted="true">Okres badania się zakończył. Odpowiedz jeszcze: %1$s (otwarta do %2$s)</string>
     <string name="notif_reminder_of">Przypomnienie: %1$s</string>

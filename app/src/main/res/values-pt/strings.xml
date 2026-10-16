@@ -74,9 +74,9 @@
     <string name="about_stores">Neste telemóvel, a aplicação guarda apenas a lista dos seus estudos com os respetivos horários e, para cada estudo, um segredo aleatório: a única chave para as suas respostas nesse estudo. Não tem conta e não envia nenhum ID do dispositivo, nome, endereço de e-mail ou número de telefone. Nada disto vai para cópias de segurança nem para um novo telemóvel. Para cada estudo guarda também se as notificações tocam com som; os nomes dos atalhos que colocar no ecrã principal são guardados pelo ecrã principal.</string>
     <string name="privacy_statement">Política de privacidade</string>
     <string name="about_licence_title">Licença</string>
-    <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Todos os direitos reservados.</string>
+    <string name="about_copyright">© 2026 Philipp Brauner e Ralf Philipsen, RWTH Aachen University. Todos os direitos reservados.</string>
     <string name="about_oss_title">Software de código aberto</string>
-    <string name="about_oss_intro">A aplicação utiliza estas bibliotecas, todas sob a Apache License 2.0:</string>
+    <string name="about_oss_intro">A aplicação utiliza estas bibliotecas e este tipo de letra; a licença está indicada junto a cada um.</string>
     <string name="show_licence">Mostrar textos das licenças</string>
     <string name="notif_reminder">Lembrete: ainda tem uma pergunta curta à sua espera</string>
     <string name="offline_saved">Guardado. As suas respostas serão enviadas assim que o telemóvel tiver ligação.</string>
@@ -157,6 +157,9 @@
     <string name="left_done">Abandonou «%1$s».</string>
     <string name="removed_done">«%1$s» foi removido da lista.</string>
     <string name="licence_texts">Textos das licenças</string>
+    <string name="licence_title_apache">Apache License 2.0</string>
+    <string name="licence_title_font">SIL Open Font License 1.1 (tipo de letra PT Serif)</string>
+    <string name="licence_title_notices">Avisos (NOTICE) de ZXing e kotlinx.coroutines, BSD 3-Clause License de ThreeTen-bp</string>
     <string name="notif_channel_desc">As perguntas dos seus estudos de diário nas horas escolhidas pelos investigadores, e os lembretes</string>
     <string name="notif_exit_until" formatted="true">O período do estudo terminou. Responda: %1$s (aberto até %2$s)</string>
     <string name="notif_reminder_of">Lembrete: %1$s</string>

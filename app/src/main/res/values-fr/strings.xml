@@ -74,9 +74,9 @@
     <string name="about_stores">Sur ce téléphone, l’application conserve uniquement la liste de vos études avec leurs calendriers et, pour chaque étude, un secret aléatoire : la seule clé de vos réponses à cette étude. Elle n’a pas de compte et n’envoie ni identifiant de l’appareil, ni nom, ni adresse e-mail, ni numéro de téléphone. Rien de tout cela n’est sauvegardé ni transféré vers un nouveau téléphone. Pour chaque étude, elle garde aussi si ses notifications sonnent ; les noms des raccourcis que vous placez sur l’écran d’accueil sont gardés par l’écran d’accueil.</string>
     <string name="privacy_statement">Déclaration de confidentialité</string>
     <string name="about_licence_title">Licence</string>
-    <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University. Tous droits réservés.</string>
+    <string name="about_copyright">© 2026 Philipp Brauner et Ralf Philipsen, RWTH Aachen University. Tous droits réservés.</string>
     <string name="about_oss_title">Logiciels open source</string>
-    <string name="about_oss_intro">L’application utilise les bibliothèques suivantes, toutes sous Apache License 2.0 :</string>
+    <string name="about_oss_intro">L’application utilise ces bibliothèques et cette police ; la licence figure à côté de chacune.</string>
     <string name="show_licence">Afficher les textes des licences</string>
     <string name="notif_reminder">Rappel : une courte question vous attend toujours</string>
     <string name="offline_saved">Enregistré. Vos réponses seront envoyées dès que le téléphone aura une connexion.</string>
@@ -157,6 +157,9 @@
     <string name="left_done">Vous avez quitté « %1$s ».</string>
     <string name="removed_done">« %1$s » a été retirée de la liste.</string>
     <string name="licence_texts">Textes des licences</string>
+    <string name="licence_title_apache">Apache License 2.0</string>
+    <string name="licence_title_font">SIL Open Font License 1.1 (police PT Serif)</string>
+    <string name="licence_title_notices">Avis (NOTICE) de ZXing et de kotlinx.coroutines, BSD 3-Clause License de ThreeTen-bp</string>
     <string name="notif_channel_desc">Les questions de vos études de journal aux moments choisis par les chercheurs, et leurs rappels</string>
     <string name="notif_exit_until" formatted="true">La période de l’étude est terminée. Veuillez répondre : %1$s (ouvert jusqu’au %2$s)</string>
     <string name="notif_reminder_of">Rappel : %1$s</string>

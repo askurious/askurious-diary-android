@@ -30,7 +30,10 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
-/** PT Serif Bold (ParaType Ltd, ParaType Free Font License; res/raw/pt_serif_licence.txt), bundled: not every phone has a serif. */
+/**
+ * PT Serif Bold (ParaType Ltd, SIL Open Font License 1.1; the file PT_Serif-Web-Bold.ttf of google/fonts, licence in
+ * res/raw/pt_serif_licence.txt), bundled: not every phone has a serif.
+ */
 val LogoFont = FontFamily(Font(R.font.pt_serif_bold, FontWeight.Bold))
 
 /**

@@ -66,9 +66,9 @@
     <string name="about_stores">本应用在此手机上只保存您的研究列表及其时间安排，并为每项研究保存一个随机密钥：这是访问您在该研究中所作回答的唯一凭证。本应用没有账户，不发送设备 ID、姓名、电子邮件地址或电话号码。这些内容都不会进入备份，也不会转移到新手机。 它还会为每项研究保存通知是否有提示音；您放在主屏幕上的快捷方式名称由主屏幕保存。</string>
     <string name="privacy_statement">隐私声明</string>
     <string name="about_licence_title">许可</string>
-    <string name="about_copyright">© 2026 Philipp Brauner, RWTH Aachen University。保留所有权利。</string>
+    <string name="about_copyright">© 2026 Philipp Brauner 和 Ralf Philipsen, RWTH Aachen University。保留所有权利。</string>
     <string name="about_oss_title">开源软件</string>
-    <string name="about_oss_intro">本应用使用以下库，均采用 Apache License 2.0 许可：</string>
+    <string name="about_oss_intro">本应用使用以下库和字体，各自的许可证列于其后。</string>
     <string name="show_licence">显示许可证文本</string>
     <string name="notif_reminder">提醒：还有一个简短的问题等待您回答</string>
     <string name="offline_saved">已保存。手机一旦联网，您的回答就会被发送。</string>
@@ -143,6 +143,9 @@
     <string name="left_done">已退出“%1$s”。</string>
     <string name="removed_done">已从列表中移除“%1$s”。</string>
     <string name="licence_texts">许可证文本</string>
+    <string name="licence_title_apache">Apache License 2.0</string>
+    <string name="licence_title_font">SIL Open Font License 1.1（PT Serif 字体）</string>
+    <string name="licence_title_notices">ZXing 和 kotlinx.coroutines 的声明（NOTICE），ThreeTen-bp 的 BSD 3-Clause License</string>
     <string name="notif_channel_desc">日记研究在研究人员设定的时间提出的问题及其提醒</string>
     <string name="notif_exit_until" formatted="true">研究期已结束。请回答：%1$s（开放至 %2$s）</string>
     <string name="notif_reminder_of">提醒：%1$s</string>
