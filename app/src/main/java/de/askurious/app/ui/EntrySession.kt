@@ -27,6 +27,8 @@ class EntrySession(app: Application, val state: SavedStateHandle) : AndroidViewM
     var askAbort by mutableStateOf<Boolean>(false)
     var cleared by mutableStateOf<Boolean>(false)
     var offlineStarted by mutableStateOf<Long>(0L)
+    /** The form of a kept page whose saving failed: the banner's "Save again" sends it once more (UX audit 2026-10-16, B8). */
+    var unsaved by mutableStateOf<String?>(null)
     @android.annotation.SuppressLint("StaticFieldLeak") // constructed with applicationContext
     var web: WebView? = null
     override fun onCleared() { web?.apply { (parent as? android.view.ViewGroup)?.removeView(this); stopLoading(); destroy() }; web = null }

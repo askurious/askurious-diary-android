@@ -33,7 +33,7 @@
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
     <string name="join_server" formatted="true">Sunucu: %1$s</string>
     <string name="foreign_server" formatted="true">Bu bağlantı bir Askurious sunucusuna gitmiyor (%1$s), bu nedenle uygulama onu açmıyor.</string>
-    <string name="continue_entry">İlk ankete devam et</string>
+    <string name="continue_entry">Giriş anketine devam et</string>
     <string name="day_of">Gün %1$d / %2$d</string>
     <string name="starts_on">Başlangıç: %1$s</string>
     <string name="next_prompt">Sonraki kısa anket: %1$s</string>
@@ -44,13 +44,13 @@
     <string name="left_pending">Bu çalışmadan ayrıldınız. Uygulama, bağlantı kurulur kurulmaz bunu araştırmacılara bildirecek.</string>
     <string name="ended">Araştırmacılar bu çalışmayı sonlandırdı.</string>
     <string name="leave_study">Çalışmadan ayrıl</string>
-    <string name="leave_confirm">Bu çalışmadan ayrılmak istiyor musunuz? Artık soru almayacaksınız. Yanıtlarınız, “Yanıtlarımı sil” ile silmediğiniz sürece araştırmacılarda kalır.</string>
+    <string name="leave_confirm">Artık kısa anket almayacaksınız. Yanıtlarınız, “Yanıtlarımı sil” ile silmediğiniz sürece araştırmacılarda kalır.</string>
     <string name="remove_from_list">Listeden kaldır</string>
     <string name="erase_answers">Yanıtlarımı sil</string>
     <string name="erase_confirm">Bu çalışmadaki tüm yanıtlarınız silinsin mi? Yanıtlar araştırmacılarda da silinir ve geri getirilemez. Ardından çalışma uygulamadan kaldırılır.</string>
     <string name="erase">Sil</string>
-    <string name="notif_channel">Çalışmalarınızın soruları</string>
-    <string name="notif_default">Kısa bir soru sizi bekliyor</string>
+    <string name="notif_channel">Çalışmalarınızın kısa anketleri</string>
+    <string name="notif_default">Kısa bir anket sizi bekliyor</string>
     <string name="allow_notifications">Bildirimlere izin verin, aksi halde uygulama size doğru anda soru soramaz.</string>
     <string name="allow_exact">Soruların zamanında gelmesi için “Alarmlar ve hatırlatıcılar” iznini verin.</string>
     <string name="allow">İzin ver</string>
@@ -58,7 +58,7 @@
     <string name="limit">Bu bildirim için bugünkü sınıra ulaştınız.</string>
     <string name="not_found">Bu koda sahip bir çalışma yok.</string>
     <string name="closed">Bu çalışma yeni katılımcı kabul etmiyor.</string>
-    <string name="code_used">Bu kod zaten bir katılıma bağlı. Araştırma ekibinden kodu yeniden açmasını isteyin.</string>
+    <string name="code_used">Bu kod zaten bir katılıma bağlı. Lütfen araştırmacılardan kodu yeniden serbest bırakmalarını isteyin.</string>
     <string name="rejoin_code">Bu sizin kişisel kodunuz. Katılımınızı bu telefona bağlar; şimdiye kadar kullanılan telefon erişimini kaybeder.</string>
     <string name="offline">Bağlantı yok. Lütfen tekrar deneyin.</string>
     <string name="error">Bir sorun oluştu. Lütfen tekrar deneyin.</string>
@@ -74,23 +74,23 @@
     <string name="about_oss_title">Açık kaynak yazılım</string>
     <string name="about_oss_intro">Uygulama bu kütüphaneleri ve bu yazı tipini kullanır; lisans her birinin yanında belirtilmiştir.</string>
     <string name="show_licence">Lisans metinlerini göster</string>
-    <string name="notif_reminder">Hatırlatma: Kısa bir soru hâlâ sizi bekliyor</string>
+    <string name="notif_reminder">Hatırlatma: Kısa bir anket hâlâ sizi bekliyor</string>
     <string name="offline_saved">Kaydedildi. Yanıtlarınız telefon bağlantı kurar kurmaz gönderilecek.</string>
     <plurals name="answers_waiting">
         <item quantity="one">%d yanıt gönderilmeyi bekliyor</item>
         <item quantity="other">%d yanıt gönderilmeyi bekliyor</item>
     </plurals>
-    <string name="about_offline">Çevrimdışı yanıtları destekleyen çalışmalarda uygulama anket sayfalarını da saklar. Çevrimdışı yanıtlar, sunucu kaydı onaylayana veya siz çalışmayı ve yanıtlarını açıkça kaldırana kadar bu telefonda şifreli kalır. Sürenin dolması veya ret onları silmez.</string>
+    <string name="about_offline">Çevrimdışı yanıtları destekleyen çalışmalarda uygulama anket sayfalarını da saklar. Çevrimdışı yanıtlar, sunucu kaydı onaylayana veya siz onları açıkça atana ya da çalışmayı kaldırana kadar bu telefonda şifreli kalır. Sürenin dolması veya ret onları silmez.</string>
     <string name="quiet_title">Sessiz saatler</string>
-    <string name="quiet_now">Rastgele hatırlatıcılar için sessiz saatler: %1$s</string>
+    <string name="quiet_now">Rastgele zamanlardaki kısa anketler için sessiz saatler: %1$s</string>
     <string name="quiet_from_tomorrow">Yarından itibaren: %1$s</string>
     <string name="quiet_none">yok</string>
     <string name="quiet_change">Sessiz saatleri değiştir</string>
-    <string name="quiet_hint">Sessiz saatlerinizde rastgele zamanlı soru gelmez. Bir değişiklik yarından itibaren ve yalnızca rastgele zamanlı sorular için geçerlidir, sabit saatli sorular için geçerli değildir.</string>
+    <string name="quiet_hint">Sessiz saatlerinizde rastgele zamanlı kısa anket gelmez. Bir değişiklik yarından itibaren ve yalnızca rastgele zamanlı kısa anketler için geçerlidir, sabit saatli olanlar için geçerli değildir.</string>
     <string name="quiet_from">Başlangıç</string>
     <string name="quiet_to">Bitiş</string>
     <string name="save">Kaydet</string>
-    <string name="about_quiet">Bir çalışma için sessiz saatler belirlerseniz uygulama bunları saklar ve çalışmanın sunucusuna gönderir; böylece bu süre içinde rastgele zamanlı soru gelmez.</string>
+    <string name="about_quiet">Bir çalışma için sessiz saatler belirlerseniz uygulama bunları saklar ve çalışmanın sunucusuna gönderir; böylece bu süre içinde rastgele zamanlı kısa anket gelmez.</string>
     <plurals name="random_per_day">
         <item quantity="one">%1$s: günde %2$d kez, rastgele saatlerde</item>
         <item quantity="other">%1$s: günde %2$d kez, rastgele saatlerde</item>
@@ -104,7 +104,7 @@
     <string name="exit_default">Son anket</string>
     <string name="exit_until">%1$s tarihine kadar açık</string>
     <string name="notif_exit">Çalışma süresi sona erdi. Lütfen şunu yanıtlayın: %1$s</string>
-    <string name="limit_refused">Sunucu bazı yanıtları kabul etmedi. Açıklığa kavuşturulmak üzere, siz açıkça kaldırana kadar bu telefonda kalırlar.</string>
+    <string name="limit_refused">Sunucu bazı yanıtları kabul etmedi. Bu yanıtlar, siz onları “Yanıt aktarımı” altında atana kadar açıklığa kavuşturulmak üzere bu telefonda kalır.</string>
     <string name="clock_off">Bu telefonun saati yanlış. Bağlantı olmadan verilen yanıtlar, tarih ve saat doğru ayarlandığında gönderilecek.</string>
     <string name="rejoin_confirm">Bu telefonda bu çalışmaya zaten katılıyorsunuz. Yeniden katılmak yeni bir katılım başlatır: önceki yanıtlarınızı artık uygulamada silemezsiniz. Önceki katılımın bekleyen yanıtları mümkünse önce gönderilir, değilse silinir. Önceki yanıtlarınızı silmek için iptal edin ve çalışma kartındaki “Yanıtlarımı sil” düğmesini kullanın.</string>
     <string name="rejoin">Yeniden katıl</string>
@@ -114,7 +114,7 @@
     <string name="remove_title">“%1$s” kaldırılsın mı?</string>
     <string name="remove_confirm">Çalışma bu telefondan kaldırılır. Ardından yanıtlarınızı artık uygulama üzerinden silemezsiniz.</string>
     <string name="remove_exit_open">Bu çalışmanın son anketi hâlâ açık.</string>
-    <string name="update_app">Çalışmanız için bu uygulamanın daha yeni bir sürümü gerekiyor. Sorularınızın doğru şekilde gelmeye devam etmesi için lütfen uygulamayı güncelleyin.</string>
+    <string name="update_app">Çalışmanız için bu uygulamanın daha yeni bir sürümü gerekiyor. Kısa anketlerinizin doğru şekilde gelmeye devam etmesi için lütfen uygulamayı güncelleyin.</string>
     <string name="update_button">Güncelle</string>
     <string name="entry_abort_title">Bu giriş iptal edilsin mi?</string>
     <string name="entry_abort_text">Bu sayfada henüz gönderilmemiş yanıtlar kaybolur.</string>
@@ -153,7 +153,7 @@
     <string name="licence_title_apache">Apache License 2.0</string>
     <string name="licence_title_font">SIL Open Font License 1.1 (PT Serif yazı tipi)</string>
     <string name="licence_title_notices">ZXing ve kotlinx.coroutines bildirimleri (NOTICE), ThreeTen-bp için BSD 3-Clause License</string>
-    <string name="notif_channel_desc">Günlük çalışmalarınızın, araştırmacıların seçtiği zamanlardaki soruları ve hatırlatmaları</string>
+    <string name="notif_channel_desc">Günlük çalışmalarınızın, araştırmacıların seçtiği zamanlardaki kısa anketleri ve bunların hatırlatmaları</string>
     <string name="notif_exit_until" formatted="true">Çalışma dönemi sona erdi. Lütfen yanıtlayın: %1$s (%2$s tarihine kadar açık)</string>
     <string name="notif_reminder_of">Hatırlatma: %1$s</string>
     <string name="participation_title">Katılım</string>
@@ -163,27 +163,27 @@
     <string name="quiet_use">Sessiz saatleri kullan</string>
     <string name="quiet_from_cd">Sessiz saatler başlangıcı %1$s</string>
     <string name="quiet_to_cd">Sessiz saatler bitişi %1$s</string>
-    <string name="ready_title">Sorular zamanında gelsin diye</string>
-    <string name="ready_intro">Uygulama, çalışmanın sorularını doğru anda bir bildirimle sorar. Bunun için iki izne ihtiyaç duyar; ikisi de daha sonra telefonun ayarlarından değiştirilebilir.</string>
+    <string name="ready_title">Kısa anketler zamanında gelsin diye</string>
+    <string name="ready_intro">Uygulama, çalışmanın kısa anketlerini doğru anda bir bildirimle haber verir. Bunun için iki izne ihtiyaç duyar; üçüncü bir ayar isteğe bağlıdır. Bunların hepsini daha sonra telefonun ayarlarından değiştirebilirsiniz.</string>
     <string name="ready_notify_title">Bildirimler</string>
-    <string name="ready_notify_text">Bunlar olmadan hiçbir soru gelmez.</string>
+    <string name="ready_notify_text">Bunlar olmadan hiçbir kısa anket gelmez.</string>
     <string name="ready_exact_title">Alarmlar ve hatırlatıcılar</string>
-    <string name="ready_exact_text">Bu izin olmadan sorular birkaç dakika geç gelebilir.</string>
-    <string name="state_pending">İlk anket henüz bitmedi</string>
+    <string name="ready_exact_text">Bu izin olmadan kısa anketler birkaç dakika geç gelebilir.</string>
+    <string name="state_pending">Giriş anketi henüz tamamlanmadı</string>
     <string name="state_running">Devam ediyor</string>
     <string name="time_about">yaklaşık %1$s</string>
     <!-- the study page: summary, open-ended period, sound per study, home-screen shortcuts (Shortcuts), after leaving -->
     <string name="day_n" formatted="true">Gün %1$d</string>
-    <string name="period_after_entry">Çalışma süresi, ilk anketi tamamladığınızda başlar.</string>
+    <string name="period_after_entry">Çalışma dönemi, giriş anketini tamamladığınızda başlar.</string>
     <string name="period_start" formatted="true">Başlangıç: %1$s</string>
     <string name="period_open_end">Bitiş: açık, araştırmacılar çalışmayı sonlandırana kadar</string>
     <string name="duration_open_end">Süre: açık, araştırmacılar çalışmayı sonlandırana kadar</string>
     <string name="also_self_module" formatted="true">%1$s: ayrıca istediğiniz zaman</string>
     <string name="notifications_title">Bildirimler</string>
     <string name="sound">Bildirim sesi</string>
-    <string name="sound_on_hint">Bu çalışmanın soruları telefonunuzun bildirim sesiyle gelir.</string>
-    <string name="sound_off_hint">Bu çalışmanın soruları sessiz gelir.</string>
-    <string name="notif_channel_silent">Çalışmalarınızın soruları (sessiz)</string>
+    <string name="sound_on_hint">Bu çalışmanın kısa anketleri telefonunuzun bildirim sesiyle gelir.</string>
+    <string name="sound_off_hint">Bu çalışmanın kısa anketleri sessiz gelir.</string>
+    <string name="notif_channel_silent">Çalışmalarınızın kısa anketleri (sessiz)</string>
     <string name="shortcut_title">Ana ekranda kısayol</string>
     <string name="shortcut_intro">Ana ekranınızdan tek dokunuşla bir şey bildirin.</string>
     <string name="shortcut_add">Ana ekrana ekle</string>
@@ -194,11 +194,11 @@
     <string name="shortcut_failed">Ana ekranınız kısayolu kabul etmedi.</string>
     <string name="shortcut_default">Bildir</string>
     <string name="shortcut_disabled">Bu çalışma sona erdi.</string>
-    <string name="after_leave_title">Yanıtlarınız saklansın mı?</string>
-    <string name="after_leave_text">Çalışmadan ayrıldınız. Şimdiye kadarki yanıtlarınız, şimdi bıraksanız bile araştırmaya yardımcı olur ve araştırmacılar bunları saklayabilirlerse minnettar olurlar. Yine de silmek istiyor musunuz? Bu işlem geri alınamaz.</string>
+    <string name="after_leave_title">Şimdiye kadarki yanıtlarınız</string>
+    <string name="after_leave_text">Çalışmadan ayrıldınız. Başka bir şey yapmazsanız şimdiye kadarki yanıtlarınız araştırmacılarda kalır. Bunları şimdi veya daha sonra bu sayfada “Yanıtlarımı sil” ile silebilirsiniz. Silme işlemi geri alınamaz.</string>
     <string name="keep_answers">Yanıtlarımı sakla</string>
-    <string name="save_failed">Kaydedilemedi. Doldurduğunuz anket açık kalır. Lütfen yeniden göndermeyi deneyin.</string>
-    <string name="queue_unreadable">Kayıtlı yanıtlar okunamıyor. Üzerlerine yazılmadı. Lütfen çalışma ekibiyle iletişime geçin.</string>
+    <string name="save_failed">Kaydedilemedi. Doldurduğunuz anket açık kalır; girdiğiniz hiçbir şey kaybolmadı.</string>
+    <string name="queue_unreadable">Kayıtlı yanıtlar okunamıyor. Üzerlerine yazılmadı. Lütfen araştırmacılarla iletişime geçin.</string>
     <string name="queue_discard">Okunamayan yanıtları at</string>
     <string name="queue_discard_confirm">Bu yanıtlar artık bu telefonda okunamıyor ve hiçbir zaman gönderilemez. Uygulamanın yeniden yeni yanıtları saklayabilmesi için atılsın mı? Çalışmalarınız ve gönderilmiş yanıtlar etkilenmez.</string>
     <string name="hide_licence">Lisans metnini gizle</string>
@@ -207,20 +207,20 @@
     <string name="study_contact">Çalışma iletişim bilgisi: %1$s</string>
     <string name="open_end">Sabit bitiş tarihi yok. Siz veya araştırmacılar katılımı sonlandırabilirsiniz.</string>
     <string name="transmissions">Yanıt aktarımı</string>
-    <string name="no_waiting">Bu cihazda bekleyen yanıt yok.</string>
-    <string name="transfer_waiting">Bu cihazda kaydedildi; sunucu henüz doğrulamadı.</string>
-    <string name="transfer_review">Henüz kabul edilmedi. Asıl yanıt burada kalır. Sorun sürerse çalışma ekibine başvurun.</string>
+    <string name="no_waiting">Bu telefonda bekleyen yanıt yok.</string>
+    <string name="transfer_waiting">Bu telefonda kaydedildi; sunucu henüz doğrulamadı.</string>
+    <string name="transfer_review">Henüz kabul edilmedi. Asıl yanıt bu telefonda kalır. Sorularınız varsa araştırmacılara başvurun.</string>
     <string name="transfer_retry">Aktarım kesildi. Asıl yanıt burada kalır; tekrar deneyin.</string>
     <string name="transfer_confirmed">Sunucu kaydı doğruladı.</string>
     <string name="transfer_preserved">Sunucu inceleme için sakladı; henüz normal sonuçlara dahil değil.</string>
     <string name="last_attempt">Son deneme: %1$s</string>
     <string name="try_later">Birkaç dakika sonra tekrar deneyin.</string>
     <string name="already_answered">Bu kısa anket zaten yanıtlandı.</string>
-    <string name="study_unavailable">Çalışma şu anda kullanılamıyor. Çalışma ekibine başvurun.</string>
-    <string name="reminders_setup">Hatırlatıcıları ayarla</string>
+    <string name="study_unavailable">Çalışmaya şu anda ulaşılamıyor. Lütfen araştırmacılara başvurun.</string>
+    <string name="reminders_setup">Telefonu kısa anketler için ayarla</string>
     <string name="reminders_optional">Açık anketleri bildirim olmadan da burada yanıtlayabilirsiniz.</string>
-    <string name="notifications_open">Bildirimleri aç</string>
-    <string name="alarms_open">Zamanında hatırlatıcıları ayarla</string>
+    <string name="notifications_open">Bildirimlere izin ver</string>
+    <string name="alarms_open">“Alarmlar ve hatırlatıcılar” iznini ver</string>
     <string name="answer_prompt">Kısa anketi yanıtla</string>
     <string name="prompt_until">%1$s tarihine kadar açık</string>
     <string name="quiet_pending">Yerel olarak kaydedildi; sunucu sessiz saat değişikliğini henüz doğrulamadı.</string>
@@ -233,7 +233,26 @@
     <string name="permission_needed">Bu soru mikrofon veya konum erişimi gerektirir. Kalıcı reddettiyseniz ayarları açın. Alternatif girişi de kullanabilirsiniz.</string>
     <string name="open_settings">Uygulama ayarlarını aç</string>
     <string name="restored">Geri yüklenen yanıtları kontrol edin. Gönderilmeyen kayıt ve çizimler tekrar gerekebilir.</string>
-    <string name="media_privacy">Mikrofon veya konum yalnızca ilgili soru için istenir. Onam gönderilen verileri açıklar. Uygulama aktarım durumunu da bu cihazda saklar.</string>
-    <string name="draft_privacy">Cihaz özet, iletişim bilgisi ve geçici form taslaklarını da saklar. Taslakların bulut yedeği yoktur.</string>
+    <string name="media_privacy">Mikrofon veya konum erişimi yalnızca bir çalışma sorusu bunu gerektirdiğinde istenir. Çalışmanın onam metni neyin gönderildiğini açıklar. Uygulama ayrıca aktarım durumunu bu telefonda saklar.</string>
+    <string name="draft_privacy">Bu telefon ayrıca çalışma özetini, iletişim bilgisini ve geçici form taslaklarını saklar. Taslakların bulut yedeği yoktur.</string>
     <string name="try_transfer">Yanıtları aktar</string>
+    <string name="close_entry">Girişi kapat</string>
+    <string name="save_again">Yeniden kaydet</string>
+    <string name="entry_abort_resume">Zaten gönderilmiş sayfalar korunur. Giriş açık olduğu sürece daha sonra devam edebilirsiniz.</string>
+    <string name="entry_abort_offline">Bağlantı olmadığı için henüz hiçbir şey gönderilmedi: İptal ederseniz bu girişte girdiğiniz her şey kaybolur.</string>
+    <string name="refusal_expired">Neden: Yanıtlama süresi zaten dolmuştu.</string>
+    <string name="refusal_limit">Neden: O günün sınırına zaten ulaşılmıştı.</string>
+    <string name="refusal_changed">Neden: Anket bu arada değiştirildi.</string>
+    <string name="refusal_clock">Neden: Bu telefonun saati yanlıştı. Uygulama, tarih ve saat doğru olduğunda yanıtı yeniden gönderir.</string>
+    <string name="refusal_paused">Neden: Çalışma duraklatıldı. Uygulama yanıtı daha sonra yeniden gönderir.</string>
+    <string name="refusal_unauthorised">Neden: Sunucu katılımı tanımadı. Uygulama daha sonra yeniden dener.</string>
+    <string name="refusal_closed">Neden: Çalışma artık yanıt kabul etmiyor.</string>
+    <string name="refusal_done">Neden: Bu kısa anket zaten yanıtlanmıştı.</string>
+    <string name="refusal_other">Neden: Sunucu yanıtı kabul etmedi.</string>
+    <string name="discard_answer">Yanıtı at</string>
+    <string name="discard_answer_title">Bu yanıt atılsın mı?</string>
+    <string name="discard_answer_confirm">Yanıt bu telefondan silinir ve hiçbir zaman gönderilmez. Bu işlem geri alınamaz.</string>
+    <string name="battery_open">Pil optimizasyonunu aç</string>
+    <string name="ready_battery_title">Pil optimizasyonu (isteğe bağlı)</string>
+    <string name="ready_battery_text">Bazı telefonlar pil tasarrufu için arka plandaki uygulamaları durdurur; bu durumda kısa anketler geç gelir veya hiç gelmez. “Pil optimizasyonu” listesinde Askurious için “Optimize etme” seçeneğini belirleyin. Bazı telefonlarda bu ayar, uygulama bilgilerinde “Pil” altında bulunur.</string>
 </resources>

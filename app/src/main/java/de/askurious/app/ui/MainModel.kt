@@ -59,17 +59,18 @@ class MainModel(app: Application) : AndroidViewModel(app) {
     fun reload() {
         val mine = ++reloads
         viewModelScope.launch {
-            val (s, items) = withContext(Dispatchers.IO) {
+            val (s, items, seen) = withContext(Dispatchers.IO) {
                 val queue = AnswerQueue(context)
                 val items = try { queue.all() } catch (e: java.io.IOException) { null }
-                Pair(StudyStore(context).all(), items)
+                Triple(StudyStore(context).all(), items, queue.seenRefusals())
             }
             if (mine != reloads) return@launch
             studies = s
             queueUnreadable = items == null
             waiting = items.orEmpty().groupingBy { it.study }.eachCount()
             // Legacy refusal notices refer to answers older versions already deleted; never claim those survived.
-            refused = items.orEmpty().filter { it.refusal != null }.map { it.study }.toSet()
+            // closed notices stay closed until another answer is refused (UX audit 2026-10-16, B5)
+            refused = items.orEmpty().filter { it.refusal != null && it.id !in seen }.map { it.study }.toSet()
             clockOff = clockOff(items.orEmpty().size, Api.clockSkew)
             loaded = true
         }
@@ -157,10 +158,23 @@ class MainModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** "Close" on the notice of refused answers: it stays away until another answer of [code] is refused (B5). */
     fun clearRefused(code: String) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) { AnswerQueue(context).clearRefused(code) }
+            withContext(Dispatchers.IO) { runCatching { AnswerQueue(context).dismissRefused(code) } }
             reload()
+        }
+    }
+
+    /**
+     * Discards one refused answer for good, the participant's explicit choice in the transfer dialog (B5); [done]
+     * gets whether it worked.
+     */
+    fun discardAnswer(item: AnswerQueue.Item, done: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            val ok = withContext(Dispatchers.IO) { runCatching { AnswerQueue(context).remove(item.id) }.isSuccess }
+            reload()
+            done(ok)
         }
     }
 
@@ -170,6 +184,9 @@ class MainModel(app: Application) : AndroidViewModel(app) {
     var joinedStudy by mutableStateOf<Study?>(null); private set
     var entryAddress: String? = null; private set
     fun consumedJoin() { joinedStudy = null; entryAddress = null; joinInfo = null; joinError = null }
+
+    /** The join screen closed: what it found or failed with does not show up the next time it opens (B6). */
+    fun leftJoin() { if (!joinBusy) { joinInfo = null; joinError = null } }
 
     /** The public information of a study for the join screen; [done] gets it or the error. */
     fun lookUp(server: String, code: String, done: (JSONObject?, ApiError?) -> Unit) {

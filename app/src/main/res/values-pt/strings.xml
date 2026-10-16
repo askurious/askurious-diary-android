@@ -37,7 +37,7 @@
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
     <string name="join_server" formatted="true">Servidor: %1$s</string>
     <string name="foreign_server" formatted="true">Esta ligação não leva a um servidor do Askurious (%1$s), por isso a app não a abre.</string>
-    <string name="continue_entry">Continuar o primeiro questionário</string>
+    <string name="continue_entry">Continuar o questionário inicial</string>
     <string name="day_of">Dia %1$d de %2$d</string>
     <string name="starts_on">Começa a %1$s</string>
     <string name="next_prompt">Próximo breve questionário: %1$s</string>
@@ -48,13 +48,13 @@
     <string name="left_pending">Saiu deste estudo. A aplicação informará a equipa de investigação assim que houver ligação.</string>
     <string name="ended">A equipa de investigação terminou este estudo.</string>
     <string name="leave_study">Sair do estudo</string>
-    <string name="leave_confirm">Sair deste estudo? Não receberá mais perguntas. As suas respostas ficam com a equipa de investigação, a não ser que as apague com «Apagar as minhas respostas».</string>
+    <string name="leave_confirm">Sair deste estudo? Não receberá mais breves questionários. As suas respostas ficam com a equipa de investigação, a não ser que as apague com «Apagar as minhas respostas».</string>
     <string name="remove_from_list">Remover da lista</string>
     <string name="erase_answers">Apagar as minhas respostas</string>
     <string name="erase_confirm">Apagar todas as suas respostas neste estudo? Também são apagadas junto da equipa de investigação e não podem ser recuperadas. Depois, o estudo desaparece da aplicação.</string>
     <string name="erase">Apagar</string>
-    <string name="notif_channel">Perguntas dos seus estudos</string>
-    <string name="notif_default">Tem uma pergunta curta à sua espera</string>
+    <string name="notif_channel">Breves questionários dos seus estudos</string>
+    <string name="notif_default">Tem um breve questionário à sua espera</string>
     <string name="allow_notifications">Permita as notificações; caso contrário, a aplicação não lhe pode perguntar no momento certo.</string>
     <string name="allow_exact">Permita «Alarmes e lembretes» para que as perguntas cheguem a horas.</string>
     <string name="allow">Permitir</string>
@@ -78,24 +78,24 @@
     <string name="about_oss_title">Software de código aberto</string>
     <string name="about_oss_intro">A aplicação utiliza estas bibliotecas e este tipo de letra; a licença está indicada junto a cada um.</string>
     <string name="show_licence">Mostrar textos das licenças</string>
-    <string name="notif_reminder">Lembrete: ainda tem uma pergunta curta à sua espera</string>
+    <string name="notif_reminder">Lembrete: ainda tem um breve questionário à sua espera</string>
     <string name="offline_saved">Guardado. As suas respostas serão enviadas assim que o telemóvel tiver ligação.</string>
     <plurals name="answers_waiting">
         <item quantity="one">%d resposta à espera de envio</item>
         <item quantity="many">%d respostas à espera de envio</item>
         <item quantity="other">%d respostas à espera de envio</item>
     </plurals>
-    <string name="about_offline">Nos estudos com respostas offline, a aplicação também guarda páginas do questionário. As respostas offline permanecem encriptadas neste telefone até o servidor confirmar o armazenamento ou remover explicitamente o estudo e as respostas. A expiração ou recusa não as elimina.</string>
+    <string name="about_offline">Nos estudos que permitem respostas offline, a aplicação também guarda páginas de questionários. As respostas offline ficam cifradas neste telemóvel até o servidor confirmar o armazenamento ou até as descartar expressamente ou remover o estudo. A expiração ou a recusa não as apagam.</string>
     <string name="quiet_title">Horas de silêncio</string>
-    <string name="quiet_now">Horas de silêncio para lembretes aleatórios: %1$s</string>
+    <string name="quiet_now">Horas de silêncio para breves questionários em horas aleatórias: %1$s</string>
     <string name="quiet_from_tomorrow">A partir de amanhã: %1$s</string>
     <string name="quiet_none">nenhuma</string>
     <string name="quiet_change">Alterar horas de silêncio</string>
-    <string name="quiet_hint">Durante as suas horas de silêncio não chega nenhuma pergunta a horas aleatórias. Uma alteração aplica-se a partir de amanhã e apenas às perguntas a horas aleatórias, não às de horas fixas.</string>
+    <string name="quiet_hint">Durante as horas de silêncio não chega nenhum breve questionário em hora aleatória. Uma alteração aplica-se a partir de amanhã e apenas aos breves questionários em horas aleatórias, não aos de horas fixas.</string>
     <string name="quiet_from">Das</string>
     <string name="quiet_to">às</string>
     <string name="save">Guardar</string>
-    <string name="about_quiet">Se definir horas de silêncio para um estudo, a aplicação guarda-as e envia-as para o servidor do estudo, para que nesse período não chegue nenhuma pergunta a horas aleatórias.</string>
+    <string name="about_quiet">Se definir horas de silêncio para um estudo, a aplicação guarda-as e envia-as ao servidor do estudo, para que nesse período não chegue nenhum breve questionário em hora aleatória.</string>
     <plurals name="random_per_day">
         <item quantity="one">%1$s: %2$d vez por dia a horas aleatórias</item>
         <item quantity="many">%1$s: %2$d vezes por dia a horas aleatórias</item>
@@ -111,7 +111,7 @@
     <string name="exit_default">Questionário final</string>
     <string name="exit_until">Disponível até %1$s</string>
     <string name="notif_exit">O período do estudo terminou. Por favor, responda: %1$s</string>
-    <string name="limit_refused">O servidor não aceitou algumas respostas. Permanecem neste telefone para esclarecimento até as remover explicitamente.</string>
+    <string name="limit_refused">O servidor não aceitou algumas respostas. Permanecem neste telemóvel para esclarecimento até as descartar em «Envio de respostas».</string>
     <string name="clock_off">O relógio deste telemóvel está errado. As respostas dadas sem ligação serão enviadas assim que a data e a hora estiverem certas.</string>
     <string name="rejoin_confirm">Já participa neste estudo neste telemóvel. Participar de novo inicia uma nova participação: depois já não poderá apagar as suas respostas anteriores na aplicação. As respostas pendentes da participação anterior são enviadas antes, se possível; caso contrário, são descartadas. Para apagar as suas respostas anteriores, cancele e use «Apagar as minhas respostas» no cartão do estudo.</string>
     <string name="rejoin">Participar de novo</string>
@@ -121,7 +121,7 @@
     <string name="remove_title">Remover «%1$s»?</string>
     <string name="remove_confirm">O estudo é removido deste telemóvel. Depois, já não poderá apagar as suas respostas através da aplicação.</string>
     <string name="remove_exit_open">O questionário final deste estudo ainda está aberto.</string>
-    <string name="update_app">O seu estudo precisa de uma versão mais recente desta aplicação. Atualize a aplicação para que as suas perguntas continuem a chegar corretamente.</string>
+    <string name="update_app">Um dos seus estudos precisa de uma versão mais recente desta aplicação. Atualize a aplicação para que os seus breves questionários continuem a chegar corretamente.</string>
     <string name="update_button">Atualizar</string>
     <string name="entry_abort_title">Cancelar este registo?</string>
     <string name="entry_abort_text">As respostas desta página que ainda não foram enviadas perder-se-ão.</string>
@@ -160,7 +160,7 @@
     <string name="licence_title_apache">Apache License 2.0</string>
     <string name="licence_title_font">SIL Open Font License 1.1 (tipo de letra PT Serif)</string>
     <string name="licence_title_notices">Avisos (NOTICE) de ZXing e kotlinx.coroutines, BSD 3-Clause License de ThreeTen-bp</string>
-    <string name="notif_channel_desc">As perguntas dos seus estudos de diário nas horas escolhidas pelos investigadores, e os lembretes</string>
+    <string name="notif_channel_desc">Os breves questionários dos seus estudos de diário nas horas escolhidas pela equipa de investigação, e os lembretes</string>
     <string name="notif_exit_until" formatted="true">O período do estudo terminou. Responda: %1$s (aberto até %2$s)</string>
     <string name="notif_reminder_of">Lembrete: %1$s</string>
     <string name="participation_title">Participação</string>
@@ -170,27 +170,27 @@
     <string name="quiet_use">Usar horas de silêncio</string>
     <string name="quiet_from_cd">Horas de silêncio a partir das %1$s</string>
     <string name="quiet_to_cd">Horas de silêncio até às %1$s</string>
-    <string name="ready_title">Para que as perguntas cheguem a horas</string>
-    <string name="ready_intro">A aplicação faz as perguntas do estudo com uma notificação no momento certo. Para isso precisa de duas permissões; ambas podem ser alteradas mais tarde nas definições do telefone.</string>
+    <string name="ready_title">Para que os breves questionários cheguem a horas</string>
+    <string name="ready_intro">A aplicação anuncia-lhe os breves questionários do estudo com uma notificação no momento certo. Para isso precisa de duas permissões; uma terceira definição é opcional. Pode alterar tudo mais tarde nas definições do telemóvel.</string>
     <string name="ready_notify_title">Notificações</string>
-    <string name="ready_notify_text">Sem elas não chega nenhuma pergunta.</string>
+    <string name="ready_notify_text">Sem elas não chega nenhum breve questionário.</string>
     <string name="ready_exact_title">Alarmes e lembretes</string>
-    <string name="ready_exact_text">Sem isto, as perguntas podem chegar alguns minutos atrasadas.</string>
-    <string name="state_pending">Primeiro questionário ainda por concluir</string>
+    <string name="ready_exact_text">Sem esta permissão, os breves questionários podem chegar alguns minutos atrasados.</string>
+    <string name="state_pending">Questionário inicial ainda por concluir</string>
     <string name="state_running">Em curso</string>
     <string name="time_about">por volta das %1$s</string>
     <!-- the study page: summary, open-ended period, sound per study, home-screen shortcuts (Shortcuts), after leaving -->
     <string name="day_n" formatted="true">Dia %1$d</string>
-    <string name="period_after_entry">O período do estudo começa assim que concluir o primeiro questionário.</string>
+    <string name="period_after_entry">O período do estudo começa assim que concluir o questionário inicial.</string>
     <string name="period_start" formatted="true">Início: %1$s</string>
     <string name="period_open_end">Fim: em aberto, até os investigadores terminarem o estudo</string>
     <string name="duration_open_end">Duração: em aberto, até os investigadores terminarem o estudo</string>
     <string name="also_self_module" formatted="true">%1$s: também sempre que quiser</string>
     <string name="notifications_title">Notificações</string>
     <string name="sound">Som de notificação</string>
-    <string name="sound_on_hint">As perguntas deste estudo tocam com o som de notificação do seu telemóvel.</string>
-    <string name="sound_off_hint">As perguntas deste estudo chegam sem som.</string>
-    <string name="notif_channel_silent">Perguntas dos seus estudos (sem som)</string>
+    <string name="sound_on_hint">Os breves questionários deste estudo tocam com o som de notificação do seu telemóvel.</string>
+    <string name="sound_off_hint">Os breves questionários deste estudo chegam sem som.</string>
+    <string name="notif_channel_silent">Breves questionários dos seus estudos (sem som)</string>
     <string name="shortcut_title">Atalho no ecrã principal</string>
     <string name="shortcut_intro">Relate algo com um toque a partir do ecrã principal.</string>
     <string name="shortcut_add">Adicionar ao ecrã principal</string>
@@ -201,11 +201,11 @@
     <string name="shortcut_failed">O seu ecrã principal não aceitou o atalho.</string>
     <string name="shortcut_default">Relatar</string>
     <string name="shortcut_disabled">Este estudo terminou.</string>
-    <string name="after_leave_title">Manter as suas respostas?</string>
-    <string name="after_leave_text">Saiu do estudo. As suas respostas até agora continuam a ajudar a investigação, mesmo que pare agora, e os investigadores ficariam gratos por as poderem manter. Quer apagá-las mesmo assim? Não é possível anular.</string>
+    <string name="after_leave_title">As suas respostas até agora</string>
+    <string name="after_leave_text">Saiu do estudo. As suas respostas até agora ficam com a equipa de investigação se não fizer mais nada. Pode apagá-las agora ou mais tarde nesta página com «Apagar as minhas respostas». A eliminação não pode ser desfeita.</string>
     <string name="keep_answers">Manter as minhas respostas</string>
-    <string name="save_failed">Não foi possível guardar. O questionário preenchido permanece aberto. Tente enviá-lo novamente.</string>
-    <string name="queue_unreadable">Não é possível ler as respostas guardadas. Não foram substituídas. Contacte a equipa do estudo.</string>
+    <string name="save_failed">Não foi possível guardar. O questionário preenchido continua aberto; nada do que introduziu se perdeu.</string>
+    <string name="queue_unreadable">Não é possível ler as respostas guardadas. Não foram substituídas. Contacte a equipa de investigação.</string>
     <string name="queue_discard">Descartar respostas ilegíveis</string>
     <string name="queue_discard_confirm">Estas respostas já não podem ser lidas neste telefone e nunca poderão ser enviadas. Descartá-las para que a aplicação possa voltar a guardar novas respostas? Os seus estudos e as respostas já enviadas não são afetados.</string>
     <string name="hide_licence">Ocultar o texto da licença</string>
@@ -214,20 +214,20 @@
     <string name="study_contact">Contacto do estudo: %1$s</string>
     <string name="open_end">Sem data de fim definida. Pode terminar a participação, assim como os investigadores.</string>
     <string name="transmissions">Envio de respostas</string>
-    <string name="no_waiting">Sem respostas pendentes neste dispositivo.</string>
-    <string name="transfer_waiting">Guardada neste dispositivo; ainda não confirmada pelo servidor.</string>
-    <string name="transfer_review">Ainda não aceite. O original fica aqui. Se persistir, contacte os investigadores.</string>
+    <string name="no_waiting">Nenhuma resposta pendente neste telemóvel.</string>
+    <string name="transfer_waiting">Guardada neste telemóvel; ainda não confirmada pelo servidor.</string>
+    <string name="transfer_review">Ainda não aceite. O original fica neste telemóvel. Em caso de dúvidas, contacte a equipa de investigação.</string>
     <string name="transfer_retry">Envio interrompido. O original fica aqui; tente novamente.</string>
     <string name="transfer_confirmed">Armazenamento confirmado pelo servidor.</string>
     <string name="transfer_preserved">Preservada pelo servidor para revisão; ainda fora dos resultados normais.</string>
     <string name="last_attempt">Última tentativa: %1$s</string>
     <string name="try_later">Tente novamente dentro de alguns minutos.</string>
     <string name="already_answered">Este breve questionário já foi respondido.</string>
-    <string name="study_unavailable">O estudo está indisponível. Contacte os investigadores.</string>
-    <string name="reminders_setup">Configurar lembretes</string>
+    <string name="study_unavailable">O estudo está indisponível de momento. Contacte a equipa de investigação.</string>
+    <string name="reminders_setup">Preparar o telemóvel para os breves questionários</string>
     <string name="reminders_optional">Pode responder aqui aos questionários abertos sem notificações.</string>
-    <string name="notifications_open">Ativar notificações</string>
-    <string name="alarms_open">Configurar lembretes pontuais</string>
+    <string name="notifications_open">Permitir notificações</string>
+    <string name="alarms_open">Permitir «Alarmes e lembretes»</string>
     <string name="answer_prompt">Responder ao breve questionário</string>
     <string name="prompt_until">Disponível até %1$s</string>
     <string name="quiet_pending">Guardado localmente; o servidor ainda não confirmou as horas de silêncio.</string>
@@ -240,7 +240,26 @@
     <string name="permission_needed">Esta pergunta precisa do microfone ou localização. Se recusou permanentemente, abra as definições. Pode usar uma entrada alternativa.</string>
     <string name="open_settings">Abrir definições da aplicação</string>
     <string name="restored">Verifique as respostas restauradas. Pode ter de repetir gravações e desenhos não enviados.</string>
-    <string name="media_privacy">O microfone ou localização só são pedidos para perguntas pertinentes. O consentimento explica os dados enviados. A aplicação guarda também o estado de envio aqui.</string>
-    <string name="draft_privacy">O dispositivo guarda também resumo, contacto e rascunhos temporários. Não há cópia dos rascunhos na nuvem.</string>
+    <string name="media_privacy">O acesso ao microfone ou à localização só é pedido quando uma pergunta do estudo o exige. O consentimento do estudo explica o que é enviado. A aplicação também guarda o estado dos envios neste telemóvel.</string>
+    <string name="draft_privacy">Este telemóvel também guarda o resumo e o contacto do estudo e rascunhos temporários de formulários. Os rascunhos não têm cópia de segurança na nuvem.</string>
     <string name="try_transfer">Enviar respostas</string>
+    <string name="close_entry">Fechar a entrada</string>
+    <string name="save_again">Guardar novamente</string>
+    <string name="entry_abort_resume">As páginas já enviadas são mantidas. Enquanto a entrada estiver aberta, pode continuá-la mais tarde.</string>
+    <string name="entry_abort_offline">Sem ligação ainda nada foi enviado: se cancelar, perde-se tudo o que introduziu nesta entrada.</string>
+    <string name="refusal_expired">Motivo: o tempo para responder já tinha terminado.</string>
+    <string name="refusal_limit">Motivo: o limite desse dia já tinha sido atingido.</string>
+    <string name="refusal_changed">Motivo: entretanto o questionário foi alterado.</string>
+    <string name="refusal_clock">Motivo: o relógio deste telemóvel estava errado. A aplicação volta a enviar a resposta assim que a data e a hora estiverem certas.</string>
+    <string name="refusal_paused">Motivo: o estudo está em pausa. A aplicação volta a enviar a resposta mais tarde.</string>
+    <string name="refusal_unauthorised">Motivo: o servidor não reconheceu a participação. A aplicação volta a tentar mais tarde.</string>
+    <string name="refusal_closed">Motivo: o estudo já não aceita respostas.</string>
+    <string name="refusal_done">Motivo: este breve questionário já tinha sido respondido.</string>
+    <string name="refusal_other">Motivo: o servidor não aceitou a resposta.</string>
+    <string name="discard_answer">Descartar a resposta</string>
+    <string name="discard_answer_title">Descartar esta resposta?</string>
+    <string name="discard_answer_confirm">A resposta é apagada deste telemóvel e nunca é enviada. Não é possível anular.</string>
+    <string name="battery_open">Abrir otimização da bateria</string>
+    <string name="ready_battery_title">Otimização da bateria (opcional)</string>
+    <string name="ready_battery_text">Alguns telemóveis param aplicações em segundo plano para poupar bateria; os breves questionários chegam então atrasados ou não chegam. Na lista «Otimização da bateria», defina o Askurious como «Não otimizar». Em alguns telemóveis a definição está nas informações da aplicação, em «Bateria».</string>
 </resources>

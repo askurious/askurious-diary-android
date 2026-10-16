@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
 import android.provider.Settings
 import android.text.format.DateFormat
 import android.text.format.DateUtils
@@ -21,6 +22,8 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.layout.imePadding
 import de.askurious.app.data.PromptLog
 import de.askurious.app.data.AnswerQueue
@@ -61,6 +64,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -97,6 +101,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
@@ -159,6 +164,12 @@ class MainActivity : ComponentActivity() {
     /** Exact alarms are allowed ("Alarms & reminders"); read again in [onResume], also after the system settings. */
     private var exactOn by mutableStateOf(true)
 
+    /**
+     * The app is exempt from the battery optimisation; read again in [onResume]. Optional: exact alarms pass Doze,
+     * but some makers' battery managers stop them all the same (UX audit 2026-10-16, B11).
+     */
+    private var batteryOn by mutableStateOf(true)
+
     private val uiPrefs get() = getSharedPreferences(UI_PREFS, MODE_PRIVATE)
 
     /**
@@ -178,6 +189,7 @@ class MainActivity : ComponentActivity() {
             rationale = canAsk && shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS),
         )
         exactOn = Alarms.canExact(this)
+        batteryOn = getSystemService(PowerManager::class.java)?.isIgnoringBatteryOptimizations(packageName) != false
     }
 
     /**
@@ -203,6 +215,13 @@ class MainActivity : ComponentActivity() {
             // nothing to open it with
         }
     }
+
+    /**
+     * The phone's list of the battery optimisation, where the participant can exempt the app (B11). Only the list,
+     * never the direct request ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS: that needs a permission of its own and
+     * is restricted on Google Play; the list needs none.
+     */
+    private fun openBatterySettings() = openOther(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
 
     /** The settings of "Alarms & reminders" for this app (Android 12 and later; before, exact alarms need nothing). */
     private fun openExactSettings() {
@@ -301,6 +320,23 @@ class MainActivity : ComponentActivity() {
             }
         }
         if (stack.size > 1) BackHandler { pop() }
+        // the result of a join, read here and not on the join screen, so that it arrives also when that screen went
+        // meanwhile (UX audit 2026-10-16, B6): the entry questionnaire opens, then the step for the permissions
+        val context = LocalContext.current
+        LaunchedEffect(model.joinedStudy) {
+            model.joinedStudy?.let { study ->
+                val address = model.entryAddress
+                model.consumedJoin()
+                if (study.status == "pending") startActivity(EntryActivity.intent(context, study.code, "entry", address = address))
+                if (stack.last().startsWith(JOIN)) pop()
+                // after the entry questionnaire: one step that explains the permissions (audit A27), once per phone
+                if ((notifyState != NotifyNotice.NONE || !exactOn || !batteryOn) && !uiPrefs.getBoolean(READY_SHOWN, false)) {
+                    uiPrefs.edit { putBoolean(READY_SHOWN, true) }
+                    push(READY)
+                }
+                model.reload()
+            }
+        }
         val top = stack.last()
         // the list of studies, a study's page and a found study show titles ("Diary on drinking"): no picture of them
         // in "Recents" (audit 2026-10-13, AN-7); the other screens keep theirs
@@ -314,16 +350,7 @@ class MainActivity : ComponentActivity() {
             when {
                 top.startsWith(JOIN) -> JoinScreen(
                     initial = top.removePrefix(JOIN),
-                    onDone = { pop(); model.reload() },
-                    onJoined = {
-                        pop()
-                        // after the first questionnaire: one step that explains both permissions (audit A27)
-                        if ((notifyState != NotifyNotice.NONE || !exactOn) && !uiPrefs.getBoolean(READY_SHOWN, false)) {
-                            uiPrefs.edit { putBoolean(READY_SHOWN, true) }
-                            push(READY)
-                        }
-                        model.reload()
-                    },
+                    onDone = { model.leftJoin(); pop(); model.reload() },
                 )
                 top.startsWith(STUDY) -> {
                     val study = model.studies.firstOrNull { it.code == top.removePrefix(STUDY) }
@@ -336,7 +363,7 @@ class MainActivity : ComponentActivity() {
                 top == READY -> ReadyScreen(onDone = { pop() }, allowNotifications = allowNotifications)
                 else -> HomeScreen(
                     onJoin = { push(JOIN) }, onAbout = { push(ABOUT) }, onStudy = { push(STUDY + it.code) },
-                    allowNotifications = allowNotifications, snackbar = snackbar,
+                    allowNotifications = allowNotifications, snackbar = snackbar, say = say,
                 )
             }
         }
@@ -346,8 +373,10 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun HomeScreen(
         onJoin: () -> Unit, onAbout: () -> Unit, onStudy: (Study) -> Unit, allowNotifications: () -> Unit, snackbar: SnackbarHostState,
+        say: (String) -> Unit,
     ) {
         val studies = model.studies
+        var confirmDiscard by rememberSaveable { mutableStateOf(false) }
         Scaffold(
             topBar = {
                 PageHeader(stringResource(R.string.app_name), onAbout = onAbout)
@@ -376,16 +405,25 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(top = 4.dp).semantics { heading() },
                     )
                 }
-                // what keeps the prompts from arriving (on time), right below the heading, in view after a cold start
-                // (audit A1, SA3); nothing while all is well
-                // a study's server needs a newer app (config DIARY_MIN_APP_VERSION): the app keeps working, but asks
+                // what keeps the prompts from arriving (on time), right below the heading and before the cards, in
+                // view after a cold start also with many studies (audit A1, SA3; UX audit 2026-10-16, B1); nothing while
+                // all is well
+                if (studies.isNotEmpty()) item(key = "readiness") { Readiness(studies, allowNotifications) }
+                if (model.clockOff) item(key = "notice-clock") { Notice(stringResource(R.string.clock_off), Icons.Outlined.Warning) }
+                // the queue of all studies cannot be read: said once here, not on every card (B10)
+                if (model.queueUnreadable) item(key = "notice-queue") {
+                    Notice(stringResource(R.string.queue_unreadable), Icons.Outlined.Warning, stringResource(R.string.queue_discard), primary = false) {
+                        confirmDiscard = true
+                    }
+                }
+                // a study's server needs a newer app (config DIARY_MIN_APP_VERSION): the app keeps working, so a
+                // neutral notice below the ones that stop the prompts (B1)
                 if (studies.any { it.needsUpdate(BuildConfig.VERSION_CODE) }) item(key = "notice-update") {
-                    Notice(stringResource(R.string.update_app), Icons.Outlined.Warning, stringResource(R.string.update_button)) {
+                    Notice(stringResource(R.string.update_app), Icons.Outlined.Info, stringResource(R.string.update_button), error = false) {
                         // the Play Store opens this link itself; without it the browser shows the page
                         openOther(Intent(Intent.ACTION_VIEW, "https://play.google.com/store/apps/details?id=$packageName".toUri()))
                     }
                 }
-                if (model.clockOff) item(key = "notice-clock") { Notice(stringResource(R.string.clock_off), Icons.Outlined.Warning) }
                 if (studies.isEmpty() && model.loaded) item {
                     Column(Modifier.padding(top = 32.dp)) {
                         Text(stringResource(R.string.no_studies))
@@ -395,7 +433,6 @@ class MainActivity : ComponentActivity() {
                 }
                 // running and not yet over on top, the ended ones under a heading of their own (audit A20)
                 items(now, key = { it.code }) { ListTheme(it.look) { StudyCard(it) { onStudy(it) } } }
-                if (studies.isNotEmpty()) item(key = "readiness") { Readiness(studies, allowNotifications) }
                 if (ended.isNotEmpty()) item(key = "ended") {
                     Text(
                         stringResource(R.string.ended_group), style = MaterialTheme.typography.titleMedium,
@@ -415,56 +452,97 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        if (confirmDiscard) {
+            AlertDialog(
+                onDismissRequest = { confirmDiscard = false },
+                title = { Text(stringResource(R.string.queue_discard)) },
+                text = { GuardAgainstOverlays(); Text(stringResource(R.string.queue_discard_confirm)) },
+                confirmButton = {
+                    TextButton(onClick = {
+                        confirmDiscard = false
+                        // a failure as a snackbar, read out like every other message of the page (B8)
+                        model.discardQueue { ok -> if (!ok) say(getString(R.string.error)) }
+                    }) { Text(stringResource(R.string.queue_discard), color = MaterialTheme.colorScheme.error) }
+                },
+                dismissButton = { TextButton(onClick = { confirmDiscard = false }) { Text(stringResource(R.string.cancel)) } },
+            )
+        }
     }
 
     /**
-     * The readiness of the phone for the prompts (audit SA3): one block in the error colours, a line per missing
-     * permission with the button that leads to it; invisible while all is well. Notifications count for every study,
-     * exact alarms only while one runs.
+     * The readiness of the phone for the prompts (audit SA3; UX audit 2026-10-16, B1): a notice in the error colours
+     * right below the heading, with a button per missing permission, the first one filled; invisible while all is
+     * well. Notifications count for every study, exact alarms only while one runs. The battery optimisation is
+     * offered too while the notice shows, as an optional third point (B11); alone it raises no notice.
      */
     @OptIn(ExperimentalLayoutApi::class)
     @Composable
     private fun Readiness(studies: List<Study>, allowNotifications: () -> Unit) {
         val notify = notifyState != NotifyNotice.NONE
-        val exact = studies.any { it.running } && !exactOn
+        val running = studies.any { it.running }
+        val exact = running && !exactOn
         if (!notify && !exact) return
-        Card(Modifier.fillMaxWidth()) { Column(Modifier.padding(16.dp)) {
-            SectionTitle(stringResource(R.string.reminders_setup))
-            Text(stringResource(R.string.reminders_optional), style = MaterialTheme.typography.bodySmall)
-            FlowRow {
-                if (notify) TextButton(onClick = allowNotifications) { Text(stringResource(R.string.notifications_open)) }
-                if (exact) TextButton(onClick = { openExactSettings() }) { Text(stringResource(R.string.alarms_open)) }
+        NoticeCard {
+            Row(Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Icon(Icons.Outlined.Notifications, contentDescription = null, tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(24.dp))
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        stringResource(R.string.reminders_setup), style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.semantics { heading() },
+                    )
+                    Text(stringResource(if (notify) R.string.ready_notify_text else R.string.ready_exact_text), fontWeight = FontWeight.SemiBold)
+                    Text(stringResource(R.string.reminders_optional), style = MaterialTheme.typography.bodyMedium)
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        // the permission that matters most is the filled button
+                        if (notify) Button(onClick = allowNotifications) { Text(stringResource(R.string.notifications_open)) }
+                        if (exact) {
+                            if (notify) OutlinedButton(onClick = { openExactSettings() }) { Text(stringResource(R.string.alarms_open)) }
+                            else Button(onClick = { openExactSettings() }) { Text(stringResource(R.string.alarms_open)) }
+                        }
+                        if (running && !batteryOn) TextButton(onClick = { openBatterySettings() }) { Text(stringResource(R.string.battery_open)) }
+                    }
+                }
             }
-        } }
+        }
     }
 
-    /** A notice of the start page: in the error colours with an icon, unlike a study card (audit A20). */
+    /**
+     * A notice of the start page, unlike a study card (audit A20): in the error colours when the prompts or the
+     * answers are at stake, else neutral with a border (an update the app can wait for; UX audit 2026-10-16, B1).
+     */
     @Composable
-    private fun NoticeCard(content: @Composable () -> Unit) {
+    private fun NoticeCard(error: Boolean = true, content: @Composable () -> Unit) {
         Card(
             Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.errorContainer,
-                contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                containerColor = if (error) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.surface,
+                contentColor = if (error) MaterialTheme.colorScheme.onErrorContainer else MaterialTheme.colorScheme.onSurface,
             ),
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.error),
+            border = BorderStroke(1.dp, if (error) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline),
         ) { Column { content() } }
     }
 
     @Composable
-    private fun NoticeRow(text: String, icon: ImageVector, button: String?, onClick: () -> Unit) {
+    private fun NoticeRow(text: String, icon: ImageVector, button: String?, error: Boolean, primary: Boolean, onClick: () -> Unit) {
         Row(Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(24.dp))
-            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Text(text, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold)
-                if (button != null) Button(onClick = onClick) { Text(button) }
+            Icon(
+                icon, contentDescription = null, modifier = Modifier.size(24.dp),
+                tint = if (error) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+            )
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(text, style = MaterialTheme.typography.bodyLarge, fontWeight = if (error) FontWeight.SemiBold else FontWeight.Normal)
+                if (button != null) {
+                    if (error && primary) Button(onClick = onClick) { Text(button) } else OutlinedButton(onClick = onClick) { Text(button) }
+                }
             }
         }
     }
 
     @Composable
-    private fun Notice(text: String, icon: ImageVector, button: String? = null, onClick: () -> Unit = {}) {
-        NoticeCard { NoticeRow(text, icon, button, onClick) }
+    private fun Notice(
+        text: String, icon: ImageVector, button: String? = null, error: Boolean = true, primary: Boolean = true, onClick: () -> Unit = {},
+    ) {
+        NoticeCard(error) { NoticeRow(text, icon, button, error, primary, onClick) }
     }
 
     /**
@@ -474,9 +552,7 @@ class MainActivity : ComponentActivity() {
      */
     @Composable
     private fun StudyCard(study: Study, onOpen: () -> Unit) {
-        val context = LocalContext.current
         var transmissions by rememberSaveable { mutableStateOf(false) }
-        var confirmDiscard by rememberSaveable { mutableStateOf(false) }
         Card(
             onClick = onOpen,
             modifier = Modifier.fillMaxWidth(),
@@ -497,10 +573,6 @@ class MainActivity : ComponentActivity() {
                 val n = model.waiting[study.code] ?: 0
                 if (n > 0) Message(pluralStringResource(R.plurals.answers_waiting, n, n))
                 if (n > 0 || hasStoredReceipts(study.code, model.waiting)) TextButton(onClick = { transmissions = true }) { Text(stringResource(R.string.transmissions)) }
-                if (model.queueUnreadable) {
-                    Text(stringResource(R.string.queue_unreadable))
-                    TextButton(onClick = { confirmDiscard = true }) { Text(stringResource(R.string.queue_discard)) }
-                }
                 if (study.code in model.refused) {
                     Text(stringResource(R.string.limit_refused), style = MaterialTheme.typography.bodySmall)
                     TextButton(onClick = { model.clearRefused(study.code) }) { Text(stringResource(R.string.close)) }
@@ -508,21 +580,7 @@ class MainActivity : ComponentActivity() {
             }
         }
         if (transmissions) StoredTransmissions(study,
-            model.transferring, { model.transfer() }, { transmissions = false })
-        if (confirmDiscard) {
-            AlertDialog(
-                onDismissRequest = { confirmDiscard = false },
-                title = { Text(stringResource(R.string.queue_discard)) },
-                text = { GuardAgainstOverlays(); Text(stringResource(R.string.queue_discard_confirm)) },
-                confirmButton = {
-                    TextButton(onClick = {
-                        confirmDiscard = false
-                        model.discardQueue { ok -> if (!ok) android.widget.Toast.makeText(context, R.string.error, android.widget.Toast.LENGTH_LONG).show() }
-                    }) { Text(stringResource(R.string.queue_discard), color = MaterialTheme.colorScheme.error) }
-                },
-                dismissButton = { TextButton(onClick = { confirmDiscard = false }) { Text(stringResource(R.string.cancel)) } },
-            )
-        }
+            model.transferring, { model.transfer() }, { transmissions = false }, model::discardAnswer)
     }
 
     /** The study's date and time now, read again every 15 s for a fast-forward person (a day passes in minutes). */
@@ -539,8 +597,10 @@ class MainActivity : ComponentActivity() {
     }
 
     /**
-     * What the card and the detail page say alike: the fast-forward badge, the state with its icon, the next question
-     * and the buttons for what is to do now (the first questionnaire, a report, the exit questionnaire).
+     * What the card and the detail page say alike: the fast-forward badge, the state with its icon, the next short
+     * survey and the buttons for what is to do now (the entry questionnaire, a report, the exit questionnaire). Only
+     * the most urgent of them is a filled button, further prompts are tonal and reports outlined (UX audit 2026-10-16,
+     * B14).
      */
     @Composable
     private fun StudyNow(study: Study) {
@@ -576,20 +636,25 @@ class MainActivity : ComponentActivity() {
                     queueFailed = false
                 } catch (e: java.io.IOException) { prompts = emptyList(); queueFailed = true }
             }
-            if (queueFailed) Text(stringResource(R.string.queue_unreadable))
-            for ((prompt, notified) in prompts) {
+            // the start page says it once for all studies (B10)
+            if (queueFailed && !model.queueUnreadable) Text(stringResource(R.string.queue_unreadable))
+            // the one that closes first on top; one without an end last
+            val open = prompts.sortedBy { (p, _) -> if (p.expires > 0) p.due + p.expires * 60_000L else Long.MAX_VALUE }
+            for ((k, pair) in open.withIndex()) {
+                val (prompt, notified) = pair
                 val module = study.modules.firstOrNull { it.key == prompt.module } ?: continue
                 SectionTitle(module.name)
                 if (prompt.expires > 0) Text(stringResource(R.string.prompt_until,
                     whenText(Instant.ofEpochMilli(prompt.due + prompt.expires * 60_000L).atZone(ZoneId.systemDefault()), today, false)))
-                Button(onClick = { startActivity(EntryActivity.intent(context, study.code, prompt.module, prompt.due,
-                    notified)) }) { Text(stringResource(R.string.answer_prompt)) }
+                val start = { startActivity(EntryActivity.intent(context, study.code, prompt.module, prompt.due, notified)) }
+                if (k == 0) Button(onClick = start) { Text(stringResource(R.string.answer_prompt)) }
+                else FilledTonalButton(onClick = start) { Text(stringResource(R.string.answer_prompt)) }
             }
             if (notifyState != NotifyNotice.NONE) {
-                // without notifications no prompt reaches the participant: no time that would not come (audit A1)
+                // without notifications no prompt reaches the participant: no time that would not come (audit A1);
+                // so no line "Next short survey" either (B14)
                 Text(stringResource(R.string.notifications_off), color = MaterialTheme.colorScheme.error)
-            }
-            Schedule.next(listOf(study), Instant.ofEpochMilli(tick)).firstOrNull()?.let {
+            } else Schedule.next(listOf(study), Instant.ofEpochMilli(tick)).firstOrNull()?.let {
                 // shown in the study's time, like the day; "about" while the alarm may ring minutes late (A11), "today",
                 // "tomorrow" or the date (A25)
                 val due = Instant.ofEpochMilli(it.due).atZone(ZoneId.systemDefault())
@@ -606,7 +671,7 @@ class MainActivity : ComponentActivity() {
             }
             // the modules the participant starts themselves, also timed ones that may be started on an event
             for (m in study.selfModules(study.dayIndex(today) ?: 0)) {
-                Button(onClick = { startActivity(EntryActivity.intent(context, study.code, m.key)) }) {
+                OutlinedButton(onClick = { startActivity(EntryActivity.intent(context, study.code, m.key)) }) {
                     Text(m.selfTrigger?.label?.ifBlank { null } ?: m.name)
                 }
             }
@@ -699,8 +764,8 @@ class MainActivity : ComponentActivity() {
      * The detail page of a study (audit SA2): what the card shows, the researchers' summary, the study period (start,
      * end or open-ended), what is asked, the quiet hours, the notification sound, a home-screen shortcut for reports,
      * the waiting answers, and the final actions apart from the rest (leaving or removing, deleting the answers), each
-     * asking first (A14, A15). After leaving the page asks whether the answers should go too, with a kind word for
-     * keeping them.
+     * asking first (A14, A15). After leaving the page says what becomes of the answers and offers keeping and
+     * deleting them alike, without pressing either (UX audit 2026-10-16, B12).
      */
     @OptIn(ExperimentalLayoutApi::class)
     @Composable
@@ -768,14 +833,7 @@ class MainActivity : ComponentActivity() {
                 // the sound, while questions or the exit questionnaire can still be notified; kept only on the phone
                 if (Shortcuts.alive(study) || study.exit?.open == true) {
                     SectionTitle(stringResource(R.string.notifications_title))
-                    val label = stringResource(R.string.sound)
-                    Row(
-                        Modifier.fillMaxWidth().semantics(mergeDescendants = true) {},
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(label, Modifier.weight(1f))
-                        Switch(checked = study.sound, onCheckedChange = { model.setSound(study, it) })
-                    }
+                    SwitchRow(stringResource(R.string.sound), study.sound) { model.setSound(study, it) }
                     Text(
                         stringResource(if (study.sound) R.string.sound_on_hint else R.string.sound_off_hint),
                         style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -837,7 +895,7 @@ class MainActivity : ComponentActivity() {
                         confirmLeave = false
                         model.leave(study)
                         say(getString(R.string.left_done, study.title))
-                        // then whether the answers should go too; keeping them is the first choice
+                        // then what becomes of the answers, both choices alike (B12)
                         askErase = true
                     }) { Text(stringResource(R.string.leave_study), color = MaterialTheme.colorScheme.error) }
                 },
@@ -846,33 +904,41 @@ class MainActivity : ComponentActivity() {
         }
         if (askErase) {
             AlertDialog(
-                onDismissRequest = { askErase = false },
+                // not closed by a tap beside it while the server deletes
+                onDismissRequest = { if (!erasing) askErase = false },
                 title = { Text(stringResource(R.string.after_leave_title)) },
                 text = {
                     GuardAgainstOverlays()
-                    Text(stringResource(R.string.after_leave_text))
+                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Text(stringResource(R.string.after_leave_text))
+                        if (erasing) Erasing()
+                    }
                 },
-                confirmButton = { Button(onClick = { askErase = false }) { Text(stringResource(R.string.keep_answers)) } },
-                dismissButton = {
-                    TextButton(onClick = {
-                        askErase = false
+                // keeping and deleting as equal choices, neither one pressed on the participant (B12)
+                confirmButton = {
+                    TextButton(enabled = !erasing, onClick = {
+                        erasing = true
                         // the question itself was the confirmation; the study stays after an error (its secret)
                         eraseError = null
                         model.erase(study) { e ->
+                            erasing = false
+                            askErase = false
                             if (e == null) {
                                 say(getString(R.string.erased_done, study.title))
                                 onBack()
                             } else {
                                 eraseError = getString(if (e.key == "offline") R.string.offline else R.string.error)
+                                say(eraseError!!)
                             }
                         }
                     }) { Text(stringResource(R.string.erase_answers), color = MaterialTheme.colorScheme.error) }
                 },
+                dismissButton = { TextButton(enabled = !erasing, onClick = { askErase = false }) { Text(stringResource(R.string.keep_answers)) } },
             )
         }
         shortcutFor?.let { m -> ShortcutDialog(study, m, onDone = { shortcutFor = null }) }
         if (transmissions) StoredTransmissions(study,
-            model.transferring, { model.transfer() }, { transmissions = false })
+            model.transferring, { model.transfer() }, { transmissions = false }, model::discardAnswer)
         if (confirmRemove) {
             // the secret goes with the study: afterwards its answers can no longer be deleted from the phone (audit A4)
             AlertDialog(
@@ -918,13 +984,7 @@ class MainActivity : ComponentActivity() {
                     GuardAgainstOverlays()
                     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                         Text(stringResource(R.string.erase_confirm))
-                        if (erasing) {
-                            val busy = stringResource(R.string.erasing)
-                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                                CircularProgressIndicator(Modifier.size(24.dp).semantics { contentDescription = busy })
-                                Text(busy)
-                            }
-                        }
+                        if (erasing) Erasing()
                     }
                 },
                 confirmButton = {
@@ -939,12 +999,38 @@ class MainActivity : ComponentActivity() {
                                 onBack()
                             } else {
                                 eraseError = getString(if (e.key == "offline") R.string.offline else R.string.error)
+                                say(eraseError!!)
                             }
                         }
                     }) { Text(stringResource(R.string.erase), color = MaterialTheme.colorScheme.error) }
                 },
                 dismissButton = { TextButton(enabled = !erasing, onClick = { confirmErase = false }) { Text(stringResource(R.string.cancel)) } },
             )
+        }
+    }
+
+    /** The progress of a deletion at the server, in the dialog that started it (B12). */
+    @Composable
+    private fun Erasing() {
+        val busy = stringResource(R.string.erasing)
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            CircularProgressIndicator(Modifier.size(24.dp).semantics { contentDescription = busy })
+            Text(busy)
+        }
+    }
+
+    /**
+     * A switch with its label as one row (UX audit 2026-10-16, B9): the whole row is the switch for touch and for
+     * TalkBack ("Notification sound, switch, on"), at least 56 dp high.
+     */
+    @Composable
+    private fun SwitchRow(label: String, checked: Boolean, onChange: (Boolean) -> Unit) {
+        Row(
+            Modifier.fillMaxWidth().heightIn(min = 56.dp).toggleable(value = checked, role = Role.Switch, onValueChange = onChange),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(label, Modifier.weight(1f))
+            Switch(checked = checked, onCheckedChange = null)
         }
     }
 
@@ -1007,14 +1093,7 @@ class MainActivity : ComponentActivity() {
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     Text(stringResource(R.string.quiet_hint))
-                    val label = stringResource(R.string.quiet_use)
-                    Row(
-                        Modifier.fillMaxWidth().semantics(mergeDescendants = true) {},
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(label, Modifier.weight(1f))
-                        Switch(checked = on, onCheckedChange = { on = it })
-                    }
+                    SwitchRow(stringResource(R.string.quiet_use), on) { on = it }
                     if (on) {
                         val fromText = stringResource(R.string.quiet_from_cd, timeText(start))
                         val toText = stringResource(R.string.quiet_to_cd, timeText(end))
@@ -1037,13 +1116,15 @@ class MainActivity : ComponentActivity() {
     }
 
     /**
-     * After the first questionnaire: one step that says why the app needs notifications and "Alarms & reminders",
-     * and asks for one after the other (audit A27). Whatever is missing later shows on the start page (Readiness).
+     * After the entry questionnaire: one step that says why the app needs notifications and "Alarms & reminders",
+     * and asks for one after the other (audit A27); the battery optimisation as an optional third point (UX audit
+     * 2026-10-16, B11). Whatever is missing later shows on the start page (Readiness).
      */
     @Composable
     private fun ReadyScreen(onDone: () -> Unit, allowNotifications: () -> Unit) {
         val notifyOk = notifyState == NotifyNotice.NONE
         val exactOk = exactOn
+        val batteryOk = batteryOn
         BackScaffold(stringResource(R.string.ready_title), onDone) { pad ->
             Column(
                 pad.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
@@ -1059,7 +1140,12 @@ class MainActivity : ComponentActivity() {
                     2, stringResource(R.string.ready_exact_title), stringResource(R.string.ready_exact_text), exactOk, primary = notifyOk,
                     button = stringResource(R.string.allow), onClick = { openExactSettings() },
                 )
-                // "Done" once both are there; "Later" quietly beside the permission buttons until then
+                // optional: the button stays outlined, and "Done" does not wait for it
+                ReadyStep(
+                    3, stringResource(R.string.ready_battery_title), stringResource(R.string.ready_battery_text), batteryOk, primary = false,
+                    button = stringResource(R.string.battery_open), onClick = { openBatterySettings() },
+                )
+                // "Done" once both permissions are there; "Later" quietly beside the permission buttons until then
                 if (notifyOk && exactOk) Button(onClick = onDone) { Text(stringResource(R.string.done)) }
                 else TextButton(onClick = onDone) { Text(stringResource(R.string.later)) }
             }
@@ -1089,7 +1175,7 @@ class MainActivity : ComponentActivity() {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    private fun JoinScreen(initial: String, onDone: () -> Unit, onJoined: () -> Unit) {
+    private fun JoinScreen(initial: String, onDone: () -> Unit) {
         val context = LocalContext.current
         // what was typed and found survives turning the phone (audit A9); the study's information as its JSON text
         var code by rememberSaveable { mutableStateOf(joinCode(initial) ?: "") }
@@ -1098,7 +1184,9 @@ class MainActivity : ComponentActivity() {
         var infoText by rememberSaveable { mutableStateOf<String?>(null) }
         val info = remember(infoText) { infoText?.let { runCatching { JSONObject(it) }.getOrNull() } }
         val busy = model.joinBusy
-        BackHandler(enabled = busy) {}
+        // one handler, the last registered wins in Compose: while the study is looked up or joined, back does nothing
+        // (UX audit 2026-10-16, B6); the result of a join is read by App, so it is not lost either way
+        BackHandler { if (!busy) onDone() }
         var message by rememberSaveable { mutableStateOf<String?>(null) }
         var confirmRejoin by remember { mutableStateOf(false) }
         // the camera was refused: the scan button says so and points to the field (audit A10)
@@ -1146,14 +1234,6 @@ class MainActivity : ComponentActivity() {
             model.joinInfo?.let { infoText = it }
             model.joinError?.let { message = errorText(it) }
         }
-        LaunchedEffect(model.joinedStudy) {
-            model.joinedStudy?.let { study ->
-                val address = model.entryAddress
-                model.consumedJoin()
-                if (study.status == "pending") startActivity(EntryActivity.intent(context, study.code, "entry", address = address))
-                onJoined()
-            }
-        }
 
         val scanner = rememberLauncherForActivityResult(ScanContract()) { result -> result.contents?.let { lookUp(it) } }
 
@@ -1186,7 +1266,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-        BackHandler(onBack = onDone)
         // a join link is looked up once, not again after turning the phone
         LaunchedEffect(initial) { if (initial.isNotBlank() && infoText == null && message == null) lookUp(initial) }
         val focus = remember { FocusRequester() }
