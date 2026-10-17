@@ -57,10 +57,10 @@
     <string name="next_prompt_real" formatted="true">بالوقت الفعلي: %1$s، %2$s</string>
     <string name="finished">اكتملت، شكرًا جزيلًا!</string>
     <string name="left">لقد غادرت هذه الدراسة.</string>
-    <string name="left_pending">لقد غادرت هذه الدراسة. سيُبلغ التطبيق الباحثين بذلك فور توفر الاتصال.</string>
+    <string name="left_pending">انتهت مشاركتك على هذا الجهاز. تُرسل الإجابات المعلّقة أولاً، ثم يُبلغ التطبيق الباحثين بانسحابك. تبقى الحالة معلّقة حتى تأكيد الخطوتين.</string>
     <string name="ended">أنهى الباحثون هذه الدراسة.</string>
     <string name="leave_study">مغادرة الدراسة</string>
-    <string name="leave_confirm">لن تصلك استبيانات قصيرة بعد ذلك. تبقى إجاباتك لدى الباحثين ما لم تحذفها عبر «حذف إجاباتي».</string>
+    <string name="leave_confirm">هل تريد مغادرة هذه الدراسة؟ لن تتلقى أسئلة جديدة. ستُرسل الإجابات المعلّقة قبل إبلاغ الباحثين بانسحابك. تبقى إجاباتك لدى الباحثين ما لم تستخدم «حذف إجاباتي».</string>
     <string name="remove_from_list">إزالة من القائمة</string>
     <string name="erase_answers">حذف إجاباتي</string>
     <string name="erase_confirm">حذف جميع إجاباتك في هذه الدراسة؟ ستُحذف أيضًا لدى الباحثين ولا يمكن استعادتها. ثم تُزال الدراسة من التطبيق.</string>

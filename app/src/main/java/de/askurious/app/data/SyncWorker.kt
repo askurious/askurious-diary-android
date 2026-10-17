@@ -111,8 +111,7 @@ object Sync {
             if (e.status == 401) study.unauthorised(System.currentTimeMillis()) else throw e
         }
         val store = StudyStore(context)
-        val fresh = merged(fetched, store.get(study.code), sent) ?: return study
-        store.update(fresh)
+        val fresh = store.synced(fetched, sent) ?: return study
         // the home-screen shortcuts of a study that ended lead nowhere any more
         Shortcuts.update(context)
         // an exit questionnaire that opened after its moment (or whose moment passed while the phone was off)
@@ -177,24 +176,35 @@ object Sync {
      */
     suspend fun leave(context: Context, study: Study): Boolean = withContext(Dispatchers.IO) {
         markLeft(context, study)
-        lock.withLock {
-            // a sync that ran meanwhile may have sent it already
-            val current = StudyStore(context).get(study.code)
-            if (current == null || !current.leavePending) true else leaveLocked(context, current)
+        val sent = try {
+            lock.withLock {
+                val current = StudyStore(context).get(study.code)
+                if (current == null || !current.leavePending) true else leaveLocked(context, current)
+            }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            false
         }
+        if (!sent) SyncWorker.sendSoon(context)
+        sent
     }
 
     /** Tells the server that [study] was left; only with [lock] held. */
     private suspend fun leaveLocked(context: Context, study: Study): Boolean {
         val store = StudyStore(context)
         OfflinePages(context).dropStudy(study.code)
-        val sent = try {
-            Api.leave(study.server, study.secret)
-            true
-        } catch (e: ApiError) {
-            // any other answer (401: the server no longer knows the secret) leaves nothing to tell
-            !e.transient
-        }
+        val sent = transmitLeave(
+            upload = { sendLocked(context, study) && AnswerQueue(context).of(study.code).isEmpty() },
+            leave = {
+                try {
+                    Api.leave(study.server, study.secret)
+                    true
+                } catch (e: ApiError) {
+                    e.status == 401
+                }
+            },
+        )
         if (sent) store.get(study.code)?.takeIf { it.secret == study.secret }?.let {
             store.update(it.copy(status = "left", leavePending = false))
         }
@@ -352,7 +362,7 @@ object Sync {
                 // read again: a leave or a removal while the studies before were synced
                 val s = store.get(code) ?: continue
                 try {
-                    if (!sendLocked(context, s)) offline = true
+                    if (!s.leavePending && !sendLocked(context, s)) offline = true
                     when {
                         s.leavePending -> if (!leaveLocked(context, s)) offline = true
                         wanted(s, s.code in exits) -> synced += oneLocked(context, s)
@@ -360,9 +370,9 @@ object Sync {
                 } catch (e: CancellationException) {
                     throw e
                 } catch (e: ApiError) {
-                    if (e.key == "offline") offline = true
+                    offline = true
                 } catch (e: Exception) {
-                    // the next sync tries again; the study stays as it is
+                    offline = true // retry unreadable storage and failed uploads too
                 }
             }
             if (!offline) lastAll = System.currentTimeMillis()

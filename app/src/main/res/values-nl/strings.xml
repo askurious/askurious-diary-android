@@ -41,10 +41,10 @@
     <string name="next_prompt_real" formatted="true">in echte tijd: %1$s, %2$s</string>
     <string name="finished">Afgerond, hartelijk dank!</string>
     <string name="left">U bent met dit onderzoek gestopt.</string>
-    <string name="left_pending">U bent met dit onderzoek gestopt. De app laat het de onderzoekers weten zodra er verbinding is.</string>
+    <string name="left_pending">Uw deelname is op dit apparaat beëindigd. Eerst worden wachtende antwoorden verzonden; daarna meldt de app uw vertrek aan de onderzoekers. Deze status blijft in afwachting totdat beide stappen zijn bevestigd.</string>
     <string name="ended">De onderzoekers hebben dit onderzoek beëindigd.</string>
     <string name="leave_study">Stoppen met onderzoek</string>
-    <string name="leave_confirm">U krijgt geen korte vragenlijsten meer. Uw antwoorden blijven bij de onderzoekers, tenzij u ze verwijdert met ‘Mijn antwoorden verwijderen’.</string>
+    <string name="leave_confirm">Dit onderzoek verlaten? U krijgt geen nieuwe vragen. Wachtende antwoorden worden verzonden voordat uw vertrek wordt gemeld. Uw antwoorden blijven bij de onderzoekers, tenzij u “Mijn antwoorden verwijderen” gebruikt.</string>
     <string name="remove_from_list">Uit de lijst verwijderen</string>
     <string name="erase_answers">Mijn antwoorden verwijderen</string>
     <string name="erase_confirm">Al uw antwoorden in dit onderzoek verwijderen? Ze worden ook bij de onderzoekers verwijderd en kunnen niet worden hersteld. Daarna verdwijnt het onderzoek uit de app.</string>

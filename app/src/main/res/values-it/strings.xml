@@ -45,10 +45,10 @@
     <string name="next_prompt_real" formatted="true">in tempo reale: %1$s, %2$s</string>
     <string name="finished">Concluso, grazie mille!</string>
     <string name="left">Ha lasciato questo studio.</string>
-    <string name="left_pending">Ha lasciato questo studio. L’app lo comunicherà al gruppo di ricerca non appena sarà disponibile una connessione.</string>
+    <string name="left_pending">La partecipazione è terminata su questo dispositivo. Prima vengono inviate le risposte in attesa, poi viene comunicata la Sua uscita ai ricercatori. Lo stato resta in attesa finché entrambi i passaggi non sono confermati.</string>
     <string name="ended">Il gruppo di ricerca ha concluso questo studio.</string>
     <string name="leave_study">Lascia lo studio</string>
-    <string name="leave_confirm">Lasciare questo studio? Non riceverà più brevi questionari. Le Sue risposte restano al gruppo di ricerca, a meno che non le cancelli con «Cancella le mie risposte».</string>
+    <string name="leave_confirm">Lasciare questo studio? Non riceverà più domande. Le risposte in attesa saranno inviate prima di comunicare la Sua uscita. Le risposte restano presso i ricercatori, salvo che utilizzi «Elimina le mie risposte».</string>
     <string name="remove_from_list">Rimuovi dall’elenco</string>
     <string name="erase_answers">Cancella le mie risposte</string>
     <string name="erase_confirm">Cancellare tutte le Sue risposte a questo studio? Verranno cancellate anche presso il gruppo di ricerca e non potranno essere recuperate. Lo studio verrà poi rimosso dall’app.</string>

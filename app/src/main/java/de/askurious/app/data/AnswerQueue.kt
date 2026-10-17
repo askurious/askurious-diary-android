@@ -98,6 +98,10 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
     fun add(study: String, module: String, due: Long?, notified: Long?, started: Long, completed: Long, version: String, form: String,
             id: String = UUID.randomUUID().toString(), moduleName: String = ""): Item =
         synchronized(SealedText.LOCK) {
+            get(id)?.let { existing ->
+                require(existing.study == study && existing.module == module && existing.due == due) { "Answer identity conflict" }
+                return@synchronized existing
+            }
             if (rows != null) return@synchronized rows.add(Item(id, study, module, due, notified, started, completed, version, form, moduleName = moduleName))
             val existing = all()
             existing.firstOrNull { it.id == id }?.let { return@synchronized it }
@@ -204,6 +208,15 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
         return all().count {
             it.study == study && it.module == module && it.due == null && date(it.completed) == day
         }
+    }
+
+    fun today(study: Study, module: String, now: Long): Int {
+        fun date(ms: Long): LocalDate {
+            val at = Instant.ofEpochMilli(ms)
+            return at.atZone(study.zoneAt(at)).toLocalDate()
+        }
+        val day = date(now)
+        return of(study.code).count { it.module == module && it.due == null && date(it.started) == day }
     }
 
     private fun save(items: List<Item>) {

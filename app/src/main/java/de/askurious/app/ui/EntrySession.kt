@@ -20,7 +20,8 @@ class EntrySession(app: Application, val state: SavedStateHandle) : AndroidViewM
     var saved by mutableStateOf<Boolean>(false)
     var done by mutableStateOf<Boolean>(false)
     var saving by mutableStateOf<Boolean>(false)
-    var offlineAnswerId by mutableStateOf<String>(java.util.UUID.randomUUID().toString())
+    val entryId: String = state.get<String>("entryId") ?: java.util.UUID.randomUUID().toString().also { state["entryId"] = it }
+    var offlineAnswerId by mutableStateOf<String>(entryId)
     var retryable by mutableStateOf<Boolean>(false)
     var loadFailed by mutableStateOf<Boolean>(false)
     var pageProgress by mutableStateOf<Int>(100)

@@ -109,7 +109,8 @@ class QueueDatabaseTest {
 
     @Test fun duplicateIdsAndStudyRemovalPreserveOtherAnswers() {
         val original = add("same")
-        assertEquals(original, add("same", "other"))
+        assertEquals(original, add("same"))
+        assertThrows(IllegalArgumentException::class.java) { add("same", "other") }
         add("other", "other")
         queue().removeStudy("abc")
         assertEquals(listOf("other"), queue().all().map { it.id })

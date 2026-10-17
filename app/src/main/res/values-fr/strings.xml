@@ -45,10 +45,10 @@
     <string name="next_prompt_real" formatted="true">en temps réel : %1$s, %2$s</string>
     <string name="finished">Terminé, merci beaucoup !</string>
     <string name="left">Vous avez quitté cette étude.</string>
-    <string name="left_pending">Vous avez quitté cette étude. L’application en informera l’équipe de recherche dès qu’une connexion sera disponible.</string>
+    <string name="left_pending">Votre participation est terminée sur cet appareil. Les réponses en attente sont envoyées en premier, puis l’application informe les chercheurs de votre départ. Ce statut reste en attente jusqu’à la confirmation des deux étapes.</string>
     <string name="ended">L’équipe de recherche a mis fin à cette étude.</string>
     <string name="leave_study">Quitter l’étude</string>
-    <string name="leave_confirm">Vous ne recevrez plus de brefs questionnaires. Vos réponses restent auprès de l’équipe de recherche, sauf si vous les supprimez avec « Supprimer mes réponses ».</string>
+    <string name="leave_confirm">Quitter cette étude ? Vous ne recevrez plus de questions. Les réponses en attente seront envoyées avant de signaler votre départ. Vos réponses restent auprès des chercheurs, sauf si vous utilisez « Supprimer mes réponses ».</string>
     <string name="remove_from_list">Retirer de la liste</string>
     <string name="erase_answers">Supprimer mes réponses</string>
     <string name="erase_confirm">Supprimer toutes vos réponses à cette étude ? Elles seront aussi supprimées auprès de l’équipe de recherche et ne pourront pas être restaurées. L’étude disparaîtra ensuite de l’application.</string>

@@ -41,10 +41,10 @@
     <string name="next_prompt_real" formatted="true">in Echtzeit: %1$s, %2$s</string>
     <string name="finished">Abgeschlossen, vielen Dank!</string>
     <string name="left">Sie haben diese Studie verlassen.</string>
-    <string name="left_pending">Sie haben diese Studie verlassen. Die App teilt das den Forschenden mit, sobald eine Verbindung besteht.</string>
+    <string name="left_pending">Auf diesem Gerät ist Ihre Teilnahme beendet. Wartende Antworten werden zuerst übertragen; danach teilt die App den Forschenden Ihren Austritt mit. Bis beides bestätigt ist, bleibt die Meldung ausstehend.</string>
     <string name="ended">Die Forschenden haben diese Studie beendet.</string>
     <string name="leave_study">Studie verlassen</string>
-    <string name="leave_confirm">Danach kommen keine Kurzbefragungen mehr. Ihre bisherigen Antworten bleiben bei den Forschenden, außer Sie löschen sie mit „Meine Antworten löschen“.</string>
+    <string name="leave_confirm">Diese Studie verlassen? Sie bekommen keine Fragen mehr. Wartende Antworten werden übertragen, bevor Ihr Austritt gemeldet wird. Ihre Antworten bleiben bei den Forschenden, außer Sie nutzen „Meine Antworten löschen“.</string>
     <string name="remove_from_list">Aus der Liste entfernen</string>
     <string name="erase_answers">Meine Antworten löschen</string>
     <string name="erase_confirm">Alle Ihre Antworten in dieser Studie werden gelöscht, auch bei den Forschenden, und lassen sich nicht wiederherstellen. Die Studie verschwindet danach aus der App.</string>
