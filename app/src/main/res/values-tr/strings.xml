@@ -29,7 +29,7 @@
         <item quantity="one">Günde yaklaşık %d dakika</item>
         <item quantity="other">Günde yaklaşık %d dakika</item>
     </plurals>
-    <string name="join_privacy">Katıldığınızda çalışmanın onam formu açılır. Uygulama ad, e-posta adresi veya telefon numarası kaydetmez ve çalışma diğer çalışmalarınızı göremez.</string>
+    <string name="join_privacy">Katılım, araştırmanın onay formunu açar. Uygulama hesap gerektirmez ve cihaz kimliği göndermez. Araştırma erişimini, taslakları ve onaylanmamış yanıtları bu cihazda saklar. Soruların hangi bilgileri topladığı onay formunda açıklanır. Bir araştırma diğer araştırmalarınızı göremez.</string>
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
     <string name="join_server" formatted="true">Sağlayıcı: Askurious (%1$s)</string>
     <string name="foreign_server" formatted="true">Bu bağlantı bir Askurious sunucusuna gitmiyor (%1$s), bu nedenle uygulama onu açmıyor.</string>
@@ -67,7 +67,7 @@
     <!-- the footer: version and when this APK was built, so one sees which version runs -->
     <string name="build_info" formatted="true">Sürüm %1$s · derleme %2$s</string>
     <string name="about_privacy_title">Gizlilik</string>
-    <string name="about_stores">Uygulama bu telefonda yalnızca çalışmalarınızın listesini ve programlarını, her çalışma için de rastgele bir gizli anahtarı saklar: Bu anahtar, o çalışmadaki yanıtlarınıza ulaşmanın tek yoludur. Uygulamanın hesabı yoktur ve cihaz kimliği, ad, e-posta adresi veya telefon numarası göndermez. Bunların hiçbiri yedeklere veya yeni bir telefona aktarılmaz. Her çalışma için bildirimlerinin sesli gelip gelmediğini de saklar; ana ekranınıza koyduğunuz kısayolların etiketlerini ana ekranınız saklar.</string>
+    <string name="about_stores">Bu telefon araştırma listesini, zamanlamaları ve erişim anahtarlarını, geçici taslakları, önbellekteki anketleri, onay bekleyen yanıtları ve aktarım makbuzlarını saklar. Uygulama hesap gerektirmez ve cihaz kimliği göndermez. Bu yerel araştırma verileri yedeklemelere ve başka cihazlara aktarılmaz. Her çalışma için bildirimlerinin sesli gelip gelmediğini de saklar; ana ekranınıza koyduğunuz kısayolların etiketlerini ana ekranınız saklar.</string>
     <string name="privacy_statement">Gizlilik bildirimi</string>
     <string name="about_licence_title">Lisans</string>
     <string name="about_copyright">© 2026 Philipp Brauner ve Ralf Philipsen, RWTH Aachen University. Tüm hakları saklıdır.</string>
@@ -270,4 +270,15 @@
     <string name="ready_intro_one">Uygulama, çalışmanın kısa anketlerini doğru anda bir bildirimle haber verir. Bunun için bir izne ihtiyaç duyar; ikinci bir ayar isteğe bağlıdır. İkisini de daha sonra telefonun ayarlarından değiştirebilirsiniz.</string>
     <string name="about_provider_unit">İletişim Bilimi Kürsüsü, RWTH Aachen University</string>
     <string name="about_oss_english">Kütüphaneler ve lisansları, lisans metinlerinde olduğu gibi İngilizce belirtilmiştir.</string>
+    <string name="contact_team">Araştırma ekibiyle iletişim kur</string>
+    <string name="copy_contact">İletişim bilgisini kopyala</string>
+    <string name="contact_unavailable">Uygun uygulama yok. İletişim bilgilerini kopyalayın.</string>
+    <string name="contact_copied">İletişim bilgisi kopyalandı.</string>
+    <string name="answer_time">Yanıt zamanı: %1$s</string>
+    <string name="confirmation_time">Sunucu onayı: %1$s</string>
+    <string name="sync_time">Son başarılı güncelleme: %1$s</string>
+    <string name="sync_failed">Güncelleme tamamlanmadı. Önceki araştırma bilgileri gösteriliyor. Lütfen tekrar deneyin.</string>
+    <string name="refresh_studies">Araştırmaları yenile</string>
+    <string name="offline_ready">%1$s: çevrimdışı hazır</string>
+    <string name="offline_missing">%1$s: henüz çevrimdışı hazır değil</string>
 </resources>

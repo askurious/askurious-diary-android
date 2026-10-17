@@ -79,7 +79,7 @@ internal fun MainActivity.JoinScreen(initial: String, onDone: () -> Unit) {
     // while busy this handler takes the back gesture before that of the screens (the last registered wins). It is
     // tied to the activity like the one of the screens (not to this screen's entry of the back stack), so that it
     // stays the last one also after the app was in the background
-    CompositionLocalProvider(LocalLifecycleOwner provides this) { BackHandler(enabled = busy) {} }
+    CompositionLocalProvider(LocalLifecycleOwner provides this) { BackHandler(enabled = busy) { if (model.cancelLookup()) onDone() } }
     var message by rememberSaveable { mutableStateOf<String?>(null) }
     var confirmRejoin by remember { mutableStateOf(false) }
     // the camera was refused: the scan button says so and points to the field (audit A10)
@@ -165,7 +165,7 @@ internal fun MainActivity.JoinScreen(initial: String, onDone: () -> Unit) {
 
     // once the study is found, the screen wears its look (that of its pages)
     StudyTheme(info?.let { Look.fromJson(it.optJSONObject("look")) }, bars = true) {
-        BackScaffold(stringResource(R.string.join_study), { if (!busy) onDone() }) { pad ->
+        BackScaffold(stringResource(R.string.join_study), { if (model.cancelLookup()) onDone() }) { pad ->
             Column(
                 // the insets of the bars are taken by the scaffold already: the keyboard does not add them again (B21)
                 pad.fillMaxSize().imePadding().verticalScroll(rememberScrollState()).pageWidth().padding(16.dp),
@@ -210,7 +210,7 @@ internal fun MainActivity.JoinScreen(initial: String, onDone: () -> Unit) {
                 } else {
                     Text(i.optString("title"), style = MaterialTheme.typography.titleLarge, modifier = Modifier.semantics { heading() })
                     i.optString("description").takeIf { it.isNotBlank() }?.let { Text(it) }
-                    i.optString("contact").takeIf { it.isNotBlank() }?.let { Text(stringResource(R.string.study_contact, it)) }
+                    i.optString("contact").takeIf { it.isNotBlank() }?.let { StudyContact(it) }
                     val days = i.optInt("period_days")
                     // an open-ended study runs until the researchers end it
                     if (i.optBoolean("open_end", false) || days <= 0) Text(stringResource(R.string.duration_open_end))

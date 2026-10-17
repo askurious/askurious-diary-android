@@ -33,7 +33,7 @@
         <item quantity="many">Circa %d minuti al giorno</item>
         <item quantity="other">Circa %d minuti al giorno</item>
     </plurals>
-    <string name="join_privacy">Partecipando si apre il modulo di consenso dello studio. L’app non salva nomi, indirizzi e-mail o numeri di telefono, e lo studio non vede i Suoi altri studi.</string>
+    <string name="join_privacy">L’adesione apre il consenso dello studio. L’app non richiede un account e non invia un identificativo del dispositivo. Conserva accessi, bozze e risposte non confermate sul dispositivo. Il consenso spiega quali dati raccolgono le domande. Uno studio non vede gli altri studi.</string>
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
     <string name="join_server" formatted="true">Fornitore: Askurious (%1$s)</string>
     <string name="foreign_server" formatted="true">Questo link non porta a un server di Askurious (%1$s), perciò l\'app non lo apre.</string>
@@ -71,7 +71,7 @@
     <!-- the footer: version and when this APK was built, so one sees which version runs -->
     <string name="build_info" formatted="true">Versione %1$s · compilata %2$s</string>
     <string name="about_privacy_title">Privacy</string>
-    <string name="about_stores">Su questo telefono l’app conserva solo l’elenco dei Suoi studi con i relativi calendari e, per ogni studio, un segreto casuale: l’unica chiave per le Sue risposte in quello studio. Non ha account e non invia alcun ID del dispositivo, nome, indirizzo e-mail o numero di telefono. Nulla di tutto ciò finisce nei backup o su un nuovo telefono. Per ogni studio conserva anche se le sue notifiche suonano; i nomi dei collegamenti che mette nella schermata Home li conserva la schermata Home.</string>
+    <string name="about_stores">Questo telefono conserva l’elenco degli studi, orari e chiavi di accesso, bozze temporanee, questionari in cache, risposte in attesa di conferma e ricevute di trasmissione. L’app non richiede un account e non invia un identificativo del dispositivo. Questi dati locali sono esclusi dai backup e dai trasferimenti ad altri dispositivi. Per ogni studio conserva anche se le sue notifiche suonano; i nomi dei collegamenti che mette nella schermata Home li conserva la schermata Home.</string>
     <string name="privacy_statement">Informativa sulla privacy</string>
     <string name="about_licence_title">Licenza</string>
     <string name="about_copyright">© 2026 Philipp Brauner e Ralf Philipsen, RWTH Aachen University. Tutti i diritti riservati.</string>
@@ -278,4 +278,15 @@
     <string name="ready_intro_one">L’app Le annuncia i brevi questionari dello studio con una notifica al momento giusto. Per questo serve un’autorizzazione; una seconda impostazione è facoltativa. Può cambiare entrambe in seguito nelle impostazioni del telefono.</string>
     <string name="about_provider_unit">Cattedra di Scienze della comunicazione, RWTH Aachen University</string>
     <string name="about_oss_english">Le librerie e le loro licenze sono indicate in inglese, come nei testi delle licenze.</string>
+    <string name="contact_team">Contatta il gruppo di ricerca</string>
+    <string name="copy_contact">Copia contatto</string>
+    <string name="contact_unavailable">Nessuna app adatta disponibile. Copi i recapiti.</string>
+    <string name="contact_copied">Contatto copiato.</string>
+    <string name="answer_time">Risposta data: %1$s</string>
+    <string name="confirmation_time">Conferma del server: %1$s</string>
+    <string name="sync_time">Ultimo aggiornamento riuscito: %1$s</string>
+    <string name="sync_failed">Aggiornamento incompleto. Restano visibili le informazioni precedenti. Riprovi.</string>
+    <string name="refresh_studies">Aggiorna studi</string>
+    <string name="offline_ready">%1$s: disponibile offline</string>
+    <string name="offline_missing">%1$s: non ancora disponibile offline</string>
 </resources>

@@ -29,7 +29,7 @@
         <item quantity="one">About %d minute a day</item>
         <item quantity="other">About %d minutes a day</item>
     </plurals>
-    <string name="join_privacy">Joining opens the consent form of the study. The app stores no name, e-mail address or phone number, and the study cannot see your other studies.</string>
+    <string name="join_privacy">Joining opens the study consent form. The app needs no account and sends no device ID. It stores study access, drafts and unconfirmed answers on this device. What the questions collect is explained in the study consent. A study cannot see your other studies.</string>
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
     <string name="join_server" formatted="true">Provider: Askurious (%1$s)</string>
     <string name="foreign_server" formatted="true">This link does not lead to a server of Askurious (%1$s), so the app does not open it.</string>
@@ -67,7 +67,7 @@
     <!-- the footer: version and when this APK was built, so one sees which version runs -->
     <string name="build_info" formatted="true">Version %1$s · built %2$s</string>
     <string name="about_privacy_title">Privacy</string>
-    <string name="about_stores">The app keeps on this phone only the list of your studies with their schedules and, for each study, a random secret: the only key to your answers there. It has no account and sends no device ID, name, e-mail address or phone number. Nothing of it goes into backups or to a new phone. For each study it also keeps whether its notifications ring with a sound, and the labels of shortcuts you put on your home screen are kept by your home screen.</string>
+    <string name="about_stores">This phone stores the study list, schedules and access keys, temporary drafts, cached questionnaires, answers awaiting confirmation and transfer receipts. The app needs no account and sends no device ID. These local study data are excluded from backups and device transfers. For each study it also keeps whether its notifications ring with a sound, and the labels of shortcuts you put on your home screen are kept by your home screen.</string>
     <string name="privacy_statement">Privacy statement</string>
     <string name="about_licence_title">Licence</string>
     <string name="about_copyright">© 2026 Philipp Brauner and Ralf Philipsen, RWTH Aachen University. All rights reserved.</string>
@@ -274,4 +274,15 @@
     <string name="time_span" translatable="false">%1$s–%2$s</string>
     <!-- a numbered step of the permission screen: "1. Notifications" (B31) -->
     <string name="ready_step" translatable="false">%1$d. %2$s</string>
+    <string name="contact_team">Contact study team</string>
+    <string name="copy_contact">Copy contact</string>
+    <string name="contact_unavailable">No suitable app is available. Copy the contact details instead.</string>
+    <string name="contact_copied">Contact copied.</string>
+    <string name="answer_time">Answered: %1$s</string>
+    <string name="confirmation_time">Server confirmation: %1$s</string>
+    <string name="sync_time">Last successful update: %1$s</string>
+    <string name="sync_failed">Update incomplete. The previous study information is still shown. Please try again.</string>
+    <string name="refresh_studies">Refresh studies</string>
+    <string name="offline_ready">%1$s: available offline</string>
+    <string name="offline_missing">%1$s: not yet available offline</string>
 </resources>

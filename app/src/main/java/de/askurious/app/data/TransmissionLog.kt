@@ -12,9 +12,10 @@ class TransmissionLog(context: Context) {
         val a = runCatching { JSONArray(text(code).read().text ?: "[]") }.getOrDefault(JSONArray())
         (0 until a.length()).map { a.getJSONObject(it) }
     }
-    fun confirmed(code: String, module: String, review: Boolean, id: String, label: String = ""): Unit = synchronized(SealedText.LOCK) {
+    fun confirmed(code: String, module: String, review: Boolean, id: String, label: String = "", completed: Long? = null): Unit = synchronized(SealedText.LOCK) {
         if (of(code).any { it.optString("id") == id }) return@synchronized
         val receipt = JSONObject().put("id", id).put("module", module).put("at", System.currentTimeMillis()).put("review", review).put("label", label)
+        completed?.let { receipt.put("completed", it) }
         text(code).write(JSONArray((of(code) + receipt).takeLast(20)).toString(), durable = true)
     }
     fun remove(code: String): Unit = synchronized(SealedText.LOCK) { text(code).remove(durable = true) }

@@ -10,7 +10,7 @@ class UiInstrumentation : Instrumentation() {
     override fun onCreate(arguments: Bundle?) { super.onCreate(arguments); phase = arguments?.getString("phase") ?: "ui-entry"; start() }
     override fun onStart() {
         try {
-            UiAuditChecks.run(this, phase)
+            if (phase == "recovery") RecoveryChecks.run(this) else UiAuditChecks.run(this, phase)
             finish(Activity.RESULT_OK, Bundle().apply { putString("stream", "PASS: $phase\n") })
         } catch (failure: Throwable) {
             finish(Activity.RESULT_CANCELED, Bundle().apply { putString("stream", "FAIL: $phase: ${failure.message}\n") })

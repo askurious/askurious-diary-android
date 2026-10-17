@@ -33,7 +33,7 @@
         <item quantity="many">Cerca de %d minutos por dia</item>
         <item quantity="other">Cerca de %d minutos por dia</item>
     </plurals>
-    <string name="join_privacy">Ao participar, abre-se o formulário de consentimento do estudo. A aplicação não guarda nenhum nome, endereço de e-mail ou número de telefone, e o estudo não vê os seus outros estudos.</string>
+    <string name="join_privacy">A adesão abre o consentimento do estudo. A aplicação não exige conta nem envia um identificador do dispositivo. Guarda acessos, rascunhos e respostas não confirmadas neste dispositivo. O consentimento explica os dados recolhidos pelas perguntas. Um estudo não vê os seus outros estudos.</string>
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
     <string name="join_server" formatted="true">Fornecedor: Askurious (%1$s)</string>
     <string name="foreign_server" formatted="true">Esta ligação não leva a um servidor do Askurious (%1$s), por isso a app não a abre.</string>
@@ -71,7 +71,7 @@
     <!-- the footer: version and when this APK was built, so one sees which version runs -->
     <string name="build_info" formatted="true">Versão %1$s · compilada %2$s</string>
     <string name="about_privacy_title">Privacidade</string>
-    <string name="about_stores">Neste telemóvel, a aplicação guarda apenas a lista dos seus estudos com os respetivos horários e, para cada estudo, um segredo aleatório: a única chave para as suas respostas nesse estudo. Não tem conta e não envia nenhum ID do dispositivo, nome, endereço de e-mail ou número de telefone. Nada disto vai para cópias de segurança nem para um novo telemóvel. Para cada estudo guarda também se as notificações tocam com som; os nomes dos atalhos que colocar no ecrã principal são guardados pelo ecrã principal.</string>
+    <string name="about_stores">Este telefone guarda a lista de estudos, horários e chaves de acesso, rascunhos temporários, questionários em cache, respostas à espera de confirmação e comprovativos de envio. A aplicação não exige conta nem envia um identificador do dispositivo. Estes dados locais são excluídos das cópias de segurança e transferências entre dispositivos. Para cada estudo guarda também se as notificações tocam com som; os nomes dos atalhos que colocar no ecrã principal são guardados pelo ecrã principal.</string>
     <string name="privacy_statement">Política de privacidade</string>
     <string name="about_licence_title">Licença</string>
     <string name="about_copyright">© 2026 Philipp Brauner e Ralf Philipsen, RWTH Aachen University. Todos os direitos reservados.</string>
@@ -278,4 +278,15 @@
     <string name="ready_intro_one">A aplicação anuncia-lhe os breves questionários do estudo com uma notificação no momento certo. Para isso precisa de uma permissão; uma segunda definição é opcional. Pode alterar ambas mais tarde nas definições do telemóvel.</string>
     <string name="about_provider_unit">Cátedra de Ciências da Comunicação, RWTH Aachen University</string>
     <string name="about_oss_english">As bibliotecas e as suas licenças são indicadas em inglês, tal como nos textos das licenças.</string>
+    <string name="contact_team">Contactar a equipa do estudo</string>
+    <string name="copy_contact">Copiar contacto</string>
+    <string name="contact_unavailable">Não existe uma aplicação adequada. Copie os dados de contacto.</string>
+    <string name="contact_copied">Contacto copiado.</string>
+    <string name="answer_time">Respondido: %1$s</string>
+    <string name="confirmation_time">Confirmação do servidor: %1$s</string>
+    <string name="sync_time">Última atualização bem-sucedida: %1$s</string>
+    <string name="sync_failed">Atualização incompleta. As informações anteriores continuam visíveis. Tente novamente.</string>
+    <string name="refresh_studies">Atualizar estudos</string>
+    <string name="offline_ready">%1$s: disponível offline</string>
+    <string name="offline_missing">%1$s: ainda não disponível offline</string>
 </resources>

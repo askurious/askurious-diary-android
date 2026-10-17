@@ -33,7 +33,7 @@
         <item quantity="many">Environ %d minutes par jour</item>
         <item quantity="other">Environ %d minutes par jour</item>
     </plurals>
-    <string name="join_privacy">En rejoignant l’étude, vous ouvrez son formulaire de consentement. L’application n’enregistre ni nom, ni adresse e-mail, ni numéro de téléphone, et l’étude ne voit pas vos autres études.</string>
+    <string name="join_privacy">L’inscription ouvre le consentement de l’étude. L’application ne nécessite aucun compte et n’envoie aucun identifiant de l’appareil. Elle conserve les accès, brouillons et réponses non confirmées sur cet appareil. Le consentement explique les données recueillies par les questions. Une étude ne voit pas vos autres études.</string>
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
     <string name="join_server" formatted="true">Éditeur : Askurious (%1$s)</string>
     <string name="foreign_server" formatted="true">Ce lien ne mène pas à un serveur d\'Askurious (%1$s) ; l\'application ne l\'ouvre donc pas.</string>
@@ -71,7 +71,7 @@
     <!-- the footer: version and when this APK was built, so one sees which version runs -->
     <string name="build_info" formatted="true">Version %1$s · compilée le %2$s</string>
     <string name="about_privacy_title">Confidentialité</string>
-    <string name="about_stores">Sur ce téléphone, l’application conserve uniquement la liste de vos études avec leurs calendriers et, pour chaque étude, un secret aléatoire : la seule clé de vos réponses à cette étude. Elle n’a pas de compte et n’envoie ni identifiant de l’appareil, ni nom, ni adresse e-mail, ni numéro de téléphone. Rien de tout cela n’est sauvegardé ni transféré vers un nouveau téléphone. Pour chaque étude, elle garde aussi si ses notifications sonnent ; les noms des raccourcis que vous placez sur l’écran d’accueil sont gardés par l’écran d’accueil.</string>
+    <string name="about_stores">Ce téléphone conserve la liste des études, horaires et clés d’accès, les brouillons temporaires, questionnaires en cache, réponses en attente de confirmation et reçus de transmission. L’application ne nécessite aucun compte et n’envoie aucun identifiant de l’appareil. Ces données locales sont exclues des sauvegardes et des transferts vers un autre appareil. Pour chaque étude, elle garde aussi si ses notifications sonnent ; les noms des raccourcis que vous placez sur l’écran d’accueil sont gardés par l’écran d’accueil.</string>
     <string name="privacy_statement">Déclaration de confidentialité</string>
     <string name="about_licence_title">Licence</string>
     <string name="about_copyright">© 2026 Philipp Brauner et Ralf Philipsen, RWTH Aachen University. Tous droits réservés.</string>
@@ -278,4 +278,15 @@
     <string name="ready_intro_one">L’application annonce les brefs questionnaires de l’étude par une notification au bon moment. Pour cela, elle a besoin d’une autorisation ; un second réglage est facultatif. Vous pourrez modifier les deux plus tard dans les paramètres du téléphone.</string>
     <string name="about_provider_unit">Chaire de sciences de la communication, RWTH Aachen University</string>
     <string name="about_oss_english">Les bibliothèques et leurs licences sont indiquées en anglais, comme dans les textes des licences.</string>
+    <string name="contact_team">Contacter l’équipe de recherche</string>
+    <string name="copy_contact">Copier le contact</string>
+    <string name="contact_unavailable">Aucune application adaptée. Copiez les coordonnées.</string>
+    <string name="contact_copied">Contact copié.</string>
+    <string name="answer_time">Réponse donnée : %1$s</string>
+    <string name="confirmation_time">Confirmation du serveur : %1$s</string>
+    <string name="sync_time">Dernière mise à jour réussie : %1$s</string>
+    <string name="sync_failed">Mise à jour incomplète. Les informations précédentes restent affichées. Réessayez.</string>
+    <string name="refresh_studies">Actualiser les études</string>
+    <string name="offline_ready">%1$s : disponible hors ligne</string>
+    <string name="offline_missing">%1$s : pas encore disponible hors ligne</string>
 </resources>

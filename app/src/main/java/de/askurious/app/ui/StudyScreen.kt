@@ -111,7 +111,7 @@ internal fun MainActivity.StudyScreen(study: Study, onBack: () -> Unit, snackbar
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             if (study.summary.isNotBlank()) Text(study.summary)
-            if (study.contact.isNotBlank()) Text(stringResource(R.string.study_contact, study.contact))
+            if (study.contact.isNotBlank()) StudyContact(study.contact)
             StudyNow(study)
             if (study.code in model.refused) {
                 Text(stringResource(R.string.limit_refused), style = MaterialTheme.typography.bodySmall)
@@ -139,6 +139,7 @@ internal fun MainActivity.StudyScreen(study: Study, onBack: () -> Unit, snackbar
                 SectionTitle(stringResource(R.string.study_modules))
                 for (m in study.modules) {
                     BulletText(moduleText(m))
+                    if (study.running && m.offline) Text(stringResource(if ((study.code to m.key) in model.offlineReady) R.string.offline_ready else R.string.offline_missing, m.name), style = MaterialTheme.typography.bodySmall)
                     // a timed module the participant may also start themselves
                     if (m.selfStart != null) BulletText(stringResource(R.string.also_self_module, m.name))
                 }
@@ -611,17 +612,36 @@ private fun QuietDialog(initial: Quiet?, onDismiss: () -> Unit, onSave: (Quiet?)
 
     fun pick(value: String, set: (String) -> Unit) {
         val t = LocalTime.parse(value)
-        TimePickerDialog(
+        val dialog = TimePickerDialog(
             context, { _, h, m -> set("%02d:%02d".format(Locale.ROOT, h, m)) }, t.hour, t.minute,
             DateFormat.is24HourFormat(context),
-        ).show()
+        )
+        dialog.setOnShowListener {
+            fun find(view: android.view.View): android.widget.TimePicker? = when (view) {
+                is android.widget.TimePicker -> view
+                is android.view.ViewGroup -> (0 until view.childCount).firstNotNullOfOrNull { find(view.getChildAt(it)) }
+                else -> null
+            }
+            val picker = dialog.window?.decorView?.let { find(it) }
+            val parent = picker?.parent as? android.view.ViewGroup
+            if (picker != null && parent != null) {
+                val index = parent.indexOfChild(picker)
+                val params = picker.layoutParams
+                parent.removeView(picker)
+                val scroll = android.widget.ScrollView(context)
+                scroll.addView(picker, android.widget.FrameLayout.LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT))
+                params.height = ((context.resources.configuration.screenHeightDp - 180).coerceIn(100, 360) * context.resources.displayMetrics.density).toInt()
+                parent.addView(scroll, index, params)
+            }
+        }
+        dialog.show()
     }
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.quiet_title)) },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(stringResource(R.string.quiet_hint))
                 SwitchRow(stringResource(R.string.quiet_use), on) { on = it }
                 if (on) {

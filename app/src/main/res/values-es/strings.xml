@@ -33,7 +33,7 @@
         <item quantity="many">Aproximadamente %d minutos al día</item>
         <item quantity="other">Aproximadamente %d minutos al día</item>
     </plurals>
-    <string name="join_privacy">Al unirse se abre el formulario de consentimiento del estudio. La aplicación no guarda ningún nombre, dirección de correo electrónico ni número de teléfono, y el estudio no puede ver sus otros estudios.</string>
+    <string name="join_privacy">Al unirse se abre el consentimiento del estudio. La app no necesita cuenta ni envía un identificador del dispositivo. Guarda accesos, borradores y respuestas sin confirmar en este dispositivo. El consentimiento explica qué datos recogen las preguntas. Un estudio no ve sus otros estudios.</string>
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
     <string name="join_server" formatted="true">Proveedor: Askurious (%1$s)</string>
     <string name="foreign_server" formatted="true">Este enlace no lleva a un servidor de Askurious (%1$s), por eso la app no lo abre.</string>
@@ -71,7 +71,7 @@
     <!-- the footer: version and when this APK was built, so one sees which version runs -->
     <string name="build_info" formatted="true">Versión %1$s · compilada %2$s</string>
     <string name="about_privacy_title">Privacidad</string>
-    <string name="about_stores">En este teléfono, la aplicación solo guarda la lista de sus estudios con sus horarios y, para cada estudio, un secreto aleatorio: la única clave de sus respuestas en ese estudio. No tiene cuenta y no envía ningún identificador del dispositivo, nombre, correo electrónico ni número de teléfono. Nada de ello se incluye en copias de seguridad ni pasa a un teléfono nuevo. Para cada estudio guarda también si sus notificaciones suenan; los nombres de los accesos directos que ponga en su pantalla de inicio los guarda la pantalla de inicio.</string>
+    <string name="about_stores">Este teléfono guarda la lista de estudios, horarios y claves de acceso, borradores temporales, cuestionarios en caché, respuestas pendientes de confirmación y recibos de envío. La app no necesita cuenta ni envía un identificador del dispositivo. Estos datos locales se excluyen de las copias de seguridad y del traslado a otro dispositivo. Para cada estudio guarda también si sus notificaciones suenan; los nombres de los accesos directos que ponga en su pantalla de inicio los guarda la pantalla de inicio.</string>
     <string name="privacy_statement">Declaración de privacidad</string>
     <string name="about_licence_title">Licencia</string>
     <string name="about_copyright">© 2026 Philipp Brauner y Ralf Philipsen, RWTH Aachen University. Todos los derechos reservados.</string>
@@ -278,4 +278,15 @@
     <string name="ready_intro_one">La aplicación le avisa con una notificación en el momento adecuado de los cuestionarios breves del estudio. Para ello necesita un permiso; un segundo ajuste es opcional. Puede cambiar ambos después en los ajustes del teléfono.</string>
     <string name="about_provider_unit">Cátedra de Ciencias de la Comunicación, RWTH Aachen University</string>
     <string name="about_oss_english">Las bibliotecas y sus licencias se indican en inglés, como en los textos de las licencias.</string>
+    <string name="contact_team">Contactar con el equipo del estudio</string>
+    <string name="copy_contact">Copiar contacto</string>
+    <string name="contact_unavailable">No hay una aplicación adecuada. Copie los datos de contacto.</string>
+    <string name="contact_copied">Contacto copiado.</string>
+    <string name="answer_time">Respondido: %1$s</string>
+    <string name="confirmation_time">Confirmación del servidor: %1$s</string>
+    <string name="sync_time">Última actualización correcta: %1$s</string>
+    <string name="sync_failed">Actualización incompleta. Se sigue mostrando la información anterior. Inténtelo de nuevo.</string>
+    <string name="refresh_studies">Actualizar estudios</string>
+    <string name="offline_ready">%1$s: disponible sin conexión</string>
+    <string name="offline_missing">%1$s: aún no disponible sin conexión</string>
 </resources>

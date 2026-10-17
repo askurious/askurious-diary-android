@@ -104,6 +104,12 @@ internal fun MainActivity.HomeScreen(
             // view after a cold start also with many studies (audit A1, SA3; UX audit 2026-10-16, B1); nothing while
             // all is well
             if (studies.isNotEmpty()) item(key = "readiness") { Readiness(studies, allowNotifications) }
+            if (studies.isNotEmpty()) item(key = "sync-status") {
+                val success = model.syncState.first
+                if (success > 0) Text(stringResource(R.string.sync_time, java.time.Instant.ofEpochMilli(success).atZone(java.time.ZoneId.systemDefault()).format(java.time.format.DateTimeFormatter.ofLocalizedDateTime(java.time.format.FormatStyle.SHORT))))
+                if (model.syncState.second) Message(stringResource(R.string.sync_failed), error = true)
+                TextButton(enabled = !model.refreshing, onClick = model::refresh) { Text(stringResource(R.string.refresh_studies)) }
+            }
             // the wrong clock with the way to set it (B29)
             if (model.clockOff) item(key = "notice-clock") {
                 Notice(stringResource(R.string.clock_off), Icons.Outlined.Warning, stringResource(R.string.date_settings_open)) { openDateSettings() }

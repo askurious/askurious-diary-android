@@ -29,7 +29,7 @@
         <item quantity="one">Etwa %d Minute am Tag</item>
         <item quantity="other">Etwa %d Minuten am Tag</item>
     </plurals>
-    <string name="join_privacy">Beim Beitritt öffnet sich die Einwilligung der Studie. Die App speichert keinen Namen, keine E-Mail-Adresse und keine Telefonnummer, und die Studie sieht keine anderen Studien auf diesem Telefon.</string>
+    <string name="join_privacy">Der Beitritt öffnet die Einwilligung der Studie. Die App benötigt kein Konto und sendet keine Geräte-ID. Sie speichert Studienzugänge, Entwürfe und unbestätigte Antworten auf diesem Gerät. Welche Angaben die Fragen erheben, erklärt die Einwilligung. Eine Studie kann Ihre anderen Studien nicht sehen.</string>
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
     <string name="join_server" formatted="true">Anbieter: Askurious (%1$s)</string>
     <string name="foreign_server" formatted="true">Dieser Link führt nicht zu einem Server von Askurious (%1$s). Die App öffnet ihn deshalb nicht.</string>
@@ -67,7 +67,7 @@
     <!-- the footer: version and when this APK was built, so one sees which version runs -->
     <string name="build_info" formatted="true">Version %1$s · gebaut %2$s</string>
     <string name="about_privacy_title">Datenschutz</string>
-    <string name="about_stores">Die App speichert auf diesem Telefon nur die Liste der Studien mit ihren Zeitplänen und für jede Studie ein zufälliges Geheimnis: den einzigen Schlüssel zu den Antworten dort. Sie hat kein Konto und sendet keine Geräte-ID, keinen Namen, keine E-Mail-Adresse und keine Telefonnummer. Nichts davon kommt in Sicherungen oder auf ein neues Telefon. Je Studie speichert sie außerdem, ob ihre Benachrichtigungen mit Ton kommen; die Bezeichnungen von Verknüpfungen auf dem Startbildschirm speichert der Startbildschirm.</string>
+    <string name="about_stores">Auf diesem Telefon liegen die Studienliste, Zeitpläne und Zugangsschlüssel, vorübergehende Entwürfe, zwischengespeicherte Fragebögen, noch unbestätigte Antworten und Übertragungsbelege. Die App benötigt kein Konto und sendet keine Geräte-ID. Diese lokalen Studiendaten sind von Sicherungen und Geräteübertragungen ausgeschlossen. Je Studie speichert sie außerdem, ob ihre Benachrichtigungen mit Ton kommen; die Bezeichnungen von Verknüpfungen auf dem Startbildschirm speichert der Startbildschirm.</string>
     <string name="privacy_statement">Datenschutzerklärung</string>
     <string name="about_licence_title">Lizenz</string>
     <string name="about_copyright">© 2026 Philipp Brauner und Ralf Philipsen, RWTH Aachen University. Alle Rechte vorbehalten.</string>
@@ -270,4 +270,15 @@
     <string name="ready_intro_one">Die App kündigt die Kurzbefragungen der Studie im richtigen Moment per Benachrichtigung an. Dafür braucht sie ein Recht, eine zweite Einstellung ist freiwillig. Sie können beides später in den Einstellungen des Telefons ändern.</string>
     <string name="about_provider_unit">Lehrstuhl für Kommunikationswissenschaft, RWTH Aachen University</string>
     <string name="about_oss_english">Die Bibliotheken und ihre Lizenzen sind auf Englisch genannt, wie in den Lizenztexten.</string>
+    <string name="contact_team">Studienteam kontaktieren</string>
+    <string name="copy_contact">Kontakt kopieren</string>
+    <string name="contact_unavailable">Keine passende App verfügbar. Kopieren Sie stattdessen die Kontaktdaten.</string>
+    <string name="contact_copied">Kontakt kopiert.</string>
+    <string name="answer_time">Beantwortet: %1$s</string>
+    <string name="confirmation_time">Serverbestätigung: %1$s</string>
+    <string name="sync_time">Letzte erfolgreiche Aktualisierung: %1$s</string>
+    <string name="sync_failed">Aktualisierung unvollständig. Die bisherigen Studieninformationen bleiben sichtbar. Bitte erneut versuchen.</string>
+    <string name="refresh_studies">Studien aktualisieren</string>
+    <string name="offline_ready">%1$s: offline bereit</string>
+    <string name="offline_missing">%1$s: noch nicht offline bereit</string>
 </resources>

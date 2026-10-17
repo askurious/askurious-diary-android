@@ -294,7 +294,7 @@ object Sync {
             val error = try {
                 val reply = Api.offlineAnswer(study.server, study.secret, item)
                 if (AnswerQueue.acknowledged(reply)) {
-                    TransmissionLog(context).confirmed(study.code, item.module, reply.optString("status") == "review", item.id, item.moduleName.ifBlank { study.modules.firstOrNull { it.key == item.module }?.name.orEmpty() })
+                    TransmissionLog(context).confirmed(study.code, item.module, reply.optString("status") == "review", item.id, item.moduleName.ifBlank { study.modules.firstOrNull { it.key == item.module }?.name.orEmpty() }, study.realAt(item.completed))
                     item.due?.let { PromptLog(context).completed(study.code, item.module, it) }
                     null
                 } else ApiError("unconfirmed", 409)
@@ -354,6 +354,7 @@ object Sync {
         val synced = mutableListOf<Study>()
         val offline = lock.withLock {
             var offline = false
+            var checked = false
             // answers of studies taken off the phone while the queue could not be read (T07-N-2)
             runCatching { AnswerQueue(context).retryForget() }
             val exits = PromptLog(context).exits()
@@ -362,6 +363,7 @@ object Sync {
                 // read again: a leave or a removal while the studies before were synced
                 val s = store.get(code) ?: continue
                 try {
+                    checked = checked || s.leavePending || wanted(s, s.code in exits) || AnswerQueue(context).of(s.code).isNotEmpty()
                     if (!s.leavePending && !sendLocked(context, s)) offline = true
                     when {
                         s.leavePending -> if (!leaveLocked(context, s)) offline = true
@@ -376,6 +378,9 @@ object Sync {
                 }
             }
             if (!offline) lastAll = System.currentTimeMillis()
+            val status = context.getSharedPreferences("sync_status", Context.MODE_PRIVATE).edit().putBoolean("failed", offline)
+            if (!offline && checked) status.putLong("success", lastAll)
+            status.apply()
             offline
         }
         // the kept pages without the lock: a leave or a deletion meanwhile does not wait for the downloads (AN-9)
