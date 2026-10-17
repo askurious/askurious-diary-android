@@ -98,9 +98,10 @@ object Api {
      * [due] and [notified]: epoch milliseconds of the prompt; null for an entry the participant started.
      * [reminded]: the participant opened it from the reminder notification.
      */
-    suspend fun entry(server: String, secret: String, module: String, due: Long?, notified: Long?, reminded: Boolean = false): String {
+    suspend fun entry(server: String, secret: String, module: String, due: Long?, notified: Long?, reminded: Boolean = false, uuid: String? = null): String {
         val body = JSONObject().put("module", module).put("tz", ZoneId.systemDefault().id)
             .put("due", due ?: JSONObject.NULL).put("notified", notified ?: JSONObject.NULL)
+        if (uuid != null) body.put("uuid", uuid)
         if (reminded) body.put("reminded", true)
         return call(server, "POST", "$BASE/entry", body, secret).optStringOrNull("url") ?: throw ApiError("error")
     }

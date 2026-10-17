@@ -37,10 +37,10 @@
     <string name="next_prompt_real" formatted="true">实际时间：%1$s，%2$s</string>
     <string name="finished">已完成，非常感谢！</string>
     <string name="left">您已退出此研究。</string>
-    <string name="left_pending">您已退出此研究。一旦有网络连接，本应用将通知研究人员。</string>
+    <string name="left_pending">您在此设备上的参与已结束。应用会先发送待传输的回答，再通知研究人员您已退出。两项操作均获确认前，此状态将保持待处理。</string>
     <string name="ended">研究人员已结束此研究。</string>
     <string name="leave_study">退出研究</string>
-    <string name="leave_confirm">您将不再收到简短问卷。除非您通过“删除我的回答”将其删除，否则您的回答将保留在研究人员处。</string>
+    <string name="leave_confirm">要退出此研究吗？您将不再收到问题。待传输的回答会先发送，然后才会报告您的退出。除非使用“删除我的回答”，否则您的回答将保留在研究人员处。</string>
     <string name="remove_from_list">从列表中移除</string>
     <string name="erase_answers">删除我的回答</string>
     <string name="erase_confirm">要删除您在此研究中的全部回答吗？这些回答在研究人员处也会被删除，且无法恢复。随后该研究将从本应用中移除。</string>

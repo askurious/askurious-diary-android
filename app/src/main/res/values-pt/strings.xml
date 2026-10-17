@@ -45,10 +45,10 @@
     <string name="next_prompt_real" formatted="true">em tempo real: %1$s, %2$s</string>
     <string name="finished">Concluído, muito obrigado!</string>
     <string name="left">Saiu deste estudo.</string>
-    <string name="left_pending">Saiu deste estudo. A aplicação informará a equipa de investigação assim que houver ligação.</string>
+    <string name="left_pending">A participação terminou neste dispositivo. Primeiro são enviadas as respostas pendentes; depois a aplicação informa os investigadores da sua saída. O estado mantém-se pendente até à confirmação dos dois passos.</string>
     <string name="ended">A equipa de investigação terminou este estudo.</string>
     <string name="leave_study">Sair do estudo</string>
-    <string name="leave_confirm">Sair deste estudo? Não receberá mais breves questionários. As suas respostas ficam com a equipa de investigação, a não ser que as apague com «Apagar as minhas respostas».</string>
+    <string name="leave_confirm">Sair deste estudo? Não receberá mais perguntas. As respostas pendentes serão enviadas antes de comunicar a sua saída. As respostas ficam com os investigadores, exceto se usar «Eliminar as minhas respostas».</string>
     <string name="remove_from_list">Remover da lista</string>
     <string name="erase_answers">Apagar as minhas respostas</string>
     <string name="erase_confirm">Apagar todas as suas respostas neste estudo? Também são apagadas junto da equipa de investigação e não podem ser recuperadas. Depois, o estudo desaparece da aplicação.</string>

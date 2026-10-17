@@ -41,10 +41,10 @@
     <string name="next_prompt_real" formatted="true">gerçek zamanda: %1$s, %2$s</string>
     <string name="finished">Tamamlandı, çok teşekkür ederiz!</string>
     <string name="left">Bu çalışmadan ayrıldınız.</string>
-    <string name="left_pending">Bu çalışmadan ayrıldınız. Uygulama, bağlantı kurulur kurulmaz bunu araştırmacılara bildirecek.</string>
+    <string name="left_pending">Bu cihazdaki katılımınız sona erdi. Önce bekleyen yanıtlar gönderilir, ardından uygulama ayrıldığınızı araştırmacılara bildirir. Her iki adım onaylanana kadar durum beklemede kalır.</string>
     <string name="ended">Araştırmacılar bu çalışmayı sonlandırdı.</string>
     <string name="leave_study">Çalışmadan ayrıl</string>
-    <string name="leave_confirm">Artık kısa anket almayacaksınız. Yanıtlarınız, “Yanıtlarımı sil” ile silmediğiniz sürece araştırmacılarda kalır.</string>
+    <string name="leave_confirm">Bu araştırmadan ayrılmak istiyor musunuz? Yeni soru almayacaksınız. Bekleyen yanıtlar, ayrıldığınız bildirilmeden önce gönderilecektir. “Yanıtlarımı sil” seçeneğini kullanmadığınız sürece yanıtlarınız araştırmacılarda kalır.</string>
     <string name="remove_from_list">Listeden kaldır</string>
     <string name="erase_answers">Yanıtlarımı sil</string>
     <string name="erase_confirm">Bu çalışmadaki tüm yanıtlarınız silinsin mi? Yanıtlar araştırmacılarda da silinir ve geri getirilemez. Ardından çalışma uygulamadan kaldırılır.</string>

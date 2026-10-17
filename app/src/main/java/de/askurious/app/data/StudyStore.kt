@@ -87,6 +87,13 @@ class StudyStore internal constructor(private val prefs: SharedPreferences, priv
         if (all.any { it.code == study.code }) save(all.map { if (it.code == study.code) study else it })
     }
 
+    /** Merge while holding the same lock as local changes. */
+    fun synced(fetched: Study, sentQuiet: QuietFrom?): Study? = synchronized(SealedText.LOCK) {
+        val fresh = Sync.merged(fetched, get(fetched.code), sentQuiet) ?: return@synchronized null
+        update(fresh)
+        fresh
+    }
+
     fun remove(code: String): Unit = synchronized(SealedText.LOCK) { save(all().filterNot { it.code == code }) }
 
     private fun save(studies: List<Study>) {

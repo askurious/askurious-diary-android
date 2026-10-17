@@ -49,10 +49,10 @@
     <string name="next_prompt_real" formatted="true">w czasie rzeczywistym: %1$s, %2$s</string>
     <string name="finished">Zakończono, dziękujemy!</string>
     <string name="left">Zrezygnowano z udziału w tym badaniu.</string>
-    <string name="left_pending">Zrezygnowano z udziału w tym badaniu. Aplikacja poinformuje o tym badaczy, gdy tylko będzie połączenie.</string>
+    <string name="left_pending">Udział na tym urządzeniu został zakończony. Najpierw wysyłane są oczekujące odpowiedzi, a następnie aplikacja informuje badaczy o rezygnacji. Status pozostaje oczekujący do potwierdzenia obu kroków.</string>
     <string name="ended">Badacze zakończyli to badanie.</string>
     <string name="leave_study">Zrezygnuj z badania</string>
-    <string name="leave_confirm">Nie będzie już kolejnych krótkich kwestionariuszy. Odpowiedzi pozostaną u badaczy, chyba że zostaną usunięte przyciskiem „Usuń moje odpowiedzi”.</string>
+    <string name="leave_confirm">Zrezygnować z udziału w badaniu? Nie będzie już kolejnych pytań. Oczekujące odpowiedzi zostaną wysłane przed zgłoszeniem rezygnacji. Odpowiedzi pozostaną u badaczy, chyba że użyjesz opcji „Usuń moje odpowiedzi”.</string>
     <string name="remove_from_list">Usuń z listy</string>
     <string name="erase_answers">Usuń moje odpowiedzi</string>
     <string name="erase_confirm">Usunąć wszystkie odpowiedzi w tym badaniu? Zostaną usunięte również u badaczy i nie będzie można ich przywrócić. Badanie zniknie następnie z aplikacji.</string>

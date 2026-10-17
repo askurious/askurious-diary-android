@@ -31,8 +31,8 @@ data class Prompt(
 }
 
 /**
- * The prompts of the fixed and random modules, computed on the device in local time (so a change of time zone or
- * daylight saving time moves them with the person). The server computes the same list from the same definition for
+ * The prompts of the fixed and random modules, computed in the server's per-day time zone history.
+ * A newly reported zone applies from the following study day; daylight saving follows that zone's rules. The server computes the same list from the same definition for
  * the export and to check that a prompt was due (app/diary.py, prompts()). A random module draws its times per day
  * from the person's seed and the quiet hours valid on that day (RandomTimes, Study.quietOn). No prompt on the days of a
  * pause the researchers set (Study.pausedOn), and none while the person is paused (status "paused").
@@ -48,8 +48,8 @@ object Schedule {
         // an open-ended study has no last day: its prompts go on until the researchers end it
         val last = study.lastDay ?: if (study.openEnd) LocalDate.MAX else return emptyList()
         val out = mutableListOf<Prompt>()
-        var date: LocalDate = maxOf(first, from.atZone(zone).toLocalDate())
-        val end = minOf(last, until.atZone(zone).toLocalDate())
+        var date: LocalDate = maxOf(first, from.atZone(study.zoneAt(from, zone)).toLocalDate().minusDays(2))
+        val end = minOf(last, until.atZone(study.zoneAt(until, zone)).toLocalDate().plusDays(2))
         while (!date.isAfter(end)) {
             if (study.pausedOn(date)) {
                 date = date.plusDays(1)
@@ -65,7 +65,7 @@ object Schedule {
                     is Trigger.Self -> continue
                 }
                 for (time in times) {
-                    val due = ZonedDateTime.of(date, time, zone).toInstant()
+                    val due = ZonedDateTime.of(date, time, study.zoneOn(date, zone)).toInstant()
                     if (!due.isBefore(from) && due.isBefore(until)) out += Prompt(study.code, m.key, due.toEpochMilli(), m.expires, m.reminder, study.clock)
                 }
             }
@@ -90,7 +90,8 @@ object Schedule {
     /** Only today's unanswered, still valid prompts; opened does not mean answered. */
     fun available(study: Study, now: Instant, zone: ZoneId = ZoneId.systemDefault()): List<Prompt> {
         val v = study.at(now)
-        val start = v.atZone(zone).toLocalDate().atStartOfDay(zone).toInstant()
+        val effectiveZone = study.zoneAt(v, zone)
+        val start = v.atZone(effectiveZone).toLocalDate().atStartOfDay(effectiveZone).toInstant()
         return prompts(study, start.minusSeconds(24 * 3600), v.plusMillis(1), zone).filter { p ->
             val m = study.modules.first { it.key == p.module }
             (m.expires > 0 || p.due >= start.toEpochMilli()) && open(m, p.due, v.toEpochMilli()) && "${p.module}|${p.due}" !in study.completedPrompts
@@ -141,7 +142,7 @@ object Schedule {
     fun exitAt(study: Study, zone: ZoneId = ZoneId.systemDefault()): Long? {
         if (study.exit == null || study.status == "left" || study.status == "pending") return null
         val last = study.lastDay ?: return null
-        return ZonedDateTime.of(last.plusDays(1), EXIT_TIME, zone).toInstant().toEpochMilli()
+        return ZonedDateTime.of(last.plusDays(1), EXIT_TIME, study.zoneOn(last.plusDays(1), zone)).toInstant().toEpochMilli()
     }
 
     /**

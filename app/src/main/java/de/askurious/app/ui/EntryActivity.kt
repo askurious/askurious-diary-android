@@ -252,7 +252,7 @@ class EntryActivity : ComponentActivity() {
         retryable = false
         lifecycleScope.launch {
             try {
-                val address = Api.absolute(intent.getStringExtra(EXTRA_ADDRESS) ?: Api.entry(study.server, study.secret, module, due, notified, reminded), study.server)
+                val address = Api.absolute(intent.getStringExtra(EXTRA_ADDRESS) ?: Api.entry(study.server, study.secret, module, due, notified, reminded, session.entryId), study.server)
                 clearWebState()
                 url = address
             } catch (e: ApiError) {
@@ -373,7 +373,7 @@ class EntryActivity : ComponentActivity() {
         if (due == null) {
             // started by the participant: a self module, or a prompted one that may also be started so
             val t = m.selfTrigger ?: return null
-            if (t.maxPerDay > 0 && AnswerQueue(this).today(study.code, module, now) >= t.maxPerDay) {
+            if (t.maxPerDay > 0 && AnswerQueue(this).today(study, module, now) >= t.maxPerDay) {
                 error = getString(R.string.limit)
                 return null
             }

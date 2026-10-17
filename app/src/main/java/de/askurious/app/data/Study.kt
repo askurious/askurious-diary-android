@@ -120,6 +120,15 @@ data class Exit(val name: String, val open: Boolean, val until: LocalDate?) {
     }
 }
 
+data class ZoneFrom(val from: LocalDate?, val zone: ZoneId) {
+    fun toJson(): JSONObject = JSONObject().put("from", from?.toString() ?: JSONObject.NULL).put("tz", zone.id)
+    companion object {
+        fun fromJson(o: JSONObject): ZoneFrom? = runCatching {
+            ZoneFrom(o.optStringOrNull("from")?.let(LocalDate::parse), ZoneId.of(o.getString("tz")))
+        }.getOrNull()
+    }
+}
+
 /** One enrolment of this device in a diary study. [secret] is the only key to it; the server keeps its hash. */
 data class Study(
     val code: String,
@@ -176,6 +185,8 @@ data class Study(
      * and kept only on the device (the server never sends it; Sync.merged keeps it).
      */
     val sound: Boolean = true,
+    val timezone: String? = null,
+    val zoneHistory: List<ZoneFrom> = emptyList(),
     val contact: String = "",
     val completedPrompts: Set<String> = emptySet(),
 ) {
@@ -200,8 +211,22 @@ data class Study(
     fun realAt(time: Long): Long = clock?.real(time) ?: time
 
     /** The study's date today, in [zone]. */
-    fun today(zone: ZoneId = ZoneId.systemDefault(), real: Long = System.currentTimeMillis()): LocalDate =
-        Instant.ofEpochMilli(now(real)).atZone(zone).toLocalDate()
+    fun today(zone: ZoneId? = null, real: Long = System.currentTimeMillis()): LocalDate {
+        val at = Instant.ofEpochMilli(now(real))
+        return at.atZone(zone ?: zoneAt(at)).toLocalDate()
+    }
+
+    fun zoneOn(day: LocalDate, fallback: ZoneId = ZoneId.systemDefault()): ZoneId =
+        zoneHistory.lastOrNull { it.from == null || !it.from.isAfter(day) }?.zone
+            ?: zoneHistory.lastOrNull()?.zone ?: timezone?.let(ZoneId::of) ?: fallback
+
+    fun zoneAt(at: Instant, fallback: ZoneId = ZoneId.systemDefault()): ZoneId {
+        var zone = zoneHistory.firstOrNull()?.zone ?: timezone?.let(ZoneId::of) ?: fallback
+        for (h in zoneHistory.drop(1)) {
+            if (h.from != null && !at.isBefore(h.from.atStartOfDay(h.zone).toInstant())) zone = h.zone
+        }
+        return zone
+    }
 
     /** Whether [day] lies in a pause of the researchers: no prompts on it. */
     fun pausedOn(day: LocalDate): Boolean = pauses.any { (from, to) -> !day.isBefore(from) && (to == null || !day.isAfter(to)) }
@@ -240,6 +265,7 @@ data class Study(
         .put("unauthorised_since", unauthorisedSince ?: JSONObject.NULL)
         .put("leave_pending", leavePending)
         .put("seed", seed)
+        .put("tz", timezone ?: JSONObject.NULL).put("tz_history", JSONArray(zoneHistory.map { it.toJson() }))
         .put("quiet", JSONArray(quiet.map { it.toJson() }))
         .put("quiet_pending", quietPending?.toJson() ?: JSONObject.NULL)
         .put("pauses", JSONArray(pauses.map { (from, to) -> JSONArray(listOf(from.toString(), to?.toString() ?: JSONObject.NULL)) }))
@@ -280,6 +306,10 @@ data class Study(
             unauthorisedSince = if (o.isNull("unauthorised_since")) null else o.optLong("unauthorised_since"),
             leavePending = o.optBoolean("leave_pending", false),
             seed = o.optLong("seed", 0L),
+            timezone = o.optStringOrNull("tz")?.takeIf { runCatching { ZoneId.of(it) }.isSuccess },
+            zoneHistory = o.optJSONArray("tz_history")?.let { arr ->
+                (0 until arr.length()).mapNotNull { arr.optJSONObject(it)?.let(ZoneFrom::fromJson) }
+            } ?: emptyList(),
             quiet = o.optJSONArray("quiet")?.let { arr ->
                 (0 until arr.length()).mapNotNull { k -> arr.optJSONObject(k)?.let(QuietFrom::fromJson) }
             } ?: emptyList(),

@@ -41,10 +41,10 @@
     <string name="next_prompt_real" formatted="true">real time: %1$s, %2$s</string>
     <string name="finished">Finished, thank you!</string>
     <string name="left">You left this study.</string>
-    <string name="left_pending">You left this study. The app will tell the researchers as soon as it has a connection.</string>
+    <string name="left_pending">Your participation has ended on this device. Pending answers are sent first; then the app tells the researchers. Until both succeed, this status remains pending.</string>
     <string name="ended">The researchers have ended this study.</string>
     <string name="leave_study">Leave study</string>
-    <string name="leave_confirm">You will get no more short surveys. Your answers stay with the researchers unless you delete them with “Delete my answers”.</string>
+    <string name="leave_confirm">Leave this study? You will get no more questions. Pending answers will be sent before the researchers are told you left. Your answers stay with the researchers unless you use “Delete my answers”.</string>
     <string name="remove_from_list">Remove from list</string>
     <string name="erase_answers">Delete my answers</string>
     <string name="erase_confirm">All your answers in this study are deleted, at the researchers too, and cannot be restored. The study is then removed from the app.</string>
