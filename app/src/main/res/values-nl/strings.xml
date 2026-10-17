@@ -31,7 +31,7 @@
     </plurals>
     <string name="join_privacy">Bij deelname opent het toestemmingsformulier van het onderzoek. De app slaat geen naam, e-mailadres of telefoonnummer op, en het onderzoek ziet uw andere onderzoeken niet.</string>
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
-    <string name="join_server" formatted="true">Server: %1$s</string>
+    <string name="join_server" formatted="true">Aanbieder: Askurious (%1$s)</string>
     <string name="foreign_server" formatted="true">Deze link leidt niet naar een server van Askurious (%1$s), daarom opent de app hem niet.</string>
     <string name="continue_entry">Beginvragenlijst voortzetten</string>
     <string name="day_of">Dag %1$d van %2$d</string>
@@ -106,7 +106,7 @@
     <string name="notif_exit">De onderzoeksperiode is voorbij. Vult u nog in: %1$s</string>
     <string name="limit_refused">De server heeft sommige antwoorden niet aanvaard. Ze blijven ter verduidelijking op deze telefoon totdat u ze verwerpt onder ‘Antwoorden versturen’.</string>
     <string name="clock_off">De klok van deze telefoon staat verkeerd. Antwoorden die zonder verbinding zijn gegeven, worden verstuurd zodra datum en tijd kloppen.</string>
-    <string name="rejoin_confirm">U neemt op deze telefoon al deel aan dit onderzoek. Opnieuw deelnemen start een nieuwe deelname: uw eerdere antwoorden kunt u daarna niet meer in de app verwijderen. Nog wachtende antwoorden van de eerdere deelname worden eerst verstuurd als dat lukt, anders vervallen ze. Om uw eerdere antwoorden te verwijderen, annuleert u en gebruikt u ‘Mijn antwoorden verwijderen’ op de kaart van het onderzoek.</string>
+    <string name="rejoin_confirm">U neemt op deze telefoon al deel aan dit onderzoek. Opnieuw deelnemen start een nieuwe deelname, en uw eerdere antwoorden kunt u daarna niet meer in de app verwijderen.</string>
     <string name="rejoin">Opnieuw deelnemen</string>
     <string name="allow_in_settings">Toestaan in instellingen</string>
     <string name="notifications_off">Meldingen staan uit. U kunt open vragenlijsten hier invullen.</string>
@@ -255,4 +255,19 @@
     <string name="battery_open">Batterijoptimalisatie openen</string>
     <string name="ready_battery_title">Batterijoptimalisatie (optioneel)</string>
     <string name="ready_battery_text">Sommige telefoons stoppen apps op de achtergrond om batterij te sparen; korte vragenlijsten komen dan te laat of helemaal niet. Zet Askurious in de lijst ‘Batterijoptimalisatie’ op ‘Niet optimaliseren’. Op sommige telefoons staat de instelling in de app-info onder ‘Batterij’.</string>
+    <!-- UX audit 2026-10-16, B26-B32: the rejoin dialog, the side-by-side page, the clock notice, the transfers -->
+    <string name="rejoin_title">Nieuwe deelname starten?</string>
+    <string name="rejoin_more">Nog wachtende antwoorden van de eerdere deelname worden eerst verstuurd als dat lukt, anders vervallen ze. Om uw eerdere antwoorden te verwijderen, annuleert u en gebruikt u ‘Mijn antwoorden verwijderen’ op de pagina van het onderzoek.</string>
+    <string name="learn_more">Meer informatie</string>
+    <string name="choose_study">Kies een onderzoek in de lijst om de pagina ervan te zien.</string>
+    <string name="date_settings_open">Datum en tijd openen</string>
+    <string name="open_study">Onderzoek openen</string>
+    <string name="transfer_none">Er kon geen antwoord worden verstuurd. De antwoorden blijven op deze telefoon.</string>
+    <plurals name="transfer_sent">
+        <item quantity="one">%d antwoord verstuurd.</item>
+        <item quantity="other">%d antwoorden verstuurd.</item>
+    </plurals>
+    <string name="ready_intro_one">De app kondigt de korte vragenlijsten van het onderzoek op het juiste moment aan met een melding. Daarvoor is één toestemming nodig; een tweede instelling is optioneel. U kunt beide later wijzigen in de instellingen van de telefoon.</string>
+    <string name="about_provider_unit">Leerstoel Communicatiewetenschap, RWTH Aachen University</string>
+    <string name="about_oss_english">De bibliotheken en hun licenties staan in het Engels, net als de licentieteksten.</string>
 </resources>

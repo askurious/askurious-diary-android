@@ -82,10 +82,26 @@ class MainModel(app: Application) : AndroidViewModel(app) {
     }
 
     var transferring by mutableStateOf(false); private set
-    fun transfer() {
+
+    /**
+     * Sends the waiting answers now (all studies, as a sync does); [done] gets how many of the study [code] went and
+     * how many still wait, counted in the queue before and after (UX audit 2026-10-16, B26).
+     */
+    fun transfer(code: String, done: (sent: Int, left: Int) -> Unit) {
         if (transferring) return
         transferring = true
-        viewModelScope.launch { try { Sync.all(context) } finally { transferring = false; reload() } }
+        viewModelScope.launch {
+            fun count() = runCatching { AnswerQueue(context).of(code).size }.getOrDefault(0)
+            val before = withContext(Dispatchers.IO) { count() }
+            val left = try {
+                Sync.all(context)
+                withContext(Dispatchers.IO) { count() }
+            } finally {
+                transferring = false
+                reload()
+            }
+            done((before - left).coerceAtLeast(0), left)
+        }
     }
 
     fun setQuiet(study: Study, quiet: Quiet?) {

@@ -35,7 +35,7 @@
     </plurals>
     <string name="join_privacy">Ao participar, abre-se o formulário de consentimento do estudo. A aplicação não guarda nenhum nome, endereço de e-mail ou número de telefone, e o estudo não vê os seus outros estudos.</string>
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
-    <string name="join_server" formatted="true">Servidor: %1$s</string>
+    <string name="join_server" formatted="true">Fornecedor: Askurious (%1$s)</string>
     <string name="foreign_server" formatted="true">Esta ligação não leva a um servidor do Askurious (%1$s), por isso a app não a abre.</string>
     <string name="continue_entry">Continuar o questionário inicial</string>
     <string name="day_of">Dia %1$d de %2$d</string>
@@ -113,7 +113,7 @@
     <string name="notif_exit">O período do estudo terminou. Por favor, responda: %1$s</string>
     <string name="limit_refused">O servidor não aceitou algumas respostas. Permanecem neste telemóvel para esclarecimento até as descartar em «Envio de respostas».</string>
     <string name="clock_off">O relógio deste telemóvel está errado. As respostas dadas sem ligação serão enviadas assim que a data e a hora estiverem certas.</string>
-    <string name="rejoin_confirm">Já participa neste estudo neste telemóvel. Participar de novo inicia uma nova participação: depois já não poderá apagar as suas respostas anteriores na aplicação. As respostas pendentes da participação anterior são enviadas antes, se possível; caso contrário, são descartadas. Para apagar as suas respostas anteriores, cancele e use «Apagar as minhas respostas» no cartão do estudo.</string>
+    <string name="rejoin_confirm">Já participa neste estudo neste telemóvel. Participar de novo inicia uma nova participação e depois já não poderá apagar as suas respostas anteriores na aplicação.</string>
     <string name="rejoin">Participar de novo</string>
     <string name="allow_in_settings">Permitir nas definições</string>
     <string name="notifications_off">As notificações estão desativadas. Pode responder aqui aos questionários abertos.</string>
@@ -262,4 +262,20 @@
     <string name="battery_open">Abrir otimização da bateria</string>
     <string name="ready_battery_title">Otimização da bateria (opcional)</string>
     <string name="ready_battery_text">Alguns telemóveis param aplicações em segundo plano para poupar bateria; os breves questionários chegam então atrasados ou não chegam. Na lista «Otimização da bateria», defina o Askurious como «Não otimizar». Em alguns telemóveis a definição está nas informações da aplicação, em «Bateria».</string>
+    <!-- UX audit 2026-10-16, B26-B32: the rejoin dialog, the side-by-side page, the clock notice, the transfers -->
+    <string name="rejoin_title">Iniciar uma nova participação?</string>
+    <string name="rejoin_more">As respostas pendentes da participação anterior são enviadas antes, se possível; caso contrário, são descartadas. Para apagar as suas respostas anteriores, cancele e use «Apagar as minhas respostas» na página do estudo.</string>
+    <string name="learn_more">Saber mais</string>
+    <string name="choose_study">Escolha um estudo na lista para ver a sua página.</string>
+    <string name="date_settings_open">Abrir data e hora</string>
+    <string name="open_study">Abrir estudo</string>
+    <string name="transfer_none">Não foi possível enviar nenhuma resposta. As respostas ficam neste telemóvel.</string>
+    <plurals name="transfer_sent">
+        <item quantity="one">%d resposta enviada.</item>
+        <item quantity="many">%d respostas enviadas.</item>
+        <item quantity="other">%d respostas enviadas.</item>
+    </plurals>
+    <string name="ready_intro_one">A aplicação anuncia-lhe os breves questionários do estudo com uma notificação no momento certo. Para isso precisa de uma permissão; uma segunda definição é opcional. Pode alterar ambas mais tarde nas definições do telemóvel.</string>
+    <string name="about_provider_unit">Cátedra de Ciências da Comunicação, RWTH Aachen University</string>
+    <string name="about_oss_english">As bibliotecas e as suas licenças são indicadas em inglês, tal como nos textos das licenças.</string>
 </resources>

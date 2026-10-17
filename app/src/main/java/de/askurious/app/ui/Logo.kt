@@ -59,7 +59,7 @@ fun Logo() {
     Row(
         Modifier.clearAndSetSemantics { contentDescription = "Askurious"; heading() },
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         LogoMark()
         Text("Askurious", fontFamily = LogoFont, fontWeight = FontWeight.Bold, fontSize = 22.sp, maxLines = 1, softWrap = false)

@@ -35,7 +35,7 @@
     </plurals>
     <string name="join_privacy">En rejoignant l’étude, vous ouvrez son formulaire de consentement. L’application n’enregistre ni nom, ni adresse e-mail, ni numéro de téléphone, et l’étude ne voit pas vos autres études.</string>
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
-    <string name="join_server" formatted="true">Serveur : %1$s</string>
+    <string name="join_server" formatted="true">Éditeur : Askurious (%1$s)</string>
     <string name="foreign_server" formatted="true">Ce lien ne mène pas à un serveur d\'Askurious (%1$s) ; l\'application ne l\'ouvre donc pas.</string>
     <string name="continue_entry">Reprendre le questionnaire initial</string>
     <string name="day_of">Jour %1$d sur %2$d</string>
@@ -113,7 +113,7 @@
     <string name="notif_exit">La période de l’étude est terminée. Merci de remplir : %1$s</string>
     <string name="limit_refused">Le serveur n’a pas accepté certaines réponses. Elles restent sur ce téléphone pour clarification jusqu’à ce que vous les supprimiez sous « Envoi des réponses ».</string>
     <string name="clock_off">L’horloge de ce téléphone n’est pas à l’heure. Les réponses données sans connexion seront envoyées dès que la date et l’heure seront correctes.</string>
-    <string name="rejoin_confirm">Vous participez déjà à cette étude sur ce téléphone. Rejoindre à nouveau commence une nouvelle participation : vous ne pourrez alors plus supprimer vos réponses précédentes dans l’application. Les réponses en attente de la participation précédente sont d’abord envoyées si possible, sinon supprimées. Pour supprimer vos réponses précédentes, annulez et utilisez « Supprimer mes réponses » sur la carte de l’étude.</string>
+    <string name="rejoin_confirm">Vous participez déjà à cette étude sur ce téléphone. Rejoindre à nouveau commence une nouvelle participation, et vous ne pourrez alors plus supprimer vos réponses précédentes dans l’application.</string>
     <string name="rejoin">Rejoindre à nouveau</string>
     <string name="allow_in_settings">Autoriser dans les paramètres</string>
     <string name="notifications_off">Les notifications sont désactivées. Vous pouvez répondre ici aux questionnaires ouverts.</string>
@@ -262,4 +262,20 @@
     <string name="battery_open">Ouvrir l’optimisation de la batterie</string>
     <string name="ready_battery_title">Optimisation de la batterie (facultatif)</string>
     <string name="ready_battery_text">Certains téléphones arrêtent les applications en arrière-plan pour économiser la batterie ; les brefs questionnaires arrivent alors en retard, voire pas du tout. Dans la liste « Optimisation de la batterie », réglez Askurious sur « Ne pas optimiser ». Sur certains téléphones, le réglage se trouve dans les infos de l’application, sous « Batterie ».</string>
+    <!-- UX audit 2026-10-16, B26-B32: the rejoin dialog, the side-by-side page, the clock notice, the transfers -->
+    <string name="rejoin_title">Commencer une nouvelle participation ?</string>
+    <string name="rejoin_more">Les réponses en attente de la participation précédente sont d’abord envoyées si possible, sinon supprimées. Pour supprimer vos réponses précédentes, annulez et utilisez « Supprimer mes réponses » sur la page de l’étude.</string>
+    <string name="learn_more">En savoir plus</string>
+    <string name="choose_study">Choisissez une étude dans la liste pour afficher sa page.</string>
+    <string name="date_settings_open">Ouvrir Date et heure</string>
+    <string name="open_study">Ouvrir l’étude</string>
+    <string name="transfer_none">Aucune réponse n’a pu être envoyée. Les réponses restent sur ce téléphone.</string>
+    <plurals name="transfer_sent">
+        <item quantity="one">%d réponse envoyée.</item>
+        <item quantity="many">%d réponses envoyées.</item>
+        <item quantity="other">%d réponses envoyées.</item>
+    </plurals>
+    <string name="ready_intro_one">L’application annonce les brefs questionnaires de l’étude par une notification au bon moment. Pour cela, elle a besoin d’une autorisation ; un second réglage est facultatif. Vous pourrez modifier les deux plus tard dans les paramètres du téléphone.</string>
+    <string name="about_provider_unit">Chaire de sciences de la communication, RWTH Aachen University</string>
+    <string name="about_oss_english">Les bibliothèques et leurs licences sont indiquées en anglais, comme dans les textes des licences.</string>
 </resources>

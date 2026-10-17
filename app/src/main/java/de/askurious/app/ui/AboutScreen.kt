@@ -3,8 +3,12 @@ package de.askurious.app.ui
 import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -22,6 +26,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
@@ -49,17 +54,18 @@ private fun imprintUrl(): String =
 /**
  * Who answers for the app: the provider named in the imprint of askurious.de (the server's IMPRINT_NAME and
  * IMPRINT_ADDRESS, config.py of the Askurious repository, 2026-10-12). No e-mail address: the imprint names none.
+ * The name and the postal address as they are; the chair in the language of the app (R.string.about_provider_unit,
+ * UX audit 2026-10-16, B31).
  */
-private val PROVIDER = listOf(
-    "Dr. Philipp Brauner",
-    "Lehrstuhl für Kommunikationswissenschaft, RWTH Aachen University",
-    "Campus-Boulevard 57",
-    "52074 Aachen",
-)
+private const val PROVIDER_NAME = "Dr. Philipp Brauner"
+private val PROVIDER_ADDRESS = listOf("Campus-Boulevard 57", "52074 Aachen")
 
-/** The libraries and the font in the app, each with its licence (THIRD_PARTY_NOTICES.md in the repository). */
+/**
+ * The libraries and the font in the app, each with its licence (THIRD_PARTY_NOTICES.md in the repository). In
+ * English, as the licence texts are; the page says so (about_oss_english, B31).
+ */
 private val LIBRARIES = listOf(
-    "AndroidX (Core, Activity, Lifecycle, WebKit) – The Android Open Source Project, Apache License 2.0",
+    "AndroidX (Core, Activity, Lifecycle, Navigation, WebKit) – The Android Open Source Project, Apache License 2.0",
     "Jetpack Compose (UI, Material 3, Material Icons) – The Android Open Source Project, Apache License 2.0",
     "Material Components for Android – The Android Open Source Project, Apache License 2.0",
     "WorkManager – The Android Open Source Project, Apache License 2.0",
@@ -85,14 +91,26 @@ fun unwrapped(text: String): String =
         .filter { it.isNotEmpty() }
         .joinToString("\n\n")
 
-/** A screen of the app with the way back as an arrow at the left of the top bar (audit A21). */
+/**
+ * A screen of the app with the way back as an arrow at the left of the top bar (audit A21). Its heading takes the
+ * focus when the screen comes, so that TalkBack names it (UX audit 2026-10-16, B32). The modifier of [content] takes
+ * the insets of the bars as consumed: a field over the keyboard (imePadding) does not add them again (B21).
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BackScaffold(title: String, onBack: () -> Unit, snackbar: SnackbarHostState? = null, content: @Composable (Modifier) -> Unit) {
+fun BackScaffold(
+    title: String, onBack: () -> Unit, snackbar: SnackbarHostState? = null, titleLines: Int = 2, content: @Composable (Modifier) -> Unit,
+) {
     Scaffold(snackbarHost = { snackbar?.let { MessageHost(it) } }, topBar = {
-        PageHeader(title, onBack = onBack)
-    }) { pad -> content(Modifier.padding(pad)) }
+        PageHeader(title, onBack = onBack, maxLines = titleLines, announce = true)
+    }) { pad -> content(Modifier.padding(pad).consumeWindowInsets(pad)) }
 }
+
+/**
+ * The column of a page: at most 640 dp wide, in the middle of a wide screen (landscape, tablet), so that lines stay
+ * readable and buttons near the text (UX audit 2026-10-16, B34). On a phone in portrait it is the whole width.
+ */
+fun Modifier.pageWidth(): Modifier = wrapContentWidth(Alignment.CenterHorizontally).widthIn(max = 640.dp).fillMaxWidth()
 
 /**
  * The short message after a final action ("“X” left."): the current message of [state] as a snackbar, read out by
@@ -122,10 +140,11 @@ fun AboutScreen(onBack: () -> Unit, onLicence: () -> Unit) {
     }
     BackScaffold(stringResource(R.string.about), onBack) { pad ->
         Column(
-            pad.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
+            pad.fillMaxSize().verticalScroll(rememberScrollState()).pageWidth().padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(stringResource(R.string.app_name), style = MaterialTheme.typography.titleLarge, modifier = Modifier.semantics { heading() })
+            // the version only here, not on the start page (B30)
             // the format from the resources of the composition: a change of language shows at once (lint
             // LocalContextGetResourceValueCall, audit 2026-10-13, AN-10)
             val format = stringResource(R.string.build_info)
@@ -141,7 +160,7 @@ fun AboutScreen(onBack: () -> Unit, onLicence: () -> Unit) {
 
             SectionTitle(stringResource(R.string.about_contact_title))
             Text(stringResource(R.string.about_contact))
-            Text(PROVIDER.joinToString("\n"))
+            Text((listOf(PROVIDER_NAME, stringResource(R.string.about_provider_unit)) + PROVIDER_ADDRESS).joinToString("\n"))
             OutlinedButton(onClick = { open(imprintUrl()) }) { Text(stringResource(R.string.imprint)) }
 
             SectionTitle(stringResource(R.string.about_licence_title))
@@ -149,7 +168,8 @@ fun AboutScreen(onBack: () -> Unit, onLicence: () -> Unit) {
 
             SectionTitle(stringResource(R.string.about_oss_title))
             Text(stringResource(R.string.about_oss_intro))
-            for (lib in LIBRARIES) Text("• $lib", style = MaterialTheme.typography.bodySmall)
+            Text(stringResource(R.string.about_oss_english), style = MaterialTheme.typography.bodySmall)
+            for (lib in LIBRARIES) BulletText(lib, MaterialTheme.typography.bodySmall)
             OutlinedButton(onClick = onLicence) { Text(stringResource(R.string.show_licence)) }
         }
     }
@@ -172,7 +192,7 @@ fun LicenceScreen(onBack: () -> Unit) {
     }
     BackScaffold(stringResource(R.string.licence_texts), onBack) { pad ->
         Column(
-            pad.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
+            pad.fillMaxSize().verticalScroll(rememberScrollState()).pageWidth().padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
             for ((title, t) in texts) {

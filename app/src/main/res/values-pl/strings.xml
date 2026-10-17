@@ -39,7 +39,7 @@
     </plurals>
     <string name="join_privacy">Dołączenie otwiera formularz zgody badania. Aplikacja nie zapisuje imienia ani nazwiska, adresu e-mail ani numeru telefonu, a badanie nie widzi innych badań na tym telefonie.</string>
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
-    <string name="join_server" formatted="true">Serwer: %1$s</string>
+    <string name="join_server" formatted="true">Dostawca: Askurious (%1$s)</string>
     <string name="foreign_server" formatted="true">Ten link nie prowadzi do serwera Askurious (%1$s), dlatego aplikacja go nie otwiera.</string>
     <string name="continue_entry">Kontynuuj ankietę wstępną</string>
     <string name="day_of">Dzień %1$d z %2$d</string>
@@ -120,7 +120,7 @@
     <string name="notif_exit">Okres badania dobiegł końca. Prosimy wypełnić: %1$s</string>
     <string name="limit_refused">Serwer nie przyjął niektórych odpowiedzi. Pozostają na tym telefonie do wyjaśnienia, dopóki nie zostaną odrzucone w sekcji „Przesyłanie odpowiedzi”.</string>
     <string name="clock_off">Zegar tego telefonu jest ustawiony nieprawidłowo. Odpowiedzi udzielone bez połączenia zostaną wysłane, gdy data i godzina będą prawidłowe.</string>
-    <string name="rejoin_confirm">To badanie jest już na tym telefonie. Ponowne dołączenie rozpoczyna nowy udział: wcześniejszych odpowiedzi nie będzie można już usunąć w aplikacji. Oczekujące odpowiedzi z wcześniejszego udziału zostaną najpierw wysłane, jeśli to możliwe, w przeciwnym razie odrzucone. Aby usunąć wcześniejsze odpowiedzi, prosimy anulować i użyć przycisku „Usuń moje odpowiedzi” na karcie badania.</string>
+    <string name="rejoin_confirm">To badanie jest już na tym telefonie. Ponowne dołączenie rozpoczyna nowy udział, a wcześniejszych odpowiedzi nie będzie można już usunąć w aplikacji.</string>
     <string name="rejoin">Dołącz ponownie</string>
     <string name="allow_in_settings">Zezwól w ustawieniach</string>
     <string name="notifications_off">Powiadomienia są wyłączone. Otwarte kwestionariusze można wypełnić tutaj.</string>
@@ -269,4 +269,21 @@
     <string name="battery_open">Otwórz optymalizację baterii</string>
     <string name="ready_battery_title">Optymalizacja baterii (opcjonalnie)</string>
     <string name="ready_battery_text">Niektóre telefony zatrzymują aplikacje działające w tle, aby oszczędzać baterię; krótkie kwestionariusze docierają wtedy z opóźnieniem lub wcale. Prosimy ustawić Askurious na liście „Optymalizacja baterii” na „Nie optymalizuj”. Na niektórych telefonach to ustawienie znajduje się w informacjach o aplikacji w sekcji „Bateria”.</string>
+    <!-- UX audit 2026-10-16, B26-B32: the rejoin dialog, the side-by-side page, the clock notice, the transfers -->
+    <string name="rejoin_title">Rozpocząć nowy udział?</string>
+    <string name="rejoin_more">Oczekujące odpowiedzi z wcześniejszego udziału zostaną najpierw wysłane, jeśli to możliwe, w przeciwnym razie odrzucone. Aby usunąć wcześniejsze odpowiedzi, prosimy anulować i użyć przycisku „Usuń moje odpowiedzi” na stronie badania.</string>
+    <string name="learn_more">Więcej informacji</string>
+    <string name="choose_study">Aby zobaczyć stronę badania, prosimy wybrać je z listy.</string>
+    <string name="date_settings_open">Otwórz ustawienia daty i godziny</string>
+    <string name="open_study">Otwórz badanie</string>
+    <string name="transfer_none">Nie udało się przesłać żadnej odpowiedzi. Odpowiedzi pozostają na tym telefonie.</string>
+    <plurals name="transfer_sent">
+        <item quantity="one">Przesłano %d odpowiedź.</item>
+        <item quantity="few">Przesłano %d odpowiedzi.</item>
+        <item quantity="many">Przesłano %d odpowiedzi.</item>
+        <item quantity="other">Przesłano %d odpowiedzi.</item>
+    </plurals>
+    <string name="ready_intro_one">Aplikacja we właściwym momencie zapowiada krótkie kwestionariusze badania powiadomieniem. Potrzebuje do tego jednego uprawnienia; drugie ustawienie jest opcjonalne. Oba można później zmienić w ustawieniach telefonu.</string>
+    <string name="about_provider_unit">Katedra Nauk o Komunikacji, RWTH Aachen University</string>
+    <string name="about_oss_english">Biblioteki i ich licencje podano po angielsku, tak jak w tekstach licencji.</string>
 </resources>

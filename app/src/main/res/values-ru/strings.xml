@@ -39,7 +39,7 @@
     </plurals>
     <string name="join_privacy">При присоединении откроется форма согласия исследования. Приложение не сохраняет ни имени, ни адреса электронной почты, ни номера телефона, а исследование не видит другие Ваши исследования.</string>
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
-    <string name="join_server" formatted="true">Сервер: %1$s</string>
+    <string name="join_server" formatted="true">Поставщик: Askurious (%1$s)</string>
     <string name="foreign_server" formatted="true">Эта ссылка ведёт не на сервер Askurious (%1$s), поэтому приложение её не открывает.</string>
     <string name="continue_entry">Продолжить вступительную анкету</string>
     <string name="day_of">День %1$d из %2$d</string>
@@ -120,7 +120,7 @@
     <string name="notif_exit">Период исследования завершён. Пожалуйста, заполните: %1$s</string>
     <string name="limit_refused">Сервер не принял некоторые ответы. Они остаются на этом телефоне для уточнения, пока Вы не отбросите их в разделе «Передача ответов».</string>
     <string name="clock_off">Часы этого телефона идут неправильно. Ответы, данные без соединения, будут отправлены, как только дата и время будут установлены правильно.</string>
-    <string name="rejoin_confirm">Вы уже участвуете в этом исследовании на этом телефоне. Повторное присоединение начинает новое участие: удалить прежние ответы в приложении будет уже нельзя. Ожидающие ответы прежнего участия по возможности сначала отправляются, иначе удаляются. Чтобы удалить прежние ответы, отмените и воспользуйтесь кнопкой «Удалить мои ответы» на карточке исследования.</string>
+    <string name="rejoin_confirm">Вы уже участвуете в этом исследовании на этом телефоне. Повторное присоединение начинает новое участие, и удалить прежние ответы в приложении будет уже нельзя.</string>
     <string name="rejoin">Присоединиться снова</string>
     <string name="allow_in_settings">Разрешить в настройках</string>
     <string name="notifications_off">Уведомления отключены. Здесь можно ответить на открытые короткие опросы.</string>
@@ -269,4 +269,21 @@
     <string name="battery_open">Открыть оптимизацию батареи</string>
     <string name="ready_battery_title">Оптимизация батареи (необязательно)</string>
     <string name="ready_battery_text">Некоторые телефоны останавливают приложения в фоне, чтобы экономить заряд; тогда короткие опросы приходят с опозданием или не приходят вовсе. В списке «Оптимизация батареи» выберите для Askurious «Не экономить». На некоторых телефонах эта настройка находится в сведениях о приложении в разделе «Батарея».</string>
+    <!-- UX audit 2026-10-16, B26-B32: the rejoin dialog, the side-by-side page, the clock notice, the transfers -->
+    <string name="rejoin_title">Начать новое участие?</string>
+    <string name="rejoin_more">Ожидающие ответы прежнего участия по возможности сначала отправляются, иначе удаляются. Чтобы удалить прежние ответы, отмените и воспользуйтесь кнопкой «Удалить мои ответы» на странице исследования.</string>
+    <string name="learn_more">Подробнее</string>
+    <string name="choose_study">Выберите исследование в списке, чтобы открыть его страницу.</string>
+    <string name="date_settings_open">Открыть дату и время</string>
+    <string name="open_study">Открыть исследование</string>
+    <string name="transfer_none">Не удалось передать ни одного ответа. Ответы остаются на этом телефоне.</string>
+    <plurals name="transfer_sent">
+        <item quantity="one">Передан %d ответ.</item>
+        <item quantity="few">Передано %d ответа.</item>
+        <item quantity="many">Передано %d ответов.</item>
+        <item quantity="other">Передано %d ответа.</item>
+    </plurals>
+    <string name="ready_intro_one">Приложение в нужный момент сообщает уведомлением о коротких опросах исследования. Для этого нужно одно разрешение; вторая настройка необязательна. Обе можно позже изменить в настройках телефона.</string>
+    <string name="about_provider_unit">Кафедра коммуникативистики, RWTH Aachen University</string>
+    <string name="about_oss_english">Библиотеки и их лицензии указаны на английском языке, как и в текстах лицензий.</string>
 </resources>

@@ -39,7 +39,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
@@ -101,7 +103,8 @@ import kotlin.coroutines.resume
 /**
  * One entry: asks the server for a one-time address of the module and shows the participant pages of Askurious
  * in a WebView. The questionnaire itself is the web page; the app adds nothing to it. The end page calls
- * AskuriousApp.done() (participant/end.html in app mode), and the activity closes.
+ * AskuriousApp.done() (participant/end.html in app mode): the thanks of the page stay in view, with a bar "Done" below
+ * them that closes the entry (UX audit 2026-10-16, B33).
  *
  * Without a connection, a module that can be answered offline shows the page the app kept (OfflinePages): its
  * participant.js hands the filled form to AskuriousApp.offlineSubmit() instead of sending it, and the app queues
@@ -546,7 +549,15 @@ class EntryActivity : ComponentActivity() {
     @androidx.compose.runtime.Composable
     private fun EntryScreen(title: String) {
         BackHandler { back() }
-        Scaffold(topBar = {
+        Scaffold(bottomBar = {
+            // the end page of the questionnaire was reached: "Done" closes the entry, the same as the X, but where the
+            // thumb is and with the words of the end (B33)
+            if (done && !saved && error == null) Surface(color = MaterialTheme.colorScheme.surfaceVariant) {
+                Button(onClick = { finish() }, modifier = Modifier.fillMaxWidth().navigationBarsPadding().padding(16.dp)) {
+                    Text(stringResource(R.string.done))
+                }
+            }
+        }, topBar = {
             Column {
                 PageHeader(title, onClose = { close() }, compact = true)
                 // a page is loading: the questionnaire has no indicator of its own between its pages (audit A7)
@@ -560,8 +571,9 @@ class EntryActivity : ComponentActivity() {
             }
         }) { pad ->
             // imePadding: the window does not resize for the keyboard (edge to edge), so the page is shortened here;
-            // otherwise the WebView scrolls the caret into view anew with every letter of a long text answer
-            Column(Modifier.padding(pad).imePadding().fillMaxSize()) {
+            // otherwise the WebView scrolls the caret into view anew with every letter of a long text answer. The bars'
+            // insets are in the scaffold's padding already: consumed, so the keyboard does not add them again (B21)
+            Column(Modifier.padding(pad).consumeWindowInsets(pad).imePadding().fillMaxSize()) {
             // the notices of the entry as banners between the top bar and the page, never over its questions; each
             // can be closed (UX audit 2026-10-16, B2), the failed save only by saving (B8)
             session.unsaved?.let { form ->

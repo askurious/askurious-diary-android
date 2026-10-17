@@ -25,19 +25,23 @@
         tools:targetApi="33">
 
         <!-- taskAffinity="": no other app can slip its own screen into the task of the app (StrandHogg on old,
-             unpatched Android versions) -->
+             unpatched Android versions). enableOnBackInvokedCallback: the back gesture shows the screen below before
+             it goes back (predictive back, Android 14 and later; from Android 16 the default anyway) -->
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
             android:taskAffinity=""
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:enableOnBackInvokedCallback="true"
+            tools:targetApi="34">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <!-- the join link of a study (QR code): https://ask.askurious.de/j/<code> opens the app (App Link; the server
                  answers /.well-known/assetlinks.json with the fingerprint of the signing key, DIARY_APP_FINGERPRINTS).
-                 Only the participants' address serves /j/ and assetlinks.json, so askurious.de is not listed. -->
+                 Only the participants' address serves /j/ and assetlinks.json, so askurious.de is not listed. The
+                 join screen takes both links as its deep links (JOIN_LINKS in ui/Routes.kt). -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
