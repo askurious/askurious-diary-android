@@ -31,7 +31,7 @@
     </plurals>
     <string name="join_privacy">Beim Beitritt öffnet sich die Einwilligung der Studie. Die App speichert keinen Namen, keine E-Mail-Adresse und keine Telefonnummer, und die Studie sieht keine anderen Studien auf diesem Telefon.</string>
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
-    <string name="join_server" formatted="true">Server: %1$s</string>
+    <string name="join_server" formatted="true">Anbieter: Askurious (%1$s)</string>
     <string name="foreign_server" formatted="true">Dieser Link führt nicht zu einem Server von Askurious (%1$s). Die App öffnet ihn deshalb nicht.</string>
     <string name="continue_entry">Eingangsbefragung fortsetzen</string>
     <string name="day_of">Tag %1$d von %2$d</string>
@@ -106,7 +106,7 @@
     <string name="notif_exit">Der Studienzeitraum ist vorbei. Bitte beantworten Sie noch: %1$s</string>
     <string name="limit_refused">Einige Antworten hat der Server nicht angenommen. Sie bleiben zur Klärung auf diesem Telefon, bis Sie sie unter „Antwortübertragung“ verwerfen.</string>
     <string name="clock_off">Die Uhr dieses Telefons geht falsch. Antworten, die ohne Verbindung gegeben wurden, werden gesendet, sobald Datum und Uhrzeit stimmen.</string>
-    <string name="rejoin_confirm">Auf diesem Telefon läuft schon eine Teilnahme an dieser Studie. Ein erneuter Beitritt beginnt eine neue Teilnahme: Ihre früheren Antworten lassen sich dann nicht mehr in der App löschen. Noch wartende Antworten der früheren Teilnahme werden vorher gesendet, wenn möglich, sonst verworfen. Wenn Sie die früheren Antworten löschen möchten, brechen Sie hier ab und nutzen Sie „Meine Antworten löschen“ auf der Seite der Studie.</string>
+    <string name="rejoin_confirm">Auf diesem Telefon läuft schon eine Teilnahme an dieser Studie. Ein erneuter Beitritt beginnt eine neue Teilnahme, und Ihre früheren Antworten lassen sich dann nicht mehr in der App löschen.</string>
     <string name="rejoin">Erneut beitreten</string>
     <string name="allow_in_settings">In den Einstellungen erlauben</string>
     <string name="notifications_off">Benachrichtigungen sind ausgeschaltet. Offene Kurzbefragungen können Sie hier beantworten.</string>
@@ -255,4 +255,19 @@
     <string name="battery_open">Akku-Optimierung öffnen</string>
     <string name="ready_battery_title">Akku-Optimierung (freiwillig)</string>
     <string name="ready_battery_text">Manche Telefone halten Apps im Hintergrund an, um Akku zu sparen; dann kommen Kurzbefragungen spät oder gar nicht. Stellen Sie Askurious in der Liste „Akku-Optimierung“ auf „Nicht optimieren“. Bei manchen Herstellern steht die Einstellung in den App-Infos unter „Akku“.</string>
+    <!-- UX audit 2026-10-16, B26-B32: the rejoin dialog, the side-by-side page, the clock notice, the transfers -->
+    <string name="rejoin_title">Neu teilnehmen?</string>
+    <string name="rejoin_more">Noch wartende Antworten der früheren Teilnahme werden vorher gesendet, wenn möglich, sonst verworfen. Wenn Sie die früheren Antworten löschen möchten, brechen Sie hier ab und nutzen Sie „Meine Antworten löschen“ auf der Seite der Studie.</string>
+    <string name="learn_more">Mehr erfahren</string>
+    <string name="choose_study">Wählen Sie in der Liste eine Studie, um ihre Seite zu sehen.</string>
+    <string name="date_settings_open">Datum &amp; Uhrzeit öffnen</string>
+    <string name="open_study">Studie öffnen</string>
+    <string name="transfer_none">Es konnte keine Antwort übertragen werden. Die Antworten bleiben auf diesem Telefon.</string>
+    <plurals name="transfer_sent">
+        <item quantity="one">%d Antwort übertragen.</item>
+        <item quantity="other">%d Antworten übertragen.</item>
+    </plurals>
+    <string name="ready_intro_one">Die App kündigt die Kurzbefragungen der Studie im richtigen Moment per Benachrichtigung an. Dafür braucht sie ein Recht, eine zweite Einstellung ist freiwillig. Sie können beides später in den Einstellungen des Telefons ändern.</string>
+    <string name="about_provider_unit">Lehrstuhl für Kommunikationswissenschaft, RWTH Aachen University</string>
+    <string name="about_oss_english">Die Bibliotheken und ihre Lizenzen sind auf Englisch genannt, wie in den Lizenztexten.</string>
 </resources>

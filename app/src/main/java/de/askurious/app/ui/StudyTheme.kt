@@ -78,7 +78,10 @@ fun studyColors(look: Look?, phoneDark: Boolean): androidx.compose.material3.Col
     val onAccent = readable(c("on_accent", base.onPrimary), listOf(accent))
     val accentSoft = c("accent_soft", base.primaryContainer)
     val muted = readable(c("muted", base.onSurfaceVariant), surfaces)
+    // the border of controls (fields, outlined buttons) at 3:1 at least (WCAG 1.4.11); the edges of cards and the
+    // dividers in the colour the web pages draw them, lighter (UX audit 2026-10-16, B25)
     val border = readable(c("border", base.outline), surfaces, 3.0)
+    val edge = c("border", base.outlineVariant)
     val error = readable(c("error", base.error), surfaces)
     // the tinted area of a notice: the error colour faintly on the page, its text in the page's text colour (the
     // participant pages' --error-soft is the same mix)
@@ -96,7 +99,7 @@ fun studyColors(look: Look?, phoneDark: Boolean): androidx.compose.material3.Col
         surfaceContainerLowest = background, surfaceContainerLow = surface, surfaceContainer = raised,
         surfaceContainerHigh = raised, surfaceContainerHighest = raised,
         inverseSurface = text, inverseOnSurface = background,
-        outline = border, outlineVariant = border,
+        outline = border, outlineVariant = edge,
         error = error, onError = readable(background, listOf(error)), errorContainer = errorSoft, onErrorContainer = readable(text, listOf(errorSoft)),
         scrim = Color.Black,
     )

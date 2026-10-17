@@ -1,7 +1,6 @@
 package de.askurious.app.ui
 
 import android.Manifest
-import android.app.TimePickerDialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -9,145 +8,67 @@ import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
-import android.text.format.DateFormat
-import android.text.format.DateUtils
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.selection.toggleable
-import androidx.compose.foundation.layout.imePadding
-import de.askurious.app.data.PromptLog
-import de.askurious.app.data.AnswerQueue
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ExitToApp
-import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.CheckCircle
-import androidx.compose.material.icons.outlined.DateRange
-import androidx.compose.material.icons.outlined.Done
-import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.material.icons.outlined.PlayArrow
-import androidx.compose.material.icons.outlined.Refresh
-import androidx.compose.material.icons.outlined.Warning
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.LiveRegionMode
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.liveRegion
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.stateDescription
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.net.toUri
-import com.journeyapps.barcodescanner.ScanContract
-import com.journeyapps.barcodescanner.ScanOptions
-import de.askurious.app.BuildConfig
-import de.askurious.app.R
-import de.askurious.app.data.Api
-import de.askurious.app.data.ApiError
-import de.askurious.app.data.Look
-import de.askurious.app.data.Module
-import de.askurious.app.data.Quiet
-import de.askurious.app.data.Study
-import de.askurious.app.data.Trigger
-import de.askurious.app.schedule.Alarms
-import de.askurious.app.schedule.Prompt
-import de.askurious.app.schedule.Schedule
-import kotlinx.coroutines.delay
+import androidx.core.os.BundleCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
+import androidx.navigation.NavDeepLinkRequest
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navDeepLink
+import androidx.navigation.toRoute
+import de.askurious.app.R
 import de.askurious.app.data.StudyStore
+import de.askurious.app.schedule.Alarms
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.json.JSONObject
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-import java.util.Date
-import java.util.Locale
 
 class MainActivity : ComponentActivity() {
     private var linkCode by mutableStateOf<String?>(null)
@@ -156,21 +77,24 @@ class MainActivity : ComponentActivity() {
     private var shortcutStudy by mutableStateOf<String?>(null)
 
     /** The studies, the waiting answers and the calls to the server (MainModel); this activity only draws them. */
-    private val model: MainModel by viewModels()
+    internal val model: MainModel by viewModels()
 
     /** The notice for notifications (none, the system dialog, the app's settings); read again in [onResume]. */
-    private var notifyState by mutableStateOf(NotifyNotice.NONE)
+    internal var notifyState by mutableStateOf(NotifyNotice.NONE)
+        private set
 
     /** Exact alarms are allowed ("Alarms & reminders"); read again in [onResume], also after the system settings. */
-    private var exactOn by mutableStateOf(true)
+    internal var exactOn by mutableStateOf(true)
+        private set
 
     /**
      * The app is exempt from the battery optimisation; read again in [onResume]. Optional: exact alarms pass Doze,
      * but some makers' battery managers stop them all the same (UX audit 2026-10-16, B11).
      */
-    private var batteryOn by mutableStateOf(true)
+    internal var batteryOn by mutableStateOf(true)
+        private set
 
-    private val uiPrefs get() = getSharedPreferences(UI_PREFS, MODE_PRIVATE)
+    internal val uiPrefs get() = getSharedPreferences(UI_PREFS, MODE_PRIVATE)
 
     /**
      * Reads the permissions again: on every return to the app (from the system settings, the permission dialog, an
@@ -208,7 +132,7 @@ class MainActivity : ComponentActivity() {
     }
 
     /** Opens [intent] of another app; a phone without an app for it simply gets nothing. */
-    private fun openOther(intent: Intent) {
+    internal fun openOther(intent: Intent) {
         try {
             startActivity(intent)
         } catch (e: ActivityNotFoundException) {
@@ -221,14 +145,17 @@ class MainActivity : ComponentActivity() {
      * never the direct request ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS: that needs a permission of its own and
      * is restricted on Google Play; the list needs none.
      */
-    private fun openBatterySettings() = openOther(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
+    internal fun openBatterySettings() = openOther(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
 
     /** The settings of "Alarms & reminders" for this app (Android 12 and later; before, exact alarms need nothing). */
-    private fun openExactSettings() {
+    internal fun openExactSettings() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             openOther(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, "package:$packageName".toUri()))
         }
     }
+
+    /** The phone's settings of date and time, from the notice that its clock is wrong (UX audit 2026-10-16, B29). */
+    internal fun openDateSettings() = openOther(Intent(Settings.ACTION_DATE_SETTINGS))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -236,6 +163,10 @@ class MainActivity : ComponentActivity() {
         // the whole link: JoinScreen reads the code and the server from it (joinCode, joinServer); after turning the
         // phone (a new activity, the same intent) the screens come from the saved back stack, not again from the link
         linkCode = if (savedInstanceState == null) intent?.data?.toString()?.takeIf { joinCode(it) != null } else null
+        // App opens the link on top of the screens (as one that comes while the app runs). The NavController would
+        // otherwise take the launch intent itself, as it matches a deep link of the graph, and for a link of another
+        // app (FLAG_ACTIVITY_NEW_TASK) start the task anew; so the intent keeps no link for it
+        if (linkCode != null) setIntent(Intent(intent).setData(null))
         if (savedInstanceState == null) intent?.let { report(it) }
         setContent { DiaryTheme { App() } }
     }
@@ -278,33 +209,14 @@ class MainActivity : ComponentActivity() {
     }
 
     /**
-     * The screens of the app on a back stack (audit SA1, A9): the list, a study's detail page, joining, the step for
-     * the permissions, about the app and the licence texts. The stack and each screen's state are saved with the
-     * activity, so turning the phone or a change of language or dark mode keeps them; the back gesture goes one screen
-     * back.
+     * The screens of the app on the back stack of Navigation Compose (audit SA1, A9; UX audit 2026-10-16, B22): the
+     * back gesture goes one screen back, with a preview of the screen below (predictive back) and a short slide and
+     * fade between the screens. From a width of 840 dp (window size class "expanded") the list and a study's page
+     * stand side by side (B34).
      */
     @Composable
     private fun App() {
-        val stack = rememberSaveable(saver = STACK_SAVER) { mutableStateListOf(HOME) }
-        val states = rememberSaveableStateHolder()
-        fun push(screen: String) = stack.add(screen)
-        fun pop() {
-            if (stack.size > 1) states.removeState("${stack.size - 1}|${stack.removeAt(stack.lastIndex)}")
-        }
-        val link = linkCode
-        LaunchedEffect(link) {
-            if (link != null) {
-                push(JOIN + link)
-                linkCode = null
-            }
-        }
-        val opened = shortcutStudy
-        LaunchedEffect(opened) {
-            if (opened != null) {
-                if (stack.last() != STUDY + opened) push(STUDY + opened)
-                shortcutStudy = null
-            }
-        }
+        val nav = rememberNavController()
         val snackbar = remember { SnackbarHostState() }
         val scope = rememberCoroutineScope()
         val say: (String) -> Unit = { text -> scope.launch { snackbar.showSnackbar(text) } }
@@ -319,7 +231,72 @@ class MainActivity : ComponentActivity() {
                 notifyLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
-        if (stack.size > 1) BackHandler { pop() }
+        val wide = LocalConfiguration.current.screenWidthDp >= EXPANDED_DP
+        // a card opens its study; side by side another card replaces the study shown, so back always leads to the list
+        val openStudy: (String) -> Unit = { code ->
+            nav.navigate(Route.Study(code)) {
+                popUpTo<Route.Home>()
+                launchSingleTop = true
+            }
+        }
+
+        NavHost(
+            nav, startDestination = Route.Home, modifier = Modifier.fillMaxSize(),
+            enterTransition = { if (sideBySide(wide)) fadeIn(tween(FADE_MS)) else forward(true) },
+            exitTransition = { if (sideBySide(wide)) fadeOut(tween(FADE_MS)) else forwardOut(true) },
+            popEnterTransition = { if (sideBySide(wide)) fadeIn(tween(FADE_MS)) else forward(false) },
+            popExitTransition = { if (sideBySide(wide)) fadeOut(tween(FADE_MS)) else forwardOut(false) },
+        ) {
+            composable<Route.Home> {
+                val list = @Composable {
+                    HomeScreen(
+                        onJoin = { nav.navigate(Route.Join()) }, onAbout = { nav.navigate(Route.About) }, onStudy = { openStudy(it.code) },
+                        allowNotifications = allowNotifications, snackbar = snackbar, say = say,
+                    )
+                }
+                if (wide) SideBySide(list) { NoStudyChosen() } else list()
+            }
+            composable<Route.Study> { entry ->
+                val code = entry.toRoute<Route.Study>().code
+                val study = model.studies.firstOrNull { it.code == code }
+                val page = @Composable {
+                    // gone from the phone; before the studies were read (they are read off the main thread) nothing yet
+                    if (study == null) { if (model.loaded) LaunchedEffect(code) { nav.back(entry) } }
+                    else StudyTheme(study.look, bars = true) { StudyScreen(study, onBack = { nav.back(entry) }, snackbar = snackbar, say = say) }
+                }
+                if (wide) SideBySide({
+                    HomeScreen(
+                        onJoin = { nav.navigate(Route.Join()) }, onAbout = { nav.navigate(Route.About) }, onStudy = { openStudy(it.code) },
+                        allowNotifications = allowNotifications, snackbar = null, say = say, selected = code,
+                    )
+                }, page) else page()
+            }
+            composable<Route.Join>(deepLinks = JOIN_LINKS.map { navDeepLink { uriPattern = it } }) { entry ->
+                // a join link that opened the app: its whole address (the server and the code), else the route's link
+                val link = entry.arguments?.let { BundleCompat.getParcelable(it, NavController.KEY_DEEP_LINK_INTENT, Intent::class.java) }
+                    ?.data?.toString() ?: entry.toRoute<Route.Join>().link
+                JoinScreen(initial = link, onDone = { nav.back(entry) })
+            }
+            composable<Route.Ready> { entry -> ReadyScreen(onDone = { nav.back(entry) }, allowNotifications = allowNotifications) }
+            composable<Route.About> { entry -> AboutScreen(onBack = { nav.back(entry) }, onLicence = { nav.navigate(Route.Licence) }) }
+            composable<Route.Licence> { entry -> LicenceScreen(onBack = { nav.back(entry) }) }
+        }
+
+        val link = linkCode
+        LaunchedEffect(link) {
+            if (link != null) {
+                nav.openJoinLink(link)
+                linkCode = null
+            }
+        }
+        val opened = shortcutStudy
+        LaunchedEffect(opened) {
+            if (opened != null) {
+                val top = nav.currentBackStackEntry?.takeIf { it.destination.hasRoute<Route.Study>() }?.toRoute<Route.Study>()?.code
+                if (top != opened) nav.navigate(Route.Study(opened))
+                shortcutStudy = null
+            }
+        }
         // the result of a join, read here and not on the join screen, so that it arrives also when that screen went
         // meanwhile (UX audit 2026-10-16, B6): the entry questionnaire opens, then the step for the permissions
         val context = LocalContext.current
@@ -328,1071 +305,88 @@ class MainActivity : ComponentActivity() {
                 val address = model.entryAddress
                 model.consumedJoin()
                 if (study.status == "pending") startActivity(EntryActivity.intent(context, study.code, "entry", address = address))
-                if (stack.last().startsWith(JOIN)) pop()
+                if (nav.currentBackStackEntry?.destination?.hasRoute<Route.Join>() == true) nav.popBackStack()
                 // after the entry questionnaire: one step that explains the permissions (audit A27), once per phone
                 if ((notifyState != NotifyNotice.NONE || !exactOn || !batteryOn) && !uiPrefs.getBoolean(READY_SHOWN, false)) {
                     uiPrefs.edit { putBoolean(READY_SHOWN, true) }
-                    push(READY)
+                    nav.navigate(Route.Ready)
                 }
                 model.reload()
             }
         }
-        val top = stack.last()
+        val top by nav.currentBackStackEntryAsState()
+        val destination = top?.destination
+        // the join screen closed (back, its arrow, "Cancel", a join): what it found or failed with does not show up the
+        // next time it opens (B6), and the list is read again
+        val joining = destination?.hasRoute<Route.Join>() == true
+        var wasJoining by rememberSaveable { mutableStateOf(false) }
+        LaunchedEffect(joining) {
+            if (wasJoining && !joining) {
+                model.leftJoin()
+                model.reload()
+            }
+            wasJoining = joining
+        }
         // the list of studies, a study's page and a found study show titles ("Diary on drinking"): no picture of them
         // in "Recents" (audit 2026-10-13, AN-7); the other screens keep theirs
         val hidden = when {
-            top == HOME -> model.studies.isNotEmpty() || !model.loaded
-            top.startsWith(STUDY) || top.startsWith(JOIN) -> true
+            destination == null || destination.hasRoute<Route.Home>() -> model.studies.isNotEmpty() || !model.loaded
+            destination.hasRoute<Route.Study>() || joining -> true
             else -> false
         }
         LaunchedEffect(hidden) { hideInRecents(hidden) }
-        states.SaveableStateProvider("${stack.size - 1}|$top") {
-            when {
-                top.startsWith(JOIN) -> JoinScreen(
-                    initial = top.removePrefix(JOIN),
-                    onDone = { model.leftJoin(); pop(); model.reload() },
-                )
-                top.startsWith(STUDY) -> {
-                    val study = model.studies.firstOrNull { it.code == top.removePrefix(STUDY) }
-                    // gone from the phone; before the studies were read (they are read off the main thread) nothing yet
-                    if (study == null) { if (model.loaded) LaunchedEffect(top) { pop() } }
-                    else StudyTheme(study.look, bars = true) { StudyScreen(study, onBack = { pop() }, snackbar = snackbar, say = say) }
-                }
-                top == ABOUT -> AboutScreen(onBack = { pop() }, onLicence = { push(LICENCE) })
-                top == LICENCE -> LicenceScreen(onBack = { pop() })
-                top == READY -> ReadyScreen(onDone = { pop() }, allowNotifications = allowNotifications)
-                else -> HomeScreen(
-                    onJoin = { push(JOIN) }, onAbout = { push(ABOUT) }, onStudy = { push(STUDY + it.code) },
-                    allowNotifications = allowNotifications, snackbar = snackbar, say = say,
-                )
-            }
+    }
+
+    /** The list beside a study's page, from the window size class "expanded" on (UX audit 2026-10-16, B34). */
+    @Composable
+    private fun SideBySide(list: @Composable () -> Unit, page: @Composable () -> Unit) {
+        Row(Modifier.fillMaxSize()) {
+            Box(Modifier.weight(1f)) { list() }
+            VerticalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            Box(Modifier.weight(1.25f)) { page() }
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    /** The right side while no study is chosen. */
     @Composable
-    private fun HomeScreen(
-        onJoin: () -> Unit, onAbout: () -> Unit, onStudy: (Study) -> Unit, allowNotifications: () -> Unit, snackbar: SnackbarHostState,
-        say: (String) -> Unit,
-    ) {
-        val studies = model.studies
-        var confirmDiscard by rememberSaveable { mutableStateOf(false) }
-        Scaffold(
-            topBar = {
-                PageHeader(stringResource(R.string.app_name), onAbout = onAbout)
-            },
-            // the main action of the start page with its words, not a "+" in the bar (audit A21); the empty page has
-            // its own button
-            floatingActionButton = {
-                if (studies.isNotEmpty()) ExtendedFloatingActionButton(
-                    onClick = onJoin,
-                    icon = { Icon(Icons.Outlined.Add, contentDescription = null) },
-                    text = { Text(stringResource(R.string.join_study)) },
-                )
-            },
-            snackbarHost = { MessageHost(snackbar) },
-        ) { pad ->
-            val (now, ended) = grouped(studies) { it.today() }
-            LazyColumn(
-                Modifier.padding(pad).fillMaxSize().padding(horizontal = 16.dp),
-                // room below the last card for the button that floats over the list
-                contentPadding = PaddingValues(bottom = 88.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                item {
-                    Text(
-                        stringResource(R.string.my_studies), style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.padding(top = 4.dp).semantics { heading() },
-                    )
-                }
-                // what keeps the prompts from arriving (on time), right below the heading and before the cards, in
-                // view after a cold start also with many studies (audit A1, SA3; UX audit 2026-10-16, B1); nothing while
-                // all is well
-                if (studies.isNotEmpty()) item(key = "readiness") { Readiness(studies, allowNotifications) }
-                if (model.clockOff) item(key = "notice-clock") { Notice(stringResource(R.string.clock_off), Icons.Outlined.Warning) }
-                // the queue of all studies cannot be read: said once here, not on every card (B10)
-                if (model.queueUnreadable) item(key = "notice-queue") {
-                    Notice(stringResource(R.string.queue_unreadable), Icons.Outlined.Warning, stringResource(R.string.queue_discard), primary = false) {
-                        confirmDiscard = true
-                    }
-                }
-                // a study's server needs a newer app (config DIARY_MIN_APP_VERSION): the app keeps working, so a
-                // neutral notice below the ones that stop the prompts (B1)
-                if (studies.any { it.needsUpdate(BuildConfig.VERSION_CODE) }) item(key = "notice-update") {
-                    Notice(stringResource(R.string.update_app), Icons.Outlined.Info, stringResource(R.string.update_button), error = false) {
-                        // the Play Store opens this link itself; without it the browser shows the page
-                        openOther(Intent(Intent.ACTION_VIEW, "https://play.google.com/store/apps/details?id=$packageName".toUri()))
-                    }
-                }
-                if (studies.isEmpty() && model.loaded) item {
-                    Column(Modifier.padding(top = 32.dp)) {
-                        Text(stringResource(R.string.no_studies))
-                        Spacer(Modifier.height(16.dp))
-                        Button(onClick = onJoin) { Text(stringResource(R.string.join_study)) }
-                    }
-                }
-                // running and not yet over on top, the ended ones under a heading of their own (audit A20)
-                items(now, key = { it.code }) { ListTheme(it.look) { StudyCard(it) { onStudy(it) } } }
-                if (ended.isNotEmpty()) item(key = "ended") {
-                    Text(
-                        stringResource(R.string.ended_group), style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(top = 12.dp).semantics { heading() },
-                    )
-                }
-                items(ended, key = { it.code }) { ListTheme(it.look) { StudyCard(it) { onStudy(it) } } }
-                item {
-                    // which version runs on this phone (version, build time; server of a debug build)
-                    val format = stringResource(R.string.build_info)
-                    Text(
-                        buildInfo { v, t -> String.format(format, v, t) },
-                        Modifier.fillMaxWidth().padding(vertical = 16.dp),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-            }
-        }
-        if (confirmDiscard) {
-            AlertDialog(
-                onDismissRequest = { confirmDiscard = false },
-                title = { Text(stringResource(R.string.queue_discard)) },
-                text = { GuardAgainstOverlays(); Text(stringResource(R.string.queue_discard_confirm)) },
-                confirmButton = {
-                    TextButton(onClick = {
-                        confirmDiscard = false
-                        // a failure as a snackbar, read out like every other message of the page (B8)
-                        model.discardQueue { ok -> if (!ok) say(getString(R.string.error)) }
-                    }) { Text(stringResource(R.string.queue_discard), color = MaterialTheme.colorScheme.error) }
-                },
-                dismissButton = { TextButton(onClick = { confirmDiscard = false }) { Text(stringResource(R.string.cancel)) } },
-            )
-        }
-    }
-
-    /**
-     * The readiness of the phone for the prompts (audit SA3; UX audit 2026-10-16, B1): a notice in the error colours
-     * right below the heading, with a button per missing permission, the first one filled; invisible while all is
-     * well. Notifications count for every study, exact alarms only while one runs. The battery optimisation is
-     * offered too while the notice shows, as an optional third point (B11); alone it raises no notice.
-     */
-    @OptIn(ExperimentalLayoutApi::class)
-    @Composable
-    private fun Readiness(studies: List<Study>, allowNotifications: () -> Unit) {
-        val notify = notifyState != NotifyNotice.NONE
-        val running = studies.any { it.running }
-        val exact = running && !exactOn
-        if (!notify && !exact) return
-        NoticeCard {
-            Row(Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                Icon(Icons.Outlined.Notifications, contentDescription = null, tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(24.dp))
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text(
-                        stringResource(R.string.reminders_setup), style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.semantics { heading() },
-                    )
-                    Text(stringResource(if (notify) R.string.ready_notify_text else R.string.ready_exact_text), fontWeight = FontWeight.SemiBold)
-                    Text(stringResource(R.string.reminders_optional), style = MaterialTheme.typography.bodyMedium)
-                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        // the permission that matters most is the filled button
-                        if (notify) Button(onClick = allowNotifications) { Text(stringResource(R.string.notifications_open)) }
-                        if (exact) {
-                            if (notify) OutlinedButton(onClick = { openExactSettings() }) { Text(stringResource(R.string.alarms_open)) }
-                            else Button(onClick = { openExactSettings() }) { Text(stringResource(R.string.alarms_open)) }
-                        }
-                        if (running && !batteryOn) TextButton(onClick = { openBatterySettings() }) { Text(stringResource(R.string.battery_open)) }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * A notice of the start page, unlike a study card (audit A20): in the error colours when the prompts or the
-     * answers are at stake, else neutral with a border (an update the app can wait for; UX audit 2026-10-16, B1).
-     */
-    @Composable
-    private fun NoticeCard(error: Boolean = true, content: @Composable () -> Unit) {
-        Card(
-            Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = if (error) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.surface,
-                contentColor = if (error) MaterialTheme.colorScheme.onErrorContainer else MaterialTheme.colorScheme.onSurface,
-            ),
-            border = BorderStroke(1.dp, if (error) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline),
-        ) { Column { content() } }
-    }
-
-    @Composable
-    private fun NoticeRow(text: String, icon: ImageVector, button: String?, error: Boolean, primary: Boolean, onClick: () -> Unit) {
-        Row(Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Icon(
-                icon, contentDescription = null, modifier = Modifier.size(24.dp),
-                tint = if (error) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
-            )
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(text, style = MaterialTheme.typography.bodyLarge, fontWeight = if (error) FontWeight.SemiBold else FontWeight.Normal)
-                if (button != null) {
-                    if (error && primary) Button(onClick = onClick) { Text(button) } else OutlinedButton(onClick = onClick) { Text(button) }
-                }
-            }
-        }
-    }
-
-    @Composable
-    private fun Notice(
-        text: String, icon: ImageVector, button: String? = null, error: Boolean = true, primary: Boolean = true, onClick: () -> Unit = {},
-    ) {
-        NoticeCard(error) { NoticeRow(text, icon, button, error, primary, onClick) }
-    }
-
-    /**
-     * A study on the start page (audit SA2): title, state with an icon, the next question and what to do now; the
-     * rest (study period, modules, quiet hours, waiting answers, leaving and deleting) on its detail page, which the
-     * card opens. TalkBack reads the card as one item, its buttons apart (audit A22).
-     */
-    @Composable
-    private fun StudyCard(study: Study, onOpen: () -> Unit) {
-        var transmissions by rememberSaveable { mutableStateOf(false) }
-        Card(
-            onClick = onOpen,
-            modifier = Modifier.fillMaxWidth(),
-            // in the study's look (StudyTheme): the page colour with its border, as the participant pages show it
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-        ) {
-            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(study.title, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
-                    Icon(Icons.AutoMirrored.Outlined.KeyboardArrowRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                }
-                // the researchers' sentence about the study (server: "summary")
-                if (study.summary.isNotBlank()) {
-                    Text(study.summary, style = MaterialTheme.typography.bodyMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                }
-                StudyNow(study)
-                val n = model.waiting[study.code] ?: 0
-                if (n > 0) Message(pluralStringResource(R.plurals.answers_waiting, n, n))
-                if (n > 0 || hasStoredReceipts(study.code, model.waiting)) TextButton(onClick = { transmissions = true }) { Text(stringResource(R.string.transmissions)) }
-                if (study.code in model.refused) {
-                    Text(stringResource(R.string.limit_refused), style = MaterialTheme.typography.bodySmall)
-                    TextButton(onClick = { model.clearRefused(study.code) }) { Text(stringResource(R.string.close)) }
-                }
-            }
-        }
-        if (transmissions) StoredTransmissions(study,
-            model.transferring, { model.transfer() }, { transmissions = false }, model::discardAnswer)
-    }
-
-    /** The study's date and time now, read again every 15 s for a fast-forward person (a day passes in minutes). */
-    @Composable
-    private fun studyNow(study: Study): Long {
-        var tick by remember { mutableLongStateOf(System.currentTimeMillis()) }
-        LaunchedEffect(study.code) {
-            while (true) {
-                delay(15_000)
-                tick = System.currentTimeMillis()
-            }
-        }
-        return tick
-    }
-
-    /**
-     * What the card and the detail page say alike: the fast-forward badge, the state with its icon, the next short
-     * survey and the buttons for what is to do now (the entry questionnaire, a report, the exit questionnaire). Only
-     * the most urgent of them is a filled button, further prompts are tonal and reports outlined (UX audit 2026-10-16,
-     * B14).
-     */
-    @Composable
-    private fun StudyNow(study: Study) {
-        val context = LocalContext.current
-        val tick = studyNow(study)
-        val today = study.today(real = tick)
-        val state = studyState(study, today)
-        study.clock?.let { clock ->
-            // neutral, not a warning; read as "fast-forward, 144 times" (audit A19, A22)
-            val spoken = stringResource(R.string.fast_forward_spoken, clock.factor)
-            Surface(color = MaterialTheme.colorScheme.surfaceVariant, shape = MaterialTheme.shapes.small) {
+    private fun NoStudyChosen() {
+        Surface(Modifier.fillMaxSize()) {
+            Box(Modifier.fillMaxHeight().padding(24.dp), contentAlignment = Alignment.Center) {
                 Text(
-                    stringResource(R.string.fast_forward, clock.factor),
-                    Modifier.padding(horizontal = 8.dp, vertical = 2.dp).clearAndSetSemantics { contentDescription = spoken },
-                    style = MaterialTheme.typography.labelSmall,
+                    stringResource(R.string.choose_study), textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
-        StateLine(study, state, today)
-        if (state == StudyState.RUNNING) {
-            var prompts by remember(study.code) { mutableStateOf<List<Pair<Prompt, Long?>>>(emptyList()) }
-            var queueFailed by remember(study.code) { mutableStateOf(false) }
-            LaunchedEffect(study, tick, model.waiting) {
-                try {
-                    prompts = withContext(Dispatchers.IO) {
-                        val log = PromptLog(context)
-                        val queue = AnswerQueue(context)
-                        Schedule.available(study, Instant.ofEpochMilli(tick)).filter {
-                            !log.isCompleted(study.code, it.module, it.due) && !queue.has(study.code, it.module, it.due)
-                        }.map { it to log.notifiedAt(study.code, it.module, it.due) }
-                    }
-                    queueFailed = false
-                } catch (e: java.io.IOException) { prompts = emptyList(); queueFailed = true }
-            }
-            // the start page says it once for all studies (B10)
-            if (queueFailed && !model.queueUnreadable) Text(stringResource(R.string.queue_unreadable))
-            // the one that closes first on top; one without an end last
-            val open = prompts.sortedBy { (p, _) -> if (p.expires > 0) p.due + p.expires * 60_000L else Long.MAX_VALUE }
-            for ((k, pair) in open.withIndex()) {
-                val (prompt, notified) = pair
-                val module = study.modules.firstOrNull { it.key == prompt.module } ?: continue
-                SectionTitle(module.name)
-                if (prompt.expires > 0) Text(stringResource(R.string.prompt_until,
-                    whenText(Instant.ofEpochMilli(prompt.due + prompt.expires * 60_000L).atZone(ZoneId.systemDefault()), today, false)))
-                val start = { startActivity(EntryActivity.intent(context, study.code, prompt.module, prompt.due, notified)) }
-                if (k == 0) Button(onClick = start) { Text(stringResource(R.string.answer_prompt)) }
-                else FilledTonalButton(onClick = start) { Text(stringResource(R.string.answer_prompt)) }
-            }
-            if (notifyState != NotifyNotice.NONE) {
-                // without notifications no prompt reaches the participant: no time that would not come (audit A1);
-                // so no line "Next short survey" either (B14)
-                Text(stringResource(R.string.notifications_off), color = MaterialTheme.colorScheme.error)
-            } else Schedule.next(listOf(study), Instant.ofEpochMilli(tick)).firstOrNull()?.let {
-                // shown in the study's time, like the day; "about" while the alarm may ring minutes late (A11), "today",
-                // "tomorrow" or the date (A25)
-                val due = Instant.ofEpochMilli(it.due).atZone(ZoneId.systemDefault())
-                Text(stringResource(R.string.next_prompt, whenText(due, today, approximate(exactOn))))
-                // a fast-forward test person: when it really comes, small below
-                if (study.clock != null) {
-                    val real = timeText(Instant.ofEpochMilli(it.ring).atZone(ZoneId.systemDefault()))
-                    val wait = DateUtils.getRelativeTimeSpanString(it.ring, tick, DateUtils.MINUTE_IN_MILLIS).toString()
-                    Text(
-                        stringResource(R.string.next_prompt_real, real, wait),
-                        style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-            }
-            // the modules the participant starts themselves, also timed ones that may be started on an event
-            for (m in study.selfModules(study.dayIndex(today) ?: 0)) {
-                OutlinedButton(onClick = { startActivity(EntryActivity.intent(context, study.code, m.key)) }) {
-                    Text(m.selfTrigger?.label?.ifBlank { null } ?: m.name)
-                }
-            }
-        }
-        if (state == StudyState.PENDING) {
-            Button(onClick = { startActivity(EntryActivity.intent(context, study.code, "entry")) }) { Text(stringResource(R.string.continue_entry)) }
-        }
-        study.exit?.takeIf { it.open }?.let { exit ->
-            Button(onClick = { startActivity(EntryActivity.intent(context, study.code, EntryActivity.EXIT)) }) {
-                Text(exit.name.ifBlank { stringResource(R.string.exit_default) })
-            }
-            // the state line names the last day already when the study period is over (EXIT_OPEN)
-            if (state != StudyState.EXIT_OPEN) exit.until?.let {
-                Text(stringResource(R.string.exit_until, dateText(it)), style = MaterialTheme.typography.bodySmall)
-            }
-        }
-    }
-
-    /** The state of a study as one line with an icon, one item for TalkBack (audit A20, A22). */
-    @Composable
-    private fun StateLine(study: Study, state: StudyState, today: LocalDate) {
-        val (icon, text) = when (state) {
-            StudyState.PENDING -> Icons.Outlined.Edit to stringResource(R.string.state_pending)
-            StudyState.BEFORE_START -> Icons.Outlined.DateRange to stringResource(R.string.starts_on, dateText(study.firstDay!!))
-            StudyState.RUNNING -> Icons.Outlined.PlayArrow to
-                (study.dayIndex(today)?.let { d ->
-                    // an open-ended study has no last day: "Day 12"
-                    study.periodDays?.let { stringResource(R.string.day_of, d, it) } ?: if (study.openEnd) stringResource(R.string.day_n, d) else null
-                } ?: stringResource(R.string.state_running))
-            StudyState.PERIOD_OVER -> Icons.Outlined.Refresh to stringResource(R.string.period_over)
-            StudyState.PAUSED -> Icons.Outlined.Info to stringResource(R.string.paused)
-            StudyState.EXIT_OPEN -> Icons.Outlined.Edit to (study.exit?.until?.let { stringResource(R.string.exit_open_until, dateText(it)) }
-                ?: stringResource(R.string.exit_open))
-            StudyState.FINISHED -> Icons.Outlined.CheckCircle to stringResource(R.string.finished)
-            StudyState.LEFT -> Icons.AutoMirrored.Outlined.ExitToApp to stringResource(R.string.left)
-            StudyState.LEFT_PENDING -> Icons.AutoMirrored.Outlined.ExitToApp to stringResource(R.string.left_pending)
-            StudyState.ENDED -> Icons.Outlined.Done to stringResource(R.string.ended)
-        }
-        Row(Modifier.semantics(mergeDescendants = true) {}, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Icon(icon, contentDescription = null, modifier = Modifier.size(22.dp).padding(top = 2.dp), tint = MaterialTheme.colorScheme.primary)
-            Text(text, style = MaterialTheme.typography.bodyLarge)
-        }
     }
 
     /**
-     * "today, 09:40", "tomorrow, 08:15" or "Wed, 14 Oct, 09:40", in the phone's time format (12 or 24 h; A25);
-     * [about]: "today, about 09:40" (A11).
+     * A join link that came with an intent: through the deep links of the join screen (the link stays in the entry's
+     * deep-link intent), on top of the screens shown; a link the deep links do not take (a debug server, a path after
+     * the code) as the route's link, as joinCode and joinServer read it.
      */
-    private fun whenText(at: ZonedDateTime, today: LocalDate, about: Boolean): String {
-        val time = timeText(at).let { if (about) getString(R.string.time_about, it) else it }
-        return when (dayWord(at.toLocalDate(), today)) {
-            DayWord.TODAY -> getString(R.string.today_at, time)
-            DayWord.TOMORROW -> getString(R.string.tomorrow_at, time)
-            DayWord.DATE -> getString(
-                R.string.date_at,
-                at.format(DateTimeFormatter.ofPattern(DateFormat.getBestDateTimePattern(Locale.getDefault(), "EEEdMMM"), Locale.getDefault())),
-                time,
-            )
-        }
+    private fun NavController.openJoinLink(link: String) {
+        val request = NavDeepLinkRequest.Builder.fromUri(link.toUri()).build()
+        if (graph.hasDeepLink(request)) navigate(request) else navigate(Route.Join(link))
     }
 
-    /** A time of day in the phone's own format: 24 h or 12 h as set on the phone, not by the language alone (A25). */
-    private fun timeText(at: ZonedDateTime): String = DateFormat.getTimeFormat(this).format(Date.from(at.toInstant()))
-
-    private fun timeText(hhmm: String): String = timeText(LocalDate.now().atTime(LocalTime.parse(hhmm)).atZone(ZoneId.systemDefault()))
-
-    private fun dateText(day: LocalDate): String = day.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
-
-    /** "22:00–07:00" in the phone's time format, or "none". */
-    @Composable
-    private fun quietText(quiet: Quiet?): String =
-        if (quiet == null) stringResource(R.string.quiet_none) else "${timeText(quiet.start)}–${timeText(quiet.end)}"
-
-    /** How often a module asks, as the join screen says it. */
-    @Composable
-    private fun moduleText(m: Module): String {
-        val t = m.trigger
-        if (t is Trigger.Self) return stringResource(R.string.self_module, t.label.ifBlank { m.name })
-        val f = frequency(t) ?: return m.name
-        val random = t is Trigger.Random
-        return when {
-            f.daily && random -> pluralStringResource(R.plurals.random_per_day, f.perDay, m.name, f.perDay)
-            f.daily -> pluralStringResource(R.plurals.fixed_per_day, f.perDay, m.name, f.perDay)
-            random -> pluralStringResource(R.plurals.random_per_week, f.perWeek, m.name, f.perWeek)
-            else -> pluralStringResource(R.plurals.fixed_per_week, f.perWeek, m.name, f.perWeek)
-        }
+    /** One screen back from [entry], only while it is on top: a second tap during the transition goes nowhere. */
+    private fun NavController.back(entry: NavBackStackEntry) {
+        if (currentBackStackEntry?.id == entry.id) popBackStack()
     }
 
-    /**
-     * The detail page of a study (audit SA2): what the card shows, the researchers' summary, the study period (start,
-     * end or open-ended), what is asked, the quiet hours, the notification sound, a home-screen shortcut for reports,
-     * the waiting answers, and the final actions apart from the rest (leaving or removing, deleting the answers), each
-     * asking first (A14, A15). After leaving the page says what becomes of the answers and offers keeping and
-     * deleting them alike, without pressing either (UX audit 2026-10-16, B12).
-     */
-    @OptIn(ExperimentalLayoutApi::class)
-    @Composable
-    private fun StudyScreen(study: Study, onBack: () -> Unit, snackbar: SnackbarHostState, say: (String) -> Unit) {
-        val context = LocalContext.current
-        var askErase by remember { mutableStateOf(false) }
-        var shortcutFor by remember { mutableStateOf<Module?>(null) }
-        var confirmLeave by remember { mutableStateOf(false) }
-        var confirmErase by remember { mutableStateOf(false) }
-        var confirmRemove by rememberSaveable { mutableStateOf(false) }
-        var transmissions by rememberSaveable { mutableStateOf(false) }
-        var erasing by remember { mutableStateOf(false) }
-        var eraseError by remember { mutableStateOf<String?>(null) }
-        var editQuiet by remember { mutableStateOf(false) }
-        val today = study.today(real = studyNow(study))
-        BackScaffold(study.title, onBack, snackbar) { pad ->
-            Column(
-                pad.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                Text(study.title, style = MaterialTheme.typography.titleLarge, modifier = Modifier.semantics { heading() })
-                if (study.summary.isNotBlank()) Text(study.summary)
-                if (study.contact.isNotBlank()) Text(stringResource(R.string.study_contact, study.contact))
-                StudyNow(study)
-                if (study.code in model.refused) {
-                    Text(stringResource(R.string.limit_refused), style = MaterialTheme.typography.bodySmall)
-                    TextButton(onClick = { model.clearRefused(study.code) }) { Text(stringResource(R.string.close)) }
-                }
-                val n = model.waiting[study.code] ?: 0
-                if (n > 0) Message(pluralStringResource(R.plurals.answers_waiting, n, n))
-                if (n > 0 || hasStoredReceipts(study.code, model.waiting)) TextButton(onClick = { transmissions = true }) {
-                    Text(stringResource(R.string.transmissions))
-                }
+    /** The list and a study's page side by side: the change between them only fades, nothing slides. */
+    private fun AnimatedContentTransitionScope<NavBackStackEntry>.sideBySide(wide: Boolean): Boolean =
+        wide && listOf(initialState, targetState).all { it.destination.hasRoute<Route.Home>() || it.destination.hasRoute<Route.Study>() }
 
-                val first = study.firstDay
-                val last = study.lastDay
-                SectionTitle(stringResource(R.string.period_title))
-                when {
-                    first == null -> Text(stringResource(R.string.period_after_entry))
-                    last != null && !study.openEnd -> Text(stringResource(R.string.period_from_to, dateText(first), dateText(last)))
-                    else -> {
-                        // open-ended: it runs until the researchers end it
-                        Text(stringResource(R.string.period_start, dateText(first)))
-                        Text(stringResource(R.string.period_open_end))
-                    }
-                }
-                if (study.modules.isNotEmpty()) {
-                    SectionTitle(stringResource(R.string.study_modules))
-                    for (m in study.modules) {
-                        Text("• " + moduleText(m))
-                        // a timed module the participant may also start themselves
-                        if (m.selfStart != null) Text("• " + stringResource(R.string.also_self_module, m.name))
-                    }
-                }
-                if (study.hasRandom) {
-                    SectionTitle(stringResource(R.string.quiet_title))
-                    val quietNow = study.quietOn(today)
-                    val quietNext = study.quietOn(today.plusDays(1))
-                    Text(stringResource(R.string.quiet_now, quietText(quietNow)))
-                    if (quietNext != quietNow) Text(stringResource(R.string.quiet_from_tomorrow, quietText(quietNext)))
-                    if (study.quietPending != null) Message(stringResource(R.string.quiet_pending))
-                    if (study.running) OutlinedButton(onClick = { editQuiet = true }) { Text(stringResource(R.string.quiet_change)) }
-                }
+    /** The new screen slides in a little from the end ([forwards]) or the start (back), and fades in. */
+    private fun AnimatedContentTransitionScope<NavBackStackEntry>.forward(forwards: Boolean): EnterTransition =
+        slideIntoContainer(if (forwards) SlideDirection.Start else SlideDirection.End, tween(SLIDE_MS)) { it / 4 } + fadeIn(tween(SLIDE_MS))
 
-                // the sound, while questions or the exit questionnaire can still be notified; kept only on the phone
-                if (Shortcuts.alive(study) || study.exit?.open == true) {
-                    SectionTitle(stringResource(R.string.notifications_title))
-                    SwitchRow(stringResource(R.string.sound), study.sound) { model.setSound(study, it) }
-                    Text(
-                        stringResource(if (study.sound) R.string.sound_on_hint else R.string.sound_off_hint),
-                        style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
+    private fun AnimatedContentTransitionScope<NavBackStackEntry>.forwardOut(forwards: Boolean): ExitTransition =
+        slideOutOfContainer(if (forwards) SlideDirection.Start else SlideDirection.End, tween(SLIDE_MS)) { it / 4 } + fadeOut(tween(SLIDE_MS))
 
-                // a home-screen shortcut per module the participant starts themselves
-                val reports = study.modules.filter { it.selfTrigger != null }
-                if (study.running && reports.isNotEmpty() && Shortcuts.supported(context)) {
-                    SectionTitle(stringResource(R.string.shortcut_title))
-                    Text(stringResource(R.string.shortcut_intro), style = MaterialTheme.typography.bodySmall)
-                    for (m in reports) {
-                        OutlinedButton(onClick = { shortcutFor = m }) {
-                            Text(
-                                if (reports.size == 1) stringResource(R.string.shortcut_add)
-                                else stringResource(R.string.shortcut_add_for, m.selfTrigger?.label?.ifBlank { null } ?: m.name)
-                            )
-                        }
-                    }
-                }
-
-                SectionTitle(stringResource(R.string.participation_title))
-                if (study.status == "active" || study.status == "pending" || study.status == "paused") {
-                    OutlinedButton(onClick = { confirmLeave = true }) { Text(stringResource(R.string.leave_study)) }
-                } else if (!study.leavePending) {
-                    // a leave not yet told to the server keeps the study, so that the next sync can send it
-                    OutlinedButton(onClick = { confirmRemove = true }) { Text(stringResource(R.string.remove_from_list)) }
-                }
-                // every study still holds its secret, so its answers can be deleted, also after the end
-                OutlinedButton(
-                    onClick = { eraseError = null; confirmErase = true },
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.error),
-                ) { Text(stringResource(R.string.erase_answers), color = MaterialTheme.colorScheme.error) }
-                eraseError?.let { Text(it, Modifier.semantics { liveRegion = LiveRegionMode.Polite }, color = MaterialTheme.colorScheme.error) }
-            }
-        }
-        if (editQuiet) {
-            QuietDialog(
-                // the dialog starts from the quiet hours that will count from tomorrow, the first day a change reaches
-                initial = study.quietOn(today.plusDays(1)),
-                onDismiss = { editQuiet = false },
-                onSave = { quiet ->
-                    editQuiet = false
-                    model.setQuiet(study, quiet)
-                },
-            )
-        }
-        if (confirmLeave) {
-            // the study in the title, the final button in the error colour, a word afterwards (audit A15)
-            AlertDialog(
-                onDismissRequest = { confirmLeave = false },
-                title = { Text(stringResource(R.string.leave_title, study.title)) },
-                text = {
-                    GuardAgainstOverlays()
-                    Text(stringResource(R.string.leave_confirm))
-                },
-                confirmButton = {
-                    TextButton(onClick = {
-                        confirmLeave = false
-                        model.leave(study)
-                        say(getString(R.string.left_done, study.title))
-                        // then what becomes of the answers, both choices alike (B12)
-                        askErase = true
-                    }) { Text(stringResource(R.string.leave_study), color = MaterialTheme.colorScheme.error) }
-                },
-                dismissButton = { TextButton(onClick = { confirmLeave = false }) { Text(stringResource(R.string.cancel)) } },
-            )
-        }
-        if (askErase) {
-            AlertDialog(
-                // not closed by a tap beside it while the server deletes
-                onDismissRequest = { if (!erasing) askErase = false },
-                title = { Text(stringResource(R.string.after_leave_title)) },
-                text = {
-                    GuardAgainstOverlays()
-                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        Text(stringResource(R.string.after_leave_text))
-                        if (erasing) Erasing()
-                    }
-                },
-                // keeping and deleting as equal choices, neither one pressed on the participant (B12)
-                confirmButton = {
-                    TextButton(enabled = !erasing, onClick = {
-                        erasing = true
-                        // the question itself was the confirmation; the study stays after an error (its secret)
-                        eraseError = null
-                        model.erase(study) { e ->
-                            erasing = false
-                            askErase = false
-                            if (e == null) {
-                                say(getString(R.string.erased_done, study.title))
-                                onBack()
-                            } else {
-                                eraseError = getString(if (e.key == "offline") R.string.offline else R.string.error)
-                                say(eraseError!!)
-                            }
-                        }
-                    }) { Text(stringResource(R.string.erase_answers), color = MaterialTheme.colorScheme.error) }
-                },
-                dismissButton = { TextButton(enabled = !erasing, onClick = { askErase = false }) { Text(stringResource(R.string.keep_answers)) } },
-            )
-        }
-        shortcutFor?.let { m -> ShortcutDialog(study, m, onDone = { shortcutFor = null }) }
-        if (transmissions) StoredTransmissions(study,
-            model.transferring, { model.transfer() }, { transmissions = false }, model::discardAnswer)
-        if (confirmRemove) {
-            // the secret goes with the study: afterwards its answers can no longer be deleted from the phone (audit A4)
-            AlertDialog(
-                onDismissRequest = { confirmRemove = false },
-                title = { Text(stringResource(R.string.remove_title, study.title)) },
-                text = {
-                    GuardAgainstOverlays()
-                    Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text(stringResource(R.string.remove_confirm))
-                        val waiting = model.waiting[study.code] ?: 0
-                        if (waiting > 0) Message(stringResource(R.string.remove_waiting, waiting), error = true)
-                        if (study.exit?.open == true) {
-                            Text(stringResource(R.string.remove_exit_open), color = MaterialTheme.colorScheme.error)
-                        }
-                    }
-                },
-                confirmButton = {
-                    TextButton(onClick = {
-                        confirmRemove = false
-                        // with its queued answers and kept pages: the participant takes the study off the phone
-                        model.remove(study.code) { error ->
-                            if (error != null) say(getString(R.string.error)) else {
-                                say(getString(R.string.removed_done, study.title))
-                                onBack()
-                            }
-                        }
-                    }) { Text(stringResource(R.string.remove), color = MaterialTheme.colorScheme.error) }
-                },
-                dismissButton = { FlowRow {
-                    TextButton(onClick = { confirmRemove = false }) { Text(stringResource(R.string.cancel)) }
-                    if ((model.waiting[study.code] ?: 0) > 0) TextButton(onClick = {
-                        confirmRemove = false; transmissions = true; model.transfer()
-                    }) { Text(stringResource(R.string.try_transfer)) }
-                } },
-            )
-        }
-        if (confirmErase) {
-            AlertDialog(
-                // not closed by a tap beside it while the server deletes
-                onDismissRequest = { if (!erasing) confirmErase = false },
-                title = { Text(stringResource(R.string.erase_title, study.title)) },
-                text = {
-                    GuardAgainstOverlays()
-                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        Text(stringResource(R.string.erase_confirm))
-                        if (erasing) Erasing()
-                    }
-                },
-                confirmButton = {
-                    TextButton(enabled = !erasing, onClick = {
-                        erasing = true
-                        // the study stays after an error: its secret is the only way to try again
-                        model.erase(study) { e ->
-                            erasing = false
-                            confirmErase = false
-                            if (e == null) {
-                                say(getString(R.string.erased_done, study.title))
-                                onBack()
-                            } else {
-                                eraseError = getString(if (e.key == "offline") R.string.offline else R.string.error)
-                                say(eraseError!!)
-                            }
-                        }
-                    }) { Text(stringResource(R.string.erase), color = MaterialTheme.colorScheme.error) }
-                },
-                dismissButton = { TextButton(enabled = !erasing, onClick = { confirmErase = false }) { Text(stringResource(R.string.cancel)) } },
-            )
-        }
-    }
-
-    /** The progress of a deletion at the server, in the dialog that started it (B12). */
-    @Composable
-    private fun Erasing() {
-        val busy = stringResource(R.string.erasing)
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            CircularProgressIndicator(Modifier.size(24.dp).semantics { contentDescription = busy })
-            Text(busy)
-        }
-    }
-
-    /**
-     * A switch with its label as one row (UX audit 2026-10-16, B9): the whole row is the switch for touch and for
-     * TalkBack ("Notification sound, switch, on"), at least 56 dp high.
-     */
-    @Composable
-    private fun SwitchRow(label: String, checked: Boolean, onChange: (Boolean) -> Unit) {
-        Row(
-            Modifier.fillMaxWidth().heightIn(min = 56.dp).toggleable(value = checked, role = Role.Switch, onValueChange = onChange),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(label, Modifier.weight(1f))
-            Switch(checked = checked, onCheckedChange = null)
-        }
-    }
-
-    /**
-     * The label of a new home-screen shortcut to report [module]: the report's label to begin with, never the study's
-     * title, and the participant may change it, since anyone who sees the home screen reads it.
-     */
-    @Composable
-    private fun ShortcutDialog(study: Study, module: Module, onDone: () -> Unit) {
-        val context = LocalContext.current
-        val fallback = stringResource(R.string.shortcut_default)
-        var label by rememberSaveable { mutableStateOf(module.selfTrigger?.label?.ifBlank { null } ?: module.name.ifBlank { fallback }) }
-        var failed by remember { mutableStateOf(false) }
-        AlertDialog(
-            onDismissRequest = onDone,
-            title = { Text(stringResource(R.string.shortcut_add)) },
-            text = {
-                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text(stringResource(R.string.shortcut_hint))
-                    OutlinedTextField(
-                        value = label, onValueChange = { label = it.take(40) }, singleLine = true,
-                        label = { Text(stringResource(R.string.shortcut_label)) },
-                    )
-                    if (failed) Text(stringResource(R.string.shortcut_failed), color = MaterialTheme.colorScheme.error)
-                }
-            },
-            confirmButton = {
-                TextButton(enabled = label.isNotBlank(), onClick = {
-                    if (Shortcuts.request(context, study, module.key, label)) onDone() else failed = true
-                }) { Text(stringResource(R.string.shortcut_create)) }
-            },
-            dismissButton = { TextButton(onClick = onDone) { Text(stringResource(R.string.cancel)) } },
-        )
-    }
-
-    /**
-     * The quiet hours of a study (audit A16): a switch "Use quiet hours" with from and to (the phone's time pickers),
-     * saved only with "Save". They keep the random prompts out of that time from tomorrow on; the fixed times of the
-     * researchers stay as they are.
-     */
-    @OptIn(ExperimentalLayoutApi::class)
-    @Composable
-    private fun QuietDialog(initial: Quiet?, onDismiss: () -> Unit, onSave: (Quiet?) -> Unit) {
-        val context = LocalContext.current
-        var on by remember { mutableStateOf(initial != null) }
-        var start by remember { mutableStateOf(initial?.start ?: "22:00") }
-        var end by remember { mutableStateOf(initial?.end ?: "07:00") }
-
-        fun pick(value: String, set: (String) -> Unit) {
-            val t = LocalTime.parse(value)
-            TimePickerDialog(
-                context, { _, h, m -> set("%02d:%02d".format(Locale.ROOT, h, m)) }, t.hour, t.minute,
-                DateFormat.is24HourFormat(context),
-            ).show()
-        }
-
-        AlertDialog(
-            onDismissRequest = onDismiss,
-            title = { Text(stringResource(R.string.quiet_title)) },
-            text = {
-                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text(stringResource(R.string.quiet_hint))
-                    SwitchRow(stringResource(R.string.quiet_use), on) { on = it }
-                    if (on) {
-                        val fromText = stringResource(R.string.quiet_from_cd, timeText(start))
-                        val toText = stringResource(R.string.quiet_to_cd, timeText(end))
-                        FlowRow(verticalArrangement = Arrangement.spacedBy(8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text(stringResource(R.string.quiet_from))
-                            // "Quiet hours from 23:00", not only "23:00" (audit A16)
-                            OutlinedButton(onClick = { pick(start) { start = it } }, Modifier.semantics { contentDescription = fromText }) { Text(timeText(start)) }
-                            Text(stringResource(R.string.quiet_to))
-                            OutlinedButton(onClick = { pick(end) { end = it } }, Modifier.semantics { contentDescription = toText }) { Text(timeText(end)) }
-                        }
-                    }
-                }
-            },
-            // the same time twice is no quiet time at all (the server takes it so): stored as none
-            confirmButton = {
-                TextButton(onClick = { onSave(if (!on || start == end) null else Quiet(start, end)) }) { Text(stringResource(R.string.save)) }
-            },
-            dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) } },
-        )
-    }
-
-    /**
-     * After the entry questionnaire: one step that says why the app needs notifications and "Alarms & reminders",
-     * and asks for one after the other (audit A27); the battery optimisation as an optional third point (UX audit
-     * 2026-10-16, B11). Whatever is missing later shows on the start page (Readiness).
-     */
-    @Composable
-    private fun ReadyScreen(onDone: () -> Unit, allowNotifications: () -> Unit) {
-        val notifyOk = notifyState == NotifyNotice.NONE
-        val exactOk = exactOn
-        val batteryOk = batteryOn
-        BackScaffold(stringResource(R.string.ready_title), onDone) { pad ->
-            Column(
-                pad.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                Text(stringResource(R.string.ready_intro))
-                ReadyStep(
-                    1, stringResource(R.string.ready_notify_title), stringResource(R.string.ready_notify_text), notifyOk, primary = true,
-                    button = stringResource(if (notifyState == NotifyNotice.SETTINGS) R.string.allow_in_settings else R.string.allow),
-                    onClick = allowNotifications,
-                )
-                ReadyStep(
-                    2, stringResource(R.string.ready_exact_title), stringResource(R.string.ready_exact_text), exactOk, primary = notifyOk,
-                    button = stringResource(R.string.allow), onClick = { openExactSettings() },
-                )
-                // optional: the button stays outlined, and "Done" does not wait for it
-                ReadyStep(
-                    3, stringResource(R.string.ready_battery_title), stringResource(R.string.ready_battery_text), batteryOk, primary = false,
-                    button = stringResource(R.string.battery_open), onClick = { openBatterySettings() },
-                )
-                // "Done" once both permissions are there; "Later" quietly beside the permission buttons until then
-                if (notifyOk && exactOk) Button(onClick = onDone) { Text(stringResource(R.string.done)) }
-                else TextButton(onClick = onDone) { Text(stringResource(R.string.later)) }
-            }
-        }
-    }
-
-    @Composable
-    private fun ReadyStep(number: Int, title: String, text: String, ok: Boolean, primary: Boolean, button: String, onClick: () -> Unit) {
-        val granted = stringResource(R.string.allowed)
-        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text(
-                "$number. $title", style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.semantics { heading(); if (ok) stateDescription = granted },
-            )
-            Text(text)
-            when {
-                ok -> Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Icon(Icons.Outlined.CheckCircle, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                    Text(granted)
-                }
-                // the next missing permission is the filled button; one after the other
-                primary -> Button(onClick = onClick) { Text(button) }
-                else -> OutlinedButton(onClick = onClick) { Text(button) }
-            }
-        }
-    }
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    private fun JoinScreen(initial: String, onDone: () -> Unit) {
-        val context = LocalContext.current
-        // what was typed and found survives turning the phone (audit A9); the study's information as its JSON text
-        var code by rememberSaveable { mutableStateOf(joinCode(initial) ?: "") }
-        // the server of the study: from its join link (QR code, App Link), else the app's own for a typed code
-        var server by rememberSaveable { mutableStateOf(Api.defaultServer) }
-        var infoText by rememberSaveable { mutableStateOf<String?>(null) }
-        val info = remember(infoText) { infoText?.let { runCatching { JSONObject(it) }.getOrNull() } }
-        val busy = model.joinBusy
-        // one handler, the last registered wins in Compose: while the study is looked up or joined, back does nothing
-        // (UX audit 2026-10-16, B6); the result of a join is read by App, so it is not lost either way
-        BackHandler { if (!busy) onDone() }
-        var message by rememberSaveable { mutableStateOf<String?>(null) }
-        var confirmRejoin by remember { mutableStateOf(false) }
-        // the camera was refused: the scan button says so and points to the field (audit A10)
-        var cameraRefused by rememberSaveable { mutableStateOf(false) }
-
-        fun errorText(e: ApiError) = when {
-            e.key == Api.FOREIGN -> getString(R.string.foreign_server, server.substringAfter("://"))
-            e.key == "unknown" -> getString(R.string.not_found)
-            e.key == "closed" -> getString(R.string.closed)
-            e.key == "used" -> getString(R.string.code_used)
-            e.key == "offline" -> getString(R.string.offline)
-            // the rate limit: trying again at once keeps the lock (audit A12)
-            e.status == 429 -> getString(R.string.too_many)
-            // with the HTTP status: a 404 of a web server in between is told apart from an error of Askurious
-            else -> getString(R.string.error) + if (e.status > 0) " (${e.status})" else ""
-        }
-
-        fun lookUp(c: String) {
-            if (busy) return
-            val clean = joinCode(c) ?: return
-            val at = joinServer(c, BuildConfig.DEBUG) ?: Api.defaultServer
-            code = clean
-            server = at
-            infoText = null
-            // a server that is not one of Askurious: refused before it is asked anything (audit 2026-10-13, AN-1)
-            if (!Api.isKnown(at)) {
-                message = errorText(ApiError(Api.FOREIGN))
-                return
-            }
-            message = null
-            model.lookUp(at, clean) { _, _ -> }
-        }
-
-        /**
-         * Enrols with the join code of [info]. When the same study is on the phone already (the participant agreed to
-         * join again), the earlier participation is closed first with its own secret (Sync.rejoin): its waiting answers
-         * never go to the new person.
-         */
-        fun enrol(info: JSONObject) {
-            message = null
-            model.enrol(server, code, info) { _, _ -> }
-        }
-
-        LaunchedEffect(model.joinInfo, model.joinError) {
-            model.joinInfo?.let { infoText = it }
-            model.joinError?.let { message = errorText(it) }
-        }
-
-        val scanner = rememberLauncherForActivityResult(ScanContract()) { result -> result.contents?.let { lookUp(it) } }
-
-        fun scan() {
-            cameraRefused = false
-            // the scanner turns with the phone and says what to do; its own text is English and blames the camera
-            // when the permission is missing, so the app asks for the permission itself first (audit A10)
-            scanner.launch(
-                ScanOptions().setDesiredBarcodeFormats(ScanOptions.QR_CODE).setBeepEnabled(false)
-                    .setOrientationLocked(false).setPrompt(getString(R.string.scan_prompt))
-                    .setCaptureActivity(ScanActivity::class.java),
-            )
-        }
-
-        val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-            if (granted) scan() else cameraRefused = true
-        }
-
-        fun scanWithPermission() {
-            when {
-                ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED -> scan()
-                // refused for good: the system shows no dialog any more, only the app's settings can help
-                uiPrefs.getBoolean(CAMERA_ASKED, false) && !shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) -> {
-                    cameraRefused = true
-                    openOther(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, "package:$packageName".toUri()))
-                }
-                else -> {
-                    uiPrefs.edit { putBoolean(CAMERA_ASKED, true) }
-                    cameraLauncher.launch(Manifest.permission.CAMERA)
-                }
-            }
-        }
-        // a join link is looked up once, not again after turning the phone
-        LaunchedEffect(initial) { if (initial.isNotBlank() && infoText == null && message == null) lookUp(initial) }
-        val focus = remember { FocusRequester() }
-
-        // once the study is found, the screen wears its look (that of its pages)
-        StudyTheme(info?.let { Look.fromJson(it.optJSONObject("look")) }, bars = true) {
-            BackScaffold(stringResource(R.string.join_study), { if (!busy) onDone() }) { pad ->
-                Column(
-                    pad.fillMaxSize().imePadding().verticalScroll(rememberScrollState()).padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    val i = info
-                    if (i == null) {
-                        OutlinedButton(onClick = { scanWithPermission() }, enabled = !busy) { Text(stringResource(R.string.scan_qr)) }
-                        if (cameraRefused) {
-                            Text(
-                                stringResource(R.string.camera_refused),
-                                Modifier.semantics { liveRegion = LiveRegionMode.Polite },
-                                style = MaterialTheme.typography.bodyMedium,
-                            )
-                        }
-                        val m = message
-                        OutlinedTextField(
-                            // lowercase only; the hyphen of a test code (k7qm2x-t3f9a) stays, joinCode removes spaces
-                            value = code, onValueChange = { code = it.lowercase(); message = null },
-                            enabled = !busy,
-                            label = { Text(stringResource(R.string.join_code)) }, singleLine = true,
-                            // the whole width, the cursor in it, an example of a code and where it stands (audit A13)
-                            modifier = Modifier.fillMaxWidth().focusRequester(focus),
-                            // the error at the field it is about, read out when it comes (audit A12)
-                            isError = m != null,
-                            supportingText = {
-                                if (m != null) Text(m, Modifier.semantics { liveRegion = LiveRegionMode.Polite })
-                                else Text(stringResource(R.string.join_code_hint))
-                            },
-                            keyboardOptions = KeyboardOptions(
-                                capitalization = KeyboardCapitalization.None,
-                                autoCorrectEnabled = false,
-                                keyboardType = KeyboardType.Ascii,
-                                imeAction = ImeAction.Go,
-                            ),
-                            // Enter on the keyboard looks the code up, as the button does (audit A13)
-                            keyboardActions = KeyboardActions(onGo = { if (!busy && code.isNotBlank()) lookUp(code) }),
-                        )
-                        Button(onClick = { lookUp(code) }, enabled = !busy && code.isNotBlank()) { Text(stringResource(R.string.look_up)) }
-                        // a typed code: the field is ready at once (a link fills it and looks it up by itself)
-                        LaunchedEffect(Unit) { if (initial.isBlank() && !cameraRefused) runCatching { focus.requestFocus() } }
-                    } else {
-                        Text(i.optString("title"), style = MaterialTheme.typography.titleLarge, modifier = Modifier.semantics { heading() })
-                        i.optString("description").takeIf { it.isNotBlank() }?.let { Text(it) }
-                        i.optString("contact").takeIf { it.isNotBlank() }?.let { Text(stringResource(R.string.study_contact, it)) }
-                        val days = i.optInt("period_days")
-                        // an open-ended study runs until the researchers end it
-                        if (i.optBoolean("open_end", false) || days <= 0) Text(stringResource(R.string.duration_open_end))
-                        else Text(pluralStringResource(R.plurals.study_days, days, days))
-                        val modules = i.optJSONArray("modules")
-                        if (modules != null && modules.length() > 0) {
-                            SectionTitle(stringResource(R.string.study_modules))
-                            for (k in 0 until modules.length()) {
-                                val m = modules.getJSONObject(k)
-                                val name = m.optString("name")
-                                Text(
-                                    "• " + when {
-                                        m.optString("trigger") == "self" -> stringResource(R.string.self_module, name)
-                                        m.optString("trigger") == "random" && m.optDouble("per_day", 0.0) >= 1 ->
-                                            Math.round(m.optDouble("per_day")).toInt().let { n -> pluralStringResource(R.plurals.random_per_day, n, name, n) }
-                                        m.optString("trigger") == "random" ->
-                                            m.optInt("per_week").let { n -> pluralStringResource(R.plurals.random_per_week, n, name, n) }
-                                        m.optDouble("per_day", 0.0) >= 1 -> m.optDouble("per_day").toInt().let { n ->
-                                            pluralStringResource(R.plurals.fixed_per_day, n, name, n)
-                                        }
-                                        else -> m.optInt("per_week").let { n -> pluralStringResource(R.plurals.fixed_per_week, n, name, n) }
-                                    }
-                                )
-                                // a timed module the participant may also start themselves
-                                if (m.optString("trigger") != "self" && (m.optBoolean("self", false) || m.optJSONObject("self") != null)) {
-                                    Text("• " + stringResource(R.string.also_self_module, name))
-                                }
-                            }
-                        }
-                        val minutes = i.optInt("minutes")
-                        if (minutes > 0) Text(pluralStringResource(R.plurals.about_minutes, minutes, minutes))
-                        Text(stringResource(R.string.join_privacy), style = MaterialTheme.typography.bodySmall)
-                        Text(stringResource(R.string.join_server, server.substringAfter("://")), style = MaterialTheme.typography.bodySmall)
-                        // a personal code someone joined with already: it moves that participation to this phone
-                        val rejoin = i.optBoolean("rejoin", false)
-                        if (rejoin) Text(stringResource(R.string.rejoin_code), style = MaterialTheme.typography.bodySmall)
-                        // "Join" counts only while no other app's window lies over the screen (AN-16)
-                        GuardAgainstOverlays()
-                        Button(enabled = !busy, onClick = {
-                            // the same study on this phone already: joining again replaces its secret, so ask first;
-                            // a personal code connecting again keeps the same participation, nothing to ask
-                            if (!rejoin && model.studies.any { it.code == i.optString("code") }) confirmRejoin = true else enrol(i)
-                        }) { Text(stringResource(R.string.join)) }
-                        TextButton(onClick = onDone, enabled = !busy) { Text(stringResource(R.string.cancel)) }
-                    }
-                    if (busy) {
-                        val label = stringResource(if (i == null) R.string.looking_up else R.string.joining)
-                        CircularProgressIndicator(Modifier.semantics { contentDescription = label })
-                    }
-                    // an error of joining (the field is gone by then): read out when it comes
-                    if (i != null) message?.let {
-                        Text(it, Modifier.semantics { liveRegion = LiveRegionMode.Polite }, color = MaterialTheme.colorScheme.error)
-                    }
-                }
-            }
-        }
-        val pendingInfo = info
-        if (confirmRejoin && pendingInfo != null) {
-            AlertDialog(
-                onDismissRequest = { confirmRejoin = false },
-                text = {
-                    GuardAgainstOverlays()
-                    Text(stringResource(R.string.rejoin_confirm))
-                },
-                confirmButton = {
-                    TextButton(onClick = {
-                        confirmRejoin = false
-                        enrol(pendingInfo)
-                    }) { Text(stringResource(R.string.rejoin)) }
-                },
-                dismissButton = { TextButton(onClick = { confirmRejoin = false }) { Text(stringResource(R.string.cancel)) } },
-            )
-        }
-    }
-
-    private companion object {
+    internal companion object {
         /** Preferences of the screens (not of the studies). */
         const val UI_PREFS = "ui"
 
@@ -1405,14 +399,11 @@ class MainActivity : ComponentActivity() {
         /** The step for the permissions after the first join was shown (audit A27): once per phone. */
         const val READY_SHOWN = "ready_shown"
 
-        /** The screens of the back stack; a join screen and a study's page carry their link or code after the prefix. */
-        const val HOME = "home"
-        const val JOIN = "join:"
-        const val STUDY = "study:"
-        const val ABOUT = "about"
-        const val LICENCE = "licence"
-        const val READY = "ready"
+        /** From this width on (window size class "expanded", Material 3) the list and a study's page stand side by side. */
+        const val EXPANDED_DP = 840
 
-        val STACK_SAVER = listSaver<SnapshotStateList<String>, String>(save = { it.toList() }, restore = { it.toMutableStateList() })
+        /** The duration of a change of screens: Material's short motion. */
+        const val SLIDE_MS = 300
+        const val FADE_MS = 150
     }
 }

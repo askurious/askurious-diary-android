@@ -8,6 +8,7 @@ The full texts ship with the app and are shown under "About the app" › licence
 | AndroidX Core | `androidx.core:core-ktx` | 1.17.0 | The Android Open Source Project | Apache-2.0 |
 | AndroidX Activity | `androidx.activity:activity-compose` | 1.11.0 | The Android Open Source Project | Apache-2.0 |
 | AndroidX Lifecycle | `androidx.lifecycle:lifecycle-runtime-ktx` | 2.9.4 | The Android Open Source Project | Apache-2.0 |
+| AndroidX Navigation (Compose) | `androidx.navigation:navigation-compose` (with `navigation-common` and `navigation-runtime`) | 2.9.8 | The Android Open Source Project | Apache-2.0 |
 | Jetpack Compose (UI, Material 3, Material Icons) | `androidx.compose:compose-bom` and its artifacts | BOM 2026.06.01 | The Android Open Source Project | Apache-2.0 |
 | Material Components for Android | `com.google.android.material:material` | 1.13.0 | The Android Open Source Project | Apache-2.0 |
 | WorkManager | `androidx.work:work-runtime-ktx` | 2.10.5 | The Android Open Source Project | Apache-2.0 |
@@ -17,7 +18,7 @@ The full texts ship with the app and are shown under "About the app" › licence
 | Kotlin standard library | `org.jetbrains.kotlin:kotlin-stdlib` | 2.2.20 | JetBrains s.r.o. and Kotlin contributors | Apache-2.0 |
 | ThreeTen-bp, part of the Kotlin standard library (`kotlin.time`) | in `org.jetbrains.kotlin:kotlin-stdlib` | 2.2.20 | © 2007-present Stephen Colebourne & Michael Nascimento Santos | BSD-3-Clause (text in `notices.txt`) |
 | kotlinx.coroutines | `org.jetbrains.kotlinx:kotlinx-coroutines-android`, `-core` (transitive) | 1.9.0 | JetBrains s.r.o. and contributors | Apache-2.0 (NOTICE in `notices.txt`) |
-| kotlinx.serialization | `org.jetbrains.kotlinx:kotlinx-serialization-core` (transitive) | 1.7.3 | JetBrains s.r.o. and contributors | Apache-2.0 |
+| kotlinx.serialization | `org.jetbrains.kotlinx:kotlinx-serialization-core` (transitive; the routes of the screens use it) | 1.7.3 | JetBrains s.r.o. and contributors | Apache-2.0 |
 | JetBrains Java Annotations | `org.jetbrains:annotations` (transitive) | 23.0.0 | JetBrains s.r.o. | Apache-2.0 |
 | JSpecify | `org.jspecify:jspecify` (transitive) | 1.0.0 | The JSpecify Authors | Apache-2.0 |
 | Error Prone annotations | `com.google.errorprone:error_prone_annotations` (transitive) | 2.15.0 | The Error Prone Authors | Apache-2.0 |
@@ -38,3 +39,4 @@ Only for the tests (not in the APK):
 | JSON in Java | `org.json:json` | 20260814 | Public domain |
 
 The Gradle wrapper (`gradlew`, `gradlew.bat`, `gradle/wrapper/`) is © Gradle, Inc. and contributors, Apache License 2.0; it builds the app and is not in the APK.
+The same holds for the Kotlin serialization compiler plugin (`org.jetbrains.kotlin.plugin.serialization` 2.2.20, JetBrains s.r.o. and Kotlin contributors, Apache License 2.0), which writes the serializers of the routes when the app is built.

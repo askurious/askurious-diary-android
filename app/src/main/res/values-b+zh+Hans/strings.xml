@@ -27,7 +27,7 @@
     </plurals>
     <string name="join_privacy">加入时将打开该研究的知情同意书。本应用不保存姓名、电子邮件地址或电话号码，该研究也无法看到您参加的其他研究。</string>
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
-    <string name="join_server" formatted="true">服务器：%1$s</string>
+    <string name="join_server" formatted="true">提供方：Askurious（%1$s）</string>
     <string name="foreign_server" formatted="true">此链接不指向 Askurious 的服务器（%1$s），因此应用不会打开它。</string>
     <string name="continue_entry">继续填写初始问卷</string>
     <string name="day_of">第 %1$d 天，共 %2$d 天</string>
@@ -99,7 +99,7 @@
     <string name="notif_exit">研究期已结束。请填写：%1$s</string>
     <string name="limit_refused">服务器未接受部分答案。这些答案会留在此手机上等待核实，直到您在“答案传输”中将其丢弃。</string>
     <string name="clock_off">此手机的时钟不准确。日期和时间设置正确后，无网络时给出的回答才会被发送。</string>
-    <string name="rejoin_confirm">您已在此手机上参加了该研究。再次加入将开始一次新的参与：之后您将无法在应用中删除之前的回答。之前参与中尚在等待的回答会尽可能先发送，否则将被丢弃。如需删除之前的回答，请取消并使用研究卡片上的“删除我的回答”。</string>
+    <string name="rejoin_confirm">您已在此手机上参加了该研究。再次加入将开始一次新的参与，之后您将无法在应用中删除之前的回答。</string>
     <string name="rejoin">再次加入</string>
     <string name="allow_in_settings">在设置中允许</string>
     <string name="notifications_off">通知已关闭。您可以在此回答开放的简短问卷。</string>
@@ -248,4 +248,18 @@
     <string name="battery_open">打开电池优化</string>
     <string name="ready_battery_title">电池优化（可选）</string>
     <string name="ready_battery_text">有些手机会为了省电而停止后台应用，这样简短问卷会延迟送达或根本无法送达。请在“电池优化”列表中将 Askurious 设为“不优化”。在某些手机上，此设置位于应用信息的“电池”下。</string>
+    <!-- UX audit 2026-10-16, B26-B32: the rejoin dialog, the side-by-side page, the clock notice, the transfers -->
+    <string name="rejoin_title">开始新的参与？</string>
+    <string name="rejoin_more">之前参与中尚在等待的回答会尽可能先发送，否则将被丢弃。如需删除之前的回答，请取消并使用研究页面上的“删除我的回答”。</string>
+    <string name="learn_more">了解更多</string>
+    <string name="choose_study">请在列表中选择一项研究以查看其页面。</string>
+    <string name="date_settings_open">打开日期和时间设置</string>
+    <string name="open_study">打开研究</string>
+    <string name="transfer_none">未能传输任何回答。回答仍保留在此手机上。</string>
+    <plurals name="transfer_sent">
+        <item quantity="other">已传输 %d 个回答。</item>
+    </plurals>
+    <string name="ready_intro_one">应用会在合适的时刻通过通知告知您研究的简短问卷。为此需要一项权限；第二项设置为可选。您之后可以在手机设置中更改这两项设置。</string>
+    <string name="about_provider_unit">亚琛工业大学（RWTH Aachen University）传播学教席</string>
+    <string name="about_oss_english">这些库及其许可证以英文列出，与许可证文本一致。</string>
 </resources>

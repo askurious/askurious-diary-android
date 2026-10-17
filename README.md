@@ -23,6 +23,7 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   After the first join (once per phone), a step "So that short surveys arrive on time" explains both permissions and asks for one after the other; a third, optional point opens the phone's list of the battery optimisation (`Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS`, which needs no permission; the app never sends the direct request `ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`), since some makers' battery managers stop exact alarms. The start page offers it too while its notice shows.
   While notifications are off, a running study's card says "Notifications are off. You can answer open short surveys here." and leaves out the time of the next short survey; while "Alarms & reminders" is off, it says "about" before that time (Android may ring a few minutes late).
   The camera (QR code) is asked for by the app itself before the scanner opens; refused, the join screen points to the join code, and once the system shows no dialog any more the button opens the app's settings.
+  "Alarms & reminders" exists from Android 12 on: on older phones the step leaves its point out and numbers the others on.
 - **Lock screen.**
   Notifications are private: the lock screen shows only "Askurious – A short survey is waiting", never the title of the study or the researchers' notification text.
 - **Thin shell.**
@@ -34,6 +35,7 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   An open entry is listed in "Recents" as its own task, so that it survives a switch to another app, but without a picture of the page (`setRecentsScreenshotEnabled(false)`, `FLAG_SECURE`).
   Links to other sites open in another app (web, mail and phone links only); turning the phone keeps the page and what was typed.
   The back gesture does what the X at the left of the top bar does; it does not step back in the WebView's history (that dropped the input of the open page unasked), the questionnaire's own "Back" button goes one page back.
+  Once the end page is reached (`AskuriousApp.done()`), its thanks stay in view with a bar "Done" below them that closes the entry, as the X does.
   With input on the open page, and online from the second page on, the app asks "Cancel this entry?" first and says whether the entry can be continued later (the server keeps the pages sent and opens the same entry again while it is open) or, on a kept page without a connection, that everything entered is lost.
   Notices of the entry (restored answers, a permission the page needs, a failed save with "Save again") are banners between the top bar and the page, never over its questions; the first two can be closed.
   A bar under the top bar shows a page loading; a page that does not load (no connection on the way) shows the app's own message with "Try again" instead of the browser's error page, and the first page of a module that can be answered offline falls back to the kept page.
@@ -42,16 +44,22 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
 - **Look of the study.**
   The server sends the colours of a study's participant pages with the study and on the join screen (`"look": {"colors", "colors_dark", "radius"}`, server `diary.look_json`).
   The study card, the bar above an entry (and the screen before its page has loaded) and the join screen, once the study is found, take them (`StudyTheme`): page colour, text, accent, border, corners.
+  The border of controls (fields, outlined buttons) is darkened to a contrast of 3:1 where the look's is lighter (`outline`); the edges of cards and the dividers keep the look's own border colour, as the web pages draw them (`outlineVariant`).
   A look that follows the device has a dark palette (`colors_dark`), shown while the phone is dark; a fixed look stays the same, as its pages do.
   The status bar takes light or dark icons for the look's background. Without a look (an older server) the app shows its own look; the rest of the app (start page, notices, about) always does.
   The app's own look is the standard look of the participant pages, light and dark (`Look.DEFAULT`, the values the server's `look_json` gives for "askurious" and "askurious-dark"); every colour role of Material 3 is set from a look's colours (`StudyTheme`), so no purple default shows, and the window and the splash screen take the page colour (`res/values*/colors.xml`, `themes.xml`).
 - **Screens.**
   The start page lists the studies that still ask something (running, not yet begun, paused, an open exit questionnaire) and below them, under "Ended", the others; each card shows the title, the state with an icon, the next short survey ("today, 09:40", "tomorrow, 08:15" or the date, in the phone's 12 or 24 h format; "about" without exact alarms) and what to do now.
   A day after the study period while the server still says "active" shows "Study period over – updating …", never "Day 17 of 14"; a finished study with an open exit questionnaire asks for it instead of thanking (`StudyStatus.kt`).
-  Tapping a card opens the study's page: study period, what is asked, quiet hours, waiting answers, and apart from the rest leaving or removing and deleting the answers, each with a question first and a short message afterwards.
-  The screens (start page, study page, joining, the permission step, about, licence texts) lie on a back stack saved with the activity (`MainActivity.App`): the back gesture goes one screen back, and turning the phone or a change of language or dark mode keeps the screen and what was typed.
-  "Join study" is the floating button of the start page; every other screen has a back arrow at the left of its one-line top bar (`PageHeader`), an entry an X.
+  Tapping a card opens the study's page: study period, what is asked, quiet hours, waiting answers, and apart from the rest leaving or removing and deleting the answers, each with a question first and a short message afterwards. The title of the study stands once, in the top bar of its page.
+  The screens (start page, study page, joining, the permission step, about, licence texts) are destinations of Navigation Compose with type-safe routes (`Route` in `Routes.kt`, the graph in `MainActivity.App`, each screen in a file of its own: `HomeScreen.kt`, `StudyScreen.kt`, `JoinScreen.kt`, `ReadyScreen.kt`, `AboutScreen.kt`).
+  The back stack is saved with the activity: the back gesture goes one screen back, and turning the phone or a change of language or dark mode keeps the screen and what was typed.
+  A new screen slides in a little and fades in; the back gesture shows the screen below before it goes back (predictive back, Android 14 and later; `enableOnBackInvokedCallback` on `MainActivity`).
+  A join link (App Link `https://ask.askurious.de/j/<code>`, `askurious://join/<code>`) is a deep link of the join screen and opens it on top of the screens shown, also while the app runs; the shortcut of a report opens the study's page through the navigation when the report cannot start now (the entry itself and the notifications open `EntryActivity`, a task of its own).
+  "Join study" is the floating button of the start page; every other screen has a back arrow at the left of its one-line top bar (`PageHeader`), an entry an X. The heading of a new screen takes the focus, so that TalkBack names it.
   While a study is looked up or joined, the back gesture does nothing; the result of a join is read by `App`, not by the join screen, so the entry questionnaire still opens if that screen went meanwhile.
+  On a wide screen (landscape, tablet) a page is one column of at most 640 dp in the middle; from 840 dp on (window size class "expanded") the list and a study's page stand side by side.
+  The version of the app and when it was built stand under "About the app", not on the start page.
 - **Schedule on the phone.**
   `Schedule.kt` computes the prompts of the fixed and random modules in local time; the server computes the same times for the export and to check that a prompt was due (`diary.prompts`).
   One exact alarm at a time (`Alarms.kt`), set again after a reboot, an update, or a change of time or time zone.
@@ -97,13 +105,14 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   For a module with `offline: true` each sync of a running study fetches its page (`POST /offline/<module>`, at most every 15 minutes) and the `/static/` and `/media/` files it names, also those named by its style sheets (`OfflinePages`, in the app's files directory, at most 10 MB per file).
   When an entry finds no network, a prompt still open or a self-started module under its daily limit opens the kept page in the WebView; the page's own files come from the phone, any other request fails.
   `participant.js` hands the filled form to `AskuriousApp.offlineSubmit()`, and the app queues it (`AnswerQueue`) and says it will be sent.
-  The next sync, and a one-time WorkManager job that waits for a connection, sends it with `POST /offline`; the study card shows how many answers are waiting.
+  The next sync, and a one-time WorkManager job that waits for a connection, sends it with `POST /offline`; the study card shows how many answers are waiting, with the link "Answer transfers" while any wait (the receipts of those sent are on the study's page).
+  "Transfer answers" in that dialog shows only while answers wait; it closes the dialog and a snackbar says how many were sent and how many still wait.
   Each answer goes with its `"uuid"` (made when it was queued): the server stores an answer that arrives twice (a timeout after it was stored, two syncs) only once and answers as the first time.
   Only one sync runs at a time in the app (`Sync`, one lock for the sync on opening, the periodic one, the one after an answer and the one after an entry).
   An answer leaves the queue only after the server confirms `stored` or `review`, or the participant explicitly discards it ("Discard answer" in the dialog "Answer transfers", which names the reason of the refusal in plain words). Refusals and expired answers stay encrypted on the phone for clarification; transient failures are retried.
   A `daily_limit` refusal retains the original for clarification and the study page says so.
   A 401 or 409 `paused` retains the answer indefinitely and waits for the next regular sync (`AnswerQueue.afterRefusal`).
-  If the server refuses an answer while its clock and the phone's differ by more than five minutes (from the `Date` header of its answers), the answer stays and the app asks to set the phone's clock right.
+  If the server refuses an answer while its clock and the phone's differ by more than five minutes (from the `Date` header of its answers), the answer stays and the app asks to set the phone's clock right, with a button to the phone's date and time settings.
   Offline queue changes use checked synchronous disk commits on an I/O dispatcher before showing “Saved”. A failed write keeps the filled questionnaire open; unreadable queues cannot be overwritten by later answers. Removing a study or deleting its answers still works with an unreadable queue (its rows go once the queue can be read again), and the start page offers “Discard unreadable answers” once, above the study cards, which deletes the queue after a confirmation so that new answers can be kept again. A submission identifier survives activity recreation to make a repeated local save idempotent.
   The queue uses private SQLite storage (`answers.db`), one encrypted row per UUID. Forms, module names, timestamps and refusal details remain AES-GCM sealed with row-bound associated data; study/module/prompt/UTC-day indexes are HMAC tags with a random key stored only in encrypted form. Indexes reveal equality and row counts, not the original identifiers or times. Daily limits query only the UTC days intersecting the requested local day, preserving timezone and daylight-saving semantics without decrypting old history. Individual acknowledgements delete one row without rewriting other answers, and sync looks up delivery state by UUID. The legacy encrypted JSON queue is imported in one transaction before its preference is removed; a committed migration marker prevents old answers from reappearing after a crash. Corruption fails closed without SQLite's automatic database deletion. Queue and receipt reads for prompt buttons and transmission dialogs run on an I/O dispatcher. Downgrading to an app predating this storage migration is unsupported; never uninstall or clear app data while unconfirmed answers remain.
   The entry part is always answered online.
@@ -130,7 +139,7 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   An answer of the server the app cannot read (a date or a module of a newer kind) costs only that part, never the app; damaged storage is skipped, not crashed on.
   Bringing the app to the front syncs at most every five minutes and never while a sync runs (`Sync.allIfDue`).
 - **Joining again.**
-  Joining a study that is still on the phone (after leaving it, or with a test or invitation code) asks first: a new participation gets a new secret, and the earlier answers can then no longer be deleted in the app.
+  Joining a study that is still on the phone (after leaving it, or with a test or invitation code) asks first ("Start a new participation?", the details behind "Learn more"): a new participation gets a new secret, and the earlier answers can then no longer be deleted in the app.
   If the participant goes on, the earlier participation is closed with its own secret (its waiting answers are sent, a running one is left) and then removed from the phone (`Sync.rejoin`): nothing of it goes to the new person.
   A personal code someone already joined with is different: the server answers `"rejoin": true` and connects this phone to that same participation with a new secret (the phone used so far loses access); the app asks nothing, and opens the entry questionnaire only while it is not done.
   Whether such a code connects at any time or only after the researchers released it is set on the server; otherwise it answers `"used"`, and the app says to ask the research team.
@@ -187,6 +196,7 @@ The QR code holds `https://ask.askurious.de/j/<code>`; only the participants' ad
 Test join codes (`k7qm2x-t3f9a`, five characters after the hyphen) and personal invitation codes (`k7qm2x-a8c3d9ef`, eight lowercase letters or digits) have one hyphen; the app keeps it.
 For the phone to open the app directly, the server must answer `/.well-known/assetlinks.json` with the SHA-256 fingerprint of the signing key: set `DIARY_APP_FINGERPRINTS` on the server (`keytool -list -v -keystore <keystore>`).
 Without it the link opens the join page in the browser, which shows the join code.
+In the app both links are the deep links of the join screen (`JOIN_LINKS` in `ui/Routes.kt`, the same as the intent filters of the manifest); a change of the host goes into both. The join screen shows the server as "Provider: Askurious (ask.askurious.de)".
 
 ## Release build
 

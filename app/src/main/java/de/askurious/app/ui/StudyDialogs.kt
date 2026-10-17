@@ -33,6 +33,7 @@ import kotlinx.coroutines.withContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
@@ -96,7 +97,8 @@ fun StudyInformation(study: Study, close: () -> Unit) {
 
 /**
  * The answers of [study] waiting on the phone and the receipts of those sent. [discard] removes one refused answer
- * for good and says whether it worked (UX audit 2026-10-16, B5).
+ * for good and says whether it worked (UX audit 2026-10-16, B5). [retry] sends the waiting answers; the caller says
+ * how it went (a snackbar, B26).
  */
 @Composable
 fun StoredTransmissions(study: Study, busy: Boolean, retry: () -> Unit, close: () -> Unit, discard: (AnswerQueue.Item, (Boolean) -> Unit) -> Unit) {
@@ -116,7 +118,11 @@ fun StoredTransmissions(study: Study, busy: Boolean, retry: () -> Unit, close: (
         discard(item) { ok -> version++; done(ok) }
     }
     else AlertDialog(onDismissRequest = close, title = { Text(stringResource(R.string.transmissions)) },
-        text = { if (failed) Text(stringResource(R.string.queue_unreadable)) else CircularProgressIndicator() },
+        text = {
+            // the spinner named for TalkBack (UX audit 2026-10-16, B26)
+            val loading = stringResource(R.string.loading)
+            if (failed) Text(stringResource(R.string.queue_unreadable)) else CircularProgressIndicator(Modifier.semantics { contentDescription = loading })
+        },
         confirmButton = { TextButton(onClick = close) { Text(stringResource(R.string.close)) } })
 }
 
@@ -178,8 +184,13 @@ fun TransmissionDetails(
                 Text(stringResource(if (receipt.optBoolean("review")) R.string.transfer_preserved else R.string.transfer_confirmed))
             }
         }
-    }, confirmButton = { Button(onClick = retry, enabled = !busy) { Text(stringResource(R.string.try_transfer)) } },
-        dismissButton = { TextButton(onClick = close) { Text(stringResource(R.string.close)) } })
+    },
+        // "Transfer answers" only while answers wait; without, the dialog only shows the receipts (B26)
+        confirmButton = {
+            if (waiting.isNotEmpty()) Button(onClick = retry, enabled = !busy) { Text(stringResource(R.string.try_transfer)) }
+            else TextButton(onClick = close) { Text(stringResource(R.string.close)) }
+        },
+        dismissButton = { if (waiting.isNotEmpty()) TextButton(onClick = close) { Text(stringResource(R.string.close)) } })
     confirm?.let { item ->
         AlertDialog(
             onDismissRequest = { confirm = null },

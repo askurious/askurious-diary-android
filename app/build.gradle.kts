@@ -5,6 +5,8 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
+    // the routes of the screens as classes (Navigation Compose, type-safe routes)
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 /** The number of commits up to HEAD, the app's versionCode; 1 when Git is not there. */
@@ -113,6 +115,9 @@ dependencies {
     implementation("androidx.compose.material:material-icons-core")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("com.google.android.material:material:1.13.0")
+    // the screens of MainActivity on a back stack with deep links, transitions and the predictive back gesture (UX
+    // audit 2026-10-16, structure 1); 2.9 needs no newer Activity or Lifecycle than the app has
+    implementation("androidx.navigation:navigation-compose:2.9.8")
 
     implementation("androidx.work:work-runtime-ktx:2.10.5")
     // the bridge of an entry as a message channel of the server's main frame only (audit 2026-10-13, AN-12)
