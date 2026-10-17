@@ -37,7 +37,7 @@
         <item quantity="many">Około %d minut dziennie</item>
         <item quantity="other">Około %d minuty dziennie</item>
     </plurals>
-    <string name="join_privacy">Dołączenie otwiera formularz zgody badania. Aplikacja nie zapisuje imienia ani nazwiska, adresu e-mail ani numeru telefonu, a badanie nie widzi innych badań na tym telefonie.</string>
+    <string name="join_privacy">Dołączenie otwiera zgodę na udział w badaniu. Aplikacja nie wymaga konta i nie wysyła identyfikatora urządzenia. Przechowuje dostęp do badań, wersje robocze i niepotwierdzone odpowiedzi na tym urządzeniu. Zgoda wyjaśnia, jakie dane zbierają pytania. Badanie nie widzi innych badań.</string>
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
     <string name="join_server" formatted="true">Dostawca: Askurious (%1$s)</string>
     <string name="foreign_server" formatted="true">Ten link nie prowadzi do serwera Askurious (%1$s), dlatego aplikacja go nie otwiera.</string>
@@ -75,7 +75,7 @@
     <!-- the footer: version and when this APK was built, so one sees which version runs -->
     <string name="build_info" formatted="true">Wersja %1$s · zbudowana %2$s</string>
     <string name="about_privacy_title">Prywatność</string>
-    <string name="about_stores">Aplikacja przechowuje na tym telefonie tylko listę badań wraz z ich harmonogramami oraz dla każdego badania losowy sekret – jedyny klucz do udzielonych w nim odpowiedzi. Nie ma konta i nie wysyła identyfikatora urządzenia, imienia, adresu e-mail ani numeru telefonu. Nic z tego nie trafia do kopii zapasowych ani na nowy telefon. Dla każdego badania zapisuje też, czy powiadomienia mają dźwięk; nazwy skrótów umieszczonych na ekranie głównym przechowuje ekran główny.</string>
+    <string name="about_stores">Telefon przechowuje listę badań, harmonogramy i klucze dostępu, tymczasowe wersje robocze, zapisane kwestionariusze, odpowiedzi oczekujące na potwierdzenie i potwierdzenia przesłania. Aplikacja nie wymaga konta i nie wysyła identyfikatora urządzenia. Te lokalne dane są wyłączone z kopii zapasowych i przenoszenia na inne urządzenia. Dla każdego badania zapisuje też, czy powiadomienia mają dźwięk; nazwy skrótów umieszczonych na ekranie głównym przechowuje ekran główny.</string>
     <string name="privacy_statement">Informacja o ochronie danych</string>
     <string name="about_licence_title">Licencja</string>
     <string name="about_copyright">© 2026 Philipp Brauner i Ralf Philipsen, RWTH Aachen University. Wszelkie prawa zastrzeżone.</string>
@@ -286,4 +286,15 @@
     <string name="ready_intro_one">Aplikacja we właściwym momencie zapowiada krótkie kwestionariusze badania powiadomieniem. Potrzebuje do tego jednego uprawnienia; drugie ustawienie jest opcjonalne. Oba można później zmienić w ustawieniach telefonu.</string>
     <string name="about_provider_unit">Katedra Nauk o Komunikacji, RWTH Aachen University</string>
     <string name="about_oss_english">Biblioteki i ich licencje podano po angielsku, tak jak w tekstach licencji.</string>
+    <string name="contact_team">Skontaktuj się z zespołem badania</string>
+    <string name="copy_contact">Kopiuj kontakt</string>
+    <string name="contact_unavailable">Brak odpowiedniej aplikacji. Proszę skopiować dane kontaktowe.</string>
+    <string name="contact_copied">Kontakt skopiowany.</string>
+    <string name="answer_time">Odpowiedziano: %1$s</string>
+    <string name="confirmation_time">Potwierdzenie serwera: %1$s</string>
+    <string name="sync_time">Ostatnia udana aktualizacja: %1$s</string>
+    <string name="sync_failed">Aktualizacja niepełna. Nadal widoczne są poprzednie informacje o badaniu. Proszę spróbować ponownie.</string>
+    <string name="refresh_studies">Odśwież badania</string>
+    <string name="offline_ready">%1$s: dostępne offline</string>
+    <string name="offline_missing">%1$s: jeszcze niedostępne offline</string>
 </resources>

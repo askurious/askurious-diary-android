@@ -86,7 +86,7 @@ fun StudyInformation(study: Study, close: () -> Unit) {
         Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Text(study.title, Modifier.semantics { heading() })
             if (study.summary.isNotBlank()) Text(study.summary)
-            if (study.contact.isNotBlank()) Text(stringResource(R.string.study_contact, study.contact))
+            if (study.contact.isNotBlank()) StudyContact(study.contact)
             if (study.openEnd) Text(stringResource(R.string.open_end))
             study.lastDay?.let { Text(stringResource(R.string.exit_until, it.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)))) }
             for (module in study.modules) Text(module.name)
@@ -152,18 +152,18 @@ fun TransmissionDetails(
     study: Study, waiting: List<AnswerQueue.Item>, receipts: List<JSONObject>, busy: Boolean, retry: () -> Unit, close: () -> Unit,
     discard: (AnswerQueue.Item, (Boolean) -> Unit) -> Unit,
 ) {
-    fun date(ms: Long): String = Instant.ofEpochMilli(ms).atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT))
+    fun date(ms: Long): String = Instant.ofEpochMilli(ms).atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.MEDIUM))
     var confirm by remember { mutableStateOf<AnswerQueue.Item?>(null) }
     var discardFailed by remember { mutableStateOf(false) }
     AlertDialog(onDismissRequest = close, title = { Text(stringResource(R.string.transmissions)) }, text = {
         Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             if (waiting.isEmpty()) Message(stringResource(R.string.no_waiting))
             // a refused answer: whom to ask about it (B5)
-            if (waiting.any { it.refusal != null } && study.contact.isNotBlank()) Text(stringResource(R.string.study_contact, study.contact))
+            if (waiting.any { it.refusal != null } && study.contact.isNotBlank()) StudyContact(study.contact)
             if (discardFailed) Message(stringResource(R.string.error), error = true)
             for (item in waiting) {
                 Text(study.modules.firstOrNull { it.key == item.module }?.name ?: item.moduleName.ifBlank { item.module }, Modifier.semantics { heading() })
-                Text(date(study.realAt(item.completed)))
+                Text(stringResource(R.string.answer_time, date(study.realAt(item.completed))))
                 item.refusal?.let { Text(stringResource(refusalText(it))) }
                 val label = when (item.error ?: item.refusal) {
                     "changed", "invalid", "expired", "limit", "daily_limit", "unknown", "clock", "paused", "closed", "unauthorised" -> R.string.transfer_review
@@ -180,7 +180,8 @@ fun TransmissionDetails(
             }
             for (receipt in receipts.reversed()) {
                 Text(receipt.optString("label").ifBlank { study.modules.firstOrNull { it.key == receipt.optString("module") }?.name ?: receipt.optString("module") })
-                Text(date(receipt.getLong("at")))
+                if (receipt.has("completed")) Text(stringResource(R.string.answer_time, date(receipt.getLong("completed"))))
+                Text(stringResource(R.string.confirmation_time, date(receipt.getLong("at"))))
                 Text(stringResource(if (receipt.optBoolean("review")) R.string.transfer_preserved else R.string.transfer_confirmed))
             }
         }

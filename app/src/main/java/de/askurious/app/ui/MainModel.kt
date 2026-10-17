@@ -15,6 +15,8 @@ import de.askurious.app.data.StudyStore
 import de.askurious.app.data.Sync
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
@@ -51,6 +53,14 @@ class MainModel(app: Application) : AndroidViewModel(app) {
 
     /** Counts the reloads: only the newest one sets the state, one started earlier may end later. */
     private var reloads = 0
+    var syncState by mutableStateOf(0L to false); private set
+    var offlineReady by mutableStateOf<Set<Pair<String, String>>>(emptySet()); private set
+    var refreshing by mutableStateOf(false); private set
+    fun refresh() {
+        if (refreshing) return
+        refreshing = true
+        viewModelScope.launch { try { Sync.all(context) } finally { refreshing = false; reload() } }
+    }
 
     /**
      * Reads the studies and the queue again (after a sync, an entry, a change on the start page). Off the main thread:
@@ -64,7 +74,14 @@ class MainModel(app: Application) : AndroidViewModel(app) {
                 val items = try { queue.all() } catch (e: java.io.IOException) { null }
                 Triple(StudyStore(context).all(), items, queue.seenRefusals())
             }
+            val ready = withContext(Dispatchers.IO) {
+                val pages = de.askurious.app.data.OfflinePages(context)
+                s.flatMap { study -> study.modules.filter { it.offline && pages.usable(study.code, it.key) != null }.map { study.code to it.key } }.toSet()
+            }
             if (mine != reloads) return@launch
+            offlineReady = ready
+            val status = context.getSharedPreferences("sync_status", android.content.Context.MODE_PRIVATE)
+            syncState = status.getLong("success", 0) to status.getBoolean("failed", false)
             studies = s
             queueUnreadable = items == null
             waiting = items.orEmpty().groupingBy { it.study }.eachCount()
@@ -195,6 +212,16 @@ class MainModel(app: Application) : AndroidViewModel(app) {
     }
 
     var joinBusy by mutableStateOf(false); private set
+    var enrolling by mutableStateOf(false); private set
+    private var lookupJob: Job? = null
+    private var lookupGeneration = 0
+    fun cancelLookup(): Boolean {
+        if (enrolling) return false
+        lookupGeneration++
+        lookupJob?.cancel(); lookupJob = null; joinBusy = false
+        joinInfo = null; joinError = null
+        return true
+    }
     var joinInfo by mutableStateOf<String?>(null); private set
     var joinError by mutableStateOf<ApiError?>(null); private set
     var joinedStudy by mutableStateOf<Study?>(null); private set
@@ -202,19 +229,21 @@ class MainModel(app: Application) : AndroidViewModel(app) {
     fun consumedJoin() { joinedStudy = null; entryAddress = null; joinInfo = null; joinError = null }
 
     /** The join screen closed: what it found or failed with does not show up the next time it opens (B6). */
-    fun leftJoin() { if (!joinBusy) { joinInfo = null; joinError = null } }
+    fun leftJoin() { cancelLookup() }
 
     /** The public information of a study for the join screen; [done] gets it or the error. */
     fun lookUp(server: String, code: String, done: (JSONObject?, ApiError?) -> Unit) {
         if (joinBusy) return
         joinBusy = true; joinInfo = null; joinError = null
-        viewModelScope.launch {
+        val generation = ++lookupGeneration
+        lookupJob = viewModelScope.launch {
             try {
                 val info = Api.join(server, code)
-                joinInfo = info.toString(); done(info, null)
+                ensureActive()
+                if (generation == lookupGeneration) { joinInfo = info.toString(); done(info, null) }
             } catch (e: ApiError) {
-                joinError = e; done(null, e)
-            } finally { joinBusy = false }
+                if (generation == lookupGeneration) { joinError = e; done(null, e) }
+            } finally { if (generation == lookupGeneration) joinBusy = false }
         }
     }
 
@@ -225,7 +254,7 @@ class MainModel(app: Application) : AndroidViewModel(app) {
      */
     fun enrol(server: String, code: String, info: JSONObject, done: (Study?, ApiError?) -> Unit) {
         if (joinBusy) return
-        joinBusy = true; joinError = null; joinedStudy = null
+        joinBusy = true; enrolling = true; joinError = null; joinedStudy = null
         viewModelScope.launch {
             try {
                 val r = Api.enrol(server, code)
@@ -250,7 +279,7 @@ class MainModel(app: Application) : AndroidViewModel(app) {
             } catch (e: org.json.JSONException) {
                 // the server's answer lacks something this app needs
                 joinError = ApiError("error"); done(null, joinError)
-            } finally { joinBusy = false }
+            } finally { joinBusy = false; enrolling = false }
         }
     }
 

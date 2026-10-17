@@ -29,7 +29,7 @@
         <item quantity="one">Ongeveer %d minuut per dag</item>
         <item quantity="other">Ongeveer %d minuten per dag</item>
     </plurals>
-    <string name="join_privacy">Bij deelname opent het toestemmingsformulier van het onderzoek. De app slaat geen naam, e-mailadres of telefoonnummer op, en het onderzoek ziet uw andere onderzoeken niet.</string>
+    <string name="join_privacy">Deelnemen opent de toestemming voor het onderzoek. De app vereist geen account en verstuurt geen apparaat-ID. Toegang, concepten en onbevestigde antwoorden worden op dit apparaat bewaard. De toestemming legt uit welke gegevens de vragen verzamelen. Een onderzoek ziet uw andere onderzoeken niet.</string>
     <!-- the server of the study, from its join link; shown so that nobody joins another server unawares -->
     <string name="join_server" formatted="true">Aanbieder: Askurious (%1$s)</string>
     <string name="foreign_server" formatted="true">Deze link leidt niet naar een server van Askurious (%1$s), daarom opent de app hem niet.</string>
@@ -67,7 +67,7 @@
     <!-- the footer: version and when this APK was built, so one sees which version runs -->
     <string name="build_info" formatted="true">Versie %1$s · gebouwd %2$s</string>
     <string name="about_privacy_title">Privacy</string>
-    <string name="about_stores">De app bewaart op deze telefoon alleen de lijst van uw onderzoeken met hun schema’s en, per onderzoek, een willekeurig geheim: de enige sleutel tot uw antwoorden in dat onderzoek. De app heeft geen account en verstuurt geen apparaat-ID, naam, e-mailadres of telefoonnummer. Niets hiervan komt in back-ups of op een nieuwe telefoon. Per onderzoek bewaart ze ook of de meldingen met geluid komen; de labels van snelkoppelingen op uw startscherm bewaart uw startscherm.</string>
+    <string name="about_stores">Deze telefoon bewaart de onderzoekslijst, schema’s en toegangssleutels, tijdelijke concepten, opgeslagen vragenlijsten, antwoorden die op bevestiging wachten en verzendbewijzen. De app vereist geen account en verstuurt geen apparaat-ID. Deze lokale onderzoeksgegevens worden uitgesloten van back-ups en overdracht naar andere apparaten. Per onderzoek bewaart ze ook of de meldingen met geluid komen; de labels van snelkoppelingen op uw startscherm bewaart uw startscherm.</string>
     <string name="privacy_statement">Privacyverklaring</string>
     <string name="about_licence_title">Licentie</string>
     <string name="about_copyright">© 2026 Philipp Brauner en Ralf Philipsen, RWTH Aachen University. Alle rechten voorbehouden.</string>
@@ -270,4 +270,15 @@
     <string name="ready_intro_one">De app kondigt de korte vragenlijsten van het onderzoek op het juiste moment aan met een melding. Daarvoor is één toestemming nodig; een tweede instelling is optioneel. U kunt beide later wijzigen in de instellingen van de telefoon.</string>
     <string name="about_provider_unit">Leerstoel Communicatiewetenschap, RWTH Aachen University</string>
     <string name="about_oss_english">De bibliotheken en hun licenties staan in het Engels, net als de licentieteksten.</string>
+    <string name="contact_team">Contact met het onderzoeksteam</string>
+    <string name="copy_contact">Contact kopiëren</string>
+    <string name="contact_unavailable">Geen geschikte app beschikbaar. Kopieer de contactgegevens.</string>
+    <string name="contact_copied">Contact gekopieerd.</string>
+    <string name="answer_time">Beantwoord: %1$s</string>
+    <string name="confirmation_time">Serverbevestiging: %1$s</string>
+    <string name="sync_time">Laatste geslaagde update: %1$s</string>
+    <string name="sync_failed">Update onvolledig. De eerdere onderzoeksinformatie blijft zichtbaar. Probeer het opnieuw.</string>
+    <string name="refresh_studies">Onderzoeken vernieuwen</string>
+    <string name="offline_ready">%1$s: offline beschikbaar</string>
+    <string name="offline_missing">%1$s: nog niet offline beschikbaar</string>
 </resources>
