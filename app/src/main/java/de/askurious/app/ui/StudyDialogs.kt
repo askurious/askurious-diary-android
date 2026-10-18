@@ -2,6 +2,7 @@ package de.askurious.app.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -37,6 +38,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.askurious.app.R
 import de.askurious.app.data.AnswerQueue
@@ -47,6 +49,15 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+
+/**
+ * The text of a dialog as a column that scrolls: at 200 % font size its text and the controls in it stay reachable,
+ * while the dialog's buttons stay below it (UI/UX audit 2026-10-17, A01).
+ */
+@Composable
+fun DialogText(spacing: Dp = 12.dp, content: @Composable ColumnScope.() -> Unit) {
+    Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(spacing), content = content)
+}
 
 @Composable
 fun Message(text: String, error: Boolean = false) {
@@ -121,7 +132,11 @@ fun StoredTransmissions(study: Study, busy: Boolean, retry: () -> Unit, close: (
         text = {
             // the spinner named for TalkBack (UX audit 2026-10-16, B26)
             val loading = stringResource(R.string.loading)
-            if (failed) Text(stringResource(R.string.queue_unreadable)) else CircularProgressIndicator(Modifier.semantics { contentDescription = loading })
+            // the text asks to contact the researchers: their contact with it, when the study has one (A10)
+            if (failed) DialogText {
+                Text(stringResource(R.string.queue_unreadable))
+                if (study.contact.isNotBlank()) StudyContact(study.contact)
+            } else CircularProgressIndicator(Modifier.semantics { contentDescription = loading })
         },
         confirmButton = { TextButton(onClick = close) { Text(stringResource(R.string.close)) } })
 }
@@ -179,7 +194,11 @@ fun TransmissionDetails(
                 }
             }
             for (receipt in receipts.reversed()) {
-                Text(receipt.optString("label").ifBlank { study.modules.firstOrNull { it.key == receipt.optString("module") }?.name ?: receipt.optString("module") })
+                // the name of the answer as a heading, like the waiting ones above: TalkBack jumps from one to the next (A04)
+                Text(
+                    receipt.optString("label").ifBlank { study.modules.firstOrNull { it.key == receipt.optString("module") }?.name ?: receipt.optString("module") },
+                    Modifier.semantics { heading() },
+                )
                 if (receipt.has("completed")) Text(stringResource(R.string.answer_time, date(receipt.getLong("completed"))))
                 Text(stringResource(R.string.confirmation_time, date(receipt.getLong("at"))))
                 Text(stringResource(if (receipt.optBoolean("review")) R.string.transfer_preserved else R.string.transfer_confirmed))
@@ -198,7 +217,7 @@ fun TransmissionDetails(
             title = { Text(stringResource(R.string.discard_answer_title)) },
             text = {
                 GuardAgainstOverlays()
-                Text(stringResource(R.string.discard_answer_confirm))
+                DialogText { Text(stringResource(R.string.discard_answer_confirm)) }
             },
             confirmButton = {
                 TextButton(onClick = {

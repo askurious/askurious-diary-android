@@ -120,6 +120,8 @@
     <string name="entry_abort_text">Bu sayfada henüz gönderilmemiş yanıtlar kaybolur.</string>
     <string name="entry_abort">Girişi iptal et</string>
     <string name="entry_keep">Yanıtlamaya devam et</string>
+    <string name="entry_leave_title">Anketten çıkılsın mı?</string>
+    <string name="entry_leave">Çık</string>
     <string name="retry">Tekrar dene</string>
     <string name="load_failed">Sayfa yüklenemedi. Lütfen bağlantıyı kontrol edip tekrar deneyin.</string>
     <string name="loading">Yükleniyor</string>
@@ -222,6 +224,8 @@
     <string name="notifications_open">Bildirimlere izin ver</string>
     <string name="alarms_open">“Alarmlar ve hatırlatıcılar” iznini ver</string>
     <string name="answer_prompt">Kısa anketi yanıtla</string>
+    <string name="answer_prompt_for">Kısa anketi yanıtla: “%2$s” çalışmasında “%1$s”</string>
+    <string name="transmissions_for">Yanıt aktarımı: “%1$s” çalışması</string>
     <string name="prompt_until">%1$s tarihine kadar açık</string>
     <string name="quiet_pending">Yerel olarak kaydedildi; sunucu sessiz saat değişikliğini henüz doğrulamadı.</string>
     <string name="remove_warning">Çalışma bu cihazdan kaldırılsın mı? Gönderilen yanıtlar araştırmacılarda kalır. Silme dahil bu cihazdaki erişimi kaybedersiniz.</string>

@@ -47,6 +47,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -151,7 +152,7 @@ internal fun MainActivity.HomeScreen(
         AlertDialog(
             onDismissRequest = { confirmDiscard = false },
             title = { Text(stringResource(R.string.queue_discard)) },
-            text = { GuardAgainstOverlays(); Text(stringResource(R.string.queue_discard_confirm)) },
+            text = { GuardAgainstOverlays(); DialogText { Text(stringResource(R.string.queue_discard_confirm)) } },
             confirmButton = {
                 TextButton(onClick = {
                     confirmDiscard = false
@@ -274,7 +275,11 @@ private fun MainActivity.StudyCard(study: Study, selected: Boolean, say: (String
             val n = model.waiting[study.code] ?: 0
             if (n > 0) {
                 Message(pluralStringResource(R.plurals.answers_waiting, n, n))
-                TextButton(onClick = { transmissions = true }) { Text(stringResource(R.string.transmissions)) }
+                // one such button per card: its name says whose transfers it opens (A08)
+                val name = stringResource(R.string.transmissions_for, study.title)
+                TextButton(onClick = { transmissions = true }, modifier = Modifier.semantics { contentDescription = name }) {
+                    Text(stringResource(R.string.transmissions))
+                }
             }
             if (study.code in model.refused) {
                 Text(stringResource(R.string.limit_refused), style = MaterialTheme.typography.bodySmall)

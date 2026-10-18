@@ -26,6 +26,10 @@ class EntrySession(app: Application, val state: SavedStateHandle) : AndroidViewM
     var loadFailed by mutableStateOf<Boolean>(false)
     var pageProgress by mutableStateOf<Int>(100)
     var askAbort by mutableStateOf<Boolean>(false)
+    /** The question comes from the back gesture on a page without its own "Back": "Leave the questionnaire?" (A12). */
+    var askLeave by mutableStateOf<Boolean>(false)
+    /** [error] asks to contact the researchers: the study's contact goes with it (UI/UX audit 2026-10-17, A10). */
+    var askTeam by mutableStateOf<Boolean>(false)
     var cleared by mutableStateOf<Boolean>(false)
     var offlineStarted by mutableStateOf<Long>(0L)
     /** The form of a kept page whose saving failed: the banner's "Save again" sends it once more (UX audit 2026-10-16, B8). */

@@ -127,6 +127,8 @@
     <string name="entry_abort_text">As respostas desta página que ainda não foram enviadas perder-se-ão.</string>
     <string name="entry_abort">Cancelar registo</string>
     <string name="entry_keep">Continuar a responder</string>
+    <string name="entry_leave_title">Sair do questionário?</string>
+    <string name="entry_leave">Sair</string>
     <string name="retry">Tentar novamente</string>
     <string name="load_failed">Não foi possível carregar a página. Verifique a ligação e tente novamente.</string>
     <string name="loading">A carregar</string>
@@ -229,6 +231,8 @@
     <string name="notifications_open">Permitir notificações</string>
     <string name="alarms_open">Permitir «Alarmes e lembretes»</string>
     <string name="answer_prompt">Responder ao breve questionário</string>
+    <string name="answer_prompt_for">Responder ao breve questionário: «%1$s» do estudo «%2$s»</string>
+    <string name="transmissions_for">Envio de respostas do estudo «%1$s»</string>
     <string name="prompt_until">Disponível até %1$s</string>
     <string name="quiet_pending">Guardado localmente; o servidor ainda não confirmou as horas de silêncio.</string>
     <string name="remove_warning">Remover o estudo deste dispositivo? As respostas enviadas ficam com os investigadores. Perde aqui o acesso, incluindo para as apagar.</string>

@@ -136,6 +136,10 @@ class EntryActivity : ComponentActivity() {
 
     /** The question before the entry is closed with a page that may hold answers not yet sent (audit A6). */
     private var askAbort: Boolean get() = session.askAbort; set(value) { session.askAbort = value }
+    private var askLeave: Boolean get() = session.askLeave; set(value) { session.askLeave = value }
+
+    /** [error] asks to contact the researchers: the study's contact (if any) is offered with it (A10). */
+    private var askTeam: Boolean get() = session.askTeam; set(value) { session.askTeam = value }
 
     /** The prompt's notification is gone: removed only once the entry has opened, so it stays as the way back (A8). */
     private var cleared: Boolean get() = session.cleared; set(value) { session.cleared = value }
@@ -212,6 +216,7 @@ class EntryActivity : ComponentActivity() {
             saved = savedInstanceState.getBoolean(STATE_SAVED)
             error = savedInstanceState.getString(STATE_ERROR)
             retryable = savedInstanceState.getBoolean(STATE_RETRY)
+            askTeam = savedInstanceState.getBoolean(STATE_TEAM)
             cleared = savedInstanceState.getBoolean(STATE_CLEARED)
             offlineStarted = savedInstanceState.getLong(STATE_STARTED)
             if (done && !saved && error == null) return finish()
@@ -238,7 +243,7 @@ class EntryActivity : ComponentActivity() {
         setContent {
             // the bar above the page and the screen before it loads in the look of the study's pages
             StudyTheme(study.look, bars = true) {
-                EntryScreen(study.title)
+                EntryScreen(study.title, study.contact)
             }
         }
     }
@@ -250,6 +255,7 @@ class EntryActivity : ComponentActivity() {
     private fun open(study: Study) {
         error = null
         retryable = false
+        askTeam = false
         lifecycleScope.launch {
             try {
                 val address = Api.absolute(intent.getStringExtra(EXTRA_ADDRESS) ?: Api.entry(study.server, study.secret, module, due, notified, reminded, session.entryId), study.server)
@@ -277,6 +283,7 @@ class EntryActivity : ComponentActivity() {
                         else -> getString(R.string.error)
                     }
                     retryable = retryable(e)
+                    askTeam = e.key == "unauthorised"
                     // a final answer (expired, today's limit, paused): the notification has nothing left to open
                     if (!retryable) clearPrompt()
                 } else {
@@ -346,16 +353,26 @@ class EntryActivity : ComponentActivity() {
         !done && !saved && error == null && (mayLose || (offline == null && url != null && (session.state.get<Int>("pages") ?: 0) > 0))
 
     /**
-     * The back gesture: the same as the X (B3). It no longer steps back in the WebView's history: that dropped the
-     * input of the open page unasked and showed a page the server had already left behind; the questionnaire's own
-     * "Back" button goes one page back.
+     * The back gesture (UI/UX audit 2026-10-17, A12): on a page of the questionnaire with its own "Back" button it
+     * presses that button, so the server goes one page back as it allows it (never the WebView's history, which
+     * dropped the input of the open page unasked and showed a page the server had already left behind, B3). On a
+     * page without one (the first page, a page after a quota check, the kept page, a page still loading) it asks
+     * "Leave the questionnaire?" first. Without a page (an error, the end, the saved answer) it closes, as the X does.
      */
-    private fun back() = close()
+    private fun back() {
+        if (saving) return
+        val w = web
+        if (w == null || done || saved || error != null || loadFailed || (url == null && offline == null)) return close()
+        if (offline != null || pageProgress < 100 || !fromOwnPage()) { askLeave = true; askAbort = true; return }
+        w.evaluateJavascript(PAGE_BACK) { result ->
+            if (result != "true" && !isFinishing && web === w && !done && !saved && error == null) { askLeave = true; askAbort = true }
+        }
+    }
 
     /** The X in the top bar and the back gesture: the question before closing when something may be lost (A6, B3). */
     private fun close() {
         if (saving) return
-        if (askFirst) askAbort = true else finish()
+        if (askFirst) { askLeave = false; askAbort = true } else finish()
     }
 
     /**
@@ -454,6 +471,10 @@ class EntryActivity : ComponentActivity() {
         outState.putBoolean(STATE_SAVED, saved)
         outState.putString(STATE_ERROR, error)
         outState.putBoolean(STATE_RETRY, retryable)
+        outState.putBoolean(STATE_TEAM, askTeam)
+        // the system may now end the process: the entry's session cookie is written to disk first, so that the entry
+        // address opens this same entry again when the screen comes back (A11); it goes when the entry ends (AN-4)
+        if (!isFinishing && url != null && !done) CookieManager.getInstance().flush()
         outState.putBoolean(STATE_CLEARED, cleared)
         outState.putLong(STATE_STARTED, offlineStarted)
     }
@@ -547,7 +568,7 @@ class EntryActivity : ComponentActivity() {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @androidx.compose.runtime.Composable
-    private fun EntryScreen(title: String) {
+    private fun EntryScreen(title: String, contact: String) {
         BackHandler { back() }
         Scaffold(bottomBar = {
             // the end page of the questionnaire was reached: "Done" closes the entry, the same as the X, but where the
@@ -595,7 +616,7 @@ class EntryActivity : ComponentActivity() {
                 val page = MaterialTheme.colorScheme.background.toArgb()
                 val e = error
                 when {
-                    e != null || saved -> Message(e ?: stringResource(R.string.offline_saved), retry = e != null && retryable)
+                    e != null || saved -> Message(e ?: stringResource(R.string.offline_saved), retry = e != null && retryable, contact = if (e != null && askTeam) contact else "")
                     u != null -> AndroidView(
                         modifier = Modifier.fillMaxSize(),
                         factory = { ctx -> (web ?: webView(ctx.applicationContext, u)).apply { (parent as? ViewGroup)?.removeView(this); setBackgroundColor(page) } },
@@ -623,16 +644,18 @@ class EntryActivity : ComponentActivity() {
         if (askAbort) {
             AlertDialog(
                 onDismissRequest = { askAbort = false },
-                title = { Text(stringResource(R.string.entry_abort_title)) },
+                // the X cancels the entry; the back gesture on a page without "Back" leaves the questionnaire (A12)
+                title = { Text(stringResource(if (askLeave) R.string.entry_leave_title else R.string.entry_abort_title)) },
                 text = {
                     // what goes, and whether the entry can be continued (B3): the server keeps the pages sent so far
-                    // and opens the same entry again while it is open; a kept page sends nothing before its end
+                    // and opens the same entry again while it is open; a kept page sends nothing before its end.
+                    // Scrolls at a large font size (A01)
                     val lost = if (mayLose) stringResource(R.string.entry_abort_text) + " " else ""
-                    Text(lost + stringResource(if (offline != null) R.string.entry_abort_offline else R.string.entry_abort_resume))
+                    DialogText { Text(lost + stringResource(if (offline != null) R.string.entry_abort_offline else R.string.entry_abort_resume)) }
                 },
                 confirmButton = {
                     TextButton(onClick = { askAbort = false; finish() }) {
-                        Text(stringResource(R.string.entry_abort), color = MaterialTheme.colorScheme.error)
+                        Text(stringResource(if (askLeave) R.string.entry_leave else R.string.entry_abort), color = MaterialTheme.colorScheme.error)
                     }
                 },
                 dismissButton = { TextButton(onClick = { askAbort = false }) { Text(stringResource(R.string.entry_keep)) } },
@@ -640,12 +663,16 @@ class EntryActivity : ComponentActivity() {
         }
     }
 
-    /** A message instead of the page; "Try again" as the main button when it may help (audit A8). */
+    /**
+     * A message instead of the page; "Try again" as the main button when it may help (audit A8). A message that asks to
+     * contact the researchers comes with the study's [contact] and its actions, when the study has one (A10).
+     */
     @androidx.compose.runtime.Composable
-    private fun Message(text: String, retry: Boolean) {
+    private fun Message(text: String, retry: Boolean, contact: String = "") {
         Column(Modifier.padding(24.dp).verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
             // read out as soon as it shows (it replaces the page or the spinner)
             Text(text, Modifier.semantics { liveRegion = LiveRegionMode.Polite })
+            if (contact.isNotBlank()) Box(Modifier.padding(top = 16.dp)) { StudyContact(contact) }
             if (retry) {
                 Button(onClick = { retry() }, modifier = Modifier.padding(top = 16.dp)) { Text(stringResource(R.string.retry)) }
                 OutlinedButton(onClick = { close() }, modifier = Modifier.padding(top = 8.dp)) { Text(stringResource(R.string.close)) }
@@ -828,11 +855,17 @@ class EntryActivity : ComponentActivity() {
                     Array.from(document.querySelectorAll('form input:not([type=hidden]), form textarea, form select')).map(el => el.name).join('|');
                 AskuriousApp.loaded(page);
                 const fields = () => Array.from(document.querySelectorAll('form input, form textarea, form select'));
-                if (old && old.page === page) fields().forEach((el, n) => {
-                    const v = old.values[n]; if (!v || v.name !== el.name || el.type === 'file' || el.type === 'password' || el.type === 'hidden') return;
-                    el.value = v.value; el.checked = v.checked;
-                    if (v.selected) Array.from(el.options).forEach((o, i) => o.selected = v.selected[i]);
-                });
+                if (old && old.page === page) {
+                    const filled = [];
+                    fields().forEach((el, n) => {
+                        const v = old.values[n]; if (!v || v.name !== el.name || el.type === 'file' || el.type === 'password' || el.type === 'hidden') return;
+                        el.value = v.value; el.checked = v.checked;
+                        if (v.selected) Array.from(el.options).forEach((o, i) => o.selected = v.selected[i]);
+                        filled.push(el);
+                    });
+                    // the page reacts to restored answers as to typed ones: display logic, piping, counters (A11)
+                    filled.forEach(el => { el.dispatchEvent(new Event('input', {bubbles: true})); el.dispatchEvent(new Event('change', {bubbles: true})); });
+                }
                 const keep = () => AskuriousApp.draft(JSON.stringify({url:location.href,page:page,values:fields().map(el =>
                     ({name:el.name,value:el.type === 'file' || el.type === 'password' || el.type === 'hidden' ? '' : el.value,checked:el.checked,
                     selected:el.options ? Array.from(el.options).map(o => o.selected) : null}))}));
@@ -915,6 +948,18 @@ class EntryActivity : ComponentActivity() {
         private const val STATE_STARTED = "started"
         private const val STATE_RETRY = "retry"
         private const val STATE_CLEARED = "cleared"
+        private const val STATE_TEAM = "team"
+
+        /**
+         * Presses the page's own "Back" (participant/_nav.html: button.p-back, name "nav", value "back", in the form of
+         * the page) and says whether there was one (A12). The server then shows the page before, as it allows it.
+         */
+        const val PAGE_BACK = """(function () {
+  var b = document.querySelector('form button.p-back[name="nav"][value="back"]');
+  if (!b || b.disabled) return false;
+  b.click();
+  return true;
+})()"""
 
         /** The WebView's errors that mean no connection (not a page the server refused). */
         private val OFFLINE_ERRORS = setOf(

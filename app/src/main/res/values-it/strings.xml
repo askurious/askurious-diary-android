@@ -127,6 +127,8 @@
     <string name="entry_abort_text">Le risposte di questa pagina non ancora inviate andranno perse.</string>
     <string name="entry_abort">Annulla compilazione</string>
     <string name="entry_keep">Continua a rispondere</string>
+    <string name="entry_leave_title">Uscire dal questionario?</string>
+    <string name="entry_leave">Esci</string>
     <string name="retry">Riprova</string>
     <string name="load_failed">Impossibile caricare la pagina. Controlli la connessione e riprovi.</string>
     <string name="loading">Caricamento</string>
@@ -229,6 +231,8 @@
     <string name="notifications_open">Consenti le notifiche</string>
     <string name="alarms_open">Consenti «Sveglie e promemoria»</string>
     <string name="answer_prompt">Compila il breve questionario</string>
+    <string name="answer_prompt_for">Compila il breve questionario: «%1$s» dello studio «%2$s»</string>
+    <string name="transmissions_for">Invio delle risposte dello studio «%1$s»</string>
     <string name="prompt_until">Disponibile fino a %1$s</string>
     <string name="quiet_pending">Salvato localmente; il server non ha ancora confermato le ore di silenzio.</string>
     <string name="remove_warning">Rimuovere lo studio dal dispositivo? Le risposte inviate restano ai ricercatori. Perde l’accesso qui, anche per eliminarle.</string>

@@ -127,6 +127,8 @@
     <string name="entry_abort_text">Las respuestas de esta página que aún no se han enviado se perderán.</string>
     <string name="entry_abort">Cancelar entrada</string>
     <string name="entry_keep">Seguir respondiendo</string>
+    <string name="entry_leave_title">¿Salir del cuestionario?</string>
+    <string name="entry_leave">Salir</string>
     <string name="retry">Reintentar</string>
     <string name="load_failed">No se ha podido cargar la página. Compruebe la conexión e inténtelo de nuevo.</string>
     <string name="loading">Cargando</string>
@@ -229,6 +231,8 @@
     <string name="notifications_open">Permitir notificaciones</string>
     <string name="alarms_open">Permitir «Alarmas y recordatorios»</string>
     <string name="answer_prompt">Responder cuestionario breve</string>
+    <string name="answer_prompt_for">Responder cuestionario breve: «%1$s» del estudio «%2$s»</string>
+    <string name="transmissions_for">Envío de respuestas del estudio «%1$s»</string>
     <string name="prompt_until">Disponible hasta %1$s</string>
     <string name="quiet_pending">Guardado localmente; el servidor no confirmó aún el cambio de horario de descanso.</string>
     <string name="remove_warning">¿Eliminar el estudio de este dispositivo? Las respuestas enviadas siguen con el equipo. Pierde el acceso desde aquí, incluido el de borrado.</string>

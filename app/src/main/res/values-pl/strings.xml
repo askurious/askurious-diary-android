@@ -134,6 +134,8 @@
     <string name="entry_abort_text">Odpowiedzi na tej stronie, które nie zostały jeszcze wysłane, zostaną utracone.</string>
     <string name="entry_abort">Przerwij wpis</string>
     <string name="entry_keep">Odpowiadaj dalej</string>
+    <string name="entry_leave_title">Opuścić kwestionariusz?</string>
+    <string name="entry_leave">Opuść</string>
     <string name="retry">Spróbuj ponownie</string>
     <string name="load_failed">Nie udało się wczytać strony. Prosimy sprawdzić połączenie i spróbować ponownie.</string>
     <string name="loading">Wczytywanie</string>
@@ -236,6 +238,8 @@
     <string name="notifications_open">Zezwól na powiadomienia</string>
     <string name="alarms_open">Zezwól na „Alarmy i przypomnienia”</string>
     <string name="answer_prompt">Wypełnij krótki kwestionariusz</string>
+    <string name="answer_prompt_for">Wypełnij krótki kwestionariusz: „%1$s” w badaniu „%2$s”</string>
+    <string name="transmissions_for">Przesyłanie odpowiedzi badania „%1$s”</string>
     <string name="prompt_until">Dostępne do %1$s</string>
     <string name="quiet_pending">Zapisano lokalnie; serwer nie potwierdził jeszcze zmiany godzin ciszy.</string>
     <string name="remove_warning">Usunąć badanie z urządzenia? Wysłane odpowiedzi pozostają u badaczy. Dostęp z tego urządzenia zostanie utracony, także możliwość ich usunięcia.</string>

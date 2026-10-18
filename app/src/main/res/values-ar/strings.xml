@@ -148,6 +148,8 @@
     <string name="entry_abort_text">ستضيع الإجابات في هذه الصفحة التي لم تُرسل بعد.</string>
     <string name="entry_abort">إلغاء الإدخال</string>
     <string name="entry_keep">متابعة الإجابة</string>
+    <string name="entry_leave_title">مغادرة الاستبيان؟</string>
+    <string name="entry_leave">مغادرة</string>
     <string name="retry">إعادة المحاولة</string>
     <string name="load_failed">تعذّر تحميل الصفحة. يُرجى التحقق من الاتصال والمحاولة مرة أخرى.</string>
     <string name="loading">جارٍ التحميل</string>
@@ -250,6 +252,8 @@
     <string name="notifications_open">السماح بالإشعارات</string>
     <string name="alarms_open">السماح بـ«المنبّهات والتذكيرات»</string>
     <string name="answer_prompt">الإجابة عن الاستبيان القصير</string>
+    <string name="answer_prompt_for">الإجابة عن الاستبيان القصير: «%1$s» في الدراسة «%2$s»</string>
+    <string name="transmissions_for">إرسال الإجابات للدراسة «%1$s»</string>
     <string name="prompt_until">متاح حتى %1$s</string>
     <string name="quiet_pending">حُفظ محليًا؛ لم يؤكد الخادم تغيير ساعات الهدوء بعد.</string>
     <string name="remove_warning">إزالة الدراسة من هذا الجهاز؟ تبقى الإجابات المُرسلة لدى الباحثين. تفقد الوصول من هذا الجهاز، بما في ذلك حذفها.</string>

@@ -120,6 +120,8 @@
     <string name="entry_abort_text">Eingaben auf dieser Seite, die noch nicht gesendet sind, gehen verloren.</string>
     <string name="entry_abort">Eintrag abbrechen</string>
     <string name="entry_keep">Weiter ausfüllen</string>
+    <string name="entry_leave_title">Fragebogen verlassen?</string>
+    <string name="entry_leave">Verlassen</string>
     <string name="retry">Erneut versuchen</string>
     <string name="load_failed">Die Seite konnte nicht geladen werden. Bitte prüfen Sie die Verbindung und versuchen Sie es erneut.</string>
     <string name="loading">Wird geladen</string>
@@ -222,6 +224,8 @@
     <string name="notifications_open">Benachrichtigungen erlauben</string>
     <string name="alarms_open">„Wecker und Erinnerungen“ erlauben</string>
     <string name="answer_prompt">Kurzbefragung beantworten</string>
+    <string name="answer_prompt_for">Kurzbefragung beantworten: „%1$s“ in der Studie „%2$s“</string>
+    <string name="transmissions_for">Antwortübertragung der Studie „%1$s“</string>
     <string name="prompt_until">Offen bis %1$s</string>
     <string name="quiet_pending">Lokal gespeichert; die Änderung der Ruhezeiten ist noch nicht vom Server bestätigt.</string>
     <string name="remove_warning">Studie von diesem Gerät entfernen? Bereits gesendete Antworten bleiben bei den Forschenden. Sie verlieren auf diesem Gerät den Zugang, auch zum Löschen.</string>

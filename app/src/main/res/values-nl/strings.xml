@@ -120,6 +120,8 @@
     <string name="entry_abort_text">Antwoorden op deze pagina die nog niet zijn verzonden, gaan verloren.</string>
     <string name="entry_abort">Afbreken</string>
     <string name="entry_keep">Verder invullen</string>
+    <string name="entry_leave_title">Vragenlijst verlaten?</string>
+    <string name="entry_leave">Verlaten</string>
     <string name="retry">Opnieuw proberen</string>
     <string name="load_failed">De pagina kon niet worden geladen. Controleer de verbinding en probeer het opnieuw.</string>
     <string name="loading">Laden</string>
@@ -222,6 +224,8 @@
     <string name="notifications_open">Meldingen toestaan</string>
     <string name="alarms_open">‘Wekkers en herinneringen’ toestaan</string>
     <string name="answer_prompt">Korte vragenlijst invullen</string>
+    <string name="answer_prompt_for">Korte vragenlijst invullen: ‘%1$s’ in het onderzoek ‘%2$s’</string>
+    <string name="transmissions_for">Antwoorden versturen van het onderzoek ‘%1$s’</string>
     <string name="prompt_until">Beschikbaar tot %1$s</string>
     <string name="quiet_pending">Lokaal opgeslagen; de wijziging van de stille uren is nog niet bevestigd.</string>
     <string name="remove_warning">Onderzoek van dit apparaat verwijderen? Verzonden antwoorden blijven bij de onderzoekers. U verliest hier toegang, ook om ze te wissen.</string>
