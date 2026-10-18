@@ -91,6 +91,7 @@ internal fun MainActivity.JoinScreen(initial: String, onDone: () -> Unit) {
         e.key == "closed" -> getString(R.string.closed)
         e.key == "used" -> getString(R.string.code_used)
         e.key == "offline" -> getString(R.string.offline)
+        e.key == REJOIN_PENDING -> getString(R.string.rejoin_pending)
         // the rate limit: trying again at once keeps the lock (audit A12)
         e.status == 429 -> getString(R.string.too_many)
         // with the HTTP status: a 404 of a web server in between is told apart from an error of Askurious
