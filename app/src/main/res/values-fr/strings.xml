@@ -127,6 +127,8 @@
     <string name="entry_abort_text">Les réponses de cette page qui n’ont pas encore été envoyées seront perdues.</string>
     <string name="entry_abort">Annuler la saisie</string>
     <string name="entry_keep">Continuer</string>
+    <string name="entry_leave_title">Quitter le questionnaire ?</string>
+    <string name="entry_leave">Quitter</string>
     <string name="retry">Réessayer</string>
     <string name="load_failed">La page n’a pas pu être chargée. Veuillez vérifier la connexion et réessayer.</string>
     <string name="loading">Chargement</string>
@@ -229,6 +231,8 @@
     <string name="notifications_open">Autoriser les notifications</string>
     <string name="alarms_open">Autoriser « Alarmes et rappels »</string>
     <string name="answer_prompt">Répondre au bref questionnaire</string>
+    <string name="answer_prompt_for">Répondre au bref questionnaire : « %1$s » de l’étude « %2$s »</string>
+    <string name="transmissions_for">Envoi des réponses de l’étude « %1$s »</string>
     <string name="prompt_until">Disponible jusqu’au %1$s</string>
     <string name="quiet_pending">Enregistré ici ; le serveur n’a pas encore confirmé le changement des heures de repos.</string>
     <string name="remove_warning">Retirer l’étude de cet appareil ? Les réponses envoyées restent chez les chercheurs. Vous perdez l’accès ici, y compris pour les supprimer.</string>

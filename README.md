@@ -34,7 +34,8 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   "Join" and the questions before leaving, removing or deleting take a touch only while no window of another app lies over them (`filterTouchesWhenObscured`, `GuardAgainstOverlays`; Android 12 and later block such overlays themselves).
   An open entry is listed in "Recents" as its own task, so that it survives a switch to another app, but without a picture of the page (`setRecentsScreenshotEnabled(false)`, `FLAG_SECURE`).
   Links to other sites open in another app (web, mail and phone links only); turning the phone keeps the page and what was typed.
-  The back gesture does what the X at the left of the top bar does; it does not step back in the WebView's history (that dropped the input of the open page unasked), the questionnaire's own "Back" button goes one page back.
+  The back gesture does what the questionnaire's own "Back" button does where the page has one: the app presses that button (`button.p-back` of `participant/_nav.html`, `EntryActivity.PAGE_BACK`), so the server goes one page back as it allows it. It never steps back in the WebView's history (that dropped the input of the open page unasked). On a page without "Back" (the first page, a page after a quota check, the kept page, a page still loading) it asks "Leave the questionnaire?" first; on an error, the end or a saved answer it closes the entry, as the X at the left of the top bar does.
+  An error that asks to contact the researchers (the study is unavailable, stored answers cannot be read) shows the study's contact with its actions, when the study has one.
   Once the end page is reached (`AskuriousApp.done()`), its thanks stay in view with a bar "Done" below them that closes the entry, as the X does.
   With input on the open page, and online from the second page on, the app asks "Cancel this entry?" first and says whether the entry can be continued later (the server keeps the pages sent and opens the same entry again while it is open) or, on a kept page without a connection, that everything entered is lost.
   Notices of the entry (restored answers, a permission the page needs, a failed save with "Save again") are banners between the top bar and the page, never over its questions; the first two can be closed.
@@ -227,12 +228,16 @@ diary API. Study details retain the purpose, contact, period and participation c
 Removal warns about unsent answers as well as loss of access, and offers transferring answers first. A transfer
 view shows individual outstanding answers, last attempts and the last twenty server confirmations per study.
 Confirmation metadata is encrypted with the same Keystore mechanism as the existing local study/answer stores.
-Headers grow with system text size, dialogs scroll and actions wrap. Native palette roles enforce readable text
+Headers grow with system text size, dialogs scroll (also every confirmation, `DialogText`) and actions wrap. A repeated button names its module and study for TalkBack and Voice Access ("Answer short survey: “Mood” in the study “…”"). Native palette roles enforce readable text
 and controls; the study's existing fixed/automatic palette choice and shape are retained.
 
 A retained application-context WebView preserves live input across Activity recreation. Ordinary form fields
 also use a bounded Android saved-state draft; unsubmitted files, recordings and drawings cannot reliably be
-recovered after process termination. Closing changed input asks first. The secure origin/main-frame message
+recovered after process termination. When the system ends the app's process in the background, the entry's session
+cookie has been written to disk first (`onSaveInstanceState`), so the entry address opens the same entry on its current
+page again (the server keeps the page; it accepts the address again only in the browser that opened it, or within two
+minutes); restored answers fire `input` and `change`, so that fields shown by display logic and counters follow them.
+Closing changed input asks first. The secure origin/main-frame message
 channel remains in use for drafts and completion. Microphone/location rights are requested only by questions
 from the configured known server, with no background recording/location permission. About/privacy texts explain
 local drafts and transfer metadata in all twelve languages.

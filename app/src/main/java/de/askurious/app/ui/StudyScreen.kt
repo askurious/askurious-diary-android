@@ -212,7 +212,7 @@ internal fun MainActivity.StudyScreen(study: Study, onBack: () -> Unit, snackbar
             title = { Text(stringResource(R.string.leave_title, study.title)) },
             text = {
                 GuardAgainstOverlays()
-                Text(stringResource(R.string.leave_confirm))
+                DialogText { Text(stringResource(R.string.leave_confirm)) }
             },
             confirmButton = {
                 TextButton(onClick = {
@@ -233,7 +233,7 @@ internal fun MainActivity.StudyScreen(study: Study, onBack: () -> Unit, snackbar
             title = { Text(stringResource(R.string.after_leave_title)) },
             text = {
                 GuardAgainstOverlays()
-                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                DialogText {
                     Text(stringResource(R.string.after_leave_text))
                     if (erasing) Erasing()
                 }
@@ -270,7 +270,7 @@ internal fun MainActivity.StudyScreen(study: Study, onBack: () -> Unit, snackbar
             title = { Text(stringResource(R.string.remove_title, study.title)) },
             text = {
                 GuardAgainstOverlays()
-                Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                DialogText(8.dp) {
                     Text(stringResource(R.string.remove_confirm))
                     val waiting = model.waiting[study.code] ?: 0
                     if (waiting > 0) Message(stringResource(R.string.remove_waiting, waiting), error = true)
@@ -306,7 +306,7 @@ internal fun MainActivity.StudyScreen(study: Study, onBack: () -> Unit, snackbar
             title = { Text(stringResource(R.string.erase_title, study.title)) },
             text = {
                 GuardAgainstOverlays()
-                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                DialogText {
                     Text(stringResource(R.string.erase_confirm))
                     if (erasing) Erasing()
                 }
@@ -408,8 +408,11 @@ internal fun MainActivity.StudyNow(study: Study) {
             if (prompt.expires > 0) Text(stringResource(R.string.prompt_until,
                 whenText(Instant.ofEpochMilli(prompt.due + prompt.expires * 60_000L).atZone(ZoneId.systemDefault()), today, false)))
             val start = { startActivity(EntryActivity.intent(context, study.code, prompt.module, prompt.due, notified)) }
-            if (k == 0) Button(onClick = start) { Text(stringResource(R.string.answer_prompt)) }
-            else FilledTonalButton(onClick = start) { Text(stringResource(R.string.answer_prompt)) }
+            // the same visible label for every open prompt; its name for TalkBack and Voice Access begins with that label
+            // and names the module and the study, so that a button found alone is unambiguous (UI/UX audit 2026-10-17, A08)
+            val name = Modifier.semantics { contentDescription = context.getString(R.string.answer_prompt_for, module.name, study.title) }
+            if (k == 0) Button(onClick = start, modifier = name) { Text(stringResource(R.string.answer_prompt)) }
+            else FilledTonalButton(onClick = start, modifier = name) { Text(stringResource(R.string.answer_prompt)) }
         }
         if (notifyState != NotifyNotice.NONE) {
             // without notifications no prompt reaches the participant: no time that would not come (audit A1);
@@ -579,7 +582,7 @@ private fun ShortcutDialog(study: Study, module: Module, onDone: () -> Unit) {
         onDismissRequest = onDone,
         title = { Text(stringResource(R.string.shortcut_add)) },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            DialogText {
                 Text(stringResource(R.string.shortcut_hint))
                 OutlinedTextField(
                     value = label, onValueChange = { label = it.take(40) }, singleLine = true,

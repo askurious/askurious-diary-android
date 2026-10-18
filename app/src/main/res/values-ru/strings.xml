@@ -134,6 +134,8 @@
     <string name="entry_abort_text">Ответы на этой странице, которые ещё не отправлены, будут потеряны.</string>
     <string name="entry_abort">Прервать</string>
     <string name="entry_keep">Продолжить</string>
+    <string name="entry_leave_title">Покинуть опрос?</string>
+    <string name="entry_leave">Покинуть</string>
     <string name="retry">Повторить</string>
     <string name="load_failed">Не удалось загрузить страницу. Проверьте подключение и повторите попытку.</string>
     <string name="loading">Загрузка</string>
@@ -236,6 +238,8 @@
     <string name="notifications_open">Разрешить уведомления</string>
     <string name="alarms_open">Разрешить «Будильники и напоминания»</string>
     <string name="answer_prompt">Ответить на короткий опрос</string>
+    <string name="answer_prompt_for">Ответить на короткий опрос: «%1$s» в исследовании «%2$s»</string>
+    <string name="transmissions_for">Передача ответов исследования «%1$s»</string>
     <string name="prompt_until">Доступно до %1$s</string>
     <string name="quiet_pending">Сохранено локально; сервер ещё не подтвердил изменение тихих часов.</string>
     <string name="remove_warning">Удалить исследование с устройства? Отправленные ответы остаются у исследователей. Вы потеряете доступ с этого устройства, включая удаление.</string>

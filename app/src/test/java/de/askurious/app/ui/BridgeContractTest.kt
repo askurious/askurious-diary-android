@@ -40,4 +40,19 @@ class BridgeContractTest {
         assertTrue(script.contains("postMessage(\"offline:\" + String(json))"))
         assertFalse(script.contains("$"))
     }
+
+    /**
+     * UI/UX audit 2026-10-17, A12: the back gesture presses the page's own "Back" of participant/_nav.html (a submit
+     * button of the page's form, class p-back, name "nav", value "back") and learns whether there was one.
+     */
+    @Test
+    fun theBackGesturePressesTheBackButtonOfTheParticipantNavigation() {
+        val script = EntryActivity.PAGE_BACK
+        assertTrue(script.contains("form button.p-back[name=\"nav\"][value=\"back\"]"))
+        assertTrue(script.contains("b.click()"))
+        assertTrue(script.contains("return false"))
+        assertTrue(script.contains("return true"))
+        assertFalse(script.contains("history"))
+        assertFalse(script.contains("$"))
+    }
 }
