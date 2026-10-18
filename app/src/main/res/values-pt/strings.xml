@@ -268,7 +268,8 @@
     <string name="ready_battery_text">Alguns telemóveis param aplicações em segundo plano para poupar bateria; os breves questionários chegam então atrasados ou não chegam. Na lista «Otimização da bateria», defina o Askurious como «Não otimizar». Em alguns telemóveis a definição está nas informações da aplicação, em «Bateria».</string>
     <!-- UX audit 2026-10-16, B26-B32: the rejoin dialog, the side-by-side page, the clock notice, the transfers -->
     <string name="rejoin_title">Iniciar uma nova participação?</string>
-    <string name="rejoin_more">As respostas pendentes da participação anterior são enviadas antes, se possível; caso contrário, são descartadas. Para apagar as suas respostas anteriores, cancele e use «Apagar as minhas respostas» na página do estudo.</string>
+    <string name="rejoin_more">As respostas pendentes da participação anterior são enviadas antes. Sem ligação, a nova participação espera até serem enviadas; só são descartadas as respostas que o servidor recusou. Para apagar as suas respostas anteriores, cancele e use «Apagar as minhas respostas» na página do estudo.</string>
+    <string name="rejoin_pending">Há respostas da sua participação anterior à espera de envio. Ligue-se à internet e tente novamente para que não se percam.</string>
     <string name="learn_more">Saber mais</string>
     <string name="choose_study">Escolha um estudo na lista para ver a sua página.</string>
     <string name="date_settings_open">Abrir data e hora</string>

@@ -254,7 +254,8 @@
     <string name="ready_battery_text">有些手机会为了省电而停止后台应用，这样简短问卷会延迟送达或根本无法送达。请在“电池优化”列表中将 Askurious 设为“不优化”。在某些手机上，此设置位于应用信息的“电池”下。</string>
     <!-- UX audit 2026-10-16, B26-B32: the rejoin dialog, the side-by-side page, the clock notice, the transfers -->
     <string name="rejoin_title">开始新的参与？</string>
-    <string name="rejoin_more">之前参与中尚在等待的回答会尽可能先发送，否则将被丢弃。如需删除之前的回答，请取消并使用研究页面上的“删除我的回答”。</string>
+    <string name="rejoin_more">之前参与中尚在等待的回答会先发送。没有网络时，重新加入会等到这些回答发送完毕；只有被服务器拒绝的回答才会被丢弃。如需删除之前的回答，请取消并使用研究页面上的“删除我的回答”。</string>
+    <string name="rejoin_pending">您之前参与的回答仍在等待发送。请连接互联网后重试，以免回答丢失。</string>
     <string name="learn_more">了解更多</string>
     <string name="choose_study">请在列表中选择一项研究以查看其页面。</string>
     <string name="date_settings_open">打开日期和时间设置</string>

@@ -248,6 +248,21 @@ object Sync {
     }
 
     /**
+     * Sends the queued answers of [old] before the participant joins the same study again (audit 2026-10-17, T7).
+     * False while some must wait for the network: joining again would discard them, so it waits too. Answers the
+     * server refused stay for clarification and do not hold it up.
+     */
+    suspend fun sendBeforeRejoin(context: Context, old: Study): Boolean = withContext(Dispatchers.IO) {
+        try {
+            lock.withLock { sendLocked(context, old) }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    /**
      * Joins [study] in place of [old], an earlier participation in the same study on this phone, after the participant
      * agreed to it. The earlier participation is closed first, with its own secret: its queued answers are sent (they
      * belong to it, never to the new person), a running one is left, then everything kept for it goes; then the new
@@ -261,7 +276,7 @@ object Sync {
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                // what could not be sent goes with the earlier participation
+                // sent before the new enrolment (sendBeforeRejoin); what the server refused goes with it
             }
             if (old.status == "active" || old.status == "pending" || old.status == "paused" || old.leavePending) {
                 try {

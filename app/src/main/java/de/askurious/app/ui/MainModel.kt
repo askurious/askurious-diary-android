@@ -21,6 +21,9 @@ import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 
+/** The join error while answers of an earlier participation in the study still wait to be sent (T7). */
+const val REJOIN_PENDING = "rejoin_pending"
+
 /**
  * The state of the start page and what the participant does there (architecture concept 2026-10-12, K3): the studies,
  * the answers waiting to be sent, and the calls to the server. MainActivity only draws it. A call runs in the model's
@@ -257,6 +260,10 @@ class MainModel(app: Application) : AndroidViewModel(app) {
         joinBusy = true; enrolling = true; joinError = null; joinedStudy = null
         viewModelScope.launch {
             try {
+                // answers of an earlier participation in this study still waiting: sent first, else no new one,
+                // which would discard them (audit 2026-10-17, T7)
+                val earlier = withContext(Dispatchers.IO) { StudyStore(context).get(info.optString("code")) }
+                if (earlier != null && !Sync.sendBeforeRejoin(context, earlier)) throw ApiError(REJOIN_PENDING)
                 val r = Api.enrol(server, code)
                 val secret = r.optString("secret").ifBlank { throw ApiError("error") }
                 // a personal code connected this phone to its participation again ("rejoined"): the server's status,
