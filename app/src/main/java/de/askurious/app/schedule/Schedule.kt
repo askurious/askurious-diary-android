@@ -35,7 +35,8 @@ data class Prompt(
  * A newly reported zone applies from the following study day; daylight saving follows that zone's rules. The server computes the same list from the same definition for
  * the export and to check that a prompt was due (app/diary.py, prompts()). A random module draws its times per day
  * from the person's seed and the quiet hours valid on that day (RandomTimes, Study.quietOn). No prompt on the days of a
- * pause the researchers set (Study.pausedOn), and none while the person is paused (status "paused").
+ * pause the researchers set (Study.pausedOn), and none while the person is paused (status "paused"). None due before
+ * [Study.promptsFrom]: the server does not count the prompts of the first day before the entry part was completed.
  *
  * [prompts] and [reminders] take and give the study's time (virtual for a fast-forward person, Study.clock); [next],
  * [nextMoment] and [exitDue] take the real now and map it per study.
@@ -66,6 +67,8 @@ object Schedule {
                 }
                 for (time in times) {
                     val due = ZonedDateTime.of(date, time, study.zoneOn(date, zone)).toInstant()
+                    // not before the moment from which the server counts this person's prompts (Study.promptsFrom)
+                    if (study.promptsFrom != null && due.toEpochMilli() < study.promptsFrom) continue
                     if (!due.isBefore(from) && due.isBefore(until)) out += Prompt(study.code, m.key, due.toEpochMilli(), m.expires, m.reminder, study.clock)
                 }
             }
