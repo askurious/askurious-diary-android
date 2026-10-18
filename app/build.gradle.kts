@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.time.Instant
 import java.util.Properties
 
 plugins {
@@ -9,10 +10,19 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization")
 }
 
-/** The number of commits up to HEAD, the app's versionCode; 1 when Git is not there. */
-val gitCommitCount: Int = runCatching {
-    providers.exec { commandLine("git", "rev-list", "--count", "HEAD") }.standardOutput.asText.get().trim().toInt()
-}.getOrDefault(1)
+/**
+ * The app's versionCode (audit 2026-10-18, AND-08): no longer the number of Git commits, which a shallow clone or a
+ * source archive gave as 1 (a build the phone refuses as a downgrade and the server as outdated). It is the minutes
+ * since 2026-01-01 00:00 UTC at the build, so every later build is higher, with or without Git, and far above the
+ * codes published before (the commit counts, up to [lastPublishedVersionCode]); a CI may set it with
+ * -PversionCode=<n>. Minutes reach the Play Store's limit (2 100 000 000) only in about 4000 years.
+ */
+val lastPublishedVersionCode: Int = (findProperty("askurious.lastPublishedVersionCode") as String?)?.toInt() ?: 0
+val appVersionCode: Int = (findProperty("versionCode") as String?)?.toInt()
+    ?: ((System.currentTimeMillis() - Instant.parse("2026-01-01T00:00:00Z").toEpochMilli()) / 60_000L).toInt()
+check(appVersionCode > lastPublishedVersionCode) {
+    "versionCode $appVersionCode is not above the last published one ($lastPublishedVersionCode, gradle.properties)"
+}
 
 /** The servers of Askurious (origins) that join links may name; see KNOWN_SERVERS below. */
 val knownServers = listOf(
@@ -47,10 +57,10 @@ android {
         testInstrumentationRunner = "de.askurious.app.test.UiInstrumentation"
         minSdk = 26
         targetSdk = 36
-        // the version from Git: every commit on main counts up, so a newer build always has a higher versionCode (the
-        // Play Store and the server's DIARY_MIN_APP_VERSION compare it); 1 without Git (a source archive)
-        versionCode = gitCommitCount
-        versionName = "0.1.$gitCommitCount"
+        // a newer build always has a higher versionCode (the Play Store and the server's DIARY_MIN_APP_VERSION
+        // compare it), also when built without Git (appVersionCode above)
+        versionCode = appVersionCode
+        versionName = "0.1.$appVersionCode"
         // the server of a join code typed by hand (a QR code names its own server): the main address of Askurious, where
         // the diary studies run for now (server: config DIARY_ON_MAIN_ADDRESS, 2026-10-12); a debug build talks to
         // the Flask server on the computer through `adb reverse tcp:5080 tcp:5060` (the server answers only under

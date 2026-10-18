@@ -68,4 +68,23 @@ class JoinCodeTest {
         assertNull(joinServer("https://ask.askurious.de/j/", allowHttp = false))
         assertNull(joinServer("ftp://ask.askurious.de/j/k7qm2x", allowHttp = true))
     }
+
+    /**
+     * Audit 2026-10-18, AND-03: "Join study" opened an entry whose deep-link intent holds the route's internal address
+     * (android-app://androidx.navigation/...); taken as the join link it filled the field and was looked up at once.
+     * Only a real join link of a deep link counts, else the route's link (empty from the menu, a foreign link as given).
+     */
+    @Test
+    fun theJoinScreenStartsEmptyUnlessAJoinLinkOpenedIt() {
+        val internal = "android-app://androidx.navigation/de.askurious.app.ui.route.join?link={link}"
+        assertEquals("", joinLinkOf(internal, ""))
+        assertEquals("", joinLinkOf(null, ""))
+        assertEquals("https://ask.askurious.de/j/k7qm2x", joinLinkOf("https://ask.askurious.de/j/k7qm2x", ""))
+        assertEquals("askurious://join/k7qm2x", joinLinkOf("askurious://join/k7qm2x", ""))
+        // a link the deep links do not take came as the route's link: the screen shows "foreign server" for it
+        assertEquals("https://evil.example/j/8trq2d", joinLinkOf(internal, "https://evil.example/j/8trq2d"))
+        // no join link: another page of the server, an empty custom link
+        assertEquals("", joinLinkOf("https://ask.askurious.de/s/k7qm2x", ""))
+        assertEquals("", joinLinkOf("askurious://join/", ""))
+    }
 }

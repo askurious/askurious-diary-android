@@ -81,6 +81,7 @@
         <item quantity="other">%d antwoorden wachten op verzending</item>
     </plurals>
     <string name="about_offline">Bij onderzoeken met offline antwoorden bewaart de app ook vragenlijstpagina’s. Offline antwoorden blijven versleuteld op deze telefoon totdat de server de opslag bevestigt of u ze uitdrukkelijk verwerpt of het onderzoek verwijdert. Verlopen of weigering verwijdert ze niet.</string>
+    <string name="about_webview">De vragenlijsten openen in Android System WebView, een onderdeel van de telefoon dat van Google komt. Afhankelijk van de instellingen van de telefoon kan WebView zelf contact opnemen met diensten van Google, bijvoorbeeld Safe Browsing, dat adressen vergelijkt met lijsten van schadelijke sites, of suggesties voor het invullen van formulieren. De app heeft de gebruiksstatistieken van WebView uitgeschakeld en biedt de antwoorden niet aan een dienst voor automatisch invullen aan.</string>
     <string name="quiet_title">Rusttijden</string>
     <string name="quiet_now">Rusttijden voor korte vragenlijsten op willekeurige tijdstippen: %1$s</string>
     <string name="quiet_from_tomorrow">Vanaf morgen: %1$s</string>
@@ -201,6 +202,7 @@
     <string name="keep_answers">Mijn antwoorden bewaren</string>
     <string name="save_failed">Opslaan mislukt. Uw ingevulde vragenlijst blijft open; niets van wat u hebt ingevoerd gaat verloren.</string>
     <string name="queue_unreadable">Opgeslagen antwoorden kunnen niet worden gelezen. Ze zijn niet overschreven. Neem contact op met de onderzoekers.</string>
+    <string name="studies_unreadable">Uw studies op deze telefoon kunnen nu niet worden geopend. Er is niets overschreven. Probeer het zo opnieuw; blijft dit zo, start de telefoon dan opnieuw op.</string>
     <string name="queue_discard">Onleesbare antwoorden verwijderen</string>
     <string name="queue_discard_confirm">Deze antwoorden kunnen op deze telefoon niet meer worden gelezen en nooit meer worden verzonden. Verwijderen zodat de app weer nieuwe antwoorden kan bewaren? Uw onderzoeken en de al verzonden antwoorden blijven.</string>
     <string name="hide_licence">Licentietekst verbergen</string>

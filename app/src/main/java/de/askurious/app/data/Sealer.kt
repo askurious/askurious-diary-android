@@ -59,6 +59,8 @@ object KeystoreSealer : Sealer {
     }
 
     override fun seal(plain: String, aad: String): String {
+        // a call to keystore2: StrictMode names it when it happens on the main thread (audit 2026-10-18, AND-09)
+        android.os.StrictMode.noteSlowCall("Keystore seal")
         val cipher = Cipher.getInstance("AES/GCM/NoPadding")
         cipher.init(Cipher.ENCRYPT_MODE, key())
         if (aad.isNotEmpty()) cipher.updateAAD(aad.toByteArray())
@@ -67,6 +69,7 @@ object KeystoreSealer : Sealer {
 
     override fun open(sealed: String, aad: String): String? = runCatching {
         if (!sealed.startsWith(PREFIX)) return null
+        android.os.StrictMode.noteSlowCall("Keystore open")
         val bytes = Base64.getDecoder().decode(sealed.removePrefix(PREFIX))
         val cipher = Cipher.getInstance("AES/GCM/NoPadding")
         cipher.init(Cipher.DECRYPT_MODE, key(), GCMParameterSpec(128, bytes, 0, IV_BYTES))

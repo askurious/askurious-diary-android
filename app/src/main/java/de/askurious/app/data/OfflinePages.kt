@@ -16,16 +16,19 @@ import java.security.MessageDigest
  * (/static/ and /media/ paths: style sheet, participant.js, images). Kept in the app's files directory, which goes
  * into no backup and to no new phone (res/xml/data_extraction_rules.xml excludes the domain "file").
  *
- * pages/<study>_<module>.json holds {html, version, files, fetched}; files/<hash> holds one file of a server and
- * files/<hash>.type its content type. A file is known by its full address (server and path: two servers may have
+ * pages/<study>_<module>.json holds {html, version, files, fetched}, sealed under the Keystore key ([Sealer], AAD
+ * "offline:<file name>"): a copy of the app's files shows neither the title of a study nor its questions, as for the
+ * studies and the answers (audit 2026-10-18, AND-06); the form's CSRF token is not kept at all (the kept page sends
+ * nothing to the server). files/<hash> holds one file of a server and files/<hash>.type its content type. A file is known by its full address (server and path: two servers may have
  * different files under the same path); files are shared by all pages of a server (they are the same for everybody)
  * and deleted when no page names them any more.
  */
-class OfflinePages(context: Context) {
+class OfflinePages(context: Context, private val sealer: Sealer = KeystoreSealer) {
     private val app = context.applicationContext
-    private val root = File(app.filesDir, "offline")
-    private val pages = File(root, "pages")
-    private val files = File(root, "files")
+    // found when first needed: filesDir checks the disk, and the WebView's client is made on the main thread (AND-09)
+    private val root by lazy { File(app.filesDir, "offline") }
+    private val pages by lazy { File(root, "pages") }
+    private val files by lazy { File(root, "files") }
 
     /**
      * A kept page: [files] are the full addresses (server and path) of the files it needs, [fetched] the time it was
@@ -37,11 +40,23 @@ class OfflinePages(context: Context) {
         val f = pageFile(study, module)
         if (!f.exists()) return null
         return runCatching {
-            val o = JSONObject(f.readText())
+            val o = opened(f) ?: return null
             val list = o.optJSONArray("files") ?: JSONArray()
             Page(o.getString("html"), o.optString("version"), (0 until list.length()).map { list.getString(it) }, o.optLong("fetched"))
         }.getOrNull()
     }
+
+    /**
+     * The JSON of the page file [f]: opened with the Keystore; a page kept in plain text by an earlier version is read
+     * as it is (and sealed at its next check with the server). Null when it cannot be opened.
+     */
+    private fun opened(f: File): JSONObject? {
+        val raw = runCatching { f.readText() }.getOrNull() ?: return null
+        val text = if (SealedText.plain(raw)) raw else sealer.open(raw, aad(f)) ?: return null
+        return runCatching { JSONObject(text) }.getOrNull()
+    }
+
+    private fun aad(f: File) = "offline:" + f.name
 
     /** A page counts only with all its files: without participant.js the answers would go nowhere. */
     fun usable(study: String, module: String): Page? = page(study, module)?.takeIf { complete(it) }
@@ -86,11 +101,12 @@ class OfflinePages(context: Context) {
 
     private fun pageFile(study: String, module: String) = File(pages, "${hash(study)}_${hash(module)}.json")
 
-    private fun save(study: String, module: String, page: Page) {
+    internal fun save(study: String, module: String, page: Page) {
         pages.mkdirs()
         val o = JSONObject().put("html", page.html).put("version", page.version)
             .put("files", JSONArray(page.files)).put("fetched", page.fetched)
-        write(pageFile(study, module), o.toString().toByteArray())
+        val f = pageFile(study, module)
+        write(f, sealer.seal(o.toString(), aad(f)).toByteArray())
     }
 
     private fun keepFile(path: String, bytes: ByteArray, type: String?) {
@@ -109,13 +125,12 @@ class OfflinePages(context: Context) {
         }
     }
 
-    /** Deletes the files no kept page names. */
+    /** Deletes the files no kept page names; nothing while a kept page cannot be opened (its files may be needed). */
     private fun prune() {
         val needed = pages.listFiles()?.filter { it.name.endsWith(".json") }?.flatMap { f ->
-            runCatching {
-                val list = JSONObject(f.readText()).optJSONArray("files") ?: JSONArray()
-                (0 until list.length()).map { hash(list.getString(it)) }
-            }.getOrDefault(emptyList())
+            val o = opened(f) ?: return
+            val list = o.optJSONArray("files") ?: JSONArray()
+            runCatching { (0 until list.length()).map { hash(list.getString(it)) } }.getOrDefault(emptyList())
         }?.toSet() ?: emptySet()
         files.listFiles()?.forEach { f ->
             if (f.name.substringBefore('.') !in needed) f.delete()
@@ -165,7 +180,7 @@ class OfflinePages(context: Context) {
             drop(study.code, module)
             return
         }
-        val html = r.optString("html")
+        val html = withoutCsrf(r.optString("html"))
         val version = r.optString("version")
         if (html.isBlank()) return
         val server = study.server
@@ -226,6 +241,15 @@ class OfflinePages(context: Context) {
 
         private val ATTR = Regex("""\b(?:src|href)\s*=\s*(["'])(/[^"']*)\1""", RegexOption.IGNORE_CASE)
         private val CSS_URL = Regex("""url\(\s*(["']?)([^"')]+)\1\s*\)""", RegexOption.IGNORE_CASE)
+
+        private val CSRF_INPUT = Regex("""<input\b[^>]*\bname\s*=\s*(["'])csrf_token\1[^>]*>""", RegexOption.IGNORE_CASE)
+        private val VALUE = Regex("""\bvalue\s*=\s*("[^"]*"|'[^']*')""", RegexOption.IGNORE_CASE)
+
+        /**
+         * [html] with the value of its CSRF field emptied: the kept page never sends its form to the server (the answer
+         * goes through the app's queue), so the token has no use on the phone (AND-06).
+         */
+        fun withoutCsrf(html: String): String = CSRF_INPUT.replace(html) { m -> VALUE.replace(m.value, "value=\"\"") }
 
         /** Whether [path] is a server file the offline page may load: /static/ and /media/, nothing else. */
         fun servable(path: String): Boolean =

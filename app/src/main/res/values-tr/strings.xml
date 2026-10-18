@@ -81,6 +81,7 @@
         <item quantity="other">%d yanıt gönderilmeyi bekliyor</item>
     </plurals>
     <string name="about_offline">Çevrimdışı yanıtları destekleyen çalışmalarda uygulama anket sayfalarını da saklar. Çevrimdışı yanıtlar, sunucu kaydı onaylayana veya siz onları açıkça atana ya da çalışmayı kaldırana kadar bu telefonda şifreli kalır. Sürenin dolması veya ret onları silmez.</string>
+    <string name="about_webview">Anketler, telefonun Google tarafından sağlanan bir bileşeni olan Android System WebView içinde açılır. Telefonun ayarlarına bağlı olarak WebView, örneğin adresleri zararlı site listeleriyle karşılaştıran Güvenli Tarama (Safe Browsing) ya da form doldurma önerileri için Google hizmetlerine kendisi bağlanabilir. Uygulama WebView kullanım istatistiklerini kapatmıştır ve yanıtları hiçbir otomatik doldurma hizmetine sunmaz.</string>
     <string name="quiet_title">Sessiz saatler</string>
     <string name="quiet_now">Rastgele zamanlardaki kısa anketler için sessiz saatler: %1$s</string>
     <string name="quiet_from_tomorrow">Yarından itibaren: %1$s</string>
@@ -201,6 +202,7 @@
     <string name="keep_answers">Yanıtlarımı sakla</string>
     <string name="save_failed">Kaydedilemedi. Doldurduğunuz anket açık kalır; girdiğiniz hiçbir şey kaybolmadı.</string>
     <string name="queue_unreadable">Kayıtlı yanıtlar okunamıyor. Üzerlerine yazılmadı. Lütfen araştırmacılarla iletişime geçin.</string>
+    <string name="studies_unreadable">Bu telefondaki çalışmalarınız şu anda açılamıyor. Hiçbir şeyin üzerine yazılmadı. Lütfen birazdan tekrar deneyin; sorun sürerse telefonu yeniden başlatın.</string>
     <string name="queue_discard">Okunamayan yanıtları at</string>
     <string name="queue_discard_confirm">Bu yanıtlar artık bu telefonda okunamıyor ve hiçbir zaman gönderilemez. Uygulamanın yeniden yeni yanıtları saklayabilmesi için atılsın mı? Çalışmalarınız ve gönderilmiş yanıtlar etkilenmez.</string>
     <string name="hide_licence">Lisans metnini gizle</string>

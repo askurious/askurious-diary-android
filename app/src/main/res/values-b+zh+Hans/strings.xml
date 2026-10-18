@@ -76,6 +76,7 @@
         <item quantity="other">%d 个回答等待发送</item>
     </plurals>
     <string name="about_offline">对于支持离线作答的研究，应用还会保存问卷页面。离线答案会加密保留在此手机上，直到服务器确认保存，或您明确丢弃这些答案或移除该研究。过期或被拒绝不会删除答案。</string>
+    <string name="about_webview">问卷在 Android System WebView 中打开，这是手机中由 Google 提供的组件。根据手机的设置，WebView 可能会自行联系 Google 服务，例如将网址与有害网站列表进行比对的安全浏览（Safe Browsing），或填写表单的建议。本应用已关闭 WebView 的使用统计，并且不会将答案提供给任何自动填充服务。</string>
     <string name="quiet_title">免打扰时段</string>
     <string name="quiet_now">随机时间简短问卷的免打扰时段：%1$s</string>
     <string name="quiet_from_tomorrow">自明天起：%1$s</string>
@@ -194,6 +195,7 @@
     <string name="keep_answers">保留我的回答</string>
     <string name="save_failed">保存失败。您已填写的问卷仍保持打开，您输入的内容不会丢失。</string>
     <string name="queue_unreadable">无法读取已保存的答案。它们未被覆盖。请联系研究人员。</string>
+    <string name="studies_unreadable">目前无法打开此手机上的研究。没有任何内容被覆盖。请稍后重试；如果问题仍然存在，请重启手机。</string>
     <string name="queue_discard">丢弃无法读取的答案</string>
     <string name="queue_discard_confirm">这些答案在此手机上已无法读取，也永远无法发送。是否丢弃它们，以便应用可以重新保存新的答案？您的研究和已发送的答案不受影响。</string>
     <string name="hide_licence">隐藏许可文本</string>

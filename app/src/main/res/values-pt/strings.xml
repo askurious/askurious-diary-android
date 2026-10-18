@@ -86,6 +86,7 @@
         <item quantity="other">%d respostas à espera de envio</item>
     </plurals>
     <string name="about_offline">Nos estudos que permitem respostas offline, a aplicação também guarda páginas de questionários. As respostas offline ficam cifradas neste telemóvel até o servidor confirmar o armazenamento ou até as descartar expressamente ou remover o estudo. A expiração ou a recusa não as apagam.</string>
+    <string name="about_webview">Os questionários abrem no Android System WebView, um componente do telefone fornecido pela Google. Consoante as definições do telefone, o WebView pode contactar por si serviços da Google, por exemplo a Navegação segura (Safe Browsing), que compara endereços com listas de sites nocivos, ou sugestões para preencher formulários. A aplicação desativou as estatísticas de utilização do WebView e não disponibiliza as respostas a nenhum serviço de preenchimento automático.</string>
     <string name="quiet_title">Horas de silêncio</string>
     <string name="quiet_now">Horas de silêncio para breves questionários em horas aleatórias: %1$s</string>
     <string name="quiet_from_tomorrow">A partir de amanhã: %1$s</string>
@@ -208,6 +209,7 @@
     <string name="keep_answers">Manter as minhas respostas</string>
     <string name="save_failed">Não foi possível guardar. O questionário preenchido continua aberto; nada do que introduziu se perdeu.</string>
     <string name="queue_unreadable">Não é possível ler as respostas guardadas. Não foram substituídas. Contacte a equipa de investigação.</string>
+    <string name="studies_unreadable">Neste momento não é possível abrir os seus estudos neste telefone. Nada foi substituído. Tente novamente dentro de instantes; se continuar, reinicie o telefone.</string>
     <string name="queue_discard">Descartar respostas ilegíveis</string>
     <string name="queue_discard_confirm">Estas respostas já não podem ser lidas neste telefone e nunca poderão ser enviadas. Descartá-las para que a aplicação possa voltar a guardar novas respostas? Os seus estudos e as respostas já enviadas não são afetados.</string>
     <string name="hide_licence">Ocultar o texto da licença</string>

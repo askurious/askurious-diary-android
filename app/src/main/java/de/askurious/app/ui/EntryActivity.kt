@@ -157,6 +157,12 @@ class EntryActivity : ComponentActivity() {
     /** The server of the study (Study.server): the only site whose pages may use the bridge. */
     private var server = Api.defaultServer
 
+    /**
+     * The study of the entry, read off the main thread when the screen starts (opening it asks the Keystore, audit
+     * 2026-10-18, AND-09); null until then, and the screen shows the spinner meanwhile.
+     */
+    private var study by mutableStateOf<Study?>(null)
+
     /** The WebView of this entry, to check that a call of the bridge comes from the page of the server. */
     private var web: WebView? get() = session.web; set(value) { session.web = value }
 
@@ -226,24 +232,38 @@ class EntryActivity : ComponentActivity() {
         due = intent.getLongExtra(EXTRA_DUE, 0L).takeIf { it > 0 }
         notified = intent.getLongExtra(EXTRA_NOTIFIED, 0L).takeIf { it > 0 }
         reminded = intent.getBooleanExtra(EXTRA_REMINDED, false)
-        if (module == EXIT) {
-            // no further exit notification (the server closes the questionnaire once answered); the one shown stays
-            // until the entry has opened (clearPrompt)
-            PromptLog(this).exitNotified(code)
+        // the stored study, the prompt log and the kept page are read off the main thread: they are opened with the
+        // Keystore and read from files (audit 2026-10-18, AND-09); until then the screen shows the spinner
+        val keptVersion = if (offline == null) session.state.get<String>("offline_version") else null
+        val app = applicationContext
+        lifecycleScope.launch {
+            val loaded = withContext(Dispatchers.IO) {
+                // no further exit notification (the server closes the questionnaire once answered); the one shown
+                // stays until the entry has opened (clearPrompt)
+                if (module == EXIT) runCatching { PromptLog(app).exitNotified(code) }
+                val s = StudyStore(app).get(code) ?: return@withContext null
+                s to keptVersion?.let { version -> OfflinePages(app).page(code, module)?.takeIf { it.version == version } }
+            }
+            val (s, kept) = loaded ?: return@launch finish()
+            server = s.server
+            if (offline == null && kept != null) offline = kept
+            web?.let { it.webViewClient = if (offline != null) offlineClient(app) else onlineClient(); attachChrome(it) }
+            study = s
+            if (!saved && error == null && url == null && offline == null) open(s)
         }
-
-        val study = StudyStore(this).get(code) ?: return finish()
-        server = study.server
-        if (offline == null) session.state.get<String>("offline_version")?.let { version ->
-            offline = OfflinePages(this).page(code, module)?.takeIf { it.version == version }
-        }
-        web?.let { it.webViewClient = if (offline != null) offlineClient(this.applicationContext) else onlineClient(); attachChrome(it) }
-        if (!saved && error == null && url == null && offline == null) open(study)
 
         setContent {
             // the bar above the page and the screen before it loads in the look of the study's pages
-            StudyTheme(study.look, bars = true) {
-                EntryScreen(study.title, study.contact)
+            val s = study
+            if (s == null) StudyTheme(null, bars = true) {
+                Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                    Box(contentAlignment = Alignment.Center) {
+                        val loading = stringResource(R.string.loading)
+                        CircularProgressIndicator(Modifier.semantics { contentDescription = loading })
+                    }
+                }
+            } else StudyTheme(s.look, bars = true) {
+                EntryScreen(s.title, s.contact)
             }
         }
     }
@@ -303,7 +323,10 @@ class EntryActivity : ComponentActivity() {
         cleared = true
         due?.let {
             Alarms.cancel(this, Prompt(code, module, it, 0).id)
-            PromptLog(this).opened(code, module, it)
+            // the log is sealed with the Keystore: written off the main thread, also when the screen goes meanwhile (AND-09)
+            val app = applicationContext
+            val (c, m) = code to module
+            lifecycleScope.launch(Dispatchers.IO + kotlinx.coroutines.NonCancellable) { runCatching { PromptLog(app).opened(c, m, it) } }
         }
         if (module == EXIT) Alarms.cancel(this, "$code|exit".hashCode())
     }
@@ -313,7 +336,7 @@ class EntryActivity : ComponentActivity() {
      * without a connection switches to its kept page, as if there had been no connection from the start (audit A7).
      */
     private fun toKeptPage() {
-        val study = StudyStore(this).get(code) ?: return
+        val study = study ?: return
         lifecycleScope.launch {
             val kept = withContext(Dispatchers.IO) { keptPage(study, module, due) } ?: return@launch
             if (cleared || offline != null) return@launch
@@ -332,10 +355,12 @@ class EntryActivity : ComponentActivity() {
         val w = web
         if (loadFailed && w != null) {
             loadFailed = false
-            w.reload()
+            // the kept page is no address to load again: its text is put in once more (AND-01)
+            val o = offline
+            if (o != null) w.loadDataWithBaseURL("$server/", o.html, "text/html", "utf-8", "$server/") else w.reload()
             return
         }
-        val study = StudyStore(this).get(code) ?: return finish()
+        val study = study ?: return finish()
         open(study)
     }
 
@@ -520,13 +545,15 @@ class EntryActivity : ComponentActivity() {
         if (done) return
         done = true
         session.dirty = false; session.state["dirty"] = false; session.state.remove<String>("draft")
-        due?.let { PromptLog(this).completed(code, module, it) }
+        val app = applicationContext
+        val (c, m) = code to module
+        // the log is sealed with the Keystore: written off the main thread (AND-09)
+        due?.let { d -> lifecycleScope.launch(Dispatchers.IO + kotlinx.coroutines.NonCancellable) { runCatching { PromptLog(app).completed(c, m, d) } } }
         // the end page is shown: the session of the entry is no longer needed (AN-4)
         forgetWebState()
         val code = intent.getStringExtra(EXTRA_STUDY) ?: return
-        val store = StudyStore(this)
         lifecycleScope.launch {
-            store.get(code)?.let { runCatching { Sync.one(this@EntryActivity, it) } }
+            withContext(Dispatchers.IO) { StudyStore(app).get(code) }?.let { runCatching { Sync.one(this@EntryActivity, it) } }
         }
     }
 
@@ -540,7 +567,8 @@ class EntryActivity : ComponentActivity() {
         val module = intent.getStringExtra(EXTRA_MODULE) ?: return
         val due = intent.getLongExtra(EXTRA_DUE, 0L).takeIf { it > 0 }
         val notified = intent.getLongExtra(EXTRA_NOTIFIED, 0L).takeIf { it > 0 }
-        val completed = StudyStore(this).get(code)?.now() ?: System.currentTimeMillis()
+        // the study read when the screen started (not again from the store on the main thread, AND-09)
+        val completed = study?.takeIf { it.code == code }?.now() ?: System.currentTimeMillis()
         saving = true
         lifecycleScope.launch {
             try {
@@ -703,7 +731,8 @@ class EntryActivity : ComponentActivity() {
             // autofill services do not see (nor offer) what is typed into a questionnaire
             importantForAutofill = View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS
             settings.userAgentString = settings.userAgentString + " AskuriousDiary/1"
-            if (!(online && listenOnMainFrame(this))) addJavascriptInterface(Bridge(session), BRIDGE)
+            // the fallback bridge on an online page takes no drafts: a frame of another site reaches it too (AND-04)
+            if (!(online && listenOnMainFrame(this))) addJavascriptInterface(Bridge(session, drafts = !online), BRIDGE)
             settings.textZoom = (resources.configuration.fontScale * 100).toInt().coerceIn(100, 300)
             web = this
             attachChrome(this)
@@ -804,8 +833,6 @@ class EntryActivity : ComponentActivity() {
      * from the server if the connection comes back meanwhile.
      */
     private fun offlineWebView(ctx: Context, page: OfflinePages.Page): WebView {
-        val base = server.toUri()
-        val pages = OfflinePages(ctx)
         return baseWebView(ctx, online = false).apply {
             webViewClient = offlineClient(ctx)
             // the history URL is the server's too, so that url (fromOwnPage) names it
@@ -817,8 +844,16 @@ class EntryActivity : ComponentActivity() {
         val base = server.toUri()
         val pages = OfflinePages(ctx)
         return object : WebViewClient() {
-                override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse {
+                override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? {
                     val u = request.url
+                    // the kept page itself: the document loadDataWithBaseURL puts in (a data: address, which reaches
+                    // no network) loads as it is. Answered with 404, as before, the WebView showed its own error page
+                    // instead of the questionnaire (audit 2026-10-18, AND-01)
+                    if (offlinePassThrough(u.scheme)) return null
+                    // a WebView that asks for the page under its base address instead gets the kept page from here
+                    if (request.isForMainFrame && request.method.equals("GET", ignoreCase = true) && u.toString() == "$server/") {
+                        offline?.let { return WebResourceResponse("text/html", "utf-8", ByteArrayInputStream(it.html.toByteArray())) }
+                    }
                     val path = (u.encodedPath ?: "") + (u.encodedQuery?.let { "?$it" } ?: "")
                     val kept = if (u.scheme == base.scheme && u.host == base.host && u.port == base.port && OfflinePages.servable(path)) {
                         pages.file(server, path)
@@ -835,6 +870,15 @@ class EntryActivity : ComponentActivity() {
 
                 override fun onPageFinished(view: WebView, url: String?) { attachDraft(view) }
 
+                // the kept page did not load: the app's own error state with "Try again", never the browser's page (AND-01)
+                override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
+                    if (request.isForMainFrame) loadFailed = true
+                }
+
+                override fun onReceivedHttpError(view: WebView, request: WebResourceRequest, response: WebResourceResponse) {
+                    if (request.isForMainFrame) loadFailed = true
+                }
+
                 override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean = renderGone()
 
                 // links leave the app as on the online page; nothing loads in place of the kept page
@@ -846,7 +890,7 @@ class EntryActivity : ComponentActivity() {
     }
 
     private fun attachDraft(view: WebView) {
-        val draft = session.state.get<String>("draft") ?: "null"
+        val draft = draftLiteral(session.state.get<String>("draft"))
         view.evaluateJavascript("""
             (() => {
                 if (window.__askDraft) return; window.__askDraft = true;
@@ -889,11 +933,18 @@ class EntryActivity : ComponentActivity() {
         session.state["page"] = page
     }
     private fun draft(json: String) {
-        if (!done && json.length <= 200_000 && runCatching { JSONObject(json) }.isSuccess) {
-            session.state["draft"] = json; changed()
-        }
+        if (done || json.length > 200_000) return
+        // kept as the strictly written JSON text, never as the page sent it (org.json also takes unquoted words such as
+        // alert(1)); it goes back into the page only as a string for JSON.parse ([draftLiteral], AND-04)
+        val strict = runCatching { JSONObject(json).toString() }.getOrNull() ?: return
+        session.state["draft"] = strict; changed()
     }
-    class Bridge(private val session: EntrySession) {
+
+    /**
+     * The bridge for addJavascriptInterface: the kept page, and the online page of a WebView too old for the message
+     * channel. Every frame of the page reaches it; [drafts] false (online) takes no drafts there (AND-04).
+     */
+    class Bridge(private val session: EntrySession, private val drafts: Boolean = true) {
         private fun send(data: String) { android.os.Handler(android.os.Looper.getMainLooper()).post {
             session.activity?.get()?.let { if (it.fromOwnPage()) it.bridgeMessage(data) }
         } }
@@ -901,7 +952,7 @@ class EntryActivity : ComponentActivity() {
         @JavascriptInterface fun offlineSubmit(json: String) = send("offline:$json")
         @JavascriptInterface fun loaded(page: String) = send("loaded:$page")
         @JavascriptInterface fun changed() = send("changed")
-        @JavascriptInterface fun draft(json: String) = send("draft:$json")
+        @JavascriptInterface fun draft(json: String) { if (drafts) send("draft:$json") }
     }
 
     companion object {
@@ -971,6 +1022,22 @@ class EntryActivity : ComponentActivity() {
          * could not read; not an expired prompt, today's limit or a paused study (audit A8).
          */
         fun retryable(e: ApiError): Boolean = e.transient || e.key == "error"
+
+        /**
+         * The draft of the open page as a JavaScript expression: a string literal that the page reads with JSON.parse,
+         * so a draft is data and never code (AND-04: it was put in as it came, `const old = <draft>;`, and ran as
+         * script at every load of the entry). "null" when there is none or it is no JSON object.
+         */
+        fun draftLiteral(draft: String?): String {
+            val strict = draft?.let { runCatching { JSONObject(it).toString() }.getOrNull() } ?: return "null"
+            return "JSON.parse(" + JSONObject.quote(strict) + ")"
+        }
+
+        /**
+         * Requests of the kept page's WebView that load as they are: the document loadDataWithBaseURL puts in (data:)
+         * and the blank page when the WebView goes (about:). They reach no network (AND-01).
+         */
+        fun offlinePassThrough(scheme: String?): Boolean = scheme?.lowercase() in setOf("data", "about")
 
         /** The links of a page that may open in another app. */
         private val OUTSIDE_SCHEMES = setOf("http", "https", "mailto", "tel")

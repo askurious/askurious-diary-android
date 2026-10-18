@@ -86,6 +86,7 @@
         <item quantity="other">%d réponses en attente d’envoi</item>
     </plurals>
     <string name="about_offline">Pour les études permettant de répondre hors connexion, l’application conserve aussi les pages du questionnaire. Les réponses hors connexion restent chiffrées sur ce téléphone jusqu’à ce que le serveur confirme leur enregistrement, ou que vous les supprimiez explicitement ou retiriez l’étude. Leur expiration ou leur refus ne les supprime pas.</string>
+    <string name="about_webview">Les questionnaires s’ouvrent dans Android System WebView, un composant du téléphone fourni par Google. Selon les réglages du téléphone, WebView peut lui-même contacter des services de Google, par exemple la navigation sécurisée (Safe Browsing), qui compare les adresses à des listes de sites malveillants, ou des suggestions pour remplir les formulaires. L’application a désactivé les statistiques d’utilisation de WebView et ne propose les réponses à aucun service de saisie automatique.</string>
     <string name="quiet_title">Heures de tranquillité</string>
     <string name="quiet_now">Heures de tranquillité pour les brefs questionnaires à heure aléatoire : %1$s</string>
     <string name="quiet_from_tomorrow">À partir de demain : %1$s</string>
@@ -208,6 +209,7 @@
     <string name="keep_answers">Conserver mes réponses</string>
     <string name="save_failed">Enregistrement impossible. Votre questionnaire rempli reste ouvert ; rien de ce que vous avez saisi n’est perdu.</string>
     <string name="queue_unreadable">Les réponses enregistrées sont illisibles. Elles n’ont pas été écrasées. Veuillez contacter l’équipe de recherche.</string>
+    <string name="studies_unreadable">Vos études sur ce téléphone ne peuvent pas être ouvertes pour le moment. Rien n’a été écrasé. Veuillez réessayer dans un instant ; si cela persiste, redémarrez le téléphone.</string>
     <string name="queue_discard">Supprimer les réponses illisibles</string>
     <string name="queue_discard_confirm">Ces réponses ne peuvent plus être lues sur ce téléphone et ne pourront jamais être envoyées. Les supprimer pour que l’application puisse à nouveau conserver de nouvelles réponses ? Vos études et les réponses déjà envoyées ne sont pas concernées.</string>
     <string name="hide_licence">Masquer le texte de la licence</string>

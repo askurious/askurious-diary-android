@@ -24,6 +24,10 @@
         android:theme="@style/Theme.Askurious"
         tools:targetApi="33">
 
+        <!-- the WebView of the questionnaires sends no usage statistics to Google for this app (audit 2026-10-18, AND-10;
+             named under "About the app") -->
+        <meta-data android:name="android.webkit.WebView.MetricsOptOut" android:value="true" />
+
         <!-- taskAffinity="": no other app can slip its own screen into the task of the app (StrandHogg on old,
              unpatched Android versions). enableOnBackInvokedCallback: the back gesture shows the screen below before
              it goes back (predictive back, Android 14 and later; from Android 16 the default anyway) -->

@@ -81,6 +81,7 @@
         <item quantity="other">%d answers waiting to be sent</item>
     </plurals>
     <string name="about_offline">For studies that allow offline answers, the app also keeps questionnaire pages. Offline answers remain encrypted on this phone until the server confirms storage or you explicitly discard them or remove the study. Expiry or refusal does not delete them.</string>
+    <string name="about_webview">The questionnaires open in Android System WebView, a part of the phone that comes from Google. Depending on the phone\'s settings, WebView may contact Google services itself, for example Safe Browsing, which checks addresses against lists of harmful sites, or suggestions for filling in forms. The app has switched off WebView\'s usage statistics and does not offer the answers to any autofill service.</string>
     <string name="quiet_title">Quiet hours</string>
     <string name="quiet_now">Quiet hours for short surveys at random times: %1$s</string>
     <string name="quiet_from_tomorrow">From tomorrow: %1$s</string>
@@ -201,6 +202,7 @@
     <string name="keep_answers">Keep my answers</string>
     <string name="save_failed">Could not save. Your filled questionnaire remains open; nothing you entered is lost.</string>
     <string name="queue_unreadable">Stored answers cannot be read. They have not been overwritten. Please contact the researchers.</string>
+    <string name="studies_unreadable">Your studies on this phone cannot be opened right now. Nothing has been overwritten. Please try again in a moment; if it stays like this, restart the phone.</string>
     <string name="queue_discard">Discard unreadable answers</string>
     <string name="queue_discard_confirm">These answers can no longer be read on this phone and can never be sent. Discard them so that the app can keep new answers again? Your studies and the answers already sent are not affected.</string>
     <string name="hide_licence">Hide licence text</string>

@@ -91,6 +91,7 @@
         <item quantity="other">%d odpowiedzi czeka na wysłanie</item>
     </plurals>
     <string name="about_offline">W badaniach umożliwiających odpowiedzi offline aplikacja przechowuje także strony kwestionariusza. Odpowiedzi offline pozostają zaszyfrowane na tym telefonie, dopóki serwer nie potwierdzi zapisu albo dopóki nie zostaną wyraźnie odrzucone lub badanie nie zostanie usunięte. Wygaśnięcie lub odmowa ich nie usuwa.</string>
+    <string name="about_webview">Kwestionariusze otwierają się w Android System WebView, składniku telefonu dostarczanym przez Google. W zależności od ustawień telefonu WebView może sam łączyć się z usługami Google, na przykład z Bezpiecznym przeglądaniem (Safe Browsing), które porównuje adresy z listami szkodliwych stron, lub z podpowiedziami do wypełniania formularzy. Aplikacja wyłączyła statystyki użycia WebView i nie udostępnia odpowiedzi żadnej usłudze autouzupełniania.</string>
     <string name="quiet_title">Godziny ciszy</string>
     <string name="quiet_now">Godziny ciszy dla krótkich kwestionariuszy o losowych porach: %1$s</string>
     <string name="quiet_from_tomorrow">Od jutra: %1$s</string>
@@ -215,6 +216,7 @@
     <string name="keep_answers">Zachowaj odpowiedzi</string>
     <string name="save_failed">Nie udało się zapisać. Wypełniony kwestionariusz pozostaje otwarty; żadne wprowadzone dane nie zostały utracone.</string>
     <string name="queue_unreadable">Nie można odczytać zapisanych odpowiedzi. Nie zostały nadpisane. Prosimy skontaktować się z badaczami.</string>
+    <string name="studies_unreadable">Nie można teraz otworzyć badań zapisanych na tym telefonie. Nic nie zostało nadpisane. Prosimy spróbować ponownie za chwilę; jeśli problem się utrzymuje, prosimy uruchomić telefon ponownie.</string>
     <string name="queue_discard">Odrzuć nieczytelne odpowiedzi</string>
     <string name="queue_discard_confirm">Tych odpowiedzi nie można już odczytać na tym telefonie i nigdy nie zostaną wysłane. Odrzucić je, aby aplikacja mogła znowu przechowywać nowe odpowiedzi? Badania i już wysłane odpowiedzi pozostają.</string>
     <string name="hide_licence">Ukryj tekst licencji</string>
