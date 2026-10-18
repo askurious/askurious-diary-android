@@ -189,6 +189,14 @@ data class Study(
     val zoneHistory: List<ZoneFrom> = emptyList(),
     val contact: String = "",
     val completedPrompts: Set<String> = emptySet(),
+    /**
+     * The moment (epoch milliseconds, study's time) from which the prompts of this person count (server:
+     * "prompts_from"); null when the server leaves none out or does not send it (an older server). The server counts
+     * no prompt due before the entry part was completed, and it never sends that moment itself: it sends the minute
+     * after the last prompt it leaves out (audit 2026-10-18, follow-up of AND-02: joined late in the day, the app
+     * offered the earlier prompts of the day and the server refused their answers with 400).
+     */
+    val promptsFrom: Long? = null,
 ) {
     val running get() = status == "active"
 
@@ -279,6 +287,7 @@ data class Study(
         .put("sound", sound)
         .put("contact", contact)
         .put("completed_prompts", JSONArray(completedPrompts.toList()))
+        .put("prompts_from", promptsFrom ?: JSONObject.NULL)
 
     companion object {
         /** How long the server may answer 401 before the app takes the study as deleted: three days. */
@@ -326,6 +335,7 @@ data class Study(
             sound = o.optBoolean("sound", true),
             contact = o.optString("contact").trim(),
             completedPrompts = o.optJSONArray("completed_prompts")?.let { a -> (0 until a.length()).map { a.optString(it) }.toSet() } ?: emptySet(),
+            promptsFrom = if (o.isNull("prompts_from")) null else o.optLong("prompts_from", 0L).takeIf { it > 0 },
         )
 
         /** ["YYYY-MM-DD", "YYYY-MM-DD" or null]; anything else is no pause. */
