@@ -272,9 +272,11 @@ class MainActivity : ComponentActivity() {
                 }, page) else page()
             }
             composable<Route.Join>(deepLinks = JOIN_LINKS.map { navDeepLink { uriPattern = it } }) { entry ->
-                // a join link that opened the app: its whole address (the server and the code), else the route's link
-                val link = entry.arguments?.let { BundleCompat.getParcelable(it, NavController.KEY_DEEP_LINK_INTENT, Intent::class.java) }
-                    ?.data?.toString() ?: entry.toRoute<Route.Join>().link
+                // a join link that opened the app: its whole address (the server and the code), else the route's link;
+                // the internal address Navigation puts in every entry is no join link (AND-03)
+                val deep = entry.arguments?.let { BundleCompat.getParcelable(it, NavController.KEY_DEEP_LINK_INTENT, Intent::class.java) }
+                    ?.data?.toString()
+                val link = joinLinkOf(deep, entry.toRoute<Route.Join>().link)
                 JoinScreen(initial = link, onDone = { nav.back(entry) })
             }
             composable<Route.Ready> { entry -> ReadyScreen(onDone = { nav.back(entry) }, allowNotifications = allowNotifications) }

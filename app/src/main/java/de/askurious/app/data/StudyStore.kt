@@ -25,14 +25,42 @@ class StudyStore internal constructor(private val prefs: SharedPreferences, priv
     private val text = SealedText(prefs, KEY_SEALED, sealer, AAD)
 
     /**
+     * The studies joined while [text] could not be read (audit 2026-10-18, AND-05): kept apart under their own key, so
+     * that the stored list is never written over, and moved into it at the first read that succeeds.
+     */
+    private val pending = SealedText(prefs, KEY_PENDING, sealer, AAD_PENDING)
+
+    /**
      * The stored studies. A damaged entry is skipped, not thrown: one unreadable study must not crash the app at every
      * start (DiaryApp.onCreate reads them) and so cost the participant the secrets of all the others. While the stored
-     * text cannot be read at all, nothing is written over it ([save] refuses), so a later fix can still read it.
+     * text cannot be read at all, nothing is written over it: the studies joined meanwhile are kept apart ([pending])
+     * and are all this gives until the stored text opens again ([unreadable] tells the start page so).
      */
     fun all(): List<Study> = synchronized(SealedText.LOCK) {
-        val stored = read() ?: return emptyList()
+        val stored = read() ?: return readPending()
+        val waiting = readPending()
+        if (waiting.isNotEmpty()) {
+            // the stored text opens again: the studies joined meanwhile join it (the newer copy of a code wins)
+            val merged = stored.studies.filterNot { s -> waiting.any { it.code == s.code } } + waiting
+            save(merged)
+            pending.remove()
+            return merged
+        }
         if (stored.moved) save(stored.studies)  // the list of an earlier version: sealed as a whole now
         return stored.studies
+    }
+
+    /**
+     * Whether the stored list is there but cannot be opened now (the Keystore failed): the start page says so and
+     * offers "Try again" instead of "not taking part in a study yet" (AND-05).
+     */
+    fun unreadable(): Boolean = synchronized(SealedText.LOCK) { read() == null }
+
+    /** The studies joined while the stored list could not be read; empty when there are none (or they cannot be read). */
+    private fun readPending(): List<Study> {
+        val t = pending.read().text ?: return emptyList()
+        val arr = runCatching { JSONArray(t) }.getOrNull() ?: return emptyList()
+        return (0 until arr.length()).mapNotNull { k -> arr.optJSONObject(k)?.let { o -> runCatching { Study.fromJson(o) }.getOrNull() } }
     }
 
     /**
@@ -98,8 +126,17 @@ class StudyStore internal constructor(private val prefs: SharedPreferences, priv
 
     private fun save(studies: List<Study>) {
         val stored = read()
-        // a stored text that cannot be read stays as it is, unless a new study is joined (put) on purpose
-        if (stored == null && studies.isEmpty()) return
+        if (stored == null) {
+            // a stored text that cannot be read stays as it is (the secrets of the other studies are in it): what changes
+            // meanwhile (a study joined, synced, removed) is kept apart until it opens again (AND-05)
+            // the studies kept apart cannot be opened either: nothing is written over them (a join fails instead)
+            if (pending.read().unreadable) {
+                if (studies.isEmpty()) return
+                throw java.io.IOException("The stored studies cannot be read")
+            }
+            if (studies.isEmpty()) pending.remove() else pending.write(JSONArray(studies.map { it.toJson() }).toString())
+            return
+        }
         text.write(JSONArray(studies.map { it.toJson() }).toString())
         // what is left of the earlier list: only the entries whose secret cannot be opened
         val kept = stored?.kept ?: return
@@ -111,6 +148,8 @@ class StudyStore internal constructor(private val prefs: SharedPreferences, priv
         private const val KEY = "studies"
         private const val KEY_SEALED = "studies_sealed"
         private const val AAD = "studies"
+        private const val KEY_PENDING = "studies_sealed_pending"
+        private const val AAD_PENDING = "studies_pending"
         private const val SEALED = "secret_sealed"
 
         /** A study's JSON as earlier versions stored it: its secret sealed on its own (still read, see [opened]). */

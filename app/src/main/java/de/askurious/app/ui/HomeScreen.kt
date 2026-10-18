@@ -115,6 +115,11 @@ internal fun MainActivity.HomeScreen(
             if (model.clockOff) item(key = "notice-clock") {
                 Notice(stringResource(R.string.clock_off), Icons.Outlined.Warning, stringResource(R.string.date_settings_open)) { openDateSettings() }
             }
+            // the stored studies cannot be opened now (the Keystore failed): nothing was lost, the app tries again
+            // (audit 2026-10-18, AND-05); a study joined meanwhile is kept apart and shows below
+            if (model.studiesUnreadable) item(key = "notice-studies") {
+                Notice(stringResource(R.string.studies_unreadable), Icons.Outlined.Warning, stringResource(R.string.retry)) { model.reload() }
+            }
             // the queue of all studies cannot be read: said once here, not on every card (B10)
             if (model.queueUnreadable) item(key = "notice-queue") {
                 Notice(stringResource(R.string.queue_unreadable), Icons.Outlined.Warning, stringResource(R.string.queue_discard), primary = false) {
@@ -129,7 +134,7 @@ internal fun MainActivity.HomeScreen(
                     openOther(Intent(Intent.ACTION_VIEW, "https://play.google.com/store/apps/details?id=$packageName".toUri()))
                 }
             }
-            if (studies.isEmpty() && model.loaded) item {
+            if (studies.isEmpty() && model.loaded && !model.studiesUnreadable) item {
                 Column(Modifier.padding(top = 32.dp)) {
                     Text(stringResource(R.string.no_studies))
                     Spacer(Modifier.height(16.dp))
@@ -187,6 +192,8 @@ private fun MainActivity.Readiness(studies: List<Study>, allowNotifications: () 
                     modifier = Modifier.semantics { heading() },
                 )
                 Text(stringResource(if (notify) R.string.ready_notify_text else R.string.ready_exact_text), fontWeight = FontWeight.SemiBold)
+                // both missing: "Alarms & reminders" is named as well, not only behind its button (AND-02)
+                if (notify && exact) Text(stringResource(R.string.ready_exact_text), fontWeight = FontWeight.SemiBold)
                 Text(stringResource(R.string.reminders_optional), style = MaterialTheme.typography.bodyMedium)
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     // the permission that matters most is the filled button

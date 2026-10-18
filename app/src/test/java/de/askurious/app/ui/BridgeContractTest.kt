@@ -55,4 +55,36 @@ class BridgeContractTest {
         assertFalse(script.contains("history"))
         assertFalse(script.contains("$"))
     }
+
+    /**
+     * Audit 2026-10-18, AND-04: a draft the page handed over went back into the page as code (`const old = <draft>;`),
+     * and org.json takes unquoted words such as alert(1). It now goes back only as a string literal for JSON.parse.
+     */
+    @Test
+    fun aDraftGoesBackIntoThePageAsDataNotAsCode() {
+        val literal = EntryActivity.draftLiteral("""{"page":alert(document.domain),"values":[]}""")
+        assertTrue(literal, literal.startsWith("JSON.parse(\"") && literal.endsWith("\")"))
+        // inside the string literal: every quote of the JSON text is escaped, so the page's own text ends nowhere
+        val inner = literal.removePrefix("JSON.parse(\"").removeSuffix("\")")
+        assertFalse(literal, Regex("(?<!\\\\)\"").containsMatchIn(inner))
+        assertFalse(literal, literal.contains(":alert("))
+        assertEquals("null", EntryActivity.draftLiteral(null))
+        assertEquals("null", EntryActivity.draftLiteral("alert(1)"))
+        assertEquals("null", EntryActivity.draftLiteral("[1]"))
+    }
+
+    /**
+     * Audit 2026-10-18, AND-01: the kept page's WebView answered every request it did not know with 404, also the
+     * document loadDataWithBaseURL puts in (a data: address): the participant saw the WebView's error page. That
+     * document now loads as it is; anything that could reach the network still does not.
+     */
+    @Test
+    fun theKeptPageItselfLoadsWithoutTheNetwork() {
+        assertTrue(EntryActivity.offlinePassThrough("data"))
+        assertTrue(EntryActivity.offlinePassThrough("DATA"))
+        assertTrue(EntryActivity.offlinePassThrough("about"))
+        assertFalse(EntryActivity.offlinePassThrough("https"))
+        assertFalse(EntryActivity.offlinePassThrough("http"))
+        assertFalse(EntryActivity.offlinePassThrough(null))
+    }
 }

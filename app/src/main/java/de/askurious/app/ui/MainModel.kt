@@ -54,6 +54,13 @@ class MainModel(app: Application) : AndroidViewModel(app) {
     var queueUnreadable by mutableStateOf(false)
         private set
 
+    /**
+     * The stored studies are there but cannot be opened now (the Keystore failed): the start page says so with "Try
+     * again" instead of "not taking part in a study yet" (audit 2026-10-18, AND-05).
+     */
+    var studiesUnreadable by mutableStateOf(false)
+        private set
+
     /** Counts the reloads: only the newest one sets the state, one started earlier may end later. */
     private var reloads = 0
     var syncState by mutableStateOf(0L to false); private set
@@ -77,6 +84,7 @@ class MainModel(app: Application) : AndroidViewModel(app) {
                 val items = try { queue.all() } catch (e: java.io.IOException) { null }
                 Triple(StudyStore(context).all(), items, queue.seenRefusals())
             }
+            val unreadable = withContext(Dispatchers.IO) { StudyStore(context).unreadable() }
             val ready = withContext(Dispatchers.IO) {
                 val pages = de.askurious.app.data.OfflinePages(context)
                 s.flatMap { study -> study.modules.filter { it.offline && pages.usable(study.code, it.key) != null }.map { study.code to it.key } }.toSet()
@@ -86,6 +94,7 @@ class MainModel(app: Application) : AndroidViewModel(app) {
             val status = context.getSharedPreferences("sync_status", android.content.Context.MODE_PRIVATE)
             syncState = status.getLong("success", 0) to status.getBoolean("failed", false)
             studies = s
+            studiesUnreadable = unreadable
             queueUnreadable = items == null
             waiting = items.orEmpty().groupingBy { it.study }.eachCount()
             // Legacy refusal notices refer to answers older versions already deleted; never claim those survived.

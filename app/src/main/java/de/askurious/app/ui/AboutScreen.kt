@@ -153,6 +153,8 @@ fun AboutScreen(onBack: () -> Unit, onLicence: () -> Unit) {
             SectionTitle(stringResource(R.string.about_privacy_title))
             Text(stringResource(R.string.about_stores))
             Text(stringResource(R.string.about_offline))
+            // the WebView is Google's: what it may send of its own, and what the app switched off (audit 2026-10-18, AND-10)
+            Text(stringResource(R.string.about_webview))
             Text(stringResource(R.string.about_quiet))
             Text(stringResource(R.string.media_privacy))
             Text(stringResource(R.string.draft_privacy))

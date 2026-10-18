@@ -86,6 +86,7 @@
         <item quantity="other">%d respuestas pendientes de envío</item>
     </plurals>
     <string name="about_offline">En los estudios que permiten respuestas sin conexión, la aplicación también guarda páginas de cuestionarios. Las respuestas sin conexión permanecen cifradas en este teléfono hasta que el servidor confirme su almacenamiento o usted las descarte expresamente o elimine el estudio. Ni la caducidad ni el rechazo las borran.</string>
+    <string name="about_webview">Los cuestionarios se abren en Android System WebView, un componente del teléfono que proviene de Google. Según la configuración del teléfono, WebView puede contactar por sí mismo con servicios de Google, por ejemplo Navegación segura (Safe Browsing), que compara las direcciones con listas de sitios dañinos, o sugerencias para rellenar formularios. La aplicación ha desactivado las estadísticas de uso de WebView y no ofrece las respuestas a ningún servicio de autocompletado.</string>
     <string name="quiet_title">Horas de descanso</string>
     <string name="quiet_now">Horas de descanso para cuestionarios breves en momentos aleatorios: %1$s</string>
     <string name="quiet_from_tomorrow">A partir de mañana: %1$s</string>
@@ -208,6 +209,7 @@
     <string name="keep_answers">Conservar mis respuestas</string>
     <string name="save_failed">No se ha podido guardar. El cuestionario rellenado sigue abierto; no se ha perdido nada de lo que ha introducido.</string>
     <string name="queue_unreadable">No se pueden leer las respuestas guardadas. No se han sobrescrito. Póngase en contacto con el equipo de investigación.</string>
+    <string name="studies_unreadable">Ahora mismo no se pueden abrir sus estudios en este teléfono. No se ha sobrescrito nada. Vuelva a intentarlo en un momento; si sigue igual, reinicie el teléfono.</string>
     <string name="queue_discard">Descartar respuestas ilegibles</string>
     <string name="queue_discard_confirm">Estas respuestas ya no se pueden leer en este teléfono y nunca se podrán enviar. ¿Descartarlas para que la aplicación pueda guardar nuevas respuestas? Sus estudios y las respuestas ya enviadas no se ven afectados.</string>
     <string name="hide_licence">Ocultar el texto de la licencia</string>

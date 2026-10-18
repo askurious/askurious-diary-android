@@ -33,11 +33,27 @@ class PromptLog internal constructor(private val prefs: SharedPreferences, seale
     fun isOpened(study: String, module: String, due: Long): Boolean =
         load().optJSONObject(key(study, module, due))?.optBoolean("opened", false) == true
 
+    /** The reminder of the prompt was posted (or not needed, its prompt came after its moment): once only (AND-02). */
+    fun reminded(study: String, module: String, due: Long): Unit =
+        synchronized(SealedText.LOCK) { change { it.entry(key(study, module, due), due).put("reminded", true) } }
+
+    fun isReminded(study: String, module: String, due: Long): Boolean =
+        load().optJSONObject(key(study, module, due))?.optBoolean("reminded", false) == true
+
     fun completed(study: String, module: String, due: Long): Unit =
         synchronized(SealedText.LOCK) { change { it.entry(key(study, module, due), due).put("completed", true) } }
 
     fun isCompleted(study: String, module: String, due: Long): Boolean =
         load().optJSONObject(key(study, module, due))?.optBoolean("completed", false) == true
+
+    /**
+     * The real moment the one alarm was set for last (Alarms.rearm), null when none is set: what a later [Alarms.rearm]
+     * posts first when that moment passed without the alarm ringing (audit 2026-10-18, AND-02). Only a time, kept
+     * apart from the sealed log.
+     */
+    fun armedFor(): Long? = runCatching { prefs.getLong(ARMED, 0L) }.getOrDefault(0L).takeIf { it > 0 }
+
+    fun armed(at: Long?): Unit = synchronized(SealedText.LOCK) { prefs.edit { if (at == null) remove(ARMED) else putLong(ARMED, at) } }
 
     /** The exit questionnaire of [study] was notified or opened: no (further) notification for it. */
     fun exitNotified(study: String): Unit = synchronized(SealedText.LOCK) { prefs.edit { putStringSet(EXITS, exits() + study) } }
@@ -75,6 +91,7 @@ class PromptLog internal constructor(private val prefs: SharedPreferences, seale
         const val KEY = "log"
         const val AAD = "prompts"
         const val EXITS = "exits"
+        const val ARMED = "armed_for"
         const val KEEP_MS = 3L * 24 * 3600 * 1000
 
         fun key(study: String, module: String, due: Long) = "$study|$module|$due"

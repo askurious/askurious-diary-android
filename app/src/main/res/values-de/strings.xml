@@ -81,6 +81,7 @@
         <item quantity="other">%d Antworten warten auf das Senden</item>
     </plurals>
     <string name="about_offline">Bei Studien mit Offlineantworten speichert die App auch Fragebogenseiten. Offlineantworten bleiben verschlüsselt auf diesem Telefon, bis der Server die Speicherung bestätigt oder Sie sie ausdrücklich verwerfen oder die Studie entfernen. Ablauf oder Ablehnung löschen sie nicht.</string>
+    <string name="about_webview">Die Fragebögen öffnen sich in Android System WebView, einem Teil des Telefons, der von Google stammt. Je nach Einstellungen des Telefons kann WebView selbst Google-Dienste ansprechen, etwa Safe Browsing, das Adressen mit Listen schädlicher Seiten abgleicht, oder Vorschläge zum Ausfüllen von Formularen. Die App hat die Nutzungsstatistik von WebView abgeschaltet und bietet die Antworten keinem Autofill-Dienst an.</string>
     <string name="quiet_title">Ruhezeiten</string>
     <string name="quiet_now">Ruhezeiten für Kurzbefragungen zu zufälligen Zeiten: %1$s</string>
     <string name="quiet_from_tomorrow">Ab morgen: %1$s</string>
@@ -201,6 +202,7 @@
     <string name="keep_answers">Antworten behalten</string>
     <string name="save_failed">Speichern fehlgeschlagen. Ihr ausgefüllter Fragebogen bleibt geöffnet; Ihre Eingaben sind nicht verloren.</string>
     <string name="queue_unreadable">Gespeicherte Antworten können nicht gelesen werden. Sie wurden nicht überschrieben. Bitte wenden Sie sich an die Forschenden.</string>
+    <string name="studies_unreadable">Ihre Studien auf diesem Telefon lassen sich gerade nicht öffnen. Es wurde nichts überschrieben. Bitte versuchen Sie es gleich noch einmal; bleibt es so, starten Sie das Telefon neu.</string>
     <string name="queue_discard">Unlesbare Antworten verwerfen</string>
     <string name="queue_discard_confirm">Diese Antworten lassen sich auf diesem Telefon nicht mehr lesen und nie mehr senden. Verwerfen, damit die App wieder neue Antworten aufbewahren kann? Ihre Studien und die schon gesendeten Antworten bleiben.</string>
     <string name="hide_licence">Lizenztext ausblenden</string>

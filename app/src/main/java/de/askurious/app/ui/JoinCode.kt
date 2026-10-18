@@ -50,3 +50,21 @@ fun joinServer(text: String, allowHttp: Boolean): String? {
     val port = uri.port.takeIf { it != -1 && it != (if (scheme == "https") 443 else 80) }
     return "$scheme://$host" + (port?.let { ":$it" } ?: "")
 }
+
+/**
+ * The join link the join screen starts with: the address of the deep link that opened it ([deepLink], the data of the
+ * entry's deep-link intent) only when that is a join link itself (askurious://join/<code>, or http(s) with /j/<code>),
+ * else the route's own link ([routeLink], empty for "Join study"). Navigation puts a deep-link intent with the
+ * route's internal address (android-app://androidx.navigation/...) into every entry, also one opened from the menu:
+ * taken as a code, it filled the field and was looked up at once with "(404)" (audit 2026-10-18, AND-03).
+ */
+fun joinLinkOf(deepLink: String?, routeLink: String): String {
+    val link = deepLink?.trim().orEmpty()
+    val scheme = runCatching { URI(link).scheme?.lowercase() }.getOrNull()
+    val isJoinLink = when (scheme) {
+        "askurious" -> joinCode(link) != null
+        "http", "https" -> joinServer(link, allowHttp = true) != null
+        else -> false
+    }
+    return if (isJoinLink) link else routeLink
+}

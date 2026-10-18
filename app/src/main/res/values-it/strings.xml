@@ -86,6 +86,7 @@
         <item quantity="other">%d risposte in attesa di invio</item>
     </plurals>
     <string name="about_offline">Per gli studi che consentono risposte offline, l’app conserva anche pagine di questionari. Le risposte offline restano cifrate su questo telefono finché il server non ne conferma il salvataggio o finché Lei non le scarta esplicitamente o rimuove lo studio. La scadenza o il rifiuto non le cancellano.</string>
+    <string name="about_webview">I questionari si aprono in Android System WebView, un componente del telefono fornito da Google. A seconda delle impostazioni del telefono, WebView può contattare autonomamente servizi di Google, ad esempio Navigazione sicura (Safe Browsing), che confronta gli indirizzi con elenchi di siti dannosi, o suggerimenti per compilare i moduli. L’app ha disattivato le statistiche di utilizzo di WebView e non offre le risposte ad alcun servizio di compilazione automatica.</string>
     <string name="quiet_title">Orari di riposo</string>
     <string name="quiet_now">Ore di silenzio per i brevi questionari in orari casuali: %1$s</string>
     <string name="quiet_from_tomorrow">Da domani: %1$s</string>
@@ -208,6 +209,7 @@
     <string name="keep_answers">Conserva le mie risposte</string>
     <string name="save_failed">Salvataggio non riuscito. Il questionario compilato resta aperto; nulla di ciò che ha inserito è andato perso.</string>
     <string name="queue_unreadable">Le risposte salvate non possono essere lette. Non sono state sovrascritte. Contatti il gruppo di ricerca.</string>
+    <string name="studies_unreadable">Al momento non è possibile aprire i suoi studi su questo telefono. Non è stato sovrascritto nulla. Riprovi tra poco; se il problema persiste, riavvii il telefono.</string>
     <string name="queue_discard">Scarta le risposte illeggibili</string>
     <string name="queue_discard_confirm">Queste risposte non possono più essere lette su questo telefono e non potranno mai essere inviate. Scartarle perché l’app possa conservare di nuovo nuove risposte? I Suoi studi e le risposte già inviate non cambiano.</string>
     <string name="hide_licence">Nascondi il testo della licenza</string>

@@ -79,7 +79,8 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
 - **Update request.**
   `POST /study` sends `"min_app_version"` (the server's `DIARY_MIN_APP_VERSION`, 0 = every version).
   When a study asks for a newer version than the running `versionCode`, the start page asks the participant to update the app (button to its Play Store page); the app goes on working meanwhile.
-  `versionCode` is the number of Git commits up to the build (`git rev-list --count HEAD`), `versionName` "0.1.<that number>", so every later build on main is newer.
+  `versionCode` is the number of minutes since 2026-01-01 00:00 UTC at the build (`appVersionCode` in `app/build.gradle.kts`; a CI may set it with `-PversionCode=<n>`), `versionName` "0.1.<that number>", so every later build is newer, also one built without Git (audit 2026-10-18, AND-08: the commit count gave a shallow clone or a source archive versionCode 1).
+  The build stops when the code is not above `askurious.lastPublishedVersionCode` in `gradle.properties` (68, the last commit count used as a code); raise that value when a higher code is published by other means. A `DIARY_MIN_APP_VERSION` on the server is a code of this kind from now on (418000 and more for builds from 2026-10-19 on).
 - **Summary, study page.**
   The card shows below the title the researchers' short summary (`"summary"` of `POST /study`), the day, the next question and the buttons to answer (entry survey, reports, exit survey; only the most urgent open short survey as a filled button).
   Tapping a card opens the study's page: the summary, the study period (start and end, or "open, until the researchers end the study"), what is asked, the next question, the quiet hours, the notification sound, a home-screen shortcut and leaving or deleting.
@@ -104,9 +105,15 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   A fixed or random module with `reminder` > 0 gets a second notification that many minutes after the prompt, from the same one alarm (`Schedule.nextMoment` takes the earlier of the next prompt and the next reminder).
   It is posted only if the prompt is still open and was neither opened nor answered without a connection (`PromptLog`, a list of the prompts of the last three days on the phone), under the prompt's notification id (it replaces the first one) and with the same neutral lock-screen version ("Reminder: a short survey is still waiting"); unlocked, it shows the researchers' text after "Reminder:" (or that neutral text when they wrote none).
   Tapping it sends `"reminded": true` with the entry, and the time of the first notification as `notified`.
+- **A late alarm.**
+  Without the permission "Alarms & reminders" (not granted by default from Android 14) the alarm is inexact and rings minutes late; Doze may delay it further.
+  When it rings, every prompt and reminder from the alarm's moment up to now is posted, not only those of its very moment, as long as it is open and was neither opened nor answered (`Alarms.ringing`, at most 24 hours back); and when the alarm is set anew (`Alarms.rearm`: start of the app, a sync, a join) after its moment but before it rang, what it was set for is posted first (`PromptLog.armedFor`, the moment of the alarm set last). `PromptLog` keeps a prompt and its reminder from being posted twice; a prompt posted after its reminder's moment gets no reminder. Prompts the phone never set an alarm for (those earlier on the day a study is joined) are not posted (audit 2026-10-18, AND-02).
+  While "Alarms & reminders" is missing and a study runs, the start page says so with a button to the setting, also next to the notice about notifications.
+- **Time zone.**
+  A change of the time zone or of the clock sets the alarm anew and starts a sync at once (WorkManager, waiting for a connection), so the server learns the new zone without waiting for the next periodic sync (audit 2026-10-18, AND-07); the server applies it from the person's next day, as before.
 - **Answering without a connection.**
   For a module with `offline: true` each sync of a running study fetches its page (`POST /offline/<module>`, at most every 15 minutes) and the `/static/` and `/media/` files it names, also those named by its style sheets (`OfflinePages`, in the app's files directory, at most 10 MB per file).
-  When an entry finds no network, a prompt still open or a self-started module under its daily limit opens the kept page in the WebView; the page's own files come from the phone, any other request fails.
+  When an entry finds no network, a prompt still open or a self-started module under its daily limit opens the kept page in the WebView; the page's own files come from the phone, any other request fails. The page itself (put in with `loadDataWithBaseURL`, a `data:` address) loads as it is; answering it with 404, as before, showed the WebView's error page instead of the questionnaire (audit 2026-10-18, AND-01). A kept page that does not load shows the app's own error state with "Try again".
   `participant.js` hands the filled form to `AskuriousApp.offlineSubmit()`, and the app queues it (`AnswerQueue`) and says it will be sent.
   The next sync, and a one-time WorkManager job that waits for a connection, sends it with `POST /offline`; the study card shows how many answers are waiting, with the link "Answer transfers" while any wait (the receipts of those sent are on the study's page).
   "Transfer answers" in that dialog shows only while answers wait; it closes the dialog and a snackbar says how many were sent and how many still wait.
@@ -155,11 +162,16 @@ Concept: `concepts/experiencesampling.md` in the Askurious repository; server si
   Besides, whether the app asked for the notification and the camera permission once (to tell a first request from a refusal for good), whether the step for the permissions was shown, and the random ids of refused answers whose notice the participant closed (so that it stays closed until another answer is refused).
   All of it in the app's private storage, in no backup.
   Studies (with titles, schedules and secrets), queued answers and prompt logs are AES-GCM sealed with purpose-bound associated data under the non-exportable Android Keystore key (`KeystoreSealer`); copied files reveal neither secrets, answers nor titles. `SealedText` caches opened study/prompt texts; `QueueDatabase` decrypts only the answer rows requested by an indexed query. Queue indexes reveal equality and counts. Reads at startup, for alarms and for prompt buttons run off the main thread.
-  What an earlier version stored (the list with each secret sealed on its own, the queue and the log in plain text) is sealed the first time it is read. An entry whose secret cannot be opened (the Keystore lost its key) is kept as it is, not overwritten. The kept questionnaire pages and their files stay as files: they hold the questions, not the answers.
+  What an earlier version stored (the list with each secret sealed on its own, the queue and the log in plain text) is sealed the first time it is read. An entry whose secret cannot be opened (the Keystore lost its key) is kept as it is, not overwritten.
+  The kept questionnaire pages are sealed too (AAD `offline:<file name>`), without the value of the form's CSRF field (audit 2026-10-18, AND-06); a page an earlier version kept in plain text is still read and sealed at its next check. Their `/static/` and `/media/` files stay as plain files: they are the same for every participant.
+  While the stored list of studies cannot be opened (a Keystore fault), nothing is written over it: a study joined meanwhile is kept apart (`studies_sealed_pending`) and joins the list as soon as it opens again, and the start page says that the studies cannot be opened now, with "Try again", instead of "not taking part in a study yet" (audit 2026-10-18, AND-05).
+  Opening the stored study, the prompt log and the kept page when an entry starts happens off the main thread (audit 2026-10-18, AND-09; `KeystoreSealer` marks each Keystore call for StrictMode).
 - **Languages.**
   The survey languages of Askurious: English, German, Spanish, French, Italian, Dutch, Polish, European Portuguese, Russian, Turkish, Simplified Chinese and Arabic (right to left), formal address where the language has it; German addresses the participant with "Sie" throughout (no infinitives such as "Bitte die App aktualisieren"), as the join page of the web app does.
   The words follow the glossary of the web app (`docs/glossar.md` of the Askurious repository): "Kurzbefragung" / "short survey" for a prompt, "Meldung" / "report" for one the participant starts, "Erinnerung" / "reminder" only for the second notification, "Eingangsbefragung" / "entry survey", "Abschlussbefragung" / "exit survey", "die Forschenden" / "the researchers", "Telefon" / "phone"; system permissions are named as Android names them.
   `res/xml/locales_config.xml` lists them for the per-app language setting (Android 13+).
+- **The WebView and Google.**
+  The questionnaires run in Android System WebView. The app switches off its usage statistics (`android.webkit.WebView.MetricsOptOut` in the manifest) and keeps the questionnaire out of the autofill framework (`importantForAutofill`, no autofill session for the entry). WebView itself still asks Google for autofill predictions of the form (`content-autofill.googleapis.com`, form signatures, no answers) while the phone has an autofill service, and uses Safe Browsing; no API of the WebView switches the predictions off (checked 2026-10-18, AND-10). "About the app" names this.
 - **About the app.**
   The (i) in the top bar: what the app stores, the privacy statement (https://askurious.de/privacy#tagebuch), the provider as named in the imprint of askurious.de with a link to it (https://askurious.de/imprint), the copyright, the libraries, and their licence texts on a page of their own (without the hard line breaks of the text files).
 
@@ -206,7 +218,11 @@ In the app both links are the deep links of the join screen (`JOIN_LINKS` in `ui
 A signed release needs the upload key in `keystore.properties` next to this README (never in Git; `.gitignore` keeps it and `*.jks` out). Copy `keystore.properties.example`, make the key once (Android Studio: Build › Generate Signed Bundle, or the `keytool` line in the example) and keep the key file and its passwords safe outside the repository.
 Then `./gradlew bundleRelease` gives `app/build/outputs/bundle/release/app-release.aab` for the Play Console. Use Play App Signing: Google keeps the key the app is signed with, the upload key only uploads and can be replaced if it is lost.
 Without `keystore.properties` a release build stays unsigned. The SHA-256 fingerprint for `DIARY_APP_FINGERPRINTS` on the server is the one of the app signing key in the Play Console (Setup › App signing), not the upload key's.
-`versionCode` comes from Git (see "Update request"), so build releases from a clone with its history, not from a source archive.
+`versionCode` comes from the build time (see "Update request"); a build from a source archive or a shallow clone gets a valid, higher code too.
+
+## Certificate pinning (decision 2026-10-18)
+
+No pinning (audit 2026-10-18, AND-11, Info). The servers use Let's Encrypt certificates whose keys are renewed every few months, and the RWTH server's certificates are still to be issued; a pin on the leaf key would lock every installed app out at the next renewal, a pin on the intermediate CA at a change of Let's Encrypt's intermediates or of the CA. TLS stays checked by the platform: release builds allow no cleartext, trust only the system CAs (not user CAs), have no own TrustManager or HostnameVerifier, and abort on an SSL error; every request goes only to the known servers (`KNOWN_SERVERS`). Root, tamper and debugger detection are not needed for a diary without accounts whose answers the server checks (MASVS-RESILIENCE not required). Pinning would be reconsidered with two pins (the current and a spare key, kept offline) and an expiration date in `network_security_config.xml`, once the certificates are managed with a fixed key.
 
 ## Not yet
 
@@ -238,10 +254,15 @@ cookie has been written to disk first (`onSaveInstanceState`), so the entry addr
 page again (the server keeps the page; it accepts the address again only in the browser that opened it, or within two
 minutes); restored answers fire `input` and `change`, so that fields shown by display logic and counters follow them.
 Closing changed input asks first. The secure origin/main-frame message
-channel remains in use for drafts and completion. Microphone/location rights are requested only by questions
+channel remains in use for drafts and completion. A draft is kept as strictly written JSON and goes back into the page
+only as a string for `JSON.parse` (`EntryActivity.draftLiteral`), never as code; on a WebView too old for the message
+channel the online page's fallback bridge takes no drafts (audit 2026-10-18, AND-04). Microphone/location rights are requested only by questions
 from the configured known server, with no background recording/location permission. About/privacy texts explain
 local drafts and transfer metadata in all twelve languages.
 
 Debug uses loopback port 5080 because WebView blocks SIP port 5060. Forward `adb reverse tcp:5080 tcp:5060` to
 Flask's unchanged server port. `UiInstrumentation` checks dirty close, Activity recreation and saved-state
-recovery using synthetic local fixtures; no participant data or external service is needed.
+recovery using synthetic local fixtures; no participant data or external service is needed. The phase
+`offline-entry` (`adb shell am instrument -w -e phase offline-entry <app id>.test/de.askurious.app.test.UiInstrumentation`,
+without `adb reverse`) opens a kept page without a connection, checks that its form renders and its answer is queued, and
+that the entry's start reads no store on the main thread (StrictMode; audit 2026-10-18, AND-01, AND-09).
