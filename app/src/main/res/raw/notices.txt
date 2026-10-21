@@ -1,4 +1,4 @@
-NOTICE of ZXing ("Zebra Crossing", com.google.zxing:core), https://github.com/zxing/zxing/blob/master/NOTICE
+NOTICE of ZXing ("Zebra Crossing", com.google.zxing:core 3.5.4), https://github.com/zxing/zxing/blob/zxing-3.5.4/NOTICE
 
 --------------------------------------------------------------------------------
 NOTICES FOR BARCODE4J
@@ -19,7 +19,19 @@ NOTICES FOR JCOMMANDER
 Copyright 2010 Cedric Beust cedric@beust.com
 
 
-NOTICE of kotlinx.coroutines (org.jetbrains.kotlinx:kotlinx-coroutines-android), https://github.com/Kotlin/kotlinx.coroutines/blob/master/license/NOTICE.txt
+NOTICE of Kotlin (org.jetbrains.kotlin:kotlin-stdlib 2.2.20), https://github.com/JetBrains/kotlin/blob/v2.2.20/license/NOTICE.txt
+
+   =========================================================================
+   ==  NOTICE file corresponding to the section 4 d of                    ==
+   ==  the Apache License, Version 2.0,                                   ==
+   ==  in this case for the Kotlin Compiler distribution.                 ==
+   =========================================================================
+
+   Kotlin Compiler
+   Copyright 2010-2024 JetBrains s.r.o and respective authors and developers
+
+
+NOTICE of kotlinx.coroutines (org.jetbrains.kotlinx:kotlinx-coroutines-android 1.9.0), https://github.com/Kotlin/kotlinx.coroutines/blob/1.9.0/license/NOTICE.txt
 
 =========================================================================
 ==  NOTICE file corresponding to the section 4 d of                    ==
@@ -28,10 +40,22 @@ NOTICE of kotlinx.coroutines (org.jetbrains.kotlinx:kotlinx-coroutines-android),
 =========================================================================
 
 kotlinx.coroutines library.
-Copyright 2016-2025 JetBrains s.r.o and contributors
+Copyright 2016-2024 JetBrains s.r.o and contributors
 
 
-BSD 3-Clause License of ThreeTen-bp, the part of the Kotlin standard library in kotlin.time, https://github.com/ThreeTen/threetenbp/blob/main/LICENSE.txt
+NOTICE of kotlinx.serialization (org.jetbrains.kotlinx:kotlinx-serialization-core 1.7.3), https://github.com/Kotlin/kotlinx.serialization/blob/v1.7.3/license/NOTICE.txt
+
+   =========================================================================
+   ==  NOTICE file corresponding to the section 4 d of                    ==
+   ==  the Apache License, Version 2.0,                                   ==
+   ==  in this case for the kotlix.serialization library.                 ==
+   =========================================================================
+
+   kotlinx.serialization library.
+   Copyright 2017-2019 JetBrains s.r.o and respective authors and developers
+
+
+BSD 3-Clause License of ThreeTen-bp, the part of the Kotlin standard library in kotlin.time, https://github.com/JetBrains/kotlin/blob/v2.2.20/license/third_party/threetenbp_license.txt
 
 Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos.
 

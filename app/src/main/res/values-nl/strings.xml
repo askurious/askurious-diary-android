@@ -155,7 +155,7 @@
     <string name="licence_texts">Licentieteksten</string>
     <string name="licence_title_apache">Apache License 2.0</string>
     <string name="licence_title_font">SIL Open Font License 1.1 (lettertype PT Serif)</string>
-    <string name="licence_title_notices">Kennisgevingen (NOTICE) van ZXing en kotlinx.coroutines, BSD 3-Clause License van ThreeTen-bp</string>
+    <string name="licence_title_notices">Kennisgevingen (NOTICE) van ZXing, Kotlin, kotlinx.coroutines en kotlinx.serialization, BSD 3-Clause License van ThreeTen-bp</string>
     <string name="notif_channel_desc">De korte vragenlijsten van uw dagboekonderzoeken op de tijden die de onderzoekers kozen, en hun herinneringen</string>
     <string name="notif_exit_until" formatted="true">De onderzoeksperiode is voorbij. Vul nog in: %1$s (open tot %2$s)</string>
     <string name="notif_reminder_of">Herinnering: %1$s</string>
@@ -277,6 +277,7 @@
     <string name="ready_intro_one">De app kondigt de korte vragenlijsten van het onderzoek op het juiste moment aan met een melding. Daarvoor is één toestemming nodig; een tweede instelling is optioneel. U kunt beide later wijzigen in de instellingen van de telefoon.</string>
     <string name="about_provider_unit">Leerstoel Communicatiewetenschap, RWTH Aachen University</string>
     <string name="about_oss_english">De bibliotheken en hun licenties staan in het Engels, net als de licentieteksten.</string>
+    <string name="about_oss_more">De app bevat ook andere bibliotheken van AndroidX en Jetpack (bijvoorbeeld Room, SQLite, AppCompat, Fragment, emoji2, graphics-path), onder de Apache License 2.0.</string>
     <string name="contact_team">Contact met het onderzoeksteam</string>
     <string name="copy_contact">Contact kopiëren</string>
     <string name="contact_unavailable">Geen geschikte app beschikbaar. Kopieer de contactgegevens.</string>

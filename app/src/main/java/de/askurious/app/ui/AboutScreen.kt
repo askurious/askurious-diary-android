@@ -62,14 +62,16 @@ private val PROVIDER_ADDRESS = listOf("Campus-Boulevard 57", "52074 Aachen")
 
 /**
  * The libraries and the font in the app, each with its licence (THIRD_PARTY_NOTICES.md in the repository). In
- * English, as the licence texts are; the page says so (about_oss_english, B31).
+ * English, as the licence texts are; the page says so (about_oss_english, B31). The further AndroidX and Jetpack
+ * libraries that come in transitively are named in one sentence below the list (about_oss_more, licence audit
+ * 2026-10-21, C-4).
  */
 private val LIBRARIES = listOf(
     "AndroidX (Core, Activity, Lifecycle, Navigation, WebKit) – The Android Open Source Project, Apache License 2.0",
     "Jetpack Compose (UI, Material 3, Material Icons) – The Android Open Source Project, Apache License 2.0",
     "Material Components for Android – The Android Open Source Project, Apache License 2.0",
     "WorkManager – The Android Open Source Project, Apache License 2.0",
-    "ZXing Android Embedded – JourneyApps, Apache License 2.0",
+    "ZXing Android Embedded – ZXing authors, Journey Mobile, Apache License 2.0",
     "ZXing – ZXing authors, Apache License 2.0",
     "Kotlin standard library – JetBrains s.r.o. and Kotlin contributors, Apache License 2.0",
     "ThreeTen-bp (in the Kotlin standard library, kotlin.time) – © 2007-present Stephen Colebourne & Michael Nascimento Santos, BSD 3-Clause License",
@@ -172,6 +174,7 @@ fun AboutScreen(onBack: () -> Unit, onLicence: () -> Unit) {
             Text(stringResource(R.string.about_oss_intro))
             Text(stringResource(R.string.about_oss_english), style = MaterialTheme.typography.bodySmall)
             for (lib in LIBRARIES) BulletText(lib, MaterialTheme.typography.bodySmall)
+            Text(stringResource(R.string.about_oss_more), style = MaterialTheme.typography.bodySmall)
             OutlinedButton(onClick = onLicence) { Text(stringResource(R.string.show_licence)) }
         }
     }
@@ -179,8 +182,8 @@ fun AboutScreen(onBack: () -> Unit, onLicence: () -> Unit) {
 
 /**
  * The licence texts of the libraries and the font, each under its title, readable at any width (audit A24): the
- * Apache License 2.0, the SIL Open Font License 1.1 of PT Serif, and the NOTICE files of ZXing and kotlinx.coroutines
- * with the BSD 3-Clause License of ThreeTen-bp.
+ * Apache License 2.0, the SIL Open Font License 1.1 of PT Serif, and the NOTICE files of ZXing, Kotlin,
+ * kotlinx.coroutines and kotlinx.serialization with the BSD 3-Clause License of ThreeTen-bp.
  */
 @Composable
 fun LicenceScreen(onBack: () -> Unit) {

@@ -155,7 +155,7 @@
     <string name="licence_texts">Lisans metinleri</string>
     <string name="licence_title_apache">Apache License 2.0</string>
     <string name="licence_title_font">SIL Open Font License 1.1 (PT Serif yazı tipi)</string>
-    <string name="licence_title_notices">ZXing ve kotlinx.coroutines bildirimleri (NOTICE), ThreeTen-bp için BSD 3-Clause License</string>
+    <string name="licence_title_notices">ZXing, Kotlin, kotlinx.coroutines ve kotlinx.serialization bildirimleri (NOTICE), ThreeTen-bp için BSD 3-Clause License</string>
     <string name="notif_channel_desc">Günlük çalışmalarınızın, araştırmacıların seçtiği zamanlardaki kısa anketleri ve bunların hatırlatmaları</string>
     <string name="notif_exit_until" formatted="true">Çalışma dönemi sona erdi. Lütfen yanıtlayın: %1$s (%2$s tarihine kadar açık)</string>
     <string name="notif_reminder_of">Hatırlatma: %1$s</string>
@@ -277,6 +277,7 @@
     <string name="ready_intro_one">Uygulama, çalışmanın kısa anketlerini doğru anda bir bildirimle haber verir. Bunun için bir izne ihtiyaç duyar; ikinci bir ayar isteğe bağlıdır. İkisini de daha sonra telefonun ayarlarından değiştirebilirsiniz.</string>
     <string name="about_provider_unit">İletişim Bilimi Kürsüsü, RWTH Aachen University</string>
     <string name="about_oss_english">Kütüphaneler ve lisansları, lisans metinlerinde olduğu gibi İngilizce belirtilmiştir.</string>
+    <string name="about_oss_more">Uygulamada başka AndroidX ve Jetpack kütüphaneleri de (örneğin Room, SQLite, AppCompat, Fragment, emoji2, graphics-path) Apache License 2.0 altında yer alır.</string>
     <string name="contact_team">Araştırma ekibiyle iletişim kur</string>
     <string name="copy_contact">İletişim bilgisini kopyala</string>
     <string name="contact_unavailable">Uygun uygulama yok. İletişim bilgilerini kopyalayın.</string>
