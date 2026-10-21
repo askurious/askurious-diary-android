@@ -155,7 +155,7 @@
     <string name="licence_texts">Licence texts</string>
     <string name="licence_title_apache">Apache License 2.0</string>
     <string name="licence_title_font">SIL Open Font License 1.1 (font PT Serif)</string>
-    <string name="licence_title_notices">Notices of ZXing and kotlinx.coroutines, BSD 3-Clause License of ThreeTen-bp</string>
+    <string name="licence_title_notices">Notices of ZXing, Kotlin, kotlinx.coroutines and kotlinx.serialization, BSD 3-Clause License of ThreeTen-bp</string>
     <string name="notif_channel_desc">The short surveys of your diary studies at the times the researchers chose, and their reminders</string>
     <string name="notif_exit_until" formatted="true">The study period is over. Please answer: %1$s (open until %2$s)</string>
     <string name="notif_reminder_of">Reminder: %1$s</string>
@@ -277,6 +277,7 @@
     <string name="ready_intro_one">The app announces the study’s short surveys with a notification at the right moment. For that it needs one permission; a second setting is optional. You can change both later in the phone’s settings.</string>
     <string name="about_provider_unit">Chair of Communication Science, RWTH Aachen University</string>
     <string name="about_oss_english">The libraries and their licences are named in English, as in the licence texts.</string>
+    <string name="about_oss_more">Further AndroidX and Jetpack libraries (for example Room, SQLite, AppCompat, Fragment, emoji2, graphics-path) are in the app as well, under the Apache License 2.0.</string>
     <!-- a span of two times, each isolated for the direction of the text (BidiFormatter, B31) -->
     <string name="time_span" translatable="false">%1$s–%2$s</string>
     <!-- a numbered step of the permission screen: "1. Notifications" (B31) -->

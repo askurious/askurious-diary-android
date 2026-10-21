@@ -162,7 +162,7 @@
     <string name="licence_texts">Textes des licences</string>
     <string name="licence_title_apache">Apache License 2.0</string>
     <string name="licence_title_font">SIL Open Font License 1.1 (police PT Serif)</string>
-    <string name="licence_title_notices">Avis (NOTICE) de ZXing et de kotlinx.coroutines, BSD 3-Clause License de ThreeTen-bp</string>
+    <string name="licence_title_notices">Avis (NOTICE) de ZXing, de Kotlin, de kotlinx.coroutines et de kotlinx.serialization, BSD 3-Clause License de ThreeTen-bp</string>
     <string name="notif_channel_desc">Les brefs questionnaires de vos études de journal de bord aux moments choisis par l’équipe de recherche, et leurs rappels</string>
     <string name="notif_exit_until" formatted="true">La période de l’étude est terminée. Veuillez répondre : %1$s (ouvert jusqu’au %2$s)</string>
     <string name="notif_reminder_of">Rappel : %1$s</string>
@@ -285,6 +285,7 @@
     <string name="ready_intro_one">L’application annonce les brefs questionnaires de l’étude par une notification au bon moment. Pour cela, elle a besoin d’une autorisation ; un second réglage est facultatif. Vous pourrez modifier les deux plus tard dans les paramètres du téléphone.</string>
     <string name="about_provider_unit">Chaire de sciences de la communication, RWTH Aachen University</string>
     <string name="about_oss_english">Les bibliothèques et leurs licences sont indiquées en anglais, comme dans les textes des licences.</string>
+    <string name="about_oss_more">L’application contient aussi d’autres bibliothèques AndroidX et Jetpack (par exemple Room, SQLite, AppCompat, Fragment, emoji2, graphics-path), sous la Apache License 2.0.</string>
     <string name="contact_team">Contacter l’équipe de recherche</string>
     <string name="copy_contact">Copier le contact</string>
     <string name="contact_unavailable">Aucune application adaptée. Copiez les coordonnées.</string>

@@ -162,7 +162,7 @@
     <string name="licence_texts">Textos das licenças</string>
     <string name="licence_title_apache">Apache License 2.0</string>
     <string name="licence_title_font">SIL Open Font License 1.1 (tipo de letra PT Serif)</string>
-    <string name="licence_title_notices">Avisos (NOTICE) de ZXing e kotlinx.coroutines, BSD 3-Clause License de ThreeTen-bp</string>
+    <string name="licence_title_notices">Avisos (NOTICE) de ZXing, Kotlin, kotlinx.coroutines e kotlinx.serialization, BSD 3-Clause License de ThreeTen-bp</string>
     <string name="notif_channel_desc">Os breves questionários dos seus estudos de diário nas horas escolhidas pela equipa de investigação, e os lembretes</string>
     <string name="notif_exit_until" formatted="true">O período do estudo terminou. Responda: %1$s (aberto até %2$s)</string>
     <string name="notif_reminder_of">Lembrete: %1$s</string>
@@ -285,6 +285,7 @@
     <string name="ready_intro_one">A aplicação anuncia-lhe os breves questionários do estudo com uma notificação no momento certo. Para isso precisa de uma permissão; uma segunda definição é opcional. Pode alterar ambas mais tarde nas definições do telemóvel.</string>
     <string name="about_provider_unit">Cátedra de Ciências da Comunicação, RWTH Aachen University</string>
     <string name="about_oss_english">As bibliotecas e as suas licenças são indicadas em inglês, tal como nos textos das licenças.</string>
+    <string name="about_oss_more">A aplicação contém também outras bibliotecas AndroidX e Jetpack (por exemplo Room, SQLite, AppCompat, Fragment, emoji2, graphics-path), sob a Apache License 2.0.</string>
     <string name="contact_team">Contactar a equipa do estudo</string>
     <string name="copy_contact">Copiar contacto</string>
     <string name="contact_unavailable">Não existe uma aplicação adequada. Copie os dados de contacto.</string>

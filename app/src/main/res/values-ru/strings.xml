@@ -169,7 +169,7 @@
     <string name="licence_texts">Тексты лицензий</string>
     <string name="licence_title_apache">Apache License 2.0</string>
     <string name="licence_title_font">SIL Open Font License 1.1 (шрифт PT Serif)</string>
-    <string name="licence_title_notices">Уведомления (NOTICE) ZXing и kotlinx.coroutines, BSD 3-Clause License ThreeTen-bp</string>
+    <string name="licence_title_notices">Уведомления (NOTICE) ZXing, Kotlin, kotlinx.coroutines и kotlinx.serialization, BSD 3-Clause License ThreeTen-bp</string>
     <string name="notif_channel_desc">Короткие опросы Ваших дневниковых исследований в выбранное исследователями время и напоминания о них</string>
     <string name="notif_exit_until" formatted="true">Период исследования завершён. Пожалуйста, ответьте: %1$s (открыт до %2$s)</string>
     <string name="notif_reminder_of">Напоминание: %1$s</string>
@@ -293,6 +293,7 @@
     <string name="ready_intro_one">Приложение в нужный момент сообщает уведомлением о коротких опросах исследования. Для этого нужно одно разрешение; вторая настройка необязательна. Обе можно позже изменить в настройках телефона.</string>
     <string name="about_provider_unit">Кафедра коммуникативистики, RWTH Aachen University</string>
     <string name="about_oss_english">Библиотеки и их лицензии указаны на английском языке, как и в текстах лицензий.</string>
+    <string name="about_oss_more">Приложение также содержит другие библиотеки AndroidX и Jetpack (например, Room, SQLite, AppCompat, Fragment, emoji2, graphics-path) под лицензией Apache License 2.0.</string>
     <string name="contact_team">Связаться с командой исследования</string>
     <string name="copy_contact">Копировать контакт</string>
     <string name="contact_unavailable">Нет подходящего приложения. Скопируйте контактные данные.</string>

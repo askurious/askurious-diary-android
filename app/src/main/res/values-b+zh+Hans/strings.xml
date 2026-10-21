@@ -148,7 +148,7 @@
     <string name="licence_texts">许可证文本</string>
     <string name="licence_title_apache">Apache License 2.0</string>
     <string name="licence_title_font">SIL Open Font License 1.1（PT Serif 字体）</string>
-    <string name="licence_title_notices">ZXing 和 kotlinx.coroutines 的声明（NOTICE），ThreeTen-bp 的 BSD 3-Clause License</string>
+    <string name="licence_title_notices">ZXing、Kotlin、kotlinx.coroutines 和 kotlinx.serialization 的声明（NOTICE），ThreeTen-bp 的 BSD 3-Clause License</string>
     <string name="notif_channel_desc">日记研究在研究人员设定的时间发出的简短问卷及其提醒</string>
     <string name="notif_exit_until" formatted="true">研究期已结束。请回答：%1$s（开放至 %2$s）</string>
     <string name="notif_reminder_of">提醒：%1$s</string>
@@ -269,6 +269,7 @@
     <string name="ready_intro_one">应用会在合适的时刻通过通知告知您研究的简短问卷。为此需要一项权限；第二项设置为可选。您之后可以在手机设置中更改这两项设置。</string>
     <string name="about_provider_unit">亚琛工业大学（RWTH Aachen University）传播学教席</string>
     <string name="about_oss_english">这些库及其许可证以英文列出，与许可证文本一致。</string>
+    <string name="about_oss_more">本应用还包含其他 AndroidX 和 Jetpack 库（例如 Room、SQLite、AppCompat、Fragment、emoji2、graphics-path），同样采用 Apache License 2.0。</string>
     <string name="contact_team">联系研究团队</string>
     <string name="copy_contact">复制联系方式</string>
     <string name="contact_unavailable">没有适用的应用。请复制联系方式。</string>

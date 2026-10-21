@@ -155,7 +155,7 @@
     <string name="licence_texts">Lizenztexte</string>
     <string name="licence_title_apache">Apache License 2.0</string>
     <string name="licence_title_font">SIL Open Font License 1.1 (Schrift PT Serif)</string>
-    <string name="licence_title_notices">Hinweise (NOTICE) von ZXing und kotlinx.coroutines, BSD 3-Clause License von ThreeTen-bp</string>
+    <string name="licence_title_notices">Hinweise (NOTICE) von ZXing, Kotlin, kotlinx.coroutines und kotlinx.serialization, BSD 3-Clause License von ThreeTen-bp</string>
     <string name="notif_channel_desc">Die Kurzbefragungen der Tagebuchstudien zu den Zeiten der Forschenden und ihre Erinnerungen</string>
     <string name="notif_exit_until" formatted="true">Der Studienzeitraum ist vorbei. Bitte beantworten Sie noch: %1$s (offen bis %2$s)</string>
     <string name="notif_reminder_of">Erinnerung: %1$s</string>
@@ -277,6 +277,7 @@
     <string name="ready_intro_one">Die App kündigt die Kurzbefragungen der Studie im richtigen Moment per Benachrichtigung an. Dafür braucht sie ein Recht, eine zweite Einstellung ist freiwillig. Sie können beides später in den Einstellungen des Telefons ändern.</string>
     <string name="about_provider_unit">Lehrstuhl für Kommunikationswissenschaft, RWTH Aachen University</string>
     <string name="about_oss_english">Die Bibliotheken und ihre Lizenzen sind auf Englisch genannt, wie in den Lizenztexten.</string>
+    <string name="about_oss_more">Weitere Bibliotheken von AndroidX und Jetpack (zum Beispiel Room, SQLite, AppCompat, Fragment, emoji2, graphics-path) sind ebenfalls in der App, unter der Apache License 2.0.</string>
     <string name="contact_team">Studienteam kontaktieren</string>
     <string name="copy_contact">Kontakt kopieren</string>
     <string name="contact_unavailable">Keine passende App verfügbar. Kopieren Sie stattdessen die Kontaktdaten.</string>

@@ -183,7 +183,7 @@
     <string name="licence_texts">نصوص التراخيص</string>
     <string name="licence_title_apache">Apache License 2.0</string>
     <string name="licence_title_font">SIL Open Font License 1.1 (الخط PT Serif)</string>
-    <string name="licence_title_notices">إشعارات (NOTICE) ZXing وkotlinx.coroutines، وترخيص BSD 3-Clause License لـ ThreeTen-bp</string>
+    <string name="licence_title_notices">إشعارات (NOTICE) ZXing وKotlin وkotlinx.coroutines وkotlinx.serialization، وترخيص BSD 3-Clause License لـ ThreeTen-bp</string>
     <string name="notif_channel_desc">الاستبيانات القصيرة لدراسات اليوميات في الأوقات التي اختارها الباحثون، والتذكيرات بها</string>
     <string name="notif_exit_until" formatted="true">انتهت فترة الدراسة. يُرجى الإجابة عن: %1$s (متاح حتى %2$s)</string>
     <string name="notif_reminder_of">تذكير: %1$s</string>
@@ -309,6 +309,7 @@
     <string name="ready_intro_one">يُعلن التطبيق عن الاستبيانات القصيرة للدراسة عبر إشعار في الوقت المناسب. ولذلك يحتاج إلى إذن واحد، وإعداد ثانٍ اختياري. يمكنك تغيير كليهما لاحقًا في إعدادات الهاتف.</string>
     <string name="about_provider_unit">كرسي علوم الاتصال، جامعة RWTH آخن</string>
     <string name="about_oss_english">تُذكر المكتبات وتراخيصها باللغة الإنجليزية، كما في نصوص التراخيص.</string>
+    <string name="about_oss_more">يتضمّن التطبيق أيضًا مكتبات أخرى من AndroidX وJetpack (مثل Room وSQLite وAppCompat وFragment وemoji2 وgraphics-path)، بموجب Apache License 2.0.</string>
     <string name="contact_team">التواصل مع فريق الدراسة</string>
     <string name="copy_contact">نسخ بيانات الاتصال</string>
     <string name="contact_unavailable">لا يوجد تطبيق مناسب. انسخ بيانات الاتصال بدلاً من ذلك.</string>
