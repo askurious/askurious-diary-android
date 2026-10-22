@@ -277,8 +277,9 @@
     <string name="ready_battery_text">Niektóre telefony zatrzymują aplikacje działające w tle, aby oszczędzać baterię; krótkie kwestionariusze docierają wtedy z opóźnieniem lub wcale. Prosimy ustawić Askurious na liście „Optymalizacja baterii” na „Nie optymalizuj”. Na niektórych telefonach to ustawienie znajduje się w informacjach o aplikacji w sekcji „Bateria”.</string>
     <!-- UX audit 2026-10-16, B26-B32: the rejoin dialog, the side-by-side page, the clock notice, the transfers -->
     <string name="rejoin_title">Rozpocząć nowy udział?</string>
-    <string name="rejoin_more">Oczekujące odpowiedzi z wcześniejszego udziału zostaną najpierw wysłane. Bez połączenia ponowne dołączenie czeka, aż zostaną wysłane; odrzucane są tylko odpowiedzi, których serwer nie przyjął. Aby usunąć wcześniejsze odpowiedzi, prosimy anulować i użyć przycisku „Usuń moje odpowiedzi” na stronie badania.</string>
+    <string name="rejoin_more">Oczekujące odpowiedzi z wcześniejszego udziału zostaną najpierw wysłane. Bez połączenia ponowne dołączenie czeka, aż zostaną wysłane; tak samo w przypadku odpowiedzi wstrzymanych, dopóki wcześniejszy udział jest wstrzymany. Odrzucane są tylko odpowiedzi, których serwer ostatecznie nie przyjął. Aby usunąć wcześniejsze odpowiedzi, prosimy anulować i użyć przycisku „Usuń moje odpowiedzi” na stronie badania.</string>
     <string name="rejoin_pending">Odpowiedzi z wcześniejszego udziału wciąż czekają na wysłanie. Prosimy połączyć się z internetem i spróbować ponownie, aby nie zostały utracone.</string>
+    <string name="rejoin_waiting">Odpowiedzi z wcześniejszego udziału są wstrzymane, ponieważ udział jest wstrzymany. Zostaną wysłane, gdy tylko przerwa się skończy (najpóźniej po 7 dniach wygasają). Prosimy dołączyć ponownie dopiero wtedy, aby nie zostały utracone.</string>
     <string name="learn_more">Więcej informacji</string>
     <string name="choose_study">Aby zobaczyć stronę badania, prosimy wybrać je z listy.</string>
     <string name="date_settings_open">Otwórz ustawienia daty i godziny</string>

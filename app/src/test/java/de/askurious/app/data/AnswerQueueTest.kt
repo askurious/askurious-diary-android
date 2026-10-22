@@ -57,6 +57,17 @@ class AnswerQueueTest {
     }
 
     @Test
+    fun onlyAPausedAnswerHoldsUpJoiningAgain() {
+        // audit 2026-10-21, F7: an answer refused during a pause is taken once the pause ends, so joining the same
+        // study again waits for it instead of discarding it; a 401 means the secret is gone for good on this phone
+        assertTrue(AnswerQueue.mayStillPass(item.copy(refusal = "paused", refusedSince = 1_000L)))
+        assertFalse(AnswerQueue.mayStillPass(item.copy(refusal = "unauthorised", refusedSince = 1_000L)))
+        assertFalse(AnswerQueue.mayStillPass(item.copy(refusal = "expired")))
+        assertFalse(AnswerQueue.mayStillPass(item.copy(refusal = "done")))
+        assertFalse(AnswerQueue.mayStillPass(item))
+    }
+
+    @Test
     fun aWrongClockOfThePhoneKeepsTheAnswer() {
         val minute = 60_000L
         assertEquals(AnswerQueue.Fate.CLOCK, AnswerQueue.fate(ApiError("unknown", 400), skew = 6 * minute))

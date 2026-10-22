@@ -249,12 +249,27 @@ object Sync {
 
     /**
      * Sends the queued answers of [old] before the participant joins the same study again (audit 2026-10-17, T7).
-     * False while some must wait for the network: joining again would discard them, so it waits too. Answers the
-     * server refused stay for clarification and do not hold it up.
+     * False while some must wait for the network, or were refused only for now and may still pass (a pause,
+     * [AnswerQueue.mayStillPass]; audit 2026-10-21, F7): joining again would discard them, so it waits too. Answers
+     * the server refused for good stay for clarification and do not hold it up.
      */
     suspend fun sendBeforeRejoin(context: Context, old: Study): Boolean = withContext(Dispatchers.IO) {
         try {
-            lock.withLock { sendLocked(context, old) }
+            lock.withLock { sendLocked(context, old, holdWaiting = true) }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    /**
+     * Whether answers of [old] wait because the server refused them only for now (a pause): the join screen then says
+     * so instead of asking for a connection (audit 2026-10-21, F7).
+     */
+    suspend fun waitingBeforeRejoin(context: Context, old: Study): Boolean = withContext(Dispatchers.IO) {
+        try {
+            AnswerQueue(context).of(old.code).any { !AnswerQueue.tooOld(it, old.now()) && AnswerQueue.mayStillPass(it) }
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
@@ -295,9 +310,11 @@ object Sync {
      * Sends the queued answers of [study] (POST /offline, each with its uuid). Returns false when some must wait for
      * the network (no network, 429, 5xx). All unacknowledged answers stay encrypted on the phone; refusals are
      * noted for clarification on the study card. Changed questionnaire pages are fetched again separately.
+     * [holdWaiting]: answers refused only for now that may still pass ([AnswerQueue.mayStillPass]) count as waiting
+     * too (before joining again); a regular sync tries them again at its next run without holding anything up.
      * Only with [lock] held.
      */
-    private suspend fun sendLocked(context: Context, study: Study): Boolean {
+    private suspend fun sendLocked(context: Context, study: Study, holdWaiting: Boolean = false): Boolean {
         val queue = AnswerQueue(context)
         var kept = false
         for (item in queue.of(study.code)) {
@@ -319,6 +336,7 @@ object Sync {
             if (error != null) queue.attempted(item.id, if (error.status == 429) "rate_limit" else error.key)
             when (queue.recordDelivery(queue.get(item.id) ?: item, error, Api.clockSkew)) {
                 AnswerQueue.Fate.KEEP -> kept = true
+                AnswerQueue.Fate.WAIT -> if (holdWaiting && AnswerQueue.mayStillPass(queue.get(item.id) ?: item)) kept = true
                 AnswerQueue.Fate.CHANGED -> {
                     OfflinePages(context).drop(study.code, item.module)
                 }
