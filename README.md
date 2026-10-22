@@ -185,7 +185,7 @@ export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
 ./gradlew testDebugUnitTest assembleDebug
 ```
 
-Toolchain: Gradle 9.6.0, AGP 9.4.1 (with the compatibility flags of the upgrade assistant in gradle.properties, still `android.newDsl=false`), Kotlin 2.2.20, compileSdk and targetSdk 36, minSdk 26.
+Toolchain: Gradle 9.6.0, AGP 9.4.1 (with the compatibility flags of the upgrade assistant in gradle.properties, still `android.newDsl=false`), Kotlin 2.4.21, compileSdk and targetSdk 36, minSdk 26.
 The wrapper checks the SHA-256 of the Gradle download (`distributionSha256Sum`). Compose BOM 2026.06.01 is the newest that builds with compileSdk 36 (Compose UI 1.12 from BOM 2026.08.00 on needs compileSdk 37).
 Gradle checks the SHA-256 of every dependency against `gradle/verification-metadata.xml`. After changing a dependency, write it again with the tasks of a release:
 `./gradlew --write-verification-metadata sha256 help lintDebug lintRelease testDebugUnitTest assembleDebug assembleRelease bundleRelease`, and look at what changed before committing it.

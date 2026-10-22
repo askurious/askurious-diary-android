@@ -50,7 +50,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
@@ -410,7 +412,8 @@ internal fun MainActivity.StudyNow(study: Study) {
             val start = { startActivity(EntryActivity.intent(context, study.code, prompt.module, prompt.due, notified)) }
             // the same visible label for every open prompt; its name for TalkBack and Voice Access begins with that label
             // and names the module and the study, so that a button found alone is unambiguous (UI/UX audit 2026-10-17, A08)
-            val name = Modifier.semantics { contentDescription = context.getString(R.string.answer_prompt_for, module.name, study.title) }
+            val label = stringResource(R.string.answer_prompt_for, module.name, study.title)
+            val name = Modifier.semantics { contentDescription = label }
             if (k == 0) Button(onClick = start, modifier = name) { Text(stringResource(R.string.answer_prompt)) }
             else FilledTonalButton(onClick = start, modifier = name) { Text(stringResource(R.string.answer_prompt)) }
         }
@@ -609,6 +612,9 @@ private fun ShortcutDialog(study: Study, module: Module, onDone: () -> Unit) {
 @Composable
 private fun QuietDialog(initial: Quiet?, onDismiss: () -> Unit, onSave: (Quiet?) -> Unit) {
     val context = LocalContext.current
+    // read in composition, so that a rotation recomposes with the new height (Compose lint LocalContextConfigurationRead)
+    val screenHeightDp = LocalConfiguration.current.screenHeightDp
+    val density = LocalDensity.current.density
     var on by remember { mutableStateOf(initial != null) }
     var start by remember { mutableStateOf(initial?.start ?: "22:00") }
     var end by remember { mutableStateOf(initial?.end ?: "07:00") }
@@ -633,7 +639,7 @@ private fun QuietDialog(initial: Quiet?, onDismiss: () -> Unit, onSave: (Quiet?)
                 parent.removeView(picker)
                 val scroll = android.widget.ScrollView(context)
                 scroll.addView(picker, android.widget.FrameLayout.LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT))
-                params.height = ((context.resources.configuration.screenHeightDp - 180).coerceIn(100, 360) * context.resources.displayMetrics.density).toInt()
+                params.height = ((screenHeightDp - 180).coerceIn(100, 360) * density).toInt()
                 parent.addView(scroll, index, params)
             }
         }

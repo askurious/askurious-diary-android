@@ -15,8 +15,8 @@ The full texts ship with the app and are shown under "About the app" › licence
 | AndroidX WebKit | `androidx.webkit:webkit` | 1.17.1 | The Android Open Source Project | Apache-2.0 |
 | ZXing Android Embedded | `com.journeyapps:zxing-android-embedded` | 4.3.0 | ZXing authors, Journey Mobile | Apache-2.0 |
 | ZXing ("Zebra Crossing") | `com.google.zxing:core` (used by ZXing Android Embedded) | 3.5.4 | ZXing authors | Apache-2.0 (NOTICE in `notices.txt`) |
-| Kotlin standard library | `org.jetbrains.kotlin:kotlin-stdlib` | 2.2.20 | JetBrains s.r.o. and Kotlin contributors | Apache-2.0 (NOTICE in `notices.txt`) |
-| ThreeTen-bp, part of the Kotlin standard library (`kotlin.time`) | in `org.jetbrains.kotlin:kotlin-stdlib` | 2.2.20 | © 2007-present Stephen Colebourne & Michael Nascimento Santos | BSD-3-Clause (text in `notices.txt`) |
+| Kotlin standard library | `org.jetbrains.kotlin:kotlin-stdlib` | 2.4.21 | JetBrains s.r.o. and Kotlin contributors | Apache-2.0 (NOTICE in `notices.txt`) |
+| ThreeTen-bp, part of the Kotlin standard library (`kotlin.time`) | in `org.jetbrains.kotlin:kotlin-stdlib` | 2.4.21 | © 2007-present Stephen Colebourne & Michael Nascimento Santos | BSD-3-Clause (text in `notices.txt`) |
 | kotlinx.coroutines | `org.jetbrains.kotlinx:kotlinx-coroutines-android`, `-core` (transitive) | 1.9.0 | JetBrains s.r.o. and contributors | Apache-2.0 (NOTICE in `notices.txt`) |
 | kotlinx.serialization | `org.jetbrains.kotlinx:kotlinx-serialization-core` (transitive; the routes of the screens use it) | 1.7.3 | JetBrains s.r.o. and contributors | Apache-2.0 (NOTICE in `notices.txt`) |
 | JetBrains Java Annotations | `org.jetbrains:annotations` (transitive) | 23.0.0 | JetBrains s.r.o. | Apache-2.0 |
@@ -32,7 +32,7 @@ Further AndroidX and Jetpack libraries come in as transitive dependencies of the
 
 Checked against `./gradlew :app:dependencies --configuration releaseRuntimeClasspath` on 2026-10-22: outside AndroidX, the APK takes exactly the libraries listed above. Besides them only `kotlin-stdlib-jdk7` and `kotlin-stdlib-jdk8` 1.8.22 come in (compatibility artifacts of the Kotlin standard library without code of their own since Kotlin 1.8, same copyright and licence), together with the BOMs of Kotlin, kotlinx.coroutines and kotlinx.serialization, which only fix versions. No kotlinx atomicfu or other library is in the release build.
 
-According to `license/README.md` of Kotlin 2.2.20, the Kotlin standard library also contains code derived from other projects: `kotlin.time` from ThreeTen-bp (BSD 3-Clause, listed above, text in `notices.txt`) and, in `kotlin/util/MathJVM.kt`, code derived from the Boost special math functions (Copyright Eric Ford & Hubert Holin 2001, Boost Software License 1.0, which asks for no notice in compiled form).
+According to `license/README.md` of Kotlin 2.4.21 (unchanged since 2.2.20 for the standard library; the NOTICE is the same), the Kotlin standard library also contains code derived from other projects: `kotlin.time` from ThreeTen-bp (BSD 3-Clause, listed above, text in `notices.txt`) and, in `kotlin/util/MathJVM.kt`, code derived from the Boost special math functions (Copyright Eric Ford & Hubert Holin 2001, Boost Software License 1.0, which asks for no notice in compiled form).
 
 Only for the tests (not in the APK):
 
@@ -43,4 +43,4 @@ Only for the tests (not in the APK):
 | JSON in Java | `org.json:json` | 20260814 | Public domain |
 
 The Gradle wrapper (`gradlew`, `gradlew.bat`, `gradle/wrapper/`) is © Gradle, Inc. and contributors, Apache License 2.0; it builds the app and is not in the APK.
-The same holds for the Kotlin serialization compiler plugin (`org.jetbrains.kotlin.plugin.serialization` 2.2.20, JetBrains s.r.o. and Kotlin contributors, Apache License 2.0), which writes the serializers of the routes when the app is built.
+The same holds for the Kotlin serialization compiler plugin (`org.jetbrains.kotlin.plugin.serialization` 2.4.21, JetBrains s.r.o. and Kotlin contributors, Apache License 2.0), which writes the serializers of the routes when the app is built.

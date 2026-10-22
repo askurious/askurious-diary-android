@@ -19,7 +19,7 @@ NOTICES FOR JCOMMANDER
 Copyright 2010 Cedric Beust cedric@beust.com
 
 
-NOTICE of Kotlin (org.jetbrains.kotlin:kotlin-stdlib 2.2.20), https://github.com/JetBrains/kotlin/blob/v2.2.20/license/NOTICE.txt
+NOTICE of Kotlin (org.jetbrains.kotlin:kotlin-stdlib 2.4.21), https://github.com/JetBrains/kotlin/blob/v2.4.21/license/NOTICE.txt
 
    =========================================================================
    ==  NOTICE file corresponding to the section 4 d of                    ==
@@ -55,7 +55,7 @@ NOTICE of kotlinx.serialization (org.jetbrains.kotlinx:kotlinx-serialization-cor
    Copyright 2017-2019 JetBrains s.r.o and respective authors and developers
 
 
-BSD 3-Clause License of ThreeTen-bp, the part of the Kotlin standard library in kotlin.time, https://github.com/JetBrains/kotlin/blob/v2.2.20/license/third_party/threetenbp_license.txt
+BSD 3-Clause License of ThreeTen-bp, the part of the Kotlin standard library in kotlin.time, https://github.com/JetBrains/kotlin/blob/v2.4.21/license/third_party/threetenbp_license.txt
 
 Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos.
 
