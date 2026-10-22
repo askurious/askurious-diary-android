@@ -270,8 +270,9 @@
     <string name="ready_battery_text">Alcuni telefoni fermano le app in background per risparmiare batteria; i brevi questionari arrivano allora in ritardo o non arrivano. Nell’elenco «Ottimizzazione batteria» imposti Askurious su «Non ottimizzare». Su alcuni telefoni l’impostazione si trova nelle informazioni dell’app, alla voce «Batteria».</string>
     <!-- UX audit 2026-10-16, B26-B32: the rejoin dialog, the side-by-side page, the clock notice, the transfers -->
     <string name="rejoin_title">Avviare una nuova partecipazione?</string>
-    <string name="rejoin_more">Le risposte ancora in attesa della partecipazione precedente vengono prima inviate. Senza connessione la nuova partecipazione attende che siano inviate; vengono scartate solo le risposte rifiutate dal server. Per cancellare le Sue risposte precedenti, annulli e usi «Cancella le mie risposte» nella pagina dello studio.</string>
+    <string name="rejoin_more">Le risposte ancora in attesa della partecipazione precedente vengono prima inviate. Senza connessione la nuova partecipazione attende che siano inviate; lo stesso vale per le risposte trattenute finché la partecipazione precedente è in pausa. Vengono scartate solo le risposte rifiutate definitivamente dal server. Per cancellare le Sue risposte precedenti, annulli e usi «Cancella le mie risposte» nella pagina dello studio.</string>
     <string name="rejoin_pending">Alcune risposte della Sua partecipazione precedente sono ancora in attesa di invio. Si colleghi a Internet e riprovi, così non andranno perse.</string>
+    <string name="rejoin_waiting">Alcune risposte della Sua partecipazione precedente sono trattenute perché è in pausa. Verranno inviate appena finisce la pausa (scadono al più tardi dopo 7 giorni). Partecipi di nuovo solo dopo, così non andranno perse.</string>
     <string name="learn_more">Ulteriori informazioni</string>
     <string name="choose_study">Scelga uno studio nell’elenco per vederne la pagina.</string>
     <string name="date_settings_open">Apri Data e ora</string>

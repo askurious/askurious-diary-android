@@ -303,6 +303,15 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
          */
         fun afterRefusal(item: Item, now: Long): Item = item.copy(refusedSince = item.refusedSince ?: now)
 
+        /**
+         * Whether [item], refused for now ([Fate.WAIT]), will still be taken by the server once the refusal passes:
+         * "paused", until the researchers end the pause. Joining the same study again waits for such an answer
+         * instead of discarding it (audit 2026-10-21, F7). Not a 401: on this phone it means the secret is gone for
+         * good (the study was deleted, or the person joined again on another phone), so waiting would only block
+         * the new participation.
+         */
+        fun mayStillPass(item: Item): Boolean = item.refusal == "paused"
+
         /** Only these replies confirm the server retained the complete original, including review cases. */
         fun acknowledged(reply: JSONObject): Boolean = reply.optString("status") in setOf("stored", "review")
 

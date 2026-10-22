@@ -270,8 +270,9 @@
     <string name="ready_battery_text">Algunos teléfonos detienen las aplicaciones en segundo plano para ahorrar batería; entonces los cuestionarios breves llegan tarde o no llegan. En la lista «Optimización de batería», ponga Askurious en «No optimizar». En algunos teléfonos el ajuste está en la información de la aplicación, en «Batería».</string>
     <!-- UX audit 2026-10-16, B26-B32: the rejoin dialog, the side-by-side page, the clock notice, the transfers -->
     <string name="rejoin_title">¿Empezar una nueva participación?</string>
-    <string name="rejoin_more">Las respuestas pendientes de la participación anterior se envían antes. Sin conexión, la nueva participación espera hasta que se envíen; solo se descartan las respuestas que el servidor rechazó. Para borrar sus respuestas anteriores, cancele y use «Borrar mis respuestas» en la página del estudio.</string>
+    <string name="rejoin_more">Las respuestas pendientes de la participación anterior se envían antes. Sin conexión, la nueva participación espera hasta que se envíen; lo mismo ocurre con las respuestas retenidas mientras la participación anterior está en pausa. Solo se descartan las respuestas que el servidor rechazó definitivamente. Para borrar sus respuestas anteriores, cancele y use «Borrar mis respuestas» en la página del estudio.</string>
     <string name="rejoin_pending">Hay respuestas de su participación anterior pendientes de envío. Conéctese a internet e inténtelo de nuevo para que no se pierdan.</string>
+    <string name="rejoin_waiting">Las respuestas de su participación anterior están retenidas porque está en pausa. Se enviarán en cuanto termine la pausa (caducan como máximo a los 7 días). Únase de nuevo después, para que no se pierdan.</string>
     <string name="learn_more">Más información</string>
     <string name="choose_study">Elija un estudio de la lista para ver su página.</string>
     <string name="date_settings_open">Abrir fecha y hora</string>
