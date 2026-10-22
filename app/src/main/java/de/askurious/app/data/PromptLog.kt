@@ -20,6 +20,8 @@ class PromptLog internal constructor(private val prefs: SharedPreferences, seale
         this(context.applicationContext.getSharedPreferences("prompts", Context.MODE_PRIVATE), sealer)
 
     private val text = SealedText(prefs, KEY, sealer, AAD)
+    // the studies whose end was announced: sealed, not a plain set of codes (audit 2026-10-22, F-01)
+    private val exitSet = SealedSet(prefs, EXITS, sealer, "exits")
 
     fun notified(study: String, module: String, due: Long, at: Long): Unit =
         synchronized(SealedText.LOCK) { change { it.entry(key(study, module, due), due).put("notified", at) } }
@@ -56,17 +58,17 @@ class PromptLog internal constructor(private val prefs: SharedPreferences, seale
     fun armed(at: Long?): Unit = synchronized(SealedText.LOCK) { prefs.edit { if (at == null) remove(ARMED) else putLong(ARMED, at) } }
 
     /** The exit questionnaire of [study] was notified or opened: no (further) notification for it. */
-    fun exitNotified(study: String): Unit = synchronized(SealedText.LOCK) { prefs.edit { putStringSet(EXITS, exits() + study) } }
+    fun exitNotified(study: String): Unit = synchronized(SealedText.LOCK) { exitSet.add(study) }
 
     /** The studies whose exit questionnaire was notified or opened. */
-    fun exits(): Set<String> = runCatching { prefs.getStringSet(EXITS, null)?.toSet() }.getOrNull() ?: emptySet()
+    fun exits(): Set<String> = runCatching { exitSet.get() }.getOrNull() ?: emptySet()
 
     /** Forgets everything of [study] (deleted or removed from the list). */
     fun removeStudy(study: String): Unit = synchronized(SealedText.LOCK) {
         change { all ->
             all.keys().asSequence().toList().filter { it.startsWith("$study|") }.forEach { all.remove(it) }
         }
-        prefs.edit { putStringSet(EXITS, exits() - study) }
+        exitSet.remove(study)
     }
 
     /** The entry of a prompt; "kept": when it was written (real time), for pruning. */

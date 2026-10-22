@@ -37,7 +37,8 @@ class OfflinePages(context: Context, private val sealer: Sealer = KeystoreSealer
     data class Page(val html: String, val version: String, val files: List<String>, val fetched: Long)
 
     fun page(study: String, module: String): Page? {
-        val f = pageFile(study, module)
+        val f = pageFile(study, module) ?: return null
+        if (!f.exists()) moveLegacy(study, module, f)
         if (!f.exists()) return null
         return runCatching {
             val o = opened(f) ?: return null
@@ -75,7 +76,8 @@ class OfflinePages(context: Context, private val sealer: Sealer = KeystoreSealer
     private fun complete(page: Page) = page.files.all { it.contains("://") && has(it) }
 
     fun drop(study: String, module: String) {
-        pageFile(study, module).delete()
+        pageFile(study, module)?.delete()
+        legacyFile(study, module).delete()
     }
 
     /**
@@ -88,7 +90,8 @@ class OfflinePages(context: Context, private val sealer: Sealer = KeystoreSealer
         try {
             lock.withLock {
                 withContext(Dispatchers.IO) {
-                    pages.listFiles()?.filter { it.name.startsWith(hash(study) + "_") }?.forEach { it.delete() }
+                    val mine = setOfNotNull(name(study)?.let { it + "_" }, hash(study) + "_")
+                    pages.listFiles()?.filter { f -> mine.any { f.name.startsWith(it) } }?.forEach { it.delete() }
                     prune()
                 }
             }
@@ -99,14 +102,51 @@ class OfflinePages(context: Context, private val sealer: Sealer = KeystoreSealer
 
     private fun has(path: String) = File(files, hash(path)).exists()
 
-    private fun pageFile(study: String, module: String) = File(pages, "${hash(study)}_${hash(module)}.json")
+    /**
+     * The file of a kept page, named by a keyed hash of the study's code (null while the key cannot be read): the plain
+     * SHA-256 of a code of six letters was undone in minutes, and the names showed which studies the person takes
+     * part in (audit 2026-10-22, F-01).
+     */
+    private fun pageFile(study: String, module: String) = name(study)?.let { File(pages, "${it}_${hash(module)}.json") }
+
+    /** The name of earlier versions; moved to [pageFile] at the first read ([moveLegacy]). */
+    private fun legacyFile(study: String, module: String) = File(pages, "${hash(study)}_${hash(module)}.json")
+
+    private fun moveLegacy(study: String, module: String, f: File) {
+        val old = legacyFile(study, module)
+        if (!old.exists()) return
+        runCatching {
+            val raw = old.readText()
+            val plain = if (SealedText.plain(raw)) raw else sealer.open(raw, aad(old)) ?: return
+            write(f, sealer.seal(plain, aad(f)).toByteArray())
+            old.delete()
+        }
+    }
+
+    /** HMAC-SHA256 of [study] with the key kept sealed in the app's preferences (made once), first 24 hex digits. */
+    private fun name(study: String): String? {
+        val key = pageKey() ?: return null
+        val mac = javax.crypto.Mac.getInstance("HmacSHA256")
+        mac.init(javax.crypto.spec.SecretKeySpec(key, "HmacSHA256"))
+        return mac.doFinal(study.toByteArray()).joinToString("") { "%02x".format(it) }.take(24)
+    }
+
+    private fun pageKey(): ByteArray? = synchronized(SealedText.LOCK) {
+        val text = SealedText(app.getSharedPreferences("offline", Context.MODE_PRIVATE), "page_key", sealer, "offline-key")
+        val opened = text.read()
+        if (opened.unreadable) return null
+        opened.text?.let { return runCatching { java.util.Base64.getDecoder().decode(it) }.getOrNull() }
+        val key = ByteArray(32).also { java.security.SecureRandom().nextBytes(it) }
+        return runCatching { text.write(java.util.Base64.getEncoder().encodeToString(key), durable = true); key }.getOrNull()
+    }
 
     internal fun save(study: String, module: String, page: Page) {
         pages.mkdirs()
         val o = JSONObject().put("html", page.html).put("version", page.version)
             .put("files", JSONArray(page.files)).put("fetched", page.fetched)
-        val f = pageFile(study, module)
+        val f = pageFile(study, module) ?: return // the key cannot be read now: the page is fetched again later
         write(f, sealer.seal(o.toString(), aad(f)).toByteArray())
+        legacyFile(study, module).delete()
     }
 
     private fun keepFile(path: String, bytes: ByteArray, type: String?) {
@@ -151,9 +191,10 @@ class OfflinePages(context: Context, private val sealer: Sealer = KeystoreSealer
         withContext(Dispatchers.IO) {
             val study = StudyStore(app).get(given.code)?.takeIf { it.secret == given.secret } ?: return@withContext
             val wanted = if (study.running) study.modules.filter { it.offline }.map { it.key }.toSet() else emptySet()
-            pages.listFiles()?.filter { f ->
-                f.name.startsWith(hash(study.code) + "_") && wanted.none { f.name == pageFile(study.code, it).name }
-            }?.forEach { it.delete() }
+            // pages of modules no longer wanted go, under the name of now and of earlier versions (F-01)
+            val keep = wanted.flatMap { listOfNotNull(pageFile(study.code, it)?.name, legacyFile(study.code, it).name) }.toSet()
+            val mine = setOfNotNull(name(study.code)?.let { it + "_" }, hash(study.code) + "_")
+            pages.listFiles()?.filter { f -> mine.any { f.name.startsWith(it) } && f.name !in keep }?.forEach { it.delete() }
             val now = System.currentTimeMillis()
             for (key in wanted) {
                 if (study.code in dropping) return@withContext

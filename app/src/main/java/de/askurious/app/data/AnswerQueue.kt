@@ -24,6 +24,10 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
             QueueDatabase(context, context.applicationContext.getSharedPreferences("queue", Context.MODE_PRIVATE), sealer))
 
     private val text = SealedText(prefs, KEY, sealer, AAD)
+    // the studies with a refusal to show and those whose answers go once the queue can be read: sealed, not plain
+    // sets of codes (audit 2026-10-22, F-01)
+    private val refusedSet = SealedSet(prefs, REFUSED, sealer, "refused")
+    private val forgetSet = SealedSet(prefs, FORGET, sealer, "forget")
 
     /**
      * One answer. [due] and [notified]: of the prompt, null for a module the participant started; [started]: the
@@ -122,7 +126,7 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
     fun removeStudy(study: String): Unit = synchronized(SealedText.LOCK) {
         if (rows != null) rows.removeStudy(study) else save(all().filterNot { it.study == study })
         clearRefused(study)
-        if (study in forgetLater()) prefs.edit { putStringSet(FORGET, forgetLater() - study) }
+        if (study in forgetLater()) forgetSet.remove(study)
     }
 
     /**
@@ -136,7 +140,7 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
             removeStudy(study)
             true
         } catch (e: IOException) {
-            if (!prefs.edit().putStringSet(FORGET, forgetLater() + study).commit()) throw e
+            try { forgetSet.add(study, durable = true) } catch (x: IOException) { throw e }
             clearRefused(study)
             false
         }
@@ -147,7 +151,7 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
         forgetLater().forEach { runCatching { removeStudy(it) } }
     }
 
-    private fun forgetLater(): Set<String> = runCatching { prefs.getStringSet(FORGET, null)?.toSet() }.getOrNull() ?: emptySet()
+    private fun forgetLater(): Set<String> = runCatching { forgetSet.get() }.getOrNull() ?: emptySet()
 
     /**
      * Discards every queued answer: the participant's explicit choice when the queue cannot be read any more (the
@@ -156,7 +160,7 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
      */
     fun discardUnreadable(): Unit = synchronized(SealedText.LOCK) {
         if (rows != null) rows.discard() else text.remove(durable = true)
-        prefs.edit { remove(FORGET) }
+        runCatching { forgetSet.set(emptySet()) }
     }
 
     /** Stores [item] again in place of the one with its id (the time of a first refusal); nothing if it is gone. */
@@ -171,12 +175,12 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
      * An answer of [study] the server refused because today's limit of the report was reached (409 daily_limit):
      * the study card says so once, until the participant closes the note.
      */
-    fun noteRefused(study: String): Unit = synchronized(SealedText.LOCK) { prefs.edit { putStringSet(REFUSED, refusedStudies() + study) } }
+    fun noteRefused(study: String): Unit = synchronized(SealedText.LOCK) { refusedSet.add(study) }
 
     /** The studies with an answer refused for the daily limit that the participant has not seen yet. */
-    fun refusedStudies(): Set<String> = runCatching { prefs.getStringSet(REFUSED, null)?.toSet() }.getOrNull() ?: emptySet()
+    fun refusedStudies(): Set<String> = runCatching { refusedSet.get() }.getOrNull() ?: emptySet()
 
-    fun clearRefused(study: String): Unit = synchronized(SealedText.LOCK) { prefs.edit { putStringSet(REFUSED, refusedStudies() - study) } }
+    fun clearRefused(study: String): Unit = synchronized(SealedText.LOCK) { refusedSet.remove(study) }
 
     /**
      * The refused answers whose notice the participant closed ("Close" on the study card): their ids. The notice
