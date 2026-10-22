@@ -195,7 +195,7 @@ object Sync {
         val store = StudyStore(context)
         OfflinePages(context).dropStudy(study.code)
         val sent = transmitLeave(
-            upload = { sendLocked(context, study) && AnswerQueue(context).of(study.code).isEmpty() },
+            upload = { sendLocked(context, study) && !AnswerQueue.stillToSend(AnswerQueue(context).of(study.code)) },
             leave = {
                 try {
                     Api.leave(study.server, study.secret)
@@ -387,6 +387,7 @@ object Sync {
         val synced = mutableListOf<Study>()
         val offline = lock.withLock {
             var offline = false
+            var failed = false // a refusal of the server that will not change: shown, but no retry (audit 2026-10-22, F-08)
             var checked = false
             // answers of studies taken off the phone while the queue could not be read (T07-N-2)
             runCatching { AnswerQueue(context).retryForget() }
@@ -405,13 +406,13 @@ object Sync {
                 } catch (e: CancellationException) {
                     throw e
                 } catch (e: ApiError) {
-                    offline = true
+                    if (e.transient) offline = true else failed = true
                 } catch (e: Exception) {
                     offline = true // retry unreadable storage and failed uploads too
                 }
             }
             if (!offline) lastAll = System.currentTimeMillis()
-            val status = context.getSharedPreferences("sync_status", Context.MODE_PRIVATE).edit().putBoolean("failed", offline)
+            val status = context.getSharedPreferences("sync_status", Context.MODE_PRIVATE).edit().putBoolean("failed", offline || failed)
             if (!offline && checked) status.putLong("success", lastAll)
             status.apply()
             offline

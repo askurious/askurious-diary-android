@@ -1,7 +1,9 @@
 package de.askurious.app.ui
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /** The join code from a QR code, a link or typed text: the hyphen of test codes must survive. */
@@ -86,5 +88,19 @@ class JoinCodeTest {
         // no join link: another page of the server, an empty custom link
         assertEquals("", joinLinkOf("https://ask.askurious.de/s/k7qm2x", ""))
         assertEquals("", joinLinkOf("askurious://join/", ""))
+    }
+
+    /**
+     * Audit 2026-10-22, F-02: the activity took the data of any intent as a join link (another app could send
+     * android-app://..., content://... or any text), and the join screen looked it up at once. Only join links count.
+     */
+    @Test
+    fun onlyAJoinLinkOpensTheJoinScreenFromAnIntent() {
+        assertTrue(isJoinLink("askurious://join/k7qm2x"))
+        assertTrue(isJoinLink("https://ask.askurious.de/j/k7qm2x"))
+        for (other in listOf("android-app://androidx.navigation/de.askurious.app.ui.Route.About", "content://x/y", "x",
+                             "", "https://ask.askurious.de/s/k7qm2x", "askurious://join/")) {
+            assertFalse(other, isJoinLink(other))
+        }
     }
 }
