@@ -30,6 +30,8 @@ The full texts ship with the app and are shown under "About the app" › licence
 
 Further AndroidX and Jetpack libraries come in as transitive dependencies of the ones above (for example Room, SQLite, AppCompat, Fragment, emoji2, graphics-path; © The Android Open Source Project); they are under the Apache License 2.0 as well, and the app says so below its list of libraries.
 
+Checked against `./gradlew :app:dependencies --configuration releaseRuntimeClasspath` on 2026-10-22: outside AndroidX, the APK takes exactly the libraries listed above. Besides them only `kotlin-stdlib-jdk7` and `kotlin-stdlib-jdk8` 1.8.22 come in (compatibility artifacts of the Kotlin standard library without code of their own since Kotlin 1.8, same copyright and licence), together with the BOMs of Kotlin, kotlinx.coroutines and kotlinx.serialization, which only fix versions. No kotlinx atomicfu or other library is in the release build.
+
 According to `license/README.md` of Kotlin 2.2.20, the Kotlin standard library also contains code derived from other projects: `kotlin.time` from ThreeTen-bp (BSD 3-Clause, listed above, text in `notices.txt`) and, in `kotlin/util/MathJVM.kt`, code derived from the Boost special math functions (Copyright Eric Ford & Hubert Holin 2001, Boost Software License 1.0, which asks for no notice in compiled form).
 
 Only for the tests (not in the APK):
