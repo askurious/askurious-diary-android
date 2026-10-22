@@ -162,7 +162,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         // the whole link: JoinScreen reads the code and the server from it (joinCode, joinServer); after turning the
         // phone (a new activity, the same intent) the screens come from the saved back stack, not again from the link
-        linkCode = if (savedInstanceState == null) intent?.data?.toString()?.takeIf { joinCode(it) != null } else null
+        linkCode = if (savedInstanceState == null) intent?.data?.toString()?.takeIf { isJoinLink(it) } else null
         // App opens the link on top of the screens (as one that comes while the app runs). The NavController would
         // otherwise take the launch intent itself, as it matches a deep link of the graph, and for a link of another
         // app (FLAG_ACTIVITY_NEW_TASK) start the task anew; so the intent keeps no link for it
@@ -173,7 +173,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        intent.data?.toString()?.takeIf { joinCode(it) != null }?.let { linkCode = it }
+        intent.data?.toString()?.takeIf { isJoinLink(it) }?.let { linkCode = it }
         report(intent)
     }
 

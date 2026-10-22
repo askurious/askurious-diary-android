@@ -112,4 +112,19 @@ class AnswerQueueTest {
         assertEquals(waiting, AnswerQueue.Item.fromJson(JSONObject(waiting.toJson().toString())))
         assertEquals(item, AnswerQueue.Item.fromJson(JSONObject(item.toJson().toString())))
     }
+
+    /**
+     * Audit 2026-10-22, F-07: "Studie verlassen" waited for an empty queue, and answers the server refused for good stay
+     * there for clarification: the leave was never sent. Only answers that may still reach the server hold it up.
+     */
+    @Test
+    fun onlyAnswersThatMayStillGoHoldUpALeave() {
+        assertFalse(AnswerQueue.stillToSend(emptyList()))
+        assertTrue(AnswerQueue.stillToSend(listOf(item)))                                   // not sent yet
+        assertTrue(AnswerQueue.stillToSend(listOf(item.copy(refusal = "paused"))))          // refused only for now
+        for (refusal in listOf("expired", "done", "daily_limit", "clock", "changed", "unconfirmed")) {
+            assertFalse(refusal, AnswerQueue.stillToSend(listOf(item.copy(refusal = refusal))))
+        }
+        assertTrue(AnswerQueue.stillToSend(listOf(item.copy(refusal = "expired"), item)))
+    }
 }

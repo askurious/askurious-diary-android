@@ -60,11 +60,16 @@ fun joinServer(text: String, allowHttp: Boolean): String? {
  */
 fun joinLinkOf(deepLink: String?, routeLink: String): String {
     val link = deepLink?.trim().orEmpty()
-    val scheme = runCatching { URI(link).scheme?.lowercase() }.getOrNull()
-    val isJoinLink = when (scheme) {
-        "askurious" -> joinCode(link) != null
-        "http", "https" -> joinServer(link, allowHttp = true) != null
-        else -> false
-    }
-    return if (isJoinLink) link else routeLink
+    return if (isJoinLink(link)) link else routeLink
+}
+
+/**
+ * Whether [link] is a join link (askurious://join/<code>, or http(s) with /j/<code>). The activity takes the data of
+ * an intent only then: any other app could send it any text, which was looked up at once as a code (audit 2026-10-22,
+ * F-02).
+ */
+fun isJoinLink(link: String): Boolean = when (runCatching { URI(link.trim()).scheme?.lowercase() }.getOrNull()) {
+    "askurious" -> joinCode(link) != null
+    "http", "https" -> joinServer(link, allowHttp = true) != null
+    else -> false
 }

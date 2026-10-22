@@ -312,6 +312,14 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
          */
         fun mayStillPass(item: Item): Boolean = item.refusal == "paused"
 
+        /**
+         * Whether [items] still hold an answer that may reach the server: not refused yet, or refused only for now
+         * ([mayStillPass]). Answers the server refused for good (done, expired, too old, a limit, a wrong clock) stay on
+         * the phone for clarification but no longer hold up "Studie verlassen" (audit 2026-10-22, F-07: the leave was
+         * never sent while one of them waited, and the app showed a sync failure for good).
+         */
+        fun stillToSend(items: List<Item>): Boolean = items.any { it.refusal == null || mayStillPass(it) }
+
         /** Only these replies confirm the server retained the complete original, including review cases. */
         fun acknowledged(reply: JSONObject): Boolean = reply.optString("status") in setOf("stored", "review")
 
