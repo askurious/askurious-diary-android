@@ -74,7 +74,7 @@
     <string name="about_stores">Ce téléphone conserve la liste des études, horaires et clés d’accès, les brouillons temporaires, questionnaires en cache, réponses en attente de confirmation et reçus de transmission. L’application ne nécessite aucun compte et n’envoie aucun identifiant de l’appareil. Ces données locales sont exclues des sauvegardes et des transferts vers un autre appareil. Pour chaque étude, elle garde aussi si ses notifications sonnent ; les noms des raccourcis que vous placez sur l’écran d’accueil sont gardés par l’écran d’accueil.</string>
     <string name="privacy_statement">Déclaration de confidentialité</string>
     <string name="about_licence_title">Licence</string>
-    <string name="about_copyright">© 2026 Philipp Brauner et Ralf Philipsen, RWTH Aachen University. Tous droits réservés.</string>
+    <string name="about_copyright">© 2026 RWTH Aachen University. Auteurs : Philipp Brauner, Ralf Philipsen. Tous droits réservés.</string>
     <string name="about_oss_title">Logiciels open source</string>
     <string name="about_oss_intro">L’application utilise ces bibliothèques et cette police ; la licence figure à côté de chacune.</string>
     <string name="show_licence">Afficher les textes des licences</string>

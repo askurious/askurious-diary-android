@@ -78,7 +78,7 @@
     <string name="about_stores">Telefon przechowuje listę badań, harmonogramy i klucze dostępu, tymczasowe wersje robocze, zapisane kwestionariusze, odpowiedzi oczekujące na potwierdzenie i potwierdzenia przesłania. Aplikacja nie wymaga konta i nie wysyła identyfikatora urządzenia. Te lokalne dane są wyłączone z kopii zapasowych i przenoszenia na inne urządzenia. Dla każdego badania zapisuje też, czy powiadomienia mają dźwięk; nazwy skrótów umieszczonych na ekranie głównym przechowuje ekran główny.</string>
     <string name="privacy_statement">Informacja o ochronie danych</string>
     <string name="about_licence_title">Licencja</string>
-    <string name="about_copyright">© 2026 Philipp Brauner i Ralf Philipsen, RWTH Aachen University. Wszelkie prawa zastrzeżone.</string>
+    <string name="about_copyright">© 2026 RWTH Aachen University. Autorzy: Philipp Brauner, Ralf Philipsen. Wszelkie prawa zastrzeżone.</string>
     <string name="about_oss_title">Oprogramowanie open source</string>
     <string name="about_oss_intro">Aplikacja korzysta z tych bibliotek i tej czcionki; licencja jest podana przy każdej pozycji.</string>
     <string name="show_licence">Pokaż teksty licencji</string>

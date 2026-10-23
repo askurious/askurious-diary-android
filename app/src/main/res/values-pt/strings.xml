@@ -74,7 +74,7 @@
     <string name="about_stores">Este telefone guarda a lista de estudos, horários e chaves de acesso, rascunhos temporários, questionários em cache, respostas à espera de confirmação e comprovativos de envio. A aplicação não exige conta nem envia um identificador do dispositivo. Estes dados locais são excluídos das cópias de segurança e transferências entre dispositivos. Para cada estudo guarda também se as notificações tocam com som; os nomes dos atalhos que colocar no ecrã principal são guardados pelo ecrã principal.</string>
     <string name="privacy_statement">Política de privacidade</string>
     <string name="about_licence_title">Licença</string>
-    <string name="about_copyright">© 2026 Philipp Brauner e Ralf Philipsen, RWTH Aachen University. Todos os direitos reservados.</string>
+    <string name="about_copyright">© 2026 RWTH Aachen University. Autores: Philipp Brauner, Ralf Philipsen. Todos os direitos reservados.</string>
     <string name="about_oss_title">Software de código aberto</string>
     <string name="about_oss_intro">A aplicação utiliza estas bibliotecas e este tipo de letra; a licença está indicada junto a cada um.</string>
     <string name="show_licence">Mostrar textos das licenças</string>

@@ -70,7 +70,7 @@
     <string name="about_stores">Deze telefoon bewaart de onderzoekslijst, schema’s en toegangssleutels, tijdelijke concepten, opgeslagen vragenlijsten, antwoorden die op bevestiging wachten en verzendbewijzen. De app vereist geen account en verstuurt geen apparaat-ID. Deze lokale onderzoeksgegevens worden uitgesloten van back-ups en overdracht naar andere apparaten. Per onderzoek bewaart ze ook of de meldingen met geluid komen; de labels van snelkoppelingen op uw startscherm bewaart uw startscherm.</string>
     <string name="privacy_statement">Privacyverklaring</string>
     <string name="about_licence_title">Licentie</string>
-    <string name="about_copyright">© 2026 Philipp Brauner en Ralf Philipsen, RWTH Aachen University. Alle rechten voorbehouden.</string>
+    <string name="about_copyright">© 2026 RWTH Aachen University. Auteurs: Philipp Brauner, Ralf Philipsen. Alle rechten voorbehouden.</string>
     <string name="about_oss_title">Opensourcesoftware</string>
     <string name="about_oss_intro">De app gebruikt deze bibliotheken en dit lettertype; de licentie staat er telkens bij.</string>
     <string name="show_licence">Licentieteksten tonen</string>

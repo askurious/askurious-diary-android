@@ -1,8 +1,10 @@
-Copyright (c) 2026 Philipp Brauner and Ralf Philipsen, RWTH Aachen University. All rights reserved.
+Copyright (c) 2026 RWTH Aachen University. Authors: Philipp Brauner, Ralf Philipsen. All rights reserved.
+RWTH Aachen University holds the rights in the code (§ 69b UrhG).
 
 No open-source licence has been chosen for the code yet; until then all rights are reserved.
 No permission is granted to use, copy, modify, merge, publish, distribute, sublicense or sell copies of this
-software, in whole or in part, without the prior written permission of the copyright holders.
+software, in whole or in part, without the prior written permission of RWTH Aachen University.
 
-The app contains third-party libraries under their own licences; see THIRD_PARTY_NOTICES.md.
+The names "Askurious" and "POLLtergeist" and their logos and icons are not licensed with the code.
+The app contains third-party libraries and a font under their own licences; see THIRD_PARTY_NOTICES.md.
 The Gradle wrapper files (gradlew, gradlew.bat, gradle/wrapper/) are © Gradle, Inc. and contributors, Apache License 2.0.
