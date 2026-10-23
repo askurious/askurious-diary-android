@@ -39,7 +39,7 @@ Only for the tests (not in the APK):
 | Library | Artifacts | Version | Licence |
 |---|---|---|---|
 | JUnit 4 (with Hamcrest Core 1.3) | `junit:junit` | 4.13.2 | Eclipse Public License 1.0 (Hamcrest: BSD-3-Clause) |
-| Robolectric | `org.robolectric:robolectric` | 4.17 | MIT |
+| Robolectric | `org.robolectric:robolectric` | 4.17 | MIT; some files under the Apache License 2.0, as its LICENSE says |
 | JSON in Java | `org.json:json` | 20260814 | Public domain |
 
 The Gradle wrapper (`gradlew`, `gradlew.bat`, `gradle/wrapper/`) is © Gradle, Inc. and contributors, Apache License 2.0; it builds the app and is not in the APK.
