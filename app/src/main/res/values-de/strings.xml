@@ -125,6 +125,7 @@
     <string name="entry_leave">Verlassen</string>
     <string name="retry">Erneut versuchen</string>
     <string name="load_failed">Die Seite konnte nicht geladen werden. Bitte prüfen Sie die Verbindung und versuchen Sie es erneut.</string>
+    <string name="webview_outdated">Das Android System WebView dieses Telefons ist zu alt, um den Fragebogen sicher anzuzeigen. Bitte aktualisieren Sie „Android System WebView“ im Play Store (oder über die Systemupdates des Telefons) und versuchen Sie es erneut.</string>
     <string name="loading">Wird geladen</string>
     <string name="scan_prompt">Halten Sie den QR-Code der Studie in den Rahmen</string>
     <string name="camera_refused">Ohne Zugriff auf die Kamera kann die App keinen QR-Code lesen. Geben Sie stattdessen unten den Beitrittscode ein; er steht unter dem QR-Code.</string>

@@ -42,16 +42,43 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!-- the join link of a study (QR code): https://ask.askurious.de/j/<code> opens the app (App Link; the server
-                 answers /.well-known/assetlinks.json with the fingerprint of the signing key, DIARY_APP_FINGERPRINTS).
-                 Only the participants' address serves /j/ and assetlinks.json, so askurious.de is not listed. The
-                 join screen takes both links as its deep links (JOIN_LINKS in ui/Routes.kt). -->
+            <!-- the join link of a study (QR code): https://<host>/j/<code> opens the app (App Link; the server answers
+                 /.well-known/assetlinks.json with the fingerprint of the signing key, DIARY_APP_FINGERPRINTS). The
+                 hosts are the servers of Askurious and its brands (KNOWN_SERVERS in app/build.gradle.kts): the server
+                 writes the brand's main address into the QR code (askurious.de/j/, polltergeist.de/j/), the
+                 participants' addresses serve /j/ too. One filter per host: Android verifies the hosts of one filter
+                 together, so one host that cannot be verified would cost the others their App Link. The join screen
+                 takes the same links as its deep links (JOIN_LINKS in ui/Routes.kt). -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" />
+                <data android:host="askurious.de" />
+                <data android:pathPrefix="/j/" />
+            </intent-filter>
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" />
                 <data android:host="ask.askurious.de" />
+                <data android:pathPrefix="/j/" />
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" />
+                <data android:host="polltergeist.de" />
+                <data android:pathPrefix="/j/" />
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" />
+                <data android:host="ask.polltergeist.de" />
                 <data android:pathPrefix="/j/" />
             </intent-filter>
             <intent-filter>

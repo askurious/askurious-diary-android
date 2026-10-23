@@ -214,13 +214,19 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
         }
     }
 
+    /**
+     * How many self-started answers to [module] of [study] were started on the study's day of [now] (the local date in
+     * the zone the study had at each moment, [Study.zoneAt]; the server's rule). The database opens only the answers
+     * started within a day of that date ([QueueDatabase.selfStarted]); the exact date is checked here.
+     */
     fun today(study: Study, module: String, now: Long): Int {
         fun date(ms: Long): LocalDate {
             val at = Instant.ofEpochMilli(ms)
             return at.atZone(study.zoneAt(at)).toLocalDate()
         }
         val day = date(now)
-        return of(study.code).count { it.module == module && it.due == null && date(it.started) == day }
+        val candidates = rows?.selfStarted(study.code, module, day) ?: of(study.code)
+        return candidates.count { it.study == study.code && it.module == module && it.due == null && date(it.started) == day }
     }
 
     private fun save(items: List<Item>) {

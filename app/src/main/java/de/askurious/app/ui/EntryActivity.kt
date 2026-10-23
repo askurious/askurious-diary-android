@@ -279,6 +279,8 @@ class EntryActivity : ComponentActivity() {
         lifecycleScope.launch {
             try {
                 val address = Api.absolute(intent.getStringExtra(EXTRA_ADDRESS) ?: Api.entry(study.server, study.secret, module, due, notified, reminded, session.entryId), study.server)
+                // a WebView without the main-frame message channel gets no page of the server ([outdatedWebView])
+                if (!mainFrameBridgeSupported()) { outdatedWebView(); return@launch }
                 clearWebState()
                 url = address
             } catch (e: ApiError) {
@@ -711,11 +713,32 @@ class EntryActivity : ComponentActivity() {
     }
 
     /**
+     * Whether this phone's WebView offers the bridge as a message channel of the main frame (WEB_MESSAGE_LISTENER and
+     * DOCUMENT_START_SCRIPT). Without it the server's pages are not opened: addJavascriptInterface would reach every
+     * frame of the page, and the app could only check the address of the main page, not the frame that calls.
+     */
+    private fun mainFrameBridgeSupported(): Boolean = Api.origin(server) != null &&
+        WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER) &&
+        WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)
+
+    /**
+     * The WebView is too old for the bridge of the server's pages: a message asks to update Android System WebView
+     * instead of the page. "Try again" checks again (after the update); the prompt's notification stays, so the entry
+     * can be opened from it once the WebView is updated.
+     */
+    private fun outdatedWebView() {
+        url = null
+        error = getString(R.string.webview_outdated)
+        retryable = true
+    }
+
+    /**
      * [online]: the page comes from the server. Its bridge is a message channel that only the main frame of the
      * server's own origin reaches (audit 2026-10-13, AN-12): addWebMessageListener with that origin as the only rule,
      * and a script at the start of each document of that origin that offers participant.js the same names as before
-     * (window.AskuriousApp.done, .offlineSubmit). A WebView too old for it, and the kept page (whose WebView loads
-     * nothing from any other origin, [offlineWebView]), use addJavascriptInterface, which [fromOwnPage] guards.
+     * (window.AskuriousApp.done, .offlineSubmit). A WebView too old for it gets no bridge and no page of the server
+     * ([webView], [outdatedWebView]). Only the kept page (whose WebView loads nothing from any other origin,
+     * [offlineWebView]) uses addJavascriptInterface, which [fromOwnPage] guards.
      */
     @SuppressLint("SetJavaScriptEnabled")
     private fun baseWebView(ctx: Context, online: Boolean): WebView {
@@ -731,8 +754,9 @@ class EntryActivity : ComponentActivity() {
             // autofill services do not see (nor offer) what is typed into a questionnaire
             importantForAutofill = View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS
             settings.userAgentString = settings.userAgentString + " AskuriousDiary/1"
-            // the fallback bridge on an online page takes no drafts: a frame of another site reaches it too (AND-04)
-            if (!(online && listenOnMainFrame(this))) addJavascriptInterface(Bridge(session, drafts = !online), BRIDGE)
+            // online only the message channel of the main frame (webView loads nothing without it); the interface,
+            // which every frame reaches, only for the kept page
+            if (online) listenOnMainFrame(this) else addJavascriptInterface(Bridge(session), BRIDGE)
             settings.textZoom = (resources.configuration.fontScale * 100).toInt().coerceIn(100, 300)
             web = this
             attachChrome(this)
@@ -755,7 +779,7 @@ class EntryActivity : ComponentActivity() {
             WebViewCompat.addDocumentStartJavaScript(w, BRIDGE_SCRIPT, setOf(origin))
             true
         } catch (e: RuntimeException) {
-            // an origin rule the WebView does not take: the bridge of before
+            // an origin rule the WebView does not take: no bridge, and webView loads no page
             stopListening(w)
             false
         }
@@ -786,7 +810,9 @@ class EntryActivity : ComponentActivity() {
         return baseWebView(ctx, online = true).apply {
             webViewClient = onlineClient()
             attachChrome(this)
-            loadUrl(start)
+            // without the message channel (an old WebView, an origin rule it does not take) the page is not loaded
+            if (this in listening) loadUrl(start)
+            else android.os.Handler(android.os.Looper.getMainLooper()).post { outdatedWebView() }
         }
     }
 

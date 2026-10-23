@@ -132,6 +132,7 @@
     <string name="entry_leave">Quitter</string>
     <string name="retry">Réessayer</string>
     <string name="load_failed">La page n’a pas pu être chargée. Veuillez vérifier la connexion et réessayer.</string>
+    <string name="webview_outdated">L’Android System WebView de ce téléphone est trop ancien pour afficher le questionnaire en toute sécurité. Veuillez mettre à jour « Android System WebView » dans le Play Store (ou via les mises à jour système du téléphone) et réessayer.</string>
     <string name="loading">Chargement</string>
     <string name="scan_prompt">Placez le code QR de l’étude dans le cadre</string>
     <string name="camera_refused">Sans accès à la caméra, l’application ne peut pas lire de code QR. Saisissez plutôt ci-dessous le code de participation ; il figure sous le code QR.</string>

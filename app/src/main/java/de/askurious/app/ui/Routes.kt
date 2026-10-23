@@ -35,7 +35,11 @@ sealed interface Route {
 }
 
 /**
- * The join links the app opens, as in the manifest: the App Link of the participants' address and askurious://join.
- * Only the participants' address serves /j/, so askurious.de is not listed (see AndroidManifest.xml).
+ * The hosts whose join links (https://<host>/j/<code>) are App Links of the app, as in the manifest: the servers of
+ * Askurious and its brands (KNOWN_SERVERS in app/build.gradle.kts). The server writes the brand's main address into the
+ * QR code (askurious.de, polltergeist.de); the participants' addresses serve /j/ as well.
  */
-val JOIN_LINKS = listOf("https://ask.askurious.de/j/{code}", "askurious://join/{code}")
+val APP_LINK_HOSTS = listOf("askurious.de", "ask.askurious.de", "polltergeist.de", "ask.polltergeist.de")
+
+/** The join links the app opens, as in the manifest: the App Links of [APP_LINK_HOSTS] and askurious://join. */
+val JOIN_LINKS = APP_LINK_HOSTS.map { "https://$it/j/{code}" } + "askurious://join/{code}"
