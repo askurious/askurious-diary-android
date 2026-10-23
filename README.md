@@ -227,7 +227,7 @@ No pinning. The servers use Let's Encrypt certificates whose keys are renewed ev
 
 ## Not yet
 
-The entry part without a connection, iOS, an open-source licence (a decision of RWTH Aachen University, which holds the rights).
+The entry part without a connection, iOS.
 
 ## Open questionnaires and interruptions
 
@@ -265,6 +265,6 @@ that the entry's start reads no store on the main thread (StrictMode).
 
 Copyright (c) 2026 RWTH Aachen University. Authors: Philipp Brauner, Ralf Philipsen.
 RWTH Aachen University holds the rights in the code (§ 69b UrhG); the app is developed by the [Chair of Communication Science](https://www.comm.rwth-aachen.de).
-No open-source licence applies to the code yet; until then all rights are reserved ([LICENSE](LICENSE)).
-The names and logos of Askurious and POLLtergeist are not licensed with the code.
+It licenses the code under the European Union Public Licence 1.2 ([LICENSE](LICENSE), SPDX `EUPL-1.2`; the official German text in [LICENSE.de.txt](LICENSE.de.txt)); the files of others listed at the top of LICENSE keep their own licences.
+The names and logos of Askurious and POLLtergeist are not licensed under the EUPL.
 The libraries, the font and their licences: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md); the Gradle wrapper files (`gradlew`, `gradlew.bat`, `gradle/wrapper/`) are under the Apache License 2.0.

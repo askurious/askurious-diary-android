@@ -66,7 +66,7 @@
     <string name="about_stores">本手机保存研究列表、时间安排和访问密钥、临时草稿、缓存问卷、等待确认的回答以及传输记录。应用无需账户，也不发送设备标识。这些本地研究数据不会包含在备份或设备迁移中。它还会为每项研究保存通知是否有提示音；您放在主屏幕上的快捷方式名称由主屏幕保存。</string>
     <string name="privacy_statement">隐私声明</string>
     <string name="about_licence_title">许可</string>
-    <string name="about_copyright">© 2026 RWTH Aachen University。作者：Philipp Brauner、Ralf Philipsen。保留所有权利。</string>
+    <string name="about_copyright">© 2026 RWTH Aachen University。作者：Philipp Brauner、Ralf Philipsen。依据 EUPL-1.2 许可。</string>
     <string name="about_oss_title">开源软件</string>
     <string name="about_oss_intro">本应用使用以下库和字体，各自的许可证列于其后。</string>
     <string name="show_licence">显示许可证文本</string>

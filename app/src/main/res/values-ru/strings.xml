@@ -78,7 +78,7 @@
     <string name="about_stores">На телефоне хранятся список исследований, расписания и ключи доступа, временные черновики, сохранённые анкеты, ответы в ожидании подтверждения и квитанции передачи. Приложению не нужна учётная запись, оно не отправляет идентификатор устройства. Эти локальные данные исключены из резервных копий и переноса на другие устройства. Для каждого исследования оно также хранит, приходят ли уведомления со звуком; названия ярлыков на главном экране хранит главный экран.</string>
     <string name="privacy_statement">Политика конфиденциальности</string>
     <string name="about_licence_title">Лицензия</string>
-    <string name="about_copyright">© 2026 RWTH Aachen University. Авторы: Philipp Brauner, Ralf Philipsen. Все права защищены.</string>
+    <string name="about_copyright">© 2026 RWTH Aachen University. Авторы: Philipp Brauner, Ralf Philipsen. Лицензия EUPL-1.2.</string>
     <string name="about_oss_title">Программы с открытым исходным кодом</string>
     <string name="about_oss_intro">Приложение использует эти библиотеки и этот шрифт; лицензия указана у каждого из них.</string>
     <string name="show_licence">Показать тексты лицензий</string>
