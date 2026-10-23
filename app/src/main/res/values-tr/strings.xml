@@ -70,7 +70,7 @@
     <string name="about_stores">Bu telefon araştırma listesini, zamanlamaları ve erişim anahtarlarını, geçici taslakları, önbellekteki anketleri, onay bekleyen yanıtları ve aktarım makbuzlarını saklar. Uygulama hesap gerektirmez ve cihaz kimliği göndermez. Bu yerel araştırma verileri yedeklemelere ve başka cihazlara aktarılmaz. Her çalışma için bildirimlerinin sesli gelip gelmediğini de saklar; ana ekranınıza koyduğunuz kısayolların etiketlerini ana ekranınız saklar.</string>
     <string name="privacy_statement">Gizlilik bildirimi</string>
     <string name="about_licence_title">Lisans</string>
-    <string name="about_copyright">© 2026 RWTH Aachen University. Yazarlar: Philipp Brauner, Ralf Philipsen. Tüm hakları saklıdır.</string>
+    <string name="about_copyright">© 2026 RWTH Aachen University. Yazarlar: Philipp Brauner, Ralf Philipsen. EUPL-1.2 kapsamında lisanslanmıştır.</string>
     <string name="about_oss_title">Açık kaynak yazılım</string>
     <string name="about_oss_intro">Uygulama bu kütüphaneleri ve bu yazı tipini kullanır; lisans her birinin yanında belirtilmiştir.</string>
     <string name="show_licence">Lisans metinlerini göster</string>

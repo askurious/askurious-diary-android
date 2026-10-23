@@ -70,7 +70,7 @@
     <string name="about_stores">Auf diesem Telefon liegen die Studienliste, Zeitpläne und Zugangsschlüssel, vorübergehende Entwürfe, zwischengespeicherte Fragebögen, noch unbestätigte Antworten und Übertragungsbelege. Die App benötigt kein Konto und sendet keine Geräte-ID. Diese lokalen Studiendaten sind von Sicherungen und Geräteübertragungen ausgeschlossen. Je Studie speichert sie außerdem, ob ihre Benachrichtigungen mit Ton kommen; die Bezeichnungen von Verknüpfungen auf dem Startbildschirm speichert der Startbildschirm.</string>
     <string name="privacy_statement">Datenschutzerklärung</string>
     <string name="about_licence_title">Lizenz</string>
-    <string name="about_copyright">© 2026 RWTH Aachen University. Autoren: Philipp Brauner, Ralf Philipsen. Alle Rechte vorbehalten.</string>
+    <string name="about_copyright">© 2026 RWTH Aachen University. Autoren: Philipp Brauner, Ralf Philipsen. Lizenziert unter der EUPL-1.2.</string>
     <string name="about_oss_title">Open-Source-Software</string>
     <string name="about_oss_intro">Die App nutzt diese Bibliotheken und diese Schrift; die Lizenz steht jeweils dabei.</string>
     <string name="show_licence">Lizenztexte anzeigen</string>

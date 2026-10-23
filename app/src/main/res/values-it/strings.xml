@@ -74,7 +74,7 @@
     <string name="about_stores">Questo telefono conserva l’elenco degli studi, orari e chiavi di accesso, bozze temporanee, questionari in cache, risposte in attesa di conferma e ricevute di trasmissione. L’app non richiede un account e non invia un identificativo del dispositivo. Questi dati locali sono esclusi dai backup e dai trasferimenti ad altri dispositivi. Per ogni studio conserva anche se le sue notifiche suonano; i nomi dei collegamenti che mette nella schermata Home li conserva la schermata Home.</string>
     <string name="privacy_statement">Informativa sulla privacy</string>
     <string name="about_licence_title">Licenza</string>
-    <string name="about_copyright">© 2026 RWTH Aachen University. Autori: Philipp Brauner, Ralf Philipsen. Tutti i diritti riservati.</string>
+    <string name="about_copyright">© 2026 RWTH Aachen University. Autori: Philipp Brauner, Ralf Philipsen. Concesso in licenza secondo la EUPL-1.2.</string>
     <string name="about_oss_title">Software open source</string>
     <string name="about_oss_intro">L’app utilizza queste librerie e questo carattere; la licenza è indicata accanto a ciascuno.</string>
     <string name="show_licence">Mostra i testi delle licenze</string>
