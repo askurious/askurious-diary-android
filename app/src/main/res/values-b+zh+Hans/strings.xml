@@ -118,6 +118,7 @@
     <string name="entry_leave">离开</string>
     <string name="retry">重试</string>
     <string name="load_failed">无法加载页面。请检查网络连接后重试。</string>
+    <string name="webview_outdated">此手机上的 Android System WebView 版本过旧，无法安全地显示问卷。请在 Play 商店（或通过手机的系统更新）更新“Android System WebView”后重试。</string>
     <string name="loading">正在加载</string>
     <string name="scan_prompt">将研究的二维码放入取景框内</string>
     <string name="camera_refused">无法使用相机时，应用无法读取二维码。请在下方输入加入码，它印在二维码下方。</string>

@@ -30,6 +30,12 @@ class AuditStringsTest {
         }
     }
 
+    /** The message of an entry on a WebView too old for the main-frame bridge names what to update, in every language. */
+    @Test
+    fun everyLanguageAsksToUpdateTheWebView() {
+        for (dir in languages) assertTrue(dir.name, strings(dir)["webview_outdated"].orEmpty().contains("Android System WebView"))
+    }
+
     @Test
     fun theNameOfARepeatedButtonHoldsItsVisibleLabel() {
         for (dir in languages) {

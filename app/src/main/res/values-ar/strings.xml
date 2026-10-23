@@ -153,6 +153,7 @@
     <string name="entry_leave">مغادرة</string>
     <string name="retry">إعادة المحاولة</string>
     <string name="load_failed">تعذّر تحميل الصفحة. يُرجى التحقق من الاتصال والمحاولة مرة أخرى.</string>
+    <string name="webview_outdated">إن Android System WebView على هذا الهاتف قديم جدًا لعرض الاستبيان بأمان. يُرجى تحديث \"Android System WebView\" من متجر Play (أو عبر تحديثات نظام الهاتف) والمحاولة مرة أخرى.</string>
     <string name="loading">جارٍ التحميل</string>
     <string name="scan_prompt">ضع رمز QR الخاص بالدراسة داخل الإطار</string>
     <string name="camera_refused">بدون الوصول إلى الكاميرا لا يستطيع التطبيق قراءة رمز QR. يُرجى إدخال رمز الانضمام أدناه بدلاً من ذلك؛ فهو مكتوب تحت رمز QR.</string>

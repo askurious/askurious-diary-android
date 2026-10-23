@@ -139,6 +139,7 @@
     <string name="entry_leave">Покинуть</string>
     <string name="retry">Повторить</string>
     <string name="load_failed">Не удалось загрузить страницу. Проверьте подключение и повторите попытку.</string>
+    <string name="webview_outdated">Android System WebView на этом телефоне слишком старый, чтобы безопасно показать анкету. Обновите «Android System WebView» в Play Маркете (или через системные обновления телефона) и повторите попытку.</string>
     <string name="loading">Загрузка</string>
     <string name="scan_prompt">Наведите рамку на QR-код исследования</string>
     <string name="camera_refused">Без доступа к камере приложение не может прочитать QR-код. Введите ниже код участия — он указан под QR-кодом.</string>

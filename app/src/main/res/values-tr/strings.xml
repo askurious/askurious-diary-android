@@ -125,6 +125,7 @@
     <string name="entry_leave">Çık</string>
     <string name="retry">Tekrar dene</string>
     <string name="load_failed">Sayfa yüklenemedi. Lütfen bağlantıyı kontrol edip tekrar deneyin.</string>
+    <string name="webview_outdated">Bu telefondaki Android System WebView, anketi güvenli bir şekilde göstermek için çok eski. Lütfen Play Store’dan (veya telefonun sistem güncellemeleriyle) \"Android System WebView\" uygulamasını güncelleyip tekrar deneyin.</string>
     <string name="loading">Yükleniyor</string>
     <string name="scan_prompt">Çalışmanın QR kodunu çerçevenin içine getirin</string>
     <string name="camera_refused">Kameraya erişim olmadan uygulama QR kodunu okuyamaz. Bunun yerine aşağıya katılım kodunu girin; kod, QR kodunun altında yazar.</string>

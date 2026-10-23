@@ -125,6 +125,7 @@
     <string name="entry_leave">Verlaten</string>
     <string name="retry">Opnieuw proberen</string>
     <string name="load_failed">De pagina kon niet worden geladen. Controleer de verbinding en probeer het opnieuw.</string>
+    <string name="webview_outdated">De Android System WebView van deze telefoon is te oud om de vragenlijst veilig te tonen. Werk „Android System WebView” bij in de Play Store (of via de systeemupdates van de telefoon) en probeer het opnieuw.</string>
     <string name="loading">Laden</string>
     <string name="scan_prompt">Houd de QR-code van het onderzoek binnen het kader</string>
     <string name="camera_refused">Zonder toegang tot de camera kan de app geen QR-code lezen. Voer hieronder de deelnamecode in; die staat onder de QR-code.</string>

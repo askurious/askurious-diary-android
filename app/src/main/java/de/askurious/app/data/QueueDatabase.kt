@@ -14,12 +14,16 @@ import javax.crypto.spec.SecretKeySpec
 import org.json.JSONArray
 import org.json.JSONObject
 import java.time.Instant
+import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZoneOffset
 
 /** One sealed answer per transaction. Indexed identifiers are keyed, opaque tags; times and forms stay sealed.
  * Migration commits the entire old queue before removing it. A committed marker prevents resurrection after a
  * crash between the two stores. Corruption fails closed: SQLite's default delete-and-recreate is forbidden.
+ * Schema 2 adds `start_day`, the keyed tag of the UTC date of `started`, so the daily count of self-started answers
+ * opens only the answers started near that day; rows of schema 1 get it once after the upgrade ([backfill]), a row
+ * that cannot be opened then keeps NULL and is still counted (it is opened as before).
  */
 internal class QueueDatabase(context: Context, private val prefs: SharedPreferences, private val sealer: Sealer) {
     private val app = context.applicationContext
@@ -68,10 +72,37 @@ internal class QueueDatabase(context: Context, private val prefs: SharedPreferen
         } catch (e: Exception) { indexKey = null; throw e }
     }
 
+    /**
+     * Gives the rows of schema 1 their `start_day` once (marker 'start_day' in metadata). Best effort: a row that
+     * cannot be opened keeps NULL, which [selfStarted] still returns, so no answer drops out of the daily count.
+     */
+    private fun backfill(db: SQLiteDatabase) {
+        val done = db.rawQuery("SELECT 1 FROM metadata WHERE name='start_day'", null).use { it.moveToFirst() }
+        if (done) return
+        db.beginTransaction()
+        try {
+            db.query("answers", arrayOf("id", "body"), "start_day IS NULL", null, null, null, "rowid").use { cursor ->
+                while (cursor.moveToNext()) {
+                    val id = cursor.getString(0)
+                    val item = runCatching {
+                        sealer.open(cursor.getString(1), "queue-row:$id")?.let { AnswerQueue.Item.fromJson(JSONObject(it)) }
+                    }.getOrNull()?.takeIf { it.id == id } ?: continue
+                    db.update("answers", ContentValues().apply { put("start_day", startDay(item)) }, "id=?", arrayOf(id))
+                }
+            }
+            db.execSQL("INSERT OR REPLACE INTO metadata(name,value) VALUES('start_day','done')")
+            db.setTransactionSuccessful()
+        } finally { db.endTransaction() }
+    }
+
+    private fun startDay(item: AnswerQueue.Item): String =
+        tag("start", Instant.ofEpochMilli(item.started).atZone(ZoneOffset.UTC).toLocalDate().toString())
+
     private fun <T> access(action: (SQLiteDatabase) -> T): T = synchronized(SealedText.LOCK) {
         try {
             val db = helper.writableDatabase
             initialise(db)
+            backfill(db)
             action(db)
         } catch (e: IOException) {
             throw e
@@ -88,6 +119,7 @@ internal class QueueDatabase(context: Context, private val prefs: SharedPreferen
             put("module", tag("module", item.module))
             put("prompt", tag("prompt", item.due?.toString() ?: "self"))
             put("day", tag("day", Instant.ofEpochMilli(item.completed).atZone(ZoneOffset.UTC).toLocalDate().toString()))
+            put("start_day", startDay(item))
             put("body", sealed)
         }
         db.insertOrThrow("answers", null, values)
@@ -147,6 +179,7 @@ internal class QueueDatabase(context: Context, private val prefs: SharedPreferen
                     val values = ContentValues().apply {
                         put("body", sealer.seal(item.toJson().toString(), "queue-row:$id"))
                         put("day", tag("day", Instant.ofEpochMilli(item.completed).atZone(ZoneOffset.UTC).toLocalDate().toString()))
+                        put("start_day", startDay(item))
                     }
                     db.update("answers", values, "id=?", arrayOf(id))
                 }
@@ -171,10 +204,21 @@ internal class QueueDatabase(context: Context, private val prefs: SharedPreferen
             .count { Instant.ofEpochMilli(it.completed).atZone(zone).toLocalDate() == date }
     }
 
+    /**
+     * The self-started answers (no prompt) of [module] in [study] that may have been started on the local date [date]
+     * in any time zone: those started on the UTC dates [date] - 1 to [date] + 1 (offsets lie between -12 and +14 hours),
+     * and rows without `start_day` ([backfill]). The caller checks the exact local date; only these rows are opened.
+     */
+    fun selfStarted(study: String, module: String, date: LocalDate): List<AnswerQueue.Item> = access { db ->
+        val days = (-1L..1L).map { tag("start", date.plusDays(it).toString()) }
+        read(db, "study=? AND module=? AND prompt=? AND (start_day IN (?,?,?) OR start_day IS NULL)",
+            (listOf(tag("study", study), tag("module", module), tag("prompt", "self")) + days).toTypedArray())
+    }
+
     companion object {
         private var shared: SQLiteOpenHelper? = null
         private fun helper(context: Context): SQLiteOpenHelper = synchronized(SealedText.LOCK) {
-            shared ?: object : SQLiteOpenHelper(context, "answers.db", null, 1,
+            shared ?: object : SQLiteOpenHelper(context, "answers.db", null, 2,
                 DatabaseErrorHandler { throw IOException("Queue database corrupt; original retained") }) {
                 override fun onConfigure(db: SQLiteDatabase) {
                     db.rawQuery("PRAGMA secure_delete=ON", null).use { it.moveToFirst() }
@@ -182,12 +226,17 @@ internal class QueueDatabase(context: Context, private val prefs: SharedPreferen
                 }
                 override fun onCreate(db: SQLiteDatabase) {
                     db.execSQL("CREATE TABLE metadata(name TEXT PRIMARY KEY, value TEXT NOT NULL)")
-                    db.execSQL("CREATE TABLE answers(id TEXT PRIMARY KEY, study TEXT NOT NULL, module TEXT NOT NULL, prompt TEXT NOT NULL, day TEXT NOT NULL, body TEXT NOT NULL)")
+                    db.execSQL("CREATE TABLE answers(id TEXT PRIMARY KEY, study TEXT NOT NULL, module TEXT NOT NULL, prompt TEXT NOT NULL, day TEXT NOT NULL, body TEXT NOT NULL, start_day TEXT)")
                     db.execSQL("CREATE INDEX answers_prompt ON answers(study,module,prompt)")
                     db.execSQL("CREATE INDEX answers_day ON answers(study,module,prompt,day)")
+                    db.execSQL("CREATE INDEX answers_start ON answers(study,module,prompt,start_day)")
                 }
+                // 1 -> 2: the column start_day (NULL for the rows kept so far, filled by backfill) and its index; in
+                // the upgrade's transaction, so a failure leaves schema 1 and every row as they were
                 override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-                    throw IOException("Unsupported queue schema; original retained")
+                    if (oldVersion != 1 || newVersion != 2) throw IOException("Unsupported queue schema; original retained")
+                    db.execSQL("ALTER TABLE answers ADD COLUMN start_day TEXT")
+                    db.execSQL("CREATE INDEX answers_start ON answers(study,module,prompt,start_day)")
                 }
             }.also { shared = it }
         }

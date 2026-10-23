@@ -139,6 +139,7 @@
     <string name="entry_leave">Opuść</string>
     <string name="retry">Spróbuj ponownie</string>
     <string name="load_failed">Nie udało się wczytać strony. Prosimy sprawdzić połączenie i spróbować ponownie.</string>
+    <string name="webview_outdated">Android System WebView na tym telefonie jest zbyt stary, aby bezpiecznie wyświetlić kwestionariusz. Prosimy zaktualizować „Android System WebView” w Sklepie Play (lub przez aktualizacje systemu telefonu) i spróbować ponownie.</string>
     <string name="loading">Wczytywanie</string>
     <string name="scan_prompt">Prosimy umieścić kod QR badania w ramce</string>
     <string name="camera_refused">Bez dostępu do aparatu aplikacja nie odczyta kodu QR. Prosimy wpisać poniżej kod dołączenia; znajduje się pod kodem QR.</string>
