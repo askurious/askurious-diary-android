@@ -70,7 +70,7 @@
     <string name="about_stores">This phone stores the study list, schedules and access keys, temporary drafts, cached questionnaires, answers awaiting confirmation and transfer receipts. The app needs no account and sends no device ID. These local study data are excluded from backups and device transfers. For each study it also keeps whether its notifications ring with a sound, and the labels of shortcuts you put on your home screen are kept by your home screen.</string>
     <string name="privacy_statement">Privacy statement</string>
     <string name="about_licence_title">Licence</string>
-    <string name="about_copyright">© 2026 Philipp Brauner and Ralf Philipsen, RWTH Aachen University. All rights reserved.</string>
+    <string name="about_copyright">© 2026 RWTH Aachen University. Authors: Philipp Brauner, Ralf Philipsen. All rights reserved.</string>
     <string name="about_oss_title">Open-source software</string>
     <string name="about_oss_intro">The app uses these libraries and this font; the licence stands with each.</string>
     <string name="show_licence">Show licence texts</string>

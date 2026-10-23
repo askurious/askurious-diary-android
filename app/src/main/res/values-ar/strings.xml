@@ -86,7 +86,7 @@
     <string name="about_stores">يحفظ هذا الهاتف قائمة الدراسات ومواعيدها ومفاتيح الوصول والمسودات المؤقتة والاستبيانات المخزنة مؤقتًا والإجابات التي تنتظر التأكيد وإيصالات النقل. لا يتطلب التطبيق حسابًا ولا يرسل معرّف الجهاز. تُستثنى بيانات الدراسة المحلية هذه من النسخ الاحتياطية والنقل إلى أجهزة أخرى. ويحفظ أيضًا لكل دراسة ما إذا كانت إشعاراتها تصدر صوتًا؛ أما أسماء الاختصارات التي تضعها على شاشتك الرئيسية فتحفظها الشاشة الرئيسية.</string>
     <string name="privacy_statement">بيان الخصوصية</string>
     <string name="about_licence_title">الترخيص</string>
-    <string name="about_copyright">© 2026 Philipp Brauner و Ralf Philipsen، RWTH Aachen University. جميع الحقوق محفوظة.</string>
+    <string name="about_copyright">© 2026 RWTH Aachen University. المؤلفون: Philipp Brauner، Ralf Philipsen. جميع الحقوق محفوظة.</string>
     <string name="about_oss_title">برمجيات مفتوحة المصدر</string>
     <string name="about_oss_intro">يستخدم التطبيق هذه المكتبات وهذا الخط؛ والترخيص مذكور بجانب كلّ منها.</string>
     <string name="show_licence">عرض نصوص التراخيص</string>
