@@ -177,7 +177,7 @@
     <string name="ready_title">Para que los cuestionarios breves lleguen a tiempo</string>
     <string name="ready_intro">La aplicación le avisa con una notificación en el momento adecuado de los cuestionarios breves del estudio. Para ello necesita dos permisos; un tercer ajuste es opcional. Puede cambiarlo todo después en los ajustes del teléfono.</string>
     <string name="ready_notify_title">Notificaciones</string>
-    <string name="ready_notify_text">Sin ellas no llega ningún cuestionario breve.</string>
+    <string name="ready_notify_text">Sin este permiso no recibirá notificaciones de los cuestionarios breves. Puede seguir respondiendo en la app los cuestionarios breves abiertos.</string>
     <string name="ready_exact_title">Alarmas y recordatorios</string>
     <string name="ready_exact_text">Sin este permiso, los cuestionarios breves pueden llegar con unos minutos de retraso.</string>
     <string name="state_pending">Cuestionario inicial aún sin terminar</string>
@@ -244,7 +244,8 @@
     <string name="another_code">Usar otro código</string>
     <string name="close_warning">Las respuestas no enviadas pueden perderse al cerrar. ¿Continuar o descartarlas?</string>
     <string name="discard">Descartar y cerrar</string>
-    <string name="permission_needed">Esta pregunta necesita acceso al micrófono o ubicación. Si lo denegó permanentemente, abra los ajustes. También puede usar una entrada alternativa.</string>
+    <string name="permission_microphone">Esta pregunta necesita acceso al micrófono. Si lo denegó permanentemente, permítalo en los ajustes de la app. También puede usar la entrada alternativa de la pregunta, si la hay.</string>
+    <string name="permission_location">Esta pregunta necesita acceso a su ubicación. Si lo denegó permanentemente, permítalo en los ajustes de la app. También puede usar la entrada alternativa de la pregunta, si la hay.</string>
     <string name="open_settings">Abrir ajustes de la app</string>
     <string name="restored">Revise las respuestas restauradas. Quizá deba repetir grabaciones y dibujos no enviados.</string>
     <string name="media_privacy">El acceso al micrófono o a la ubicación solo se solicita cuando una pregunta del estudio lo necesita. El consentimiento del estudio explica qué se envía. La aplicación también guarda el estado de envío en este teléfono.</string>
@@ -299,4 +300,11 @@
     <string name="refresh_studies">Actualizar estudios</string>
     <string name="offline_ready">%1$s: disponible sin conexión</string>
     <string name="offline_missing">%1$s: aún no disponible sin conexión</string>
+    <string name="channel_off_sound">Las notificaciones con sonido están desactivadas para este estudio. Puede seguir respondiendo aquí los cuestionarios breves abiertos.</string>
+    <string name="channel_off_silent">Las notificaciones sin sonido están desactivadas para este estudio. Puede seguir respondiendo aquí los cuestionarios breves abiertos.</string>
+    <string name="channel_open">Activar en los ajustes</string>
+    <string name="channel_open_for">Activar en los ajustes: notificaciones del estudio «%1$s»</string>
+    <string name="quiet_same">El inicio y el final deben ser distintos. Para desactivarlas, use el interruptor «Usar horas de silencio».</string>
+    <string name="scan_no_code">Este código QR no contiene ningún código de acceso. Escanee el código de los documentos de su estudio o introduzca el código de acceso.</string>
+    <string name="scan_again">Volver a escanear</string>
 </resources>

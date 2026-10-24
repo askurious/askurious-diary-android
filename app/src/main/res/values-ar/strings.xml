@@ -198,7 +198,7 @@
     <string name="ready_title">لكي تصل الاستبيانات القصيرة في موعدها</string>
     <string name="ready_intro">يُعلن التطبيق عن الاستبيانات القصيرة للدراسة عبر إشعار في الوقت المناسب. ولذلك يحتاج إلى إذنين، وإعداد ثالث اختياري. يمكنك تغيير كل ذلك لاحقًا في إعدادات الهاتف.</string>
     <string name="ready_notify_title">الإشعارات</string>
-    <string name="ready_notify_text">بدونها لا يصل أي استبيان قصير.</string>
+    <string name="ready_notify_text">بدون هذا الإذن لن تصلك إشعارات الاستبيانات القصيرة. ويمكنك مواصلة الإجابة عن الاستبيانات القصيرة المتاحة في التطبيق.</string>
     <string name="ready_exact_title">المنبّهات والتذكيرات</string>
     <string name="ready_exact_text">بدونها قد تصل الاستبيانات القصيرة متأخرة بضع دقائق.</string>
     <string name="state_pending">الاستبيان التمهيدي لم يكتمل بعد</string>
@@ -265,7 +265,8 @@
     <string name="another_code">استخدام رمز آخر</string>
     <string name="close_warning">قد تُفقد الإجابات غير المُرسلة عند الإغلاق. هل تواصل أم تتجاهلها؟</string>
     <string name="discard">تجاهل وإغلاق</string>
-    <string name="permission_needed">يحتاج هذا السؤال إلى الميكروفون أو الموقع. إذا رفضت ذلك نهائيًا، فيُرجى فتح إعدادات التطبيق. ويمكنك أيضًا استخدام الإدخال البديل للسؤال.</string>
+    <string name="permission_microphone">يحتاج هذا السؤال إلى الوصول إلى الميكروفون. إذا رفضت ذلك نهائيًا، فاسمح به من إعدادات التطبيق. ويمكنك أيضًا استخدام الإدخال البديل للسؤال إن وُجد.</string>
+    <string name="permission_location">يحتاج هذا السؤال إلى الوصول إلى موقعك. إذا رفضت ذلك نهائيًا، فاسمح به من إعدادات التطبيق. ويمكنك أيضًا استخدام الإدخال البديل للسؤال إن وُجد.</string>
     <string name="open_settings">فتح إعدادات التطبيق</string>
     <string name="restored">يُرجى التحقق من الإجابات المستعادة. قد تحتاج إلى إعادة التسجيلات والرسومات غير المُرسلة.</string>
     <string name="media_privacy">لا يُطلب الوصول إلى الميكروفون أو الموقع إلا عندما يحتاج إليه سؤال في الدراسة. توضح موافقة الدراسة ما يُرسل. ويحفظ التطبيق أيضًا حالة الإرسال على هذا الهاتف.</string>
@@ -323,4 +324,11 @@
     <string name="refresh_studies">تحديث الدراسات</string>
     <string name="offline_ready">%1$s: متاح دون اتصال</string>
     <string name="offline_missing">%1$s: غير متاح دون اتصال بعد</string>
+    <string name="channel_off_sound">الإشعارات المصحوبة بصوت مُعطلة لهذه الدراسة. ويمكنك مواصلة الإجابة هنا عن الاستبيانات القصيرة المتاحة.</string>
+    <string name="channel_off_silent">الإشعارات دون صوت مُعطلة لهذه الدراسة. ويمكنك مواصلة الإجابة هنا عن الاستبيانات القصيرة المتاحة.</string>
+    <string name="channel_open">التفعيل من الإعدادات</string>
+    <string name="channel_open_for">التفعيل من الإعدادات: إشعارات الدراسة «%1$s»</string>
+    <string name="quiet_same">يجب أن تختلف البداية عن النهاية. لإيقافها، استخدم مفتاح «استخدام ساعات الهدوء».</string>
+    <string name="scan_no_code">لا يحتوي رمز QR هذا على رمز انضمام. امسح الرمز الموجود في مستندات دراستك أو أدخل رمز الانضمام.</string>
+    <string name="scan_again">المسح مرة أخرى</string>
 </resources>

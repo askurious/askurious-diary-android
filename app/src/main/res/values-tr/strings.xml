@@ -170,7 +170,7 @@
     <string name="ready_title">Kısa anketler zamanında gelsin diye</string>
     <string name="ready_intro">Uygulama, çalışmanın kısa anketlerini doğru anda bir bildirimle haber verir. Bunun için iki izne ihtiyaç duyar; üçüncü bir ayar isteğe bağlıdır. Bunların hepsini daha sonra telefonun ayarlarından değiştirebilirsiniz.</string>
     <string name="ready_notify_title">Bildirimler</string>
-    <string name="ready_notify_text">Bunlar olmadan hiçbir kısa anket gelmez.</string>
+    <string name="ready_notify_text">Bu izin olmadan kısa anketler için bildirim almazsınız. Açık kısa anketleri uygulamada yanıtlamaya devam edebilirsiniz.</string>
     <string name="ready_exact_title">Alarmlar ve hatırlatıcılar</string>
     <string name="ready_exact_text">Bu izin olmadan kısa anketler birkaç dakika geç gelebilir.</string>
     <string name="state_pending">Giriş anketi henüz tamamlanmadı</string>
@@ -237,7 +237,8 @@
     <string name="another_code">Başka kod kullan</string>
     <string name="close_warning">Gönderilmeyen yanıtlar kaybolabilir. Devam edilsin mi, vazgeçilsin mi?</string>
     <string name="discard">Vazgeç ve kapat</string>
-    <string name="permission_needed">Bu soru mikrofon veya konum erişimi gerektirir. Kalıcı reddettiyseniz ayarları açın. Alternatif girişi de kullanabilirsiniz.</string>
+    <string name="permission_microphone">Bu soru mikrofon erişimi gerektirir. Kalıcı olarak reddettiyseniz uygulama ayarlarından izin verin. Varsa sorunun alternatif girişini de kullanabilirsiniz.</string>
+    <string name="permission_location">Bu soru konum erişimi gerektirir. Kalıcı olarak reddettiyseniz uygulama ayarlarından izin verin. Varsa sorunun alternatif girişini de kullanabilirsiniz.</string>
     <string name="open_settings">Uygulama ayarlarını aç</string>
     <string name="restored">Geri yüklenen yanıtları kontrol edin. Gönderilmeyen kayıt ve çizimler tekrar gerekebilir.</string>
     <string name="media_privacy">Mikrofon veya konum erişimi yalnızca bir çalışma sorusu bunu gerektirdiğinde istenir. Çalışmanın onam metni neyin gönderildiğini açıklar. Uygulama ayrıca aktarım durumunu bu telefonda saklar.</string>
@@ -291,4 +292,11 @@
     <string name="refresh_studies">Araştırmaları yenile</string>
     <string name="offline_ready">%1$s: çevrimdışı hazır</string>
     <string name="offline_missing">%1$s: henüz çevrimdışı hazır değil</string>
+    <string name="channel_off_sound">Bu çalışma için sesli bildirimler kapalı. Açık kısa anketleri burada yanıtlamaya devam edebilirsiniz.</string>
+    <string name="channel_off_silent">Bu çalışma için sessiz bildirimler kapalı. Açık kısa anketleri burada yanıtlamaya devam edebilirsiniz.</string>
+    <string name="channel_open">Ayarlardan aç</string>
+    <string name="channel_open_for">Ayarlardan aç: “%1$s” çalışmasının bildirimleri</string>
+    <string name="quiet_same">Başlangıç ve bitiş farklı olmalıdır. Kapatmak için “Sessiz saatleri kullan” anahtarını kullanın.</string>
+    <string name="scan_no_code">Bu QR kodu katılım kodu içermiyor. Çalışma belgelerinizdeki kodu tarayın veya katılım kodunu girin.</string>
+    <string name="scan_again">Yeniden tara</string>
 </resources>

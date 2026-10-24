@@ -73,3 +73,18 @@ fun isJoinLink(link: String): Boolean = when (runCatching { URI(link.trim()).sch
     "http", "https" -> joinServer(link, allowHttp = true) != null
     else -> false
 }
+
+/** A join code as the server makes them: lowercase letters and digits, a test or invitation code with one hyphen. */
+private val CODE = Regex("^[a-z0-9]+(-[a-z0-9]+)?$")
+
+/**
+ * The join code of a scanned QR code, or null when it holds none: a join link ([isJoinLink]) or a code alone (no
+ * address). Any other link or text (a web page, a code of another kind) is no join code; the join screen says so
+ * instead of looking up a part of it or doing nothing (audit 2026-10-24, AND-06).
+ */
+fun scannedJoinCode(text: String): String? {
+    val t = text.trim()
+    val hasScheme = runCatching { URI(t).scheme != null }.getOrDefault(false)
+    if (hasScheme) return if (isJoinLink(t)) joinCode(t) else null
+    return joinCode(t)?.takeIf { CODE.matches(it) }
+}

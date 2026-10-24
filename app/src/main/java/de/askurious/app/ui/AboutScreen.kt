@@ -20,6 +20,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -115,12 +117,27 @@ fun BackScaffold(
 fun Modifier.pageWidth(): Modifier = wrapContentWidth(Alignment.CenterHorizontally).widthIn(max = 640.dp).fillMaxWidth()
 
 /**
- * The short message after a final action ("“X” left."): the current message of [state] as a snackbar, read out by
- * TalkBack (Snackbar is a live region).
+ * The short message after a final action ("“X” left."): the messages of [state] one after the other as snackbars.
+ * The SnackbarHost lets each one go after its time (longer while TalkBack or another accessibility service runs),
+ * so a later message is not stuck behind one that never leaves, and gives it the semantics of a live region and an
+ * action to close it.
  */
 @Composable
 fun MessageHost(state: SnackbarHostState) {
-    state.currentSnackbarData?.let { Snackbar(it, Modifier.padding(12.dp)) }
+    SnackbarHost(state) { data -> Snackbar(data, Modifier.padding(12.dp)) }
+}
+
+/**
+ * Shows a short message in the snackbar of the app ([MessageHost]): a success goes by itself after a few seconds;
+ * an [error] stays longer and has a button to close it.
+ */
+class Say(private val show: (text: String, error: Boolean) -> Unit) {
+    operator fun invoke(text: String, error: Boolean = false) = show(text, error)
+
+    companion object {
+        /** How long a message stays: short for a success, long (with a close button) for an error. */
+        fun duration(error: Boolean): SnackbarDuration = if (error) SnackbarDuration.Long else SnackbarDuration.Short
+    }
 }
 
 /** A heading of a section, also for TalkBack (audit A22). */

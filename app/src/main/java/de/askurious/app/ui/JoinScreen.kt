@@ -81,7 +81,10 @@ internal fun MainActivity.JoinScreen(initial: String, onDone: () -> Unit) {
     // stays the last one also after the app was in the background
     CompositionLocalProvider(LocalLifecycleOwner provides this) { BackHandler(enabled = busy) { if (model.cancelLookup()) onDone() } }
     var message by rememberSaveable { mutableStateOf<String?>(null) }
-    var confirmRejoin by remember { mutableStateOf(false) }
+    // the question survives turning the phone; joining needs its button again
+    var confirmRejoin by rememberSaveable { mutableStateOf(false) }
+    // a scanned QR code without a join code: said at the scan button, which then scans again (the field keeps its code)
+    var scanUnusable by rememberSaveable { mutableStateOf(false) }
     // the camera was refused: the scan button says so and points to the field (audit A10)
     var cameraRefused by rememberSaveable { mutableStateOf(false) }
 
@@ -102,6 +105,7 @@ internal fun MainActivity.JoinScreen(initial: String, onDone: () -> Unit) {
     fun lookUp(c: String) {
         if (busy) return
         val clean = joinCode(c) ?: return
+        scanUnusable = false
         val at = joinServer(c, BuildConfig.DEBUG) ?: Api.defaultServer
         code = clean
         server = at
@@ -130,10 +134,14 @@ internal fun MainActivity.JoinScreen(initial: String, onDone: () -> Unit) {
         model.joinError?.let { message = errorText(it) }
     }
 
-    val scanner = rememberLauncherForActivityResult(ScanContract()) { result -> result.contents?.let { lookUp(it) } }
+    // cancelled: nothing; a code without a join code (another link, any text) says so instead of doing nothing
+    val scanner = rememberLauncherForActivityResult(ScanContract()) { result ->
+        result.contents?.let { if (scannedJoinCode(it) != null) lookUp(it) else scanUnusable = true }
+    }
 
     fun scan() {
         cameraRefused = false
+        scanUnusable = false
         // the scanner turns with the phone and says what to do; its own text is English and blames the camera
         // when the permission is missing, so the app asks for the permission itself first (audit A10)
         scanner.launch(
@@ -175,7 +183,16 @@ internal fun MainActivity.JoinScreen(initial: String, onDone: () -> Unit) {
             ) {
                 val i = info
                 if (i == null) {
-                    OutlinedButton(onClick = { scanWithPermission() }, enabled = !busy) { Text(stringResource(R.string.scan_qr)) }
+                    OutlinedButton(onClick = { scanWithPermission() }, enabled = !busy) {
+                        Text(stringResource(if (scanUnusable) R.string.scan_again else R.string.scan_qr))
+                    }
+                    if (scanUnusable) {
+                        Text(
+                            stringResource(R.string.scan_no_code),
+                            Modifier.semantics { liveRegion = LiveRegionMode.Polite },
+                            color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
                     if (cameraRefused) {
                         Text(
                             stringResource(R.string.camera_refused),

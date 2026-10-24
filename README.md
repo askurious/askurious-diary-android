@@ -18,11 +18,13 @@ Server side in the [Askurious](https://github.com/askurious/askurious) repositor
   They are emptied again when the entry ends (end page, answer saved without a connection) and when its screen goes, and the WebView is destroyed with it, so the session cookie does not stay on the phone after the entry.
 - **Permissions.**
   Without notifications no prompt arrives, and without "Alarms & reminders" it may come late: the start page shows a notice for each right below its heading, read again whenever the app comes back to the front (from the system settings, the dialog, an entry).
-  Once the system no longer shows its dialog (denied twice), or the permission is there but the app's notifications or the channel of the prompts are switched off, the notice's button is "Allow in settings" and opens the app's notification settings (`notifyNotice`).
+  Once the system no longer shows its dialog (denied twice), or the permission is there but the app's notifications are switched off, the notice's button is "Allow in settings" and opens the app's notification settings (`notifyNotice`).
+  A notification category switched off counts only for the studies that use it (`studyChannelOff`): a study with sound uses `prompts`, one without `prompts_silent`. Such a study's card and page say that its notifications with (or without) sound are off, that open short surveys can still be answered there, and offer "Switch on in settings", which opens that category's settings (`Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS`); the categories are read again whenever the app comes back to the front.
   Both notices stand in one block in the error colours right below the heading, above the study cards, with a button per missing permission (the most important one filled), gone while all is well (`Readiness`); a notice that a newer app version is needed is neutral and comes below it.
   After the first join (once per phone), a step "So that short surveys arrive on time" explains both permissions and asks for one after the other; a third, optional point opens the phone's list of the battery optimisation (`Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS`, which needs no permission; the app never sends the direct request `ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`), since some makers' battery managers stop exact alarms. The start page offers it too while its notice shows.
   While notifications are off, a running study's card says "Notifications are off. You can answer open short surveys here." and leaves out the time of the next short survey; while "Alarms & reminders" is off, it says "about" before that time (Android may ring a few minutes late).
   The camera (QR code) is asked for by the app itself before the scanner opens; refused, the join screen points to the join code, and once the system shows no dialog any more the button opens the app's settings.
+  A scanned QR code that holds no join code (another link, other text; `scannedJoinCode`) is not looked up: the join screen says so below the scan button, which then reads "Scan again", and a code already typed into the field stays.
   "Alarms & reminders" exists from Android 12 on: on older phones the step leaves its point out and numbers the others on.
 - **Lock screen.**
   Notifications are private: the lock screen shows only "Askurious – A short survey is waiting", never the title of the study or the researchers' notification text.
@@ -31,6 +33,8 @@ Server side in the [Askurious](https://github.com/askurious/askurious) repositor
   A release build opens only addresses of its own server (`Api.absolute`); the bridge `AskuriousApp` counts only while the page is the server's (or the kept page under its address); the WebView reaches no files or content providers of the phone, autofill stays out, and the entry screen allows no screenshots (`FLAG_SECURE`).
   On the server's pages the bridge is a message channel that only the main frame of the study's server reaches (`WebViewCompat.addWebMessageListener` with that origin; a script at the start of each page offers participant.js the same `window.AskuriousApp.done()` and `.offlineSubmit(json)`); only the kept page (which loads nothing from any other origin) uses `addJavascriptInterface`. A WebView too old for the message channel (no `WEB_MESSAGE_LISTENER` or `DOCUMENT_START_SCRIPT`) opens no page of the server: the entry asks to update Android System WebView and offers "Try again" (the interface would reach every frame of the page).
   The start page, a study's page and the join screen show titles of studies: from Android 13 they leave no picture in "Recents" (`setRecentsScreenshotEnabled(false)`, screenshots stay possible), before that `FLAG_SECURE`; "About" and the licence texts keep theirs.
+  The questions before leaving, removing, deleting and joining again, the dialog of the quiet hours (with its draft) and that of a home-screen shortcut stay open when the phone is turned; nothing they ask runs again by itself.
+  The short messages after an action (left, removed, deleted, answers sent) are snackbars that go after a few seconds (longer while TalkBack runs), one after the other; an error stays longer and can be closed (`MessageHost`, `Say`).
   "Join" and the questions before leaving, removing or deleting take a touch only while no window of another app lies over them (`filterTouchesWhenObscured`, `GuardAgainstOverlays`; Android 12 and later block such overlays themselves).
   An open entry is listed in "Recents" as its own task, so that it survives a switch to another app, but without a picture of the page (`setRecentsScreenshotEnabled(false)`, `FLAG_SECURE`).
   Links to other sites open in another app (web, mail and phone links only); turning the phone keeps the page and what was typed.
@@ -98,7 +102,7 @@ Server side in the [Askurious](https://github.com/askurious/askurious) repositor
   On by default, switched off per study on the study's page; kept only on the phone (`Study.sound`, never sent, kept over a sync by `Sync.merged`).
   The sound of a notification channel cannot change once it exists, so the choice picks the channel: `prompts` (the phone's notification sound) or `prompts_silent`.
 - **Quiet hours.**
-  A study with a random module shows its quiet hours on its page; "Change quiet hours" opens a dialog with the switch "Use quiet hours", from and to, saved with "Save". They keep the random prompts out of that time, never the fixed ones.
+  A study with a random module shows its quiet hours on its page; "Change quiet hours" opens a dialog with the switch "Use quiet hours", from and to, saved with "Save". Switched on with the same time for from and to, "Save" is not available and the dialog says that start and end must differ and that the switch turns quiet hours off (`Quiet.draftValid`). They keep the random prompts out of that time, never the fixed ones.
   `POST /study` sends a change (`"quiet": ["22:00", "07:00"]` or `null`), the server keeps it from the person's next day on and answers with the whole history (`"quiet": [{"from", "q"}]`); the app uses exactly that history, the entry of the last `from` on or before a day (`QuietFrom.on`, the server's `quiet_on`).
   Without a connection the change waits as `quietPending` (valid from the day after it was set, by the server's rule) and goes with the next sync.
 - **Reminder.**
@@ -252,7 +256,10 @@ Closing changed input asks first. The secure origin/main-frame message
 channel remains in use for drafts and completion. A draft is kept as strictly written JSON and goes back into the page
 only as a string for `JSON.parse` (`EntryActivity.draftLiteral`), never as code; on a WebView too old for the message
 channel the online page's fallback bridge takes no drafts. Microphone/location rights are requested only by questions
-from the configured known server, with no background recording/location permission. About/privacy texts explain
+from the configured known server, with no background recording/location permission; the notice after a refusal names the
+permission refused (microphone or location). An `<input type=file>` on a page of the study's server (the file alternative of a
+voice question) opens the phone's file picker (`onShowFileChooser`, not on the kept page); the WebView reads the picked file
+itself, so `allowFileAccess` and `allowContentAccess` stay off. About/privacy texts explain
 local drafts and transfer metadata in all twelve languages.
 
 Debug uses loopback port 5080 because WebView blocks SIP port 5060. Forward `adb reverse tcp:5080 tcp:5060` to

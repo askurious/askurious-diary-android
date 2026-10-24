@@ -66,7 +66,7 @@ import de.askurious.app.data.Study
 @Composable
 internal fun MainActivity.HomeScreen(
     onJoin: () -> Unit, onAbout: () -> Unit, onStudy: (Study) -> Unit, allowNotifications: () -> Unit, snackbar: SnackbarHostState?,
-    say: (String) -> Unit, selected: String? = null,
+    say: Say, selected: String? = null,
 ) {
     val studies = model.studies
     var confirmDiscard by rememberSaveable { mutableStateOf(false) }
@@ -162,7 +162,7 @@ internal fun MainActivity.HomeScreen(
                 TextButton(onClick = {
                     confirmDiscard = false
                     // a failure as a snackbar, read out like every other message of the page (B8)
-                    model.discardQueue { ok -> if (!ok) say(getString(R.string.error)) }
+                    model.discardQueue { ok -> if (!ok) say(getString(R.string.error), error = true) }
                 }) { Text(stringResource(R.string.queue_discard), color = MaterialTheme.colorScheme.error) }
             },
             dismissButton = { TextButton(onClick = { confirmDiscard = false }) { Text(stringResource(R.string.cancel)) } },
@@ -256,7 +256,7 @@ private fun Notice(
  * study" (UX audit 2026-10-16, B32). [selected]: its page stands beside the list (B34).
  */
 @Composable
-private fun MainActivity.StudyCard(study: Study, selected: Boolean, say: (String) -> Unit, onOpen: () -> Unit) {
+private fun MainActivity.StudyCard(study: Study, selected: Boolean, say: Say, onOpen: () -> Unit) {
     var transmissions by rememberSaveable { mutableStateOf(false) }
     val shape = CardDefaults.shape
     val open = stringResource(R.string.open_study)

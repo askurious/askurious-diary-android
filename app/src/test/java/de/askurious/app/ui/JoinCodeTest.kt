@@ -103,4 +103,26 @@ class JoinCodeTest {
             assertFalse(other, isJoinLink(other))
         }
     }
+
+    /**
+     * A scanned QR code (UX audit 2026-10-24, AND-06): a join link or a code alone gives its join code; any other link
+     * or text gives none, so the join screen says so instead of doing nothing or looking up a part of it.
+     */
+    @Test
+    fun aScannedQrCodeWithoutAJoinCodeIsNoJoinCode() {
+        assertEquals("k7qm2x", scannedJoinCode("https://askurious.de/j/k7qm2x"))
+        assertEquals("k7qm2x-a8c3d9ef", scannedJoinCode("askurious://join/k7qm2x-a8c3d9ef"))
+        assertEquals("k7qm2x-t3f9a", scannedJoinCode(" K7QM2X-T3F9A "))
+        // a link of another server with /j/ stays a join link: the join screen refuses that server by name
+        assertEquals("k7qm2x", scannedJoinCode("https://example.org/j/k7qm2x"))
+        assertNull(scannedJoinCode("https://askurious.de/"))
+        assertNull(scannedJoinCode("https://askurious.de/s/k7qm2x"))
+        assertNull(scannedJoinCode("https://example.org/menu"))
+        assertNull(scannedJoinCode("askurious://join"))
+        assertNull(scannedJoinCode("WIFI:S:Lab;T:WPA;P:secret;;"))
+        assertNull(scannedJoinCode("mailto:team@example.org"))
+        assertNull(scannedJoinCode("Hello, world!"))
+        assertNull(scannedJoinCode("k7qm2x--t3f9a"))
+        assertNull(scannedJoinCode(""))
+    }
 }

@@ -184,7 +184,7 @@
     <string name="ready_title">Aby krótkie kwestionariusze docierały na czas</string>
     <string name="ready_intro">Aplikacja we właściwym momencie zapowiada krótkie kwestionariusze badania powiadomieniem. Potrzebuje do tego dwóch uprawnień; trzecie ustawienie jest opcjonalne. Wszystko można później zmienić w ustawieniach telefonu.</string>
     <string name="ready_notify_title">Powiadomienia</string>
-    <string name="ready_notify_text">Bez nich nie dotrze żaden krótki kwestionariusz.</string>
+    <string name="ready_notify_text">Bez tego uprawnienia nie przychodzą powiadomienia o krótkich kwestionariuszach. Otwarte krótkie kwestionariusze można nadal wypełnić w aplikacji.</string>
     <string name="ready_exact_title">Alarmy i przypomnienia</string>
     <string name="ready_exact_text">Bez tego krótkie kwestionariusze mogą docierać z kilkuminutowym opóźnieniem.</string>
     <string name="state_pending">Ankieta wstępna jeszcze nieukończona</string>
@@ -251,7 +251,8 @@
     <string name="another_code">Użyj innego kodu</string>
     <string name="close_warning">Niewysłane odpowiedzi mogą zostać utracone. Kontynuować czy odrzucić?</string>
     <string name="discard">Odrzuć i zamknij</string>
-    <string name="permission_needed">To pytanie wymaga mikrofonu lub lokalizacji. Przy trwałej odmowie prosimy otworzyć ustawienia. Można też użyć alternatywnej odpowiedzi.</string>
+    <string name="permission_microphone">To pytanie wymaga dostępu do mikrofonu. Przy trwałej odmowie prosimy zezwolić na dostęp w ustawieniach aplikacji. Można też użyć alternatywnej odpowiedzi na pytanie, jeśli jest dostępna.</string>
+    <string name="permission_location">To pytanie wymaga dostępu do lokalizacji. Przy trwałej odmowie prosimy zezwolić na dostęp w ustawieniach aplikacji. Można też użyć alternatywnej odpowiedzi na pytanie, jeśli jest dostępna.</string>
     <string name="open_settings">Otwórz ustawienia aplikacji</string>
     <string name="restored">Prosimy sprawdzić przywrócone odpowiedzi. Niewysłane nagrania i rysunki mogą wymagać ponownego wprowadzenia.</string>
     <string name="media_privacy">Dostęp do mikrofonu lub lokalizacji jest wymagany tylko wtedy, gdy potrzebuje go pytanie w badaniu. Formularz zgody badania wyjaśnia, co jest przesyłane. Aplikacja przechowuje też na tym telefonie status przesyłania.</string>
@@ -307,4 +308,11 @@
     <string name="refresh_studies">Odśwież badania</string>
     <string name="offline_ready">%1$s: dostępne offline</string>
     <string name="offline_missing">%1$s: jeszcze niedostępne offline</string>
+    <string name="channel_off_sound">Powiadomienia z dźwiękiem są wyłączone dla tego badania. Otwarte krótkie kwestionariusze można nadal wypełnić tutaj.</string>
+    <string name="channel_off_silent">Powiadomienia bez dźwięku są wyłączone dla tego badania. Otwarte krótkie kwestionariusze można nadal wypełnić tutaj.</string>
+    <string name="channel_open">Włącz w ustawieniach</string>
+    <string name="channel_open_for">Włącz w ustawieniach: powiadomienia badania „%1$s”</string>
+    <string name="quiet_same">Początek i koniec muszą się różnić. Aby je wyłączyć, prosimy użyć przełącznika „Używaj godzin ciszy”.</string>
+    <string name="scan_no_code">Ten kod QR nie zawiera kodu dołączenia. Prosimy zeskanować kod z dokumentów badania lub wpisać kod dołączenia.</string>
+    <string name="scan_again">Zeskanuj ponownie</string>
 </resources>
