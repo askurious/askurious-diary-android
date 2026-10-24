@@ -24,6 +24,7 @@ import android.view.WindowManager
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
 import android.webkit.RenderProcessGoneDetail
+import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
@@ -168,19 +169,31 @@ class EntryActivity : ComponentActivity() {
 
 
     private var restored by mutableStateOf(false)
-    private var permissionNotice by mutableStateOf(false)
+    /** The banner of a permission a question needs and the participant denied: the text naming that one (microphone or location). */
+    private var permissionNotice by mutableStateOf<Int?>(null)
     private var mediaRequest: PermissionRequest? = null
     private var locationRequest: Pair<String, GeolocationPermissions.Callback>? = null
     private val permissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { grants ->
         mediaRequest?.let { request ->
             if (grants[Manifest.permission.RECORD_AUDIO] == true && trusted(request.origin.toString())) request.grant(arrayOf(PermissionRequest.RESOURCE_AUDIO_CAPTURE))
-            else { request.deny(); permissionNotice = true }
+            else { request.deny(); permissionNotice = R.string.permission_microphone }
         }; mediaRequest = null
         locationRequest?.let { (origin, callback) ->
             val granted = grants[Manifest.permission.ACCESS_COARSE_LOCATION] == true || grants[Manifest.permission.ACCESS_FINE_LOCATION] == true
             callback.invoke(origin, granted && trusted(origin), false)
-            if (!granted) permissionNotice = true
+            if (!granted) permissionNotice = R.string.permission_location
         }; locationRequest = null
+    }
+    /**
+     * The phone's file picker for an `<input type=file>` of the page (the file alternative of a voice question,
+     * accepting audio files): the chosen file goes to the page, cancelling hands it nothing (null). The WebView reads the
+     * picked content address itself, so the pages still reach no files or content providers (allowFileAccess,
+     * allowContentAccess stay off).
+     */
+    private val fileChooser = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val callback = session.fileCallback ?: return@registerForActivityResult
+        session.fileCallback = null
+        callback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(result.resultCode, result.data))
     }
     private fun trusted(address: String): Boolean = runCatching {
         val uri = java.net.URI(address)
@@ -196,6 +209,21 @@ class EntryActivity : ComponentActivity() {
                 else { mediaRequest?.deny(); mediaRequest = request; permissions.launch(arrayOf(Manifest.permission.RECORD_AUDIO)) }
             } }
             override fun onPermissionRequestCanceled(request: PermissionRequest) { if (mediaRequest == request) mediaRequest = null }
+            // only for a page of the study's own server online (as the microphone); false: the WebView picks nothing
+            override fun onShowFileChooser(view: WebView, callback: ValueCallback<Array<Uri>>, params: FileChooserParams): Boolean {
+                if (!trusted(view.url.orEmpty()) || offline != null) return false
+                // a picker still open for an earlier input gets nothing: one at a time
+                session.fileCallback?.onReceiveValue(null)
+                session.fileCallback = callback
+                return try {
+                    fileChooser.launch(params.createIntent())
+                    true
+                } catch (e: ActivityNotFoundException) {
+                    // no app on the phone to pick a file with
+                    session.fileCallback = null
+                    false
+                }
+            }
             override fun onGeolocationPermissionsShowPrompt(origin: String, callback: GeolocationPermissions.Callback) {
                 if (!trusted(origin) || offline != null) { callback.invoke(origin, false, false); return }
                 if (ContextCompat.checkSelfPermission(this@EntryActivity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) callback.invoke(origin, true, false)
@@ -634,11 +662,13 @@ class EntryActivity : ComponentActivity() {
                 )
             }
             if (restored) Banner(stringResource(R.string.restored), onClose = { restored = false })
-            if (permissionNotice) Banner(
-                stringResource(R.string.permission_needed), action = stringResource(R.string.open_settings),
-                onAction = { startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, "package:$packageName".toUri())) },
-                onClose = { permissionNotice = false },
-            )
+            permissionNotice?.let { notice ->
+                Banner(
+                    stringResource(notice), action = stringResource(R.string.open_settings),
+                    onAction = { startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, "package:$packageName".toUri())) },
+                    onClose = { permissionNotice = null },
+                )
+            }
             Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
                 val u = url
                 val o = offline

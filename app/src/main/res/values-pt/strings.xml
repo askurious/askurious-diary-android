@@ -177,7 +177,7 @@
     <string name="ready_title">Para que os breves questionários cheguem a horas</string>
     <string name="ready_intro">A aplicação anuncia-lhe os breves questionários do estudo com uma notificação no momento certo. Para isso precisa de duas permissões; uma terceira definição é opcional. Pode alterar tudo mais tarde nas definições do telemóvel.</string>
     <string name="ready_notify_title">Notificações</string>
-    <string name="ready_notify_text">Sem elas não chega nenhum breve questionário.</string>
+    <string name="ready_notify_text">Sem esta permissão não recebe notificações dos breves questionários. Pode continuar a responder na aplicação aos breves questionários abertos.</string>
     <string name="ready_exact_title">Alarmes e lembretes</string>
     <string name="ready_exact_text">Sem esta permissão, os breves questionários podem chegar alguns minutos atrasados.</string>
     <string name="state_pending">Questionário inicial ainda por concluir</string>
@@ -244,7 +244,8 @@
     <string name="another_code">Usar outro código</string>
     <string name="close_warning">As respostas não enviadas podem perder-se. Continuar ou descartar?</string>
     <string name="discard">Descartar e fechar</string>
-    <string name="permission_needed">Esta pergunta precisa do microfone ou localização. Se recusou permanentemente, abra as definições. Pode usar uma entrada alternativa.</string>
+    <string name="permission_microphone">Esta pergunta precisa de acesso ao microfone. Se o recusou permanentemente, permita-o nas definições da aplicação. Também pode usar a entrada alternativa da pergunta, se existir.</string>
+    <string name="permission_location">Esta pergunta precisa de acesso à sua localização. Se o recusou permanentemente, permita-o nas definições da aplicação. Também pode usar a entrada alternativa da pergunta, se existir.</string>
     <string name="open_settings">Abrir definições da aplicação</string>
     <string name="restored">Verifique as respostas restauradas. Pode ter de repetir gravações e desenhos não enviados.</string>
     <string name="media_privacy">O acesso ao microfone ou à localização só é pedido quando uma pergunta do estudo o exige. O consentimento do estudo explica o que é enviado. A aplicação também guarda o estado dos envios neste telemóvel.</string>
@@ -299,4 +300,11 @@
     <string name="refresh_studies">Atualizar estudos</string>
     <string name="offline_ready">%1$s: disponível offline</string>
     <string name="offline_missing">%1$s: ainda não disponível offline</string>
+    <string name="channel_off_sound">As notificações com som estão desativadas para este estudo. Pode continuar a responder aqui aos breves questionários abertos.</string>
+    <string name="channel_off_silent">As notificações sem som estão desativadas para este estudo. Pode continuar a responder aqui aos breves questionários abertos.</string>
+    <string name="channel_open">Ativar nas definições</string>
+    <string name="channel_open_for">Ativar nas definições: notificações do estudo «%1$s»</string>
+    <string name="quiet_same">O início e o fim têm de ser diferentes. Para as desativar, use o interruptor «Usar horas de silêncio».</string>
+    <string name="scan_no_code">Este código QR não contém nenhum código de participação. Leia o código dos documentos do seu estudo ou introduza o código de participação.</string>
+    <string name="scan_again">Ler novamente</string>
 </resources>

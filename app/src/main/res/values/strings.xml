@@ -170,7 +170,7 @@
     <string name="ready_title">So that short surveys arrive on time</string>
     <string name="ready_intro">The app announces the study’s short surveys with a notification at the right moment. For that it needs two permissions; a third setting is optional. You can change all of them later in the phone’s settings.</string>
     <string name="ready_notify_title">Notifications</string>
-    <string name="ready_notify_text">Without them no short survey arrives.</string>
+    <string name="ready_notify_text">Without this permission you get no notifications of short surveys. You can still answer open short surveys in the app.</string>
     <string name="ready_exact_title">Alarms &amp; reminders</string>
     <string name="ready_exact_text">Without it short surveys may come a few minutes late.</string>
     <string name="state_pending">Entry survey not finished yet</string>
@@ -237,7 +237,8 @@
     <string name="another_code">Use another code</string>
     <string name="close_warning">Your unsubmitted answers may be lost if you close. Continue answering or discard them?</string>
     <string name="discard">Discard and close</string>
-    <string name="permission_needed">This question needs microphone or location access. If you declined permanently, open the app settings. You can also use the question’s alternative input.</string>
+    <string name="permission_microphone">This question needs access to the microphone. If you declined it permanently, allow it in the app settings. You can also use the question’s alternative input, if it has one.</string>
+    <string name="permission_location">This question needs access to your location. If you declined it permanently, allow it in the app settings. You can also use the question’s alternative input, if it has one.</string>
     <string name="open_settings">Open app settings</string>
     <string name="restored">Please check your restored answers. Unsubmitted recordings and drawings may need to be entered again.</string>
     <string name="media_privacy">Microphone or location access is requested only when a study question needs it. The study’s consent explains what is sent. The app also keeps transfer status on this phone.</string>
@@ -295,4 +296,11 @@
     <string name="refresh_studies">Refresh studies</string>
     <string name="offline_ready">%1$s: available offline</string>
     <string name="offline_missing">%1$s: not yet available offline</string>
+    <string name="channel_off_sound">Notifications with sound are switched off for this study. You can still answer open short surveys here.</string>
+    <string name="channel_off_silent">Notifications without sound are switched off for this study. You can still answer open short surveys here.</string>
+    <string name="channel_open">Switch on in settings</string>
+    <string name="channel_open_for">Switch on in settings: notifications of the study “%1$s”</string>
+    <string name="quiet_same">Start and end must differ. To switch quiet hours off, use the switch “Use quiet hours”.</string>
+    <string name="scan_no_code">This QR code holds no join code. Scan the code from your study documents or type the join code.</string>
+    <string name="scan_again">Scan again</string>
 </resources>

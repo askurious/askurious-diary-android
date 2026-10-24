@@ -170,7 +170,7 @@
     <string name="ready_title">Damit Kurzbefragungen pünktlich ankommen</string>
     <string name="ready_intro">Die App kündigt die Kurzbefragungen der Studie im richtigen Moment per Benachrichtigung an. Dafür braucht sie zwei Rechte, eine dritte Einstellung ist freiwillig. Sie können alles später in den Einstellungen des Telefons ändern.</string>
     <string name="ready_notify_title">Benachrichtigungen</string>
-    <string name="ready_notify_text">Ohne sie kommt keine Kurzbefragung an.</string>
+    <string name="ready_notify_text">Ohne diese Erlaubnis erhalten Sie keine Benachrichtigung zu Kurzbefragungen. Offene Kurzbefragungen können Sie weiterhin in der App beantworten.</string>
     <string name="ready_exact_title">Wecker und Erinnerungen</string>
     <string name="ready_exact_text">Ohne sie können Kurzbefragungen einige Minuten zu spät kommen.</string>
     <string name="state_pending">Eingangsbefragung noch nicht abgeschlossen</string>
@@ -237,7 +237,8 @@
     <string name="another_code">Anderen Code verwenden</string>
     <string name="close_warning">Nicht abgeschickte Antworten können beim Schließen verloren gehen. Weiter beantworten oder verwerfen?</string>
     <string name="discard">Verwerfen und schließen</string>
-    <string name="permission_needed">Diese Frage benötigt Mikrofon- oder Standortzugriff. Haben Sie ihn dauerhaft abgelehnt, erlauben Sie ihn in den App-Einstellungen. Sie können auch die alternative Eingabe der Frage nutzen, falls es eine gibt.</string>
+    <string name="permission_microphone">Diese Frage benötigt Zugriff auf das Mikrofon. Haben Sie ihn dauerhaft abgelehnt, erlauben Sie ihn in den App-Einstellungen. Sie können auch die alternative Eingabe der Frage nutzen, falls es eine gibt.</string>
+    <string name="permission_location">Diese Frage benötigt Zugriff auf Ihren Standort. Haben Sie ihn dauerhaft abgelehnt, erlauben Sie ihn in den App-Einstellungen. Sie können auch die alternative Eingabe der Frage nutzen, falls es eine gibt.</string>
     <string name="open_settings">App-Einstellungen öffnen</string>
     <string name="restored">Bitte prüfen Sie die wiederhergestellten Antworten. Nicht abgeschickte Aufnahmen und Zeichnungen müssen gegebenenfalls erneut eingegeben werden.</string>
     <string name="media_privacy">Mikrofon- oder Standortzugriff wird nur für eine entsprechende Studienfrage angefragt. Die Einwilligung erklärt, was übertragen wird. Die App speichert außerdem den Übertragungsstatus auf diesem Telefon.</string>
@@ -291,4 +292,11 @@
     <string name="refresh_studies">Studien aktualisieren</string>
     <string name="offline_ready">%1$s: offline bereit</string>
     <string name="offline_missing">%1$s: noch nicht offline bereit</string>
+    <string name="channel_off_sound">Benachrichtigungen mit Ton sind für diese Studie ausgeschaltet. Offene Kurzbefragungen können Sie weiterhin hier beantworten.</string>
+    <string name="channel_off_silent">Benachrichtigungen ohne Ton sind für diese Studie ausgeschaltet. Offene Kurzbefragungen können Sie weiterhin hier beantworten.</string>
+    <string name="channel_open">In den Einstellungen einschalten</string>
+    <string name="channel_open_for">In den Einstellungen einschalten: Benachrichtigungen der Studie „%1$s“</string>
+    <string name="quiet_same">Anfang und Ende müssen verschieden sein. Zum Ausschalten nutzen Sie den Schalter „Ruhezeiten verwenden“.</string>
+    <string name="scan_no_code">Dieser QR-Code enthält keinen Beitrittscode. Scannen Sie den Code aus Ihren Studienunterlagen oder geben Sie den Beitrittscode ein.</string>
+    <string name="scan_again">Erneut scannen</string>
 </resources>

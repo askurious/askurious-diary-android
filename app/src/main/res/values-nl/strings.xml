@@ -170,7 +170,7 @@
     <string name="ready_title">Zodat korte vragenlijsten op tijd komen</string>
     <string name="ready_intro">De app kondigt de korte vragenlijsten van het onderzoek op het juiste moment aan met een melding. Daarvoor zijn twee toestemmingen nodig; een derde instelling is optioneel. U kunt alles later wijzigen in de instellingen van de telefoon.</string>
     <string name="ready_notify_title">Meldingen</string>
-    <string name="ready_notify_text">Zonder meldingen komt er geen korte vragenlijst aan.</string>
+    <string name="ready_notify_text">Zonder deze toestemming krijgt u geen meldingen van korte vragenlijsten. Open korte vragenlijsten kunt u nog steeds in de app invullen.</string>
     <string name="ready_exact_title">Wekkers en herinneringen</string>
     <string name="ready_exact_text">Zonder deze toestemming kunnen korte vragenlijsten enkele minuten te laat komen.</string>
     <string name="state_pending">Beginvragenlijst nog niet afgerond</string>
@@ -237,7 +237,8 @@
     <string name="another_code">Andere code gebruiken</string>
     <string name="close_warning">Niet-verzonden antwoorden kunnen verloren gaan. Doorgaan of verwerpen?</string>
     <string name="discard">Verwerpen en sluiten</string>
-    <string name="permission_needed">Deze vraag vereist microfoon of locatie. Open de instellingen bij definitieve weigering. Gebruik zo mogelijk de alternatieve invoer.</string>
+    <string name="permission_microphone">Deze vraag heeft toegang tot de microfoon nodig. Hebt u die definitief geweigerd, sta deze dan toe in de app-instellingen. U kunt ook de alternatieve invoer van de vraag gebruiken, als die er is.</string>
+    <string name="permission_location">Deze vraag heeft toegang tot uw locatie nodig. Hebt u die definitief geweigerd, sta deze dan toe in de app-instellingen. U kunt ook de alternatieve invoer van de vraag gebruiken, als die er is.</string>
     <string name="open_settings">App-instellingen openen</string>
     <string name="restored">Controleer de herstelde antwoorden. Niet-verzonden opnamen en tekeningen moeten mogelijk opnieuw.</string>
     <string name="media_privacy">Toegang tot microfoon of locatie wordt alleen gevraagd als een onderzoeksvraag die nodig heeft. De toestemmingsverklaring van het onderzoek legt uit wat wordt verstuurd. De app bewaart ook de verzendstatus op deze telefoon.</string>
@@ -291,4 +292,11 @@
     <string name="refresh_studies">Onderzoeken vernieuwen</string>
     <string name="offline_ready">%1$s: offline beschikbaar</string>
     <string name="offline_missing">%1$s: nog niet offline beschikbaar</string>
+    <string name="channel_off_sound">Meldingen met geluid staan uit voor dit onderzoek. Open korte vragenlijsten kunt u hier nog steeds invullen.</string>
+    <string name="channel_off_silent">Meldingen zonder geluid staan uit voor dit onderzoek. Open korte vragenlijsten kunt u hier nog steeds invullen.</string>
+    <string name="channel_open">Inschakelen in instellingen</string>
+    <string name="channel_open_for">Inschakelen in instellingen: meldingen van het onderzoek ‘%1$s’</string>
+    <string name="quiet_same">Begin en einde moeten verschillen. Gebruik de schakelaar ‘Rusttijden gebruiken’ om ze uit te zetten.</string>
+    <string name="scan_no_code">Deze QR-code bevat geen deelnamecode. Scan de code uit uw onderzoeksdocumenten of voer de deelnamecode in.</string>
+    <string name="scan_again">Opnieuw scannen</string>
 </resources>

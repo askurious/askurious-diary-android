@@ -1,10 +1,12 @@
 package de.askurious.app.data
 
+import java.time.LocalDate
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
-import java.time.LocalDate
 
 /** The quiet hours valid on a day: the server's diary.quiet_on and set_quiet, on the history it sends. */
 class QuietTest {
@@ -57,5 +59,14 @@ class QuietTest {
         assertNull(s.quietPending)
         val pending = s.copy(quietPending = QuietFrom(LocalDate.of(2026, 10, 28), Quiet("20:00", "06:00")))
         assertEquals(pending, Study.fromJson(JSONObject(pending.toJson().toString())))
+    }
+
+    /** The dialog saves no quiet hours switched on with the same time twice (UX audit 2026-10-24, AND-04). */
+    @Test
+    fun theSameTimeTwiceCannotBeSaved() {
+        assertTrue(Quiet.draftValid(on = true, start = "22:00", end = "07:00"))
+        assertFalse(Quiet.draftValid(on = true, start = "22:00", end = "22:00"))
+        // switched off, the times do not matter
+        assertTrue(Quiet.draftValid(on = false, start = "22:00", end = "22:00"))
     }
 }

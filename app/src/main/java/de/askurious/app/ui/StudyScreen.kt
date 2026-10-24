@@ -59,6 +59,7 @@ import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.error
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
@@ -70,6 +71,7 @@ import de.askurious.app.data.PromptLog
 import de.askurious.app.data.Quiet
 import de.askurious.app.data.Study
 import de.askurious.app.data.Trigger
+import de.askurious.app.schedule.Alarms
 import de.askurious.app.schedule.Prompt
 import de.askurious.app.schedule.Schedule
 import kotlinx.coroutines.Dispatchers
@@ -95,17 +97,19 @@ import java.util.Locale
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-internal fun MainActivity.StudyScreen(study: Study, onBack: () -> Unit, snackbar: SnackbarHostState, say: (String) -> Unit) {
+internal fun MainActivity.StudyScreen(study: Study, onBack: () -> Unit, snackbar: SnackbarHostState, say: Say) {
     val context = LocalContext.current
-    var askErase by remember { mutableStateOf(false) }
-    var shortcutFor by remember { mutableStateOf<Module?>(null) }
-    var confirmLeave by remember { mutableStateOf(false) }
-    var confirmErase by remember { mutableStateOf(false) }
+    // the questions survive turning the phone (rememberSaveable); a question still asks, nothing runs again by itself
+    var askErase by rememberSaveable { mutableStateOf(false) }
+    // the module by its key: a Module cannot be saved, and a study synced meanwhile may have changed it
+    var shortcutKey by rememberSaveable { mutableStateOf<String?>(null) }
+    var confirmLeave by rememberSaveable { mutableStateOf(false) }
+    var confirmErase by rememberSaveable { mutableStateOf(false) }
     var confirmRemove by rememberSaveable { mutableStateOf(false) }
     var transmissions by rememberSaveable { mutableStateOf(false) }
     var erasing by remember { mutableStateOf(false) }
-    var eraseError by remember { mutableStateOf<String?>(null) }
-    var editQuiet by remember { mutableStateOf(false) }
+    var eraseError by rememberSaveable { mutableStateOf<String?>(null) }
+    var editQuiet by rememberSaveable { mutableStateOf(false) }
     val today = study.today(real = studyNow(study))
     BackScaffold(study.title, onBack, snackbar, titleLines = 3) { pad ->
         Column(
@@ -172,7 +176,7 @@ internal fun MainActivity.StudyScreen(study: Study, onBack: () -> Unit, snackbar
                 SectionTitle(stringResource(R.string.shortcut_title))
                 Text(stringResource(R.string.shortcut_intro), style = MaterialTheme.typography.bodySmall)
                 for (m in reports) {
-                    OutlinedButton(onClick = { shortcutFor = m }) {
+                    OutlinedButton(onClick = { shortcutKey = m.key }) {
                         Text(
                             if (reports.size == 1) stringResource(R.string.shortcut_add)
                             else stringResource(R.string.shortcut_add_for, m.selfTrigger?.label?.ifBlank { null } ?: m.name)
@@ -254,7 +258,7 @@ internal fun MainActivity.StudyScreen(study: Study, onBack: () -> Unit, snackbar
                             onBack()
                         } else {
                             eraseError = getString(if (e.key == "offline") R.string.offline else R.string.error)
-                            say(eraseError!!)
+                            say(eraseError!!, error = true)
                         }
                     }
                 }) { Text(stringResource(R.string.erase_answers), color = MaterialTheme.colorScheme.error) }
@@ -262,7 +266,7 @@ internal fun MainActivity.StudyScreen(study: Study, onBack: () -> Unit, snackbar
             dismissButton = { TextButton(enabled = !erasing, onClick = { askErase = false }) { Text(stringResource(R.string.keep_answers)) } },
         )
     }
-    shortcutFor?.let { m -> ShortcutDialog(study, m, onDone = { shortcutFor = null }) }
+    shortcutKey?.let { key -> study.modules.firstOrNull { it.key == key } }?.let { m -> ShortcutDialog(study, m, onDone = { shortcutKey = null }) }
     // "Transfer answers" closes the dialog; the result comes as a snackbar (B26)
     if (transmissions) StoredTransmissions(study, model.transferring, { transmissions = false; transfer(study, say) }, { transmissions = false }, model::discardAnswer)
     if (confirmRemove) {
@@ -286,7 +290,7 @@ internal fun MainActivity.StudyScreen(study: Study, onBack: () -> Unit, snackbar
                     confirmRemove = false
                     // with its queued answers and kept pages: the participant takes the study off the phone
                     model.remove(study.code) { error ->
-                        if (error != null) say(getString(R.string.error)) else {
+                        if (error != null) say(getString(R.string.error), error = true) else {
                             say(getString(R.string.removed_done, study.title))
                             onBack()
                         }
@@ -325,7 +329,7 @@ internal fun MainActivity.StudyScreen(study: Study, onBack: () -> Unit, snackbar
                             onBack()
                         } else {
                             eraseError = getString(if (e.key == "offline") R.string.offline else R.string.error)
-                            say(eraseError!!)
+                            say(eraseError!!, error = true)
                         }
                     }
                 }) { Text(stringResource(R.string.erase), color = MaterialTheme.colorScheme.error) }
@@ -339,7 +343,7 @@ internal fun MainActivity.StudyScreen(study: Study, onBack: () -> Unit, snackbar
  * Sends the waiting answers now and says how it went as a snackbar (UX audit 2026-10-16, B26): how many of [study]'s
  * went, and how many still wait.
  */
-internal fun MainActivity.transfer(study: Study, say: (String) -> Unit) = model.transfer(study.code) { sent, left ->
+internal fun MainActivity.transfer(study: Study, say: Say) = model.transfer(study.code) { sent, left ->
     val parts = mutableListOf<String>()
     if (sent > 0) parts += resources.getQuantityString(R.plurals.transfer_sent, sent, sent)
     if (left > 0) parts += if (sent == 0) getString(R.string.transfer_none) else resources.getQuantityString(R.plurals.answers_waiting, left, left)
@@ -421,6 +425,17 @@ internal fun MainActivity.StudyNow(study: Study) {
             // without notifications no prompt reaches the participant: no time that would not come (audit A1);
             // so no line "Next short survey" either (B14)
             Text(stringResource(R.string.notifications_off), color = MaterialTheme.colorScheme.error)
+        } else if (studyChannelOff(study, channelsOff)) {
+            // only the channel this study uses is off (with or without sound): said for this study, with the way to
+            // that channel's settings; the other studies keep their next time
+            Text(
+                stringResource(if (study.sound) R.string.channel_off_sound else R.string.channel_off_silent),
+                color = MaterialTheme.colorScheme.error,
+            )
+            val name = stringResource(R.string.channel_open_for, study.title)
+            OutlinedButton(onClick = { openChannelSettings(Alarms.channelOf(study)) }, modifier = Modifier.semantics { contentDescription = name }) {
+                Text(stringResource(R.string.channel_open))
+            }
         } else Schedule.next(listOf(study), Instant.ofEpochMilli(tick)).firstOrNull()?.let {
             // shown in the study's time, like the day; "about" while the alarm may ring minutes late (A11), "today",
             // "tomorrow" or the date (A25)
@@ -615,9 +630,12 @@ private fun QuietDialog(initial: Quiet?, onDismiss: () -> Unit, onSave: (Quiet?)
     // read in composition, so that a rotation recomposes with the new height (Compose lint LocalContextConfigurationRead)
     val screenHeightDp = LocalConfiguration.current.screenHeightDp
     val density = LocalDensity.current.density
-    var on by remember { mutableStateOf(initial != null) }
-    var start by remember { mutableStateOf(initial?.start ?: "22:00") }
-    var end by remember { mutableStateOf(initial?.end ?: "07:00") }
+    // the draft survives turning the phone
+    var on by rememberSaveable { mutableStateOf(initial != null) }
+    var start by rememberSaveable { mutableStateOf(initial?.start ?: "22:00") }
+    var end by rememberSaveable { mutableStateOf(initial?.end ?: "07:00") }
+    // switched on with the same time twice: no quiet hours at all, so not saved as none without a word (it says so)
+    val valid = Quiet.draftValid(on, start, end)
 
     fun pick(value: String, set: (String) -> Unit) {
         val t = LocalTime.parse(value)
@@ -663,12 +681,19 @@ private fun QuietDialog(initial: Quiet?, onDismiss: () -> Unit, onSave: (Quiet?)
                         Text(stringResource(R.string.quiet_to))
                         OutlinedButton(onClick = { pick(end) { end = it } }, Modifier.semantics { contentDescription = toText }) { Text(context.timeText(end)) }
                     }
+                    if (!valid) {
+                        // at the times it is about, read out when it comes
+                        val problem = stringResource(R.string.quiet_same)
+                        Text(
+                            problem, Modifier.semantics { liveRegion = LiveRegionMode.Polite; error(problem) },
+                            color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
                 }
             }
         },
-        // the same time twice is no quiet time at all (the server takes it so): stored as none
         confirmButton = {
-            TextButton(onClick = { onSave(if (!on || start == end) null else Quiet(start, end)) }) { Text(stringResource(R.string.save)) }
+            TextButton(enabled = valid, onClick = { onSave(if (on) Quiet(start, end) else null) }) { Text(stringResource(R.string.save)) }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) } },
     )

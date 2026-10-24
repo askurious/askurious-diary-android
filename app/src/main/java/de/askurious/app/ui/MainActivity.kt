@@ -83,6 +83,14 @@ class MainActivity : ComponentActivity() {
     internal var notifyState by mutableStateOf(NotifyNotice.NONE)
         private set
 
+    /**
+     * The notification channels of the prompts the participant switched off in the system settings (Alarms.CHANNEL,
+     * Alarms.CHANNEL_SILENT); read again in [onResume]. A study warns only when its own channel is off
+     * ([studyChannelOff]): a study without sound uses the silent one.
+     */
+    internal var channelsOff by mutableStateOf<Set<String>>(emptySet())
+        private set
+
     /** Exact alarms are allowed ("Alarms & reminders"); read again in [onResume], also after the system settings. */
     internal var exactOn by mutableStateOf(true)
         private set
@@ -102,11 +110,11 @@ class MainActivity : ComponentActivity() {
      */
     private fun readPermissions() {
         val manager = NotificationManagerCompat.from(this)
-        // the channel of the prompts switched off counts like notifications off
-        val channelOn = manager.getNotificationChannelCompat(Alarms.CHANNEL)?.importance != NotificationManagerCompat.IMPORTANCE_NONE
+        // a channel switched off counts only for the studies that use it (with or without sound), not for all
+        channelsOff = channelsOff(listOf(Alarms.CHANNEL, Alarms.CHANNEL_SILENT).associateWith { manager.getNotificationChannelCompat(it)?.importance })
         val canAsk = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
         notifyState = notifyNotice(
-            enabled = manager.areNotificationsEnabled() && channelOn,
+            enabled = manager.areNotificationsEnabled(),
             canAsk = canAsk,
             granted = !canAsk || ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED,
             asked = uiPrefs.getBoolean(NOTIFY_ASKED, false),
@@ -153,6 +161,13 @@ class MainActivity : ComponentActivity() {
             openOther(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, "package:$packageName".toUri()))
         }
     }
+
+    /** The system settings of one notification channel of the app ([channel]: Alarms.CHANNEL or CHANNEL_SILENT). */
+    internal fun openChannelSettings(channel: String) = openOther(
+        Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+            .putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+            .putExtra(Settings.EXTRA_CHANNEL_ID, channel),
+    )
 
     /** The phone's settings of date and time, from the notice that its clock is wrong (UX audit 2026-10-16, B29). */
     internal fun openDateSettings() = openOther(Intent(Settings.ACTION_DATE_SETTINGS))
@@ -219,7 +234,10 @@ class MainActivity : ComponentActivity() {
         val nav = rememberNavController()
         val snackbar = remember { SnackbarHostState() }
         val scope = rememberCoroutineScope()
-        val say: (String) -> Unit = { text -> scope.launch { snackbar.showSnackbar(text) } }
+        // each message goes after its time (MessageHost), so the next one follows; an error has a close button
+        val say = remember(snackbar, scope) {
+            Say { text, error -> scope.launch { snackbar.showSnackbar(text, withDismissAction = error, duration = Say.duration(error)) } }
+        }
         // the notice stays after a denial: readPermissions() decides whether the dialog can still come (audit A2)
         val notifyLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { readPermissions() }
         val allowNotifications: () -> Unit = {

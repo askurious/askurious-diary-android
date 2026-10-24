@@ -163,7 +163,7 @@
     <string name="ready_title">让简短问卷准时送达</string>
     <string name="ready_intro">应用会在合适的时刻通过通知告知您研究的简短问卷。为此需要两项权限；第三项设置为可选。您之后可以在手机设置中更改所有这些设置。</string>
     <string name="ready_notify_title">通知</string>
-    <string name="ready_notify_text">没有通知，简短问卷就无法送达。</string>
+    <string name="ready_notify_text">没有此权限，您将收不到简短问卷的通知。您仍可在应用中回答开放的简短问卷。</string>
     <string name="ready_exact_title">闹钟和提醒</string>
     <string name="ready_exact_text">否则简短问卷可能会晚几分钟送达。</string>
     <string name="state_pending">初始问卷尚未完成</string>
@@ -230,7 +230,8 @@
     <string name="another_code">使用其他代码</string>
     <string name="close_warning">未提交的答案可能在关闭后丢失。继续回答还是放弃？</string>
     <string name="discard">放弃并关闭</string>
-    <string name="permission_needed">此问题需要麦克风或位置权限。如已永久拒绝，请打开应用设置。也可使用问题提供的替代输入。</string>
+    <string name="permission_microphone">此问题需要麦克风权限。如已永久拒绝，请在应用设置中允许。如果问题提供替代输入，也可使用。</string>
+    <string name="permission_location">此问题需要位置权限。如已永久拒绝，请在应用设置中允许。如果问题提供替代输入，也可使用。</string>
     <string name="open_settings">打开应用设置</string>
     <string name="restored">请检查恢复的答案。未提交的录音和绘图可能需要重新输入。</string>
     <string name="media_privacy">仅在研究问题需要时才会请求麦克风或位置权限。研究的知情同意书说明会发送哪些内容。应用还会在此手机上保存传输状态。</string>
@@ -283,4 +284,11 @@
     <string name="refresh_studies">刷新研究</string>
     <string name="offline_ready">%1$s：可离线使用</string>
     <string name="offline_missing">%1$s：尚不可离线使用</string>
+    <string name="channel_off_sound">此研究的有声通知已关闭。您仍可在此回答开放的简短问卷。</string>
+    <string name="channel_off_silent">此研究的静音通知已关闭。您仍可在此回答开放的简短问卷。</string>
+    <string name="channel_open">在设置中开启</string>
+    <string name="channel_open_for">在设置中开启：研究“%1$s”的通知</string>
+    <string name="quiet_same">开始和结束时间必须不同。如要关闭，请使用“使用免打扰时段”开关。</string>
+    <string name="scan_no_code">此二维码不包含加入码。请扫描研究资料中的二维码，或输入加入码。</string>
+    <string name="scan_again">重新扫描</string>
 </resources>

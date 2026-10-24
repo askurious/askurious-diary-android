@@ -34,6 +34,12 @@ data class Quiet(val start: String, val end: String) {
     companion object {
         private val TIME = Regex("^([01]?\\d|2[0-3]):([0-5]\\d)$")
 
+        /**
+         * Whether the quiet hours of the dialog can be saved: switched off ([on] false), or from [start] to a
+         * different [end]. The same time twice is no quiet time at all; the dialog says so instead of saving none.
+         */
+        fun draftValid(on: Boolean, start: String, end: String): Boolean = !on || start != end
+
         /** ["22:00", "07:00"] or null; anything else is no quiet hours. */
         fun fromJson(a: JSONArray?): Quiet? {
             if (a == null || a.length() != 2) return null

@@ -34,7 +34,12 @@ class EntrySession(app: Application, val state: SavedStateHandle) : AndroidViewM
     var offlineStarted by mutableStateOf<Long>(0L)
     /** The form of a kept page whose saving failed: the banner's "Save again" sends it once more (UX audit 2026-10-16, B8). */
     var unsaved by mutableStateOf<String?>(null)
+    /**
+     * The page waits for the files of an `<input type=file>` (the file alternative of a voice question): kept here, so
+     * that the result of the phone's file picker reaches it also after the activity was made anew (turning the phone).
+     */
+    var fileCallback: android.webkit.ValueCallback<Array<android.net.Uri>>? = null
     @android.annotation.SuppressLint("StaticFieldLeak") // constructed with applicationContext
     var web: WebView? = null
-    override fun onCleared() { web?.apply { (parent as? android.view.ViewGroup)?.removeView(this); stopLoading(); destroy() }; web = null }
+    override fun onCleared() { fileCallback?.onReceiveValue(null); fileCallback = null; web?.apply { (parent as? android.view.ViewGroup)?.removeView(this); stopLoading(); destroy() }; web = null }
 }
