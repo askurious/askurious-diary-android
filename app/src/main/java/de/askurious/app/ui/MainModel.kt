@@ -67,6 +67,21 @@ class MainModel(app: Application) : AndroidViewModel(app) {
     /** Counts the reloads: only the newest one sets the state, one started earlier may end later. */
     private var reloads = 0
     var syncState by mutableStateOf(0L to false); private set
+
+    /** The studies the last sync could not update (SyncWorker, "failed_codes"; UI/UX audit 2026-10-29, AND-04). */
+    var syncFailed by mutableStateOf<Set<String>>(emptySet()); private set
+
+    /**
+     * A sync in the background (SyncWorker) writes its status at its end: the open screen reads studies and queue
+     * again, without a tap (UI/UX audit 2026-10-29, AND-08). Held here, as the preferences keep the listener weakly.
+     */
+    private val syncWritten = android.content.SharedPreferences.OnSharedPreferenceChangeListener { _, _ -> reload() }
+    private val syncPrefs = context.getSharedPreferences("sync_status", android.content.Context.MODE_PRIVATE)
+        .also { it.registerOnSharedPreferenceChangeListener(syncWritten) }
+
+    override fun onCleared() {
+        syncPrefs.unregisterOnSharedPreferenceChangeListener(syncWritten)
+    }
     var offlineReady by mutableStateOf<Set<Pair<String, String>>>(emptySet()); private set
     var refreshing by mutableStateOf(false); private set
     fun refresh() {
@@ -96,6 +111,7 @@ class MainModel(app: Application) : AndroidViewModel(app) {
             offlineReady = ready
             val status = context.getSharedPreferences("sync_status", android.content.Context.MODE_PRIVATE)
             syncState = status.getLong("success", 0) to status.getBoolean("failed", false)
+            syncFailed = status.getStringSet("failed_codes", null).orEmpty().toSet()
             studies = s
             studiesUnreadable = unreadable
             queueUnreadable = items == null
@@ -114,6 +130,12 @@ class MainModel(app: Application) : AndroidViewModel(app) {
     }
 
     var transferring by mutableStateOf(false); private set
+
+    /**
+     * The study whose answers the server is deleting: kept here, so a turned phone (a new activity) still shows it
+     * and offers no second deletion (UI/UX audit 2026-10-29, AND-02).
+     */
+    var erasing by mutableStateOf<String?>(null); private set
 
     /**
      * Sends the waiting answers now (all studies, as a sync does); [done] gets how many of the study [code] went and
@@ -183,6 +205,8 @@ class MainModel(app: Application) : AndroidViewModel(app) {
      * study stays (its secret).
      */
     fun erase(study: Study, done: (ApiError?) -> Unit) {
+        if (erasing != null) return
+        erasing = study.code
         viewModelScope.launch {
             val error = try {
                 Sync.erase(context, study)
@@ -191,6 +215,8 @@ class MainModel(app: Application) : AndroidViewModel(app) {
                 e
             } catch (e: java.io.IOException) {
                 ApiError("error")
+            } finally {
+                erasing = null
             }
             reload()
             done(error)

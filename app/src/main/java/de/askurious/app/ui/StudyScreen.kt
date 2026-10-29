@@ -107,7 +107,7 @@ internal fun MainActivity.StudyScreen(study: Study, onBack: () -> Unit, snackbar
     var confirmErase by rememberSaveable { mutableStateOf(false) }
     var confirmRemove by rememberSaveable { mutableStateOf(false) }
     var transmissions by rememberSaveable { mutableStateOf(false) }
-    var erasing by remember { mutableStateOf(false) }
+    val erasing = model.erasing == study.code
     var eraseError by rememberSaveable { mutableStateOf<String?>(null) }
     var editQuiet by rememberSaveable { mutableStateOf(false) }
     val today = study.today(real = studyNow(study))
@@ -123,8 +123,10 @@ internal fun MainActivity.StudyScreen(study: Study, onBack: () -> Unit, snackbar
                 Text(stringResource(R.string.limit_refused), style = MaterialTheme.typography.bodySmall)
                 TextButton(onClick = { model.clearRefused(study.code) }) { Text(stringResource(R.string.close)) }
             }
+            if (study.code in model.syncFailed) Message(stringResource(R.string.sync_failed_study), error = true)
             val n = model.waiting[study.code] ?: 0
-            if (n > 0) Message(pluralStringResource(R.plurals.answers_waiting, n, n))
+            if (model.transferring && n > 0) Message(stringResource(R.string.transferring))  // the dialog closed (AND-02)
+            else if (n > 0) Message(pluralStringResource(R.plurals.answers_waiting, n, n))
             if (n > 0 || hasStoredReceipts(study.code, model.waiting)) TextButton(onClick = { transmissions = true }) {
                 Text(stringResource(R.string.transmissions))
             }
@@ -147,7 +149,10 @@ internal fun MainActivity.StudyScreen(study: Study, onBack: () -> Unit, snackbar
                     BulletText(moduleText(m))
                     if (study.running && m.offline) Text(stringResource(if ((study.code to m.key) in model.offlineReady) R.string.offline_ready else R.string.offline_missing, m.name), style = MaterialTheme.typography.bodySmall)
                     // a timed module the participant may also start themselves
-                    if (m.selfStart != null) BulletText(stringResource(R.string.also_self_module, m.name))
+                    m.selfStart?.let { s ->
+                        BulletText(if (s.maxPerDay > 0) stringResource(R.string.also_self_module_max, m.name, s.maxPerDay)
+                            else stringResource(R.string.also_self_module, m.name))
+                    }
                 }
             }
             if (study.hasRandom) {
@@ -247,11 +252,9 @@ internal fun MainActivity.StudyScreen(study: Study, onBack: () -> Unit, snackbar
             // keeping and deleting as equal choices, neither one pressed on the participant (B12)
             confirmButton = {
                 TextButton(enabled = !erasing, onClick = {
-                    erasing = true
                     // the question itself was the confirmation; the study stays after an error (its secret)
                     eraseError = null
                     model.erase(study) { e ->
-                        erasing = false
                         askErase = false
                         if (e == null) {
                             say(getString(R.string.erased_done, study.title))
@@ -319,10 +322,8 @@ internal fun MainActivity.StudyScreen(study: Study, onBack: () -> Unit, snackbar
             },
             confirmButton = {
                 TextButton(enabled = !erasing, onClick = {
-                    erasing = true
                     // the study stays after an error: its secret is the only way to try again
                     model.erase(study) { e ->
-                        erasing = false
                         confirmErase = false
                         if (e == null) {
                             say(getString(R.string.erased_done, study.title))
@@ -453,17 +454,28 @@ internal fun MainActivity.StudyNow(study: Study) {
         }
         // the modules the participant starts themselves, also timed ones that may be started on an event
         for (m in study.selfModules(study.dayIndex(today) ?: 0)) {
-            OutlinedButton(onClick = { startActivity(EntryActivity.intent(context, study.code, m.key)) }) {
-                Text(m.selfTrigger?.label?.ifBlank { null } ?: m.name)
+            val shown = m.selfTrigger?.label?.ifBlank { null } ?: m.name
+            // the visible label first, then the study: unambiguous for TalkBack and Voice Access across several cards
+            // (UI/UX audit 2026-10-29, AND-07)
+            val name = stringResource(R.string.action_for_study, shown, study.title)
+            OutlinedButton(onClick = { startActivity(EntryActivity.intent(context, study.code, m.key)) },
+                modifier = Modifier.semantics { contentDescription = name }) {
+                Text(shown)
             }
         }
     }
     if (state == StudyState.PENDING) {
-        Button(onClick = { startActivity(EntryActivity.intent(context, study.code, "entry")) }) { Text(stringResource(R.string.continue_entry)) }
+        val shown = stringResource(R.string.continue_entry)
+        val name = stringResource(R.string.action_for_study, shown, study.title)
+        Button(onClick = { startActivity(EntryActivity.intent(context, study.code, "entry")) },
+            modifier = Modifier.semantics { contentDescription = name }) { Text(shown) }
     }
     study.exit?.takeIf { it.open }?.let { exit ->
-        Button(onClick = { startActivity(EntryActivity.intent(context, study.code, EntryActivity.EXIT)) }) {
-            Text(exit.name.ifBlank { stringResource(R.string.exit_default) })
+        val shown = exit.name.ifBlank { stringResource(R.string.exit_default) }
+        val name = stringResource(R.string.action_for_study, shown, study.title)
+        Button(onClick = { startActivity(EntryActivity.intent(context, study.code, EntryActivity.EXIT)) },
+            modifier = Modifier.semantics { contentDescription = name }) {
+            Text(shown)
         }
         // the state line names the last day already when the study period is over (EXIT_OPEN)
         if (state != StudyState.EXIT_OPEN) exit.until?.let {
@@ -550,7 +562,9 @@ private fun Context.quietText(quiet: Quiet?): String {
 @Composable
 private fun moduleText(m: Module): String {
     val t = m.trigger
-    if (t is Trigger.Self) return stringResource(R.string.self_module, t.label.ifBlank { m.name })
+    // with its daily maximum, so the limit is known before a start is refused (UI/UX audit 2026-10-29, AND-05)
+    if (t is Trigger.Self) return if (t.maxPerDay > 0) stringResource(R.string.self_module_max, t.label.ifBlank { m.name }, t.maxPerDay)
+        else stringResource(R.string.self_module, t.label.ifBlank { m.name })
     val f = frequency(t) ?: return m.name
     val random = t is Trigger.Random
     return when {

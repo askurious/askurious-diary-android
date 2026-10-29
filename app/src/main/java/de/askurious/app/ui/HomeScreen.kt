@@ -278,6 +278,8 @@ private fun MainActivity.StudyCard(study: Study, selected: Boolean, say: Say, on
                 Text(study.summary, style = MaterialTheme.typography.bodyMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
             }
             StudyNow(study)
+            // which study the last update missed, beside the general note above the cards (UI/UX audit 2026-10-29, AND-04)
+            if (study.code in model.syncFailed) Message(stringResource(R.string.sync_failed_study), error = true)
             // the transfers only while answers wait; the receipts of those sent are on the study's page (B26)
             val n = model.waiting[study.code] ?: 0
             if (n > 0) {
