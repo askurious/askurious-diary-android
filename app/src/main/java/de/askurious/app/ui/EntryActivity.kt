@@ -193,7 +193,8 @@ class EntryActivity : ComponentActivity() {
     private val fileChooser = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         val callback = session.fileCallback ?: return@registerForActivityResult
         session.fileCallback = null
-        callback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(result.resultCode, result.data))
+        // another app's answer: checked before the page gets it (PickedFiles)
+        callback.onReceiveValue(PickedFiles.checked(this, WebChromeClient.FileChooserParams.parseResult(result.resultCode, result.data)))
     }
     private fun trusted(address: String): Boolean = runCatching {
         val uri = java.net.URI(address)

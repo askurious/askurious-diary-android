@@ -144,6 +144,9 @@ class StudyStore internal constructor(private val prefs: SharedPreferences, priv
     }
 
     companion object {
+        /** Whether two server addresses name the same server (scheme, host and port, as [Api.origin] writes them). */
+        fun sameServer(a: String, b: String): Boolean = Api.origin(a)?.let { it == Api.origin(b) } == true
+
         /** The list of earlier versions (secrets sealed one by one); only read, and emptied as it is moved. */
         private const val KEY = "studies"
         private const val KEY_SEALED = "studies_sealed"

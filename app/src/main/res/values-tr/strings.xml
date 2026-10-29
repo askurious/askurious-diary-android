@@ -267,6 +267,7 @@
     <string name="rejoin_title">Yeni bir katılım başlatılsın mı?</string>
     <string name="rejoin_more">Önceki katılımın bekleyen yanıtları önce gönderilir. Bağlantı yoksa yeniden katılım, yanıtlar gönderilene kadar bekler; önceki katılım duraklatıldığı sürece bekletilen yanıtlar için de aynısı geçerlidir. Yalnızca sunucunun kesin olarak reddettiği yanıtlar silinir. Önceki yanıtlarınızı silmek için iptal edin ve çalışmanın sayfasındaki “Yanıtlarımı sil” düğmesini kullanın.</string>
     <string name="rejoin_pending">Önceki katılımınızın yanıtları hâlâ gönderilmeyi bekliyor. Kaybolmamaları için lütfen internete bağlanın ve tekrar deneyin.</string>
+    <string name="same_code_other_server">Bu telefonda başka bir sunucudan aynı koda sahip bir çalışma zaten var. Lütfen önce o çalışmadan ayrılın, ardından bu çalışmaya katılın.</string>
     <string name="rejoin_waiting">Önceki katılımınızın yanıtları, katılım duraklatıldığı için bekletiliyor. Duraklatma sona erer ermez gönderilirler (en geç 7 gün sonra süreleri dolar). Kaybolmamaları için lütfen ancak bundan sonra yeniden katılın.</string>
     <string name="learn_more">Daha fazla bilgi</string>
     <string name="choose_study">Sayfasını görmek için listeden bir çalışma seçin.</string>

@@ -274,6 +274,7 @@
     <string name="rejoin_title">Avviare una nuova partecipazione?</string>
     <string name="rejoin_more">Le risposte ancora in attesa della partecipazione precedente vengono prima inviate. Senza connessione la nuova partecipazione attende che siano inviate; lo stesso vale per le risposte trattenute finché la partecipazione precedente è in pausa. Vengono scartate solo le risposte rifiutate definitivamente dal server. Per cancellare le Sue risposte precedenti, annulli e usi «Cancella le mie risposte» nella pagina dello studio.</string>
     <string name="rejoin_pending">Alcune risposte della Sua partecipazione precedente sono ancora in attesa di invio. Si colleghi a Internet e riprovi, così non andranno perse.</string>
+    <string name="same_code_other_server">Su questo telefono c’è già uno studio con questo codice di un altro server. Esca prima da quello studio, poi partecipi a questo.</string>
     <string name="rejoin_waiting">Alcune risposte della Sua partecipazione precedente sono trattenute perché è in pausa. Verranno inviate appena finisce la pausa (scadono al più tardi dopo 7 giorni). Partecipi di nuovo solo dopo, così non andranno perse.</string>
     <string name="learn_more">Ulteriori informazioni</string>
     <string name="choose_study">Scelga uno studio nell’elenco per vederne la pagina.</string>

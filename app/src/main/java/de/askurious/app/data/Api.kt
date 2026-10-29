@@ -149,6 +149,25 @@ object Api {
         }
     }
 
+    /**
+     * The text of an answer, at most [max] bytes (UTF-8): a larger one is an error of the server, not something to
+     * hold in memory (ApiError "error" with [code]).
+     */
+    fun readCapped(input: java.io.InputStream, max: Long, code: Int): String {
+        val out = java.io.ByteArrayOutputStream()
+        val buf = ByteArray(16 * 1024)
+        while (true) {
+            val n = input.read(buf)
+            if (n < 0) break
+            out.write(buf, 0, n)
+            if (out.size() > max) throw ApiError("error", code)
+        }
+        return out.toString(Charsets.UTF_8.name())
+    }
+
+    /** The largest answer of the API read (a study with its modules and history is far below). */
+    const val MAX_ANSWER = 8L * 1024 * 1024
+
     /** The largest file kept for an offline page: a video does not belong on the phone without being asked. */
     private const val MAX_FILE = 10L * 1024 * 1024
 
@@ -209,7 +228,7 @@ object Api {
                 // the Date header has whole seconds: a skew below a few seconds is noise and not looked at
                 conn.date.takeIf { it > 0 }?.let { clockSkew = System.currentTimeMillis() - it }
                 val stream = if (code in 200..299) conn.inputStream else conn.errorStream
-                val text = stream?.bufferedReader()?.use { it.readText() }.orEmpty()
+                val text = stream?.use { readCapped(it, MAX_ANSWER, code) }.orEmpty()
                 val json = runCatching { JSONObject(text) }.getOrNull()
                 if (code !in 200..299) throw ApiError(json?.optString("error")?.ifBlank { null } ?: "error", code)
                 json ?: throw ApiError("error", code)

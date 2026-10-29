@@ -260,6 +260,7 @@
     <string name="rejoin_title">开始新的参与？</string>
     <string name="rejoin_more">之前参与中尚在等待的回答会先发送。没有网络时，重新加入会等到这些回答发送完毕；之前的参与处于暂停状态时被暂缓的回答也是如此。只有被服务器最终拒绝的回答才会被丢弃。如需删除之前的回答，请取消并使用研究页面上的“删除我的回答”。</string>
     <string name="rejoin_pending">您之前参与的回答仍在等待发送。请连接互联网后重试，以免回答丢失。</string>
+    <string name="same_code_other_server">此手机上已有来自另一台服务器、使用相同代码的研究。请先退出该研究，再加入此研究。</string>
     <string name="rejoin_waiting">您之前参与的回答因参与处于暂停状态而被暂缓。暂停结束后会立即发送（最迟 7 天后过期）。请在此之后再重新加入，以免回答丢失。</string>
     <string name="learn_more">了解更多</string>
     <string name="choose_study">请在列表中选择一项研究以查看其页面。</string>

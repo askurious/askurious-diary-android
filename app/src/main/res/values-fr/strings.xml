@@ -274,6 +274,7 @@
     <string name="rejoin_title">Commencer une nouvelle participation ?</string>
     <string name="rejoin_more">Les réponses en attente de la participation précédente sont d’abord envoyées. Sans connexion, la nouvelle participation attend leur envoi ; il en va de même pour les réponses retenues tant que la participation précédente est en pause. Seules les réponses refusées définitivement par le serveur sont supprimées. Pour supprimer vos réponses précédentes, annulez et utilisez « Supprimer mes réponses » sur la page de l’étude.</string>
     <string name="rejoin_pending">Des réponses de votre participation précédente attendent encore d’être envoyées. Veuillez vous connecter à Internet et réessayer pour qu’elles ne soient pas perdues.</string>
+    <string name="same_code_other_server">Une étude portant ce code et provenant d’un autre serveur se trouve déjà sur ce téléphone. Veuillez d’abord quitter cette étude, puis rejoindre celle-ci.</string>
     <string name="rejoin_waiting">Des réponses de votre participation précédente sont retenues parce qu’elle est en pause. Elles seront envoyées dès la fin de la pause (elles expirent au plus tard après 7 jours). Veuillez rejoindre à nouveau seulement ensuite, pour qu’elles ne soient pas perdues.</string>
     <string name="learn_more">En savoir plus</string>
     <string name="choose_study">Choisissez une étude dans la liste pour afficher sa page.</string>

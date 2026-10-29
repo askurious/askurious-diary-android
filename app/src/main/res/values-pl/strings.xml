@@ -281,6 +281,7 @@
     <string name="rejoin_title">Rozpocząć nowy udział?</string>
     <string name="rejoin_more">Oczekujące odpowiedzi z wcześniejszego udziału zostaną najpierw wysłane. Bez połączenia ponowne dołączenie czeka, aż zostaną wysłane; tak samo w przypadku odpowiedzi wstrzymanych, dopóki wcześniejszy udział jest wstrzymany. Odrzucane są tylko odpowiedzi, których serwer ostatecznie nie przyjął. Aby usunąć wcześniejsze odpowiedzi, prosimy anulować i użyć przycisku „Usuń moje odpowiedzi” na stronie badania.</string>
     <string name="rejoin_pending">Odpowiedzi z wcześniejszego udziału wciąż czekają na wysłanie. Prosimy połączyć się z internetem i spróbować ponownie, aby nie zostały utracone.</string>
+    <string name="same_code_other_server">Na tym telefonie jest już badanie z tym kodem z innego serwera. Najpierw proszę wystąpić z tamtego badania, a potem dołączyć do tego.</string>
     <string name="rejoin_waiting">Odpowiedzi z wcześniejszego udziału są wstrzymane, ponieważ udział jest wstrzymany. Zostaną wysłane, gdy tylko przerwa się skończy (najpóźniej po 7 dniach wygasają). Prosimy dołączyć ponownie dopiero wtedy, aby nie zostały utracone.</string>
     <string name="learn_more">Więcej informacji</string>
     <string name="choose_study">Aby zobaczyć stronę badania, prosimy wybrać je z listy.</string>
