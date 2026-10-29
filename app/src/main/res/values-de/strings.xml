@@ -74,6 +74,7 @@
     <string name="about_oss_title">Open-Source-Software</string>
     <string name="about_oss_intro">Die App nutzt diese Bibliotheken und diese Schrift; die Lizenz steht jeweils dabei.</string>
     <string name="show_licence">Lizenztexte anzeigen</string>
+    <string name="source_code">Quellcode</string>
     <string name="notif_reminder">Erinnerung: Eine Kurzbefragung wartet noch</string>
     <string name="offline_saved">Gespeichert. Die Antworten werden gesendet, sobald das Telefon eine Verbindung hat.</string>
     <plurals name="answers_waiting">
@@ -154,6 +155,7 @@
     <string name="left_done">„%1$s“ verlassen.</string>
     <string name="removed_done">„%1$s“ aus der Liste entfernt.</string>
     <string name="licence_texts">Lizenztexte</string>
+    <string name="licence_title_eupl">European Union Public Licence 1.2</string>
     <string name="licence_title_apache">Apache License 2.0</string>
     <string name="licence_title_font">SIL Open Font License 1.1 (Schrift PT Serif)</string>
     <string name="licence_title_notices">Hinweise (NOTICE) von ZXing, Kotlin, kotlinx.coroutines und kotlinx.serialization, BSD 3-Clause License von ThreeTen-bp</string>

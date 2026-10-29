@@ -82,6 +82,7 @@
     <string name="about_oss_title">Программы с открытым исходным кодом</string>
     <string name="about_oss_intro">Приложение использует эти библиотеки и этот шрифт; лицензия указана у каждого из них.</string>
     <string name="show_licence">Показать тексты лицензий</string>
+    <string name="source_code">Исходный код</string>
     <string name="notif_reminder">Напоминание: Вас всё ещё ждёт короткий опрос</string>
     <string name="offline_saved">Сохранено. Ваши ответы будут отправлены, как только у телефона появится соединение.</string>
     <plurals name="answers_waiting">
@@ -168,6 +169,7 @@
     <string name="left_done">Вы покинули «%1$s».</string>
     <string name="removed_done">«%1$s» удалено из списка.</string>
     <string name="licence_texts">Тексты лицензий</string>
+    <string name="licence_title_eupl">European Union Public Licence 1.2</string>
     <string name="licence_title_apache">Apache License 2.0</string>
     <string name="licence_title_font">SIL Open Font License 1.1 (шрифт PT Serif)</string>
     <string name="licence_title_notices">Уведомления (NOTICE) ZXing, Kotlin, kotlinx.coroutines и kotlinx.serialization, BSD 3-Clause License ThreeTen-bp</string>

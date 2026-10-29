@@ -78,6 +78,7 @@
     <string name="about_oss_title">Logiciels open source</string>
     <string name="about_oss_intro">L’application utilise ces bibliothèques et cette police ; la licence figure à côté de chacune.</string>
     <string name="show_licence">Afficher les textes des licences</string>
+    <string name="source_code">Code source</string>
     <string name="notif_reminder">Rappel : un bref questionnaire vous attend toujours</string>
     <string name="offline_saved">Enregistré. Vos réponses seront envoyées dès que le téléphone aura une connexion.</string>
     <plurals name="answers_waiting">
@@ -161,6 +162,7 @@
     <string name="left_done">Vous avez quitté « %1$s ».</string>
     <string name="removed_done">« %1$s » a été retirée de la liste.</string>
     <string name="licence_texts">Textes des licences</string>
+    <string name="licence_title_eupl">European Union Public Licence 1.2</string>
     <string name="licence_title_apache">Apache License 2.0</string>
     <string name="licence_title_font">SIL Open Font License 1.1 (police PT Serif)</string>
     <string name="licence_title_notices">Avis (NOTICE) de ZXing, de Kotlin, de kotlinx.coroutines et de kotlinx.serialization, BSD 3-Clause License de ThreeTen-bp</string>

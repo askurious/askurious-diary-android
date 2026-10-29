@@ -82,6 +82,7 @@
     <string name="about_oss_title">Oprogramowanie open source</string>
     <string name="about_oss_intro">Aplikacja korzysta z tych bibliotek i tej czcionki; licencja jest podana przy każdej pozycji.</string>
     <string name="show_licence">Pokaż teksty licencji</string>
+    <string name="source_code">Kod źródłowy</string>
     <string name="notif_reminder">Przypomnienie: wciąż czeka krótki kwestionariusz</string>
     <string name="offline_saved">Zapisano. Odpowiedzi zostaną wysłane, gdy tylko telefon uzyska połączenie.</string>
     <plurals name="answers_waiting">
@@ -168,6 +169,7 @@
     <string name="left_done">Opuszczono „%1$s”.</string>
     <string name="removed_done">Usunięto „%1$s” z listy.</string>
     <string name="licence_texts">Teksty licencji</string>
+    <string name="licence_title_eupl">European Union Public Licence 1.2</string>
     <string name="licence_title_apache">Apache License 2.0</string>
     <string name="licence_title_font">SIL Open Font License 1.1 (czcionka PT Serif)</string>
     <string name="licence_title_notices">Informacje (NOTICE) ZXing, Kotlin, kotlinx.coroutines i kotlinx.serialization, BSD 3-Clause License ThreeTen-bp</string>

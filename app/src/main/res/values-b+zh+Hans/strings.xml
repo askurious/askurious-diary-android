@@ -70,6 +70,7 @@
     <string name="about_oss_title">开源软件</string>
     <string name="about_oss_intro">本应用使用以下库和字体，各自的许可证列于其后。</string>
     <string name="show_licence">显示许可证文本</string>
+    <string name="source_code">源代码</string>
     <string name="notif_reminder">提醒：还有一份简短问卷等待您填写</string>
     <string name="offline_saved">已保存。手机一旦联网，您的回答就会被发送。</string>
     <plurals name="answers_waiting">
@@ -147,6 +148,7 @@
     <string name="left_done">已退出“%1$s”。</string>
     <string name="removed_done">已从列表中移除“%1$s”。</string>
     <string name="licence_texts">许可证文本</string>
+    <string name="licence_title_eupl">European Union Public Licence 1.2</string>
     <string name="licence_title_apache">Apache License 2.0</string>
     <string name="licence_title_font">SIL Open Font License 1.1（PT Serif 字体）</string>
     <string name="licence_title_notices">ZXing、Kotlin、kotlinx.coroutines 和 kotlinx.serialization 的声明（NOTICE），ThreeTen-bp 的 BSD 3-Clause License</string>
