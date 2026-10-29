@@ -284,6 +284,10 @@
     <string name="sync_failed">更新未完成。仍显示之前的研究信息。请重试。</string>
     <string name="sync_failed_study">上次未能更新此研究。此处显示的信息可能已过时。</string>
     <string name="transferring">正在传输回答…</string>
+    <string name="self_none_left">今天不能再提交报告了。明天可以重新开始。</string>
+    <plurals name="self_left">
+        <item quantity="other">今天还可以提交 %d 次报告</item>
+    </plurals>
     <string name="self_module_max" formatted="true">%1$s：随时可以，每天最多 %2$d 次</string>
     <string name="also_self_module_max" formatted="true">%1$s：也可随时进行，每天最多 %2$d 次</string>
     <string name="action_for_study" formatted="true">%1$s，研究“%2$s”</string>

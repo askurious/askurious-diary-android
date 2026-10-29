@@ -292,6 +292,11 @@
     <string name="sync_failed">Aktualisierung unvollständig. Die bisherigen Studieninformationen bleiben sichtbar. Bitte erneut versuchen.</string>
     <string name="sync_failed_study">Diese Studie konnte zuletzt nicht aktualisiert werden. Die Angaben hier sind vielleicht nicht mehr aktuell.</string>
     <string name="transferring">Antworten werden übertragen …</string>
+    <string name="self_none_left">Heute keine weitere Meldung mehr möglich. Morgen geht es wieder.</string>
+    <plurals name="self_left">
+        <item quantity="one">Heute noch %d Meldung möglich</item>
+        <item quantity="other">Heute noch %d Meldungen möglich</item>
+    </plurals>
     <string name="self_module_max" formatted="true">%1$s: jederzeit möglich, höchstens %2$d-mal am Tag</string>
     <string name="also_self_module_max" formatted="true">%1$s: auch jederzeit möglich, höchstens %2$d-mal am Tag</string>
     <string name="action_for_study" formatted="true">%1$s, Studie „%2$s“</string>

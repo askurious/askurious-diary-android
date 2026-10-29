@@ -392,7 +392,15 @@ internal fun MainActivity.StudyNow(study: Study) {
     if (state == StudyState.RUNNING) {
         var prompts by remember(study.code) { mutableStateOf<List<Pair<Prompt, Long?>>>(emptyList()) }
         var queueFailed by remember(study.code) { mutableStateOf(false) }
+        // the self-started answers of today still waiting on the phone, per module (for what is left today, AND-05)
+        var selfWaiting by remember(study.code) { mutableStateOf<Map<String, Int>>(emptyMap()) }
         LaunchedEffect(study, tick, model.waiting) {
+            selfWaiting = withContext(Dispatchers.IO) {
+                runCatching {
+                    val queue = AnswerQueue(context)
+                    study.modules.filter { it.selfTrigger != null }.associate { it.key to queue.today(study, it.key, study.now(tick)) }
+                }.getOrDefault(emptyMap())
+            }
             try {
                 prompts = withContext(Dispatchers.IO) {
                     val log = PromptLog(context)
@@ -458,10 +466,16 @@ internal fun MainActivity.StudyNow(study: Study) {
             // the visible label first, then the study: unambiguous for TalkBack and Voice Access across several cards
             // (UI/UX audit 2026-10-29, AND-07)
             val name = stringResource(R.string.action_for_study, shown, study.title)
+            // what is left of the daily maximum; none left: no start the server would refuse (UI/UX audit 2026-10-29, AND-05)
+            val left = study.selfLeft(m, selfWaiting[m.key] ?: 0, tick)
             OutlinedButton(onClick = { startActivity(EntryActivity.intent(context, study.code, m.key)) },
-                modifier = Modifier.semantics { contentDescription = name }) {
+                enabled = left != 0, modifier = Modifier.semantics { contentDescription = name }) {
                 Text(shown)
             }
+            if (left != null) Text(
+                if (left == 0) stringResource(R.string.self_none_left) else pluralStringResource(R.plurals.self_left, left, left),
+                style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
     }
     if (state == StudyState.PENDING) {

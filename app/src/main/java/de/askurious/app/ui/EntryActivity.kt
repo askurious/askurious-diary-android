@@ -446,7 +446,7 @@ class EntryActivity : ComponentActivity() {
         if (due == null) {
             // started by the participant: a self module, or a prompted one that may also be started so
             val t = m.selfTrigger ?: return null
-            if (t.maxPerDay > 0 && AnswerQueue(this).today(study, module, now) >= t.maxPerDay) {
+            if (t.maxPerDay > 0 && study.selfLeft(m, AnswerQueue(this).today(study, module, now)) == 0) {
                 error = getString(R.string.limit)
                 return null
             }

@@ -324,6 +324,15 @@
     <string name="sync_failed">التحديث غير مكتمل. لا تزال معلومات الدراسة السابقة معروضة. يُرجى المحاولة مجددًا.</string>
     <string name="sync_failed_study">تعذّر تحديث هذه الدراسة في المرة الأخيرة. قد لا تكون المعلومات المعروضة هنا محدّثة.</string>
     <string name="transferring">جارٍ نقل الإجابات…</string>
+    <string name="self_none_left">لا يمكن إرسال المزيد من البلاغات اليوم. يمكنك البدء من جديد غدًا.</string>
+    <plurals name="self_left">
+        <item quantity="zero">لا يمكن إرسال أي بلاغ اليوم</item>
+        <item quantity="one">يمكن إرسال بلاغ واحد آخر اليوم (%d)</item>
+        <item quantity="two">يمكن إرسال بلاغين آخرين اليوم (%d)</item>
+        <item quantity="few">يمكن إرسال %d بلاغات أخرى اليوم</item>
+        <item quantity="many">يمكن إرسال %d بلاغًا آخر اليوم</item>
+        <item quantity="other">يمكن إرسال %d بلاغ آخر اليوم</item>
+    </plurals>
     <string name="self_module_max" formatted="true">%1$s: في أي وقت، بحد أقصى %2$d في اليوم</string>
     <string name="also_self_module_max" formatted="true">%1$s: أيضًا في أي وقت، بحد أقصى %2$d في اليوم</string>
     <string name="action_for_study" formatted="true">%1$s، الدراسة «%2$s»</string>

@@ -104,6 +104,11 @@ data class Module(
      * "self" of the module); null for none. A [Trigger.Self] module has its own trigger for that.
      */
     val selfStart: Trigger.Self? = null,
+    /**
+     * The self-started reports of this module the server counted on the study's day [Study.selfDate] (server:
+     * "self_today"), as its daily limit counts them; the answers still waiting on the phone come on top.
+     */
+    val selfToday: Int = 0,
 ) {
     /** How the participant starts this module themselves, null when only the schedule asks it. */
     val selfTrigger: Trigger.Self? get() = trigger as? Trigger.Self ?: selfStart
@@ -186,6 +191,8 @@ data class Study(
     val summary: String = "",
     /** The study period has no last day: it runs until the researchers end it (server: "open_end"). */
     val openEnd: Boolean = false,
+    /** The study's day the counts [Module.selfToday] belong to (server: "self_date"); null from an older server. */
+    val selfDate: String? = null,
     /**
      * Whether the notifications of this study ring with the phone's notification sound. Chosen by the participant
      * and kept only on the device (the server never sends it; Sync.merged keeps it).
@@ -225,6 +232,17 @@ data class Study(
     fun realAt(time: Long): Long = clock?.real(time) ?: time
 
     /** The study's date today, in [zone]. */
+    /**
+     * How many more reports of [m] the participant may start today: its daily maximum less the reports the server
+     * counted today ([Module.selfToday], only while [selfDate] is today) and [waiting] answers not yet sent; null
+     * without a maximum (UI/UX audit 2026-10-29, AND-05). The server keeps the last word.
+     */
+    fun selfLeft(m: Module, waiting: Int, real: Long = System.currentTimeMillis()): Int? {
+        val max = m.selfTrigger?.maxPerDay?.takeIf { it > 0 } ?: return null
+        val sent = if (selfDate != null && selfDate == today(real = real).toString()) m.selfToday else 0
+        return (max - sent - waiting).coerceAtLeast(0)
+    }
+
     fun today(zone: ZoneId? = null, real: Long = System.currentTimeMillis()): LocalDate {
         val at = Instant.ofEpochMilli(now(real))
         return at.atZone(zone ?: zoneAt(at)).toLocalDate()
@@ -290,6 +308,7 @@ data class Study(
         .put("look", look?.toJson() ?: JSONObject.NULL)
         .put("summary", summary)
         .put("open_end", openEnd)
+        .put("self_date", selfDate ?: JSONObject.NULL)
         .put("sound", sound)
         .put("contact", contact)
         .put("completed_prompts", JSONArray(completedPrompts.toList()))
@@ -338,6 +357,7 @@ data class Study(
             look = runCatching { Look.fromJson(o.optJSONObject("look")) }.getOrNull(),
             summary = o.optString("summary").trim(),
             openEnd = o.optBoolean("open_end", false),
+            selfDate = o.optStringOrNull("self_date"),
             sound = o.optBoolean("sound", true),
             contact = o.optString("contact").trim(),
             completedPrompts = o.optJSONArray("completed_prompts")?.let { a -> (0 until a.length()).map { a.optString(it) }.toSet() } ?: emptySet(),
@@ -397,6 +417,7 @@ data class Study(
                 reminder = if (trigger.prompted) o.optInt("reminder", 0).coerceAtLeast(0) else 0,
                 offline = o.optBoolean("offline", false),
                 selfStart = selfStart,
+                selfToday = o.optInt("self_today", 0).coerceAtLeast(0),
             )
         }
 
@@ -412,7 +433,7 @@ data class Study(
             }
             return JSONObject().put("key", m.key).put("name", m.name).put("trigger", t).put("expires", m.expires)
                 .put("days", JSONArray(listOf(m.dayFrom, m.dayTo))).put("notify", m.notify)
-                .put("reminder", m.reminder).put("offline", m.offline)
+                .put("reminder", m.reminder).put("offline", m.offline).put("self_today", m.selfToday)
                 .put("self", m.selfStart?.let { JSONObject().put("label", it.label).put("max_per_day", it.maxPerDay) } ?: JSONObject.NULL)
         }
     }
