@@ -28,4 +28,13 @@ class StudyServerTest {
         val old = study.toJson().apply { remove("server") }
         assertEquals(Api.defaultServer, Study.fromJson(old).server)
     }
+
+    /** One study per code on the phone: a code of another server does not replace it (audit 2026-10-28, F04). */
+    @Test
+    fun theSameServerByOrigin() {
+        assertEquals(true, StudyStore.sameServer("https://Example.org", "https://example.org:443/"))
+        assertEquals(false, StudyStore.sameServer("https://example.org", "https://ask.askurious.de"))
+        assertEquals(false, StudyStore.sameServer("https://example.org", "http://example.org"))
+        assertEquals(false, StudyStore.sameServer("", ""))
+    }
 }

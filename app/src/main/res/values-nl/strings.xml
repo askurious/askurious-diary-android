@@ -267,6 +267,7 @@
     <string name="rejoin_title">Nieuwe deelname starten?</string>
     <string name="rejoin_more">Nog wachtende antwoorden van de eerdere deelname worden eerst verstuurd. Zonder verbinding wacht de nieuwe deelname tot ze verstuurd zijn; hetzelfde geldt voor antwoorden die worden vastgehouden zolang de eerdere deelname gepauzeerd is. Alleen antwoorden die de server definitief heeft geweigerd vervallen. Om uw eerdere antwoorden te verwijderen, annuleert u en gebruikt u ‘Mijn antwoorden verwijderen’ op de pagina van het onderzoek.</string>
     <string name="rejoin_pending">Antwoorden van uw eerdere deelname wachten nog op verzending. Maak verbinding met internet en probeer het opnieuw, zodat ze niet verloren gaan.</string>
+    <string name="same_code_other_server">Er staat al een onderzoek met deze code van een andere server op deze telefoon. Verlaat eerst dat onderzoek en neem daarna deel aan dit onderzoek.</string>
     <string name="rejoin_waiting">Antwoorden van uw eerdere deelname worden vastgehouden omdat die gepauzeerd is. Ze worden verstuurd zodra de pauze eindigt (uiterlijk na 7 dagen vervallen ze). Neem pas daarna opnieuw deel, zodat ze niet verloren gaan.</string>
     <string name="learn_more">Meer informatie</string>
     <string name="choose_study">Kies een onderzoek in de lijst om de pagina ervan te zien.</string>

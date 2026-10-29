@@ -23,6 +23,8 @@ import org.json.JSONObject
 
 /** The join error while answers of an earlier participation in the study still wait to be sent (T7). */
 const val REJOIN_PENDING = "rejoin_pending"
+/** A study of the same code from another server is on the phone: joining would replace it (its secret, its queue). */
+const val SAME_CODE_OTHER_SERVER = "same_code_other_server"
 const val REJOIN_WAITING = "rejoin_waiting"
 
 /**
@@ -273,6 +275,8 @@ class MainModel(app: Application) : AndroidViewModel(app) {
                 // answers of an earlier participation in this study still waiting: sent first, else no new one,
                 // which would discard them (audit 2026-10-17, T7)
                 val earlier = withContext(Dispatchers.IO) { StudyStore(context).get(info.optString("code")) }
+                // the phone keeps one study per code: one of another server stays, with its secret and its answers
+                if (earlier != null && !StudyStore.sameServer(earlier.server, server)) throw ApiError(SAME_CODE_OTHER_SERVER)
                 if (earlier != null && !Sync.sendBeforeRejoin(context, earlier))
                     throw ApiError(if (Sync.waitingBeforeRejoin(context, earlier)) REJOIN_WAITING else REJOIN_PENDING)
                 val r = Api.enrol(server, code)

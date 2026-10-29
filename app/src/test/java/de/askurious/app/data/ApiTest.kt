@@ -45,4 +45,13 @@ class ApiTest {
         assertFalse(Api.sameOrigin(URI("about:blank"), URI(base)))
         assertFalse(Api.sameOrigin(URI("data:text/html,x"), URI(base)))
     }
+
+    /** An answer above the limit is an error, not a string held in memory (audit 2026-10-28, V04). */
+    @Test
+    fun anAnswerIsReadUpToItsLimit() {
+        assertEquals("{\"ok\":1}", Api.readCapped("{\"ok\":1}".byteInputStream(), 100, 200))
+        assertEquals("äöü", Api.readCapped("äöü".toByteArray().inputStream(), 6, 200))
+        val e = assertThrows(ApiError::class.java) { Api.readCapped(ByteArray(101).inputStream(), 100, 200) }
+        assertEquals(200, e.status)
+    }
 }

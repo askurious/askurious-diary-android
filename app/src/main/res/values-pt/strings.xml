@@ -274,6 +274,7 @@
     <string name="rejoin_title">Iniciar uma nova participação?</string>
     <string name="rejoin_more">As respostas pendentes da participação anterior são enviadas antes. Sem ligação, a nova participação espera até serem enviadas; o mesmo acontece com as respostas retidas enquanto a participação anterior está em pausa. Só são descartadas as respostas que o servidor recusou definitivamente. Para apagar as suas respostas anteriores, cancele e use «Apagar as minhas respostas» na página do estudo.</string>
     <string name="rejoin_pending">Há respostas da sua participação anterior à espera de envio. Ligue-se à internet e tente novamente para que não se percam.</string>
+    <string name="same_code_other_server">Já existe neste telemóvel um estudo com este código de outro servidor. Saia primeiro desse estudo e depois junte-se a este.</string>
     <string name="rejoin_waiting">As respostas da sua participação anterior estão retidas porque está em pausa. Serão enviadas assim que a pausa terminar (expiram, no máximo, ao fim de 7 dias). Participe de novo só depois, para que não se percam.</string>
     <string name="learn_more">Saber mais</string>
     <string name="choose_study">Escolha um estudo na lista para ver a sua página.</string>

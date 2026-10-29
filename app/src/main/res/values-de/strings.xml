@@ -267,6 +267,7 @@
     <string name="rejoin_title">Neu teilnehmen?</string>
     <string name="rejoin_more">Noch wartende Antworten der früheren Teilnahme werden vorher gesendet. Ohne Verbindung wartet der erneute Beitritt, bis sie gesendet sind; ebenso für Antworten, die zurückgehalten werden, solange die frühere Teilnahme pausiert ist. Verworfen werden nur Antworten, die der Server endgültig abgelehnt hat. Wenn Sie die früheren Antworten löschen möchten, brechen Sie hier ab und nutzen Sie „Meine Antworten löschen“ auf der Seite der Studie.</string>
     <string name="rejoin_pending">Antworten Ihrer früheren Teilnahme warten noch auf das Senden. Bitte stellen Sie eine Internetverbindung her und versuchen Sie es noch einmal, damit sie nicht verloren gehen.</string>
+    <string name="same_code_other_server">Eine Studie mit diesem Code von einem anderen Server ist schon auf diesem Telefon. Bitte treten Sie dort zuerst aus und dann dieser Studie bei.</string>
     <string name="rejoin_waiting">Antworten Ihrer früheren Teilnahme werden zurückgehalten, weil sie pausiert ist. Sie werden gesendet, sobald die Pause endet (spätestens nach 7 Tagen verfallen sie). Bitte treten Sie erst danach erneut bei, damit sie nicht verloren gehen.</string>
     <string name="learn_more">Mehr erfahren</string>
     <string name="choose_study">Wählen Sie in der Liste eine Studie, um ihre Seite zu sehen.</string>
