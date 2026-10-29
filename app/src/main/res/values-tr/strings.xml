@@ -292,6 +292,11 @@
     <string name="sync_failed">Güncelleme tamamlanmadı. Önceki araştırma bilgileri gösteriliyor. Lütfen tekrar deneyin.</string>
     <string name="sync_failed_study">Bu araştırma son seferde güncellenemedi. Burada gösterilenler güncel olmayabilir.</string>
     <string name="transferring">Yanıtlar aktarılıyor…</string>
+    <string name="self_none_left">Bugün başka bildirim yapılamaz. Yarın yeniden başlayabilirsiniz.</string>
+    <plurals name="self_left">
+        <item quantity="one">Bugün %d bildirim daha yapılabilir</item>
+        <item quantity="other">Bugün %d bildirim daha yapılabilir</item>
+    </plurals>
     <string name="self_module_max" formatted="true">%1$s: istediğiniz zaman, günde en fazla %2$d</string>
     <string name="also_self_module_max" formatted="true">%1$s: ayrıca istediğiniz zaman, günde en fazla %2$d</string>
     <string name="action_for_study" formatted="true">%1$s, “%2$s” araştırması</string>

@@ -64,4 +64,27 @@ class StudyJsonTest {
         assertEquals(false, s.openEnd)
         assertEquals(14, s.periodDays)
     }
+
+    /** What is left of a self module's daily maximum (UI/UX audit 2026-10-29, AND-05): the server's count of today, the waiting answers on top. */
+    @Test
+    fun selfReportsLeftToday() {
+        val today = java.time.LocalDate.now().toString()
+        val o = JSONObject(
+            """
+            {"code": "abc", "title": "T", "status": "active", "first_day": "2026-10-01", "self_date": "$today",
+             "modules": [
+               {"key": "m1", "name": "Self", "trigger": {"t": "self", "max_per_day": 3}, "self_today": 2},
+               {"key": "m2", "name": "Free", "trigger": {"t": "self", "max_per_day": 0}, "self_today": 9}
+             ]}
+            """.trimIndent()
+        )
+        val s = Study.fromJson(o, "secret")
+        assertEquals(1, s.selfLeft(s.modules[0], waiting = 0))
+        assertEquals(0, s.selfLeft(s.modules[0], waiting = 1))
+        assertNull(s.selfLeft(s.modules[1], waiting = 0))  // no maximum: nothing to count down
+        // a count of another day no longer applies
+        val yesterday = Study.fromJson(s.copy(selfDate = "2000-01-01").toJson())
+        assertEquals(3, yesterday.selfLeft(yesterday.modules[0], waiting = 0))
+        assertEquals(s, Study.fromJson(s.toJson()))
+    }
 }

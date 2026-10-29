@@ -308,6 +308,13 @@
     <string name="sync_failed">Aktualizacja niepełna. Nadal widoczne są poprzednie informacje o badaniu. Proszę spróbować ponownie.</string>
     <string name="sync_failed_study">Ostatnio nie udało się zaktualizować tego badania. Wyświetlane informacje mogą być nieaktualne.</string>
     <string name="transferring">Przesyłanie odpowiedzi…</string>
+    <string name="self_none_left">Dziś nie można już dodać zgłoszenia. Jutro znów będzie można.</string>
+    <plurals name="self_left">
+        <item quantity="one">Dziś możliwe jeszcze %d zgłoszenie</item>
+        <item quantity="few">Dziś możliwe jeszcze %d zgłoszenia</item>
+        <item quantity="many">Dziś możliwych jeszcze %d zgłoszeń</item>
+        <item quantity="other">Dziś możliwe jeszcze %d zgłoszenia</item>
+    </plurals>
     <string name="self_module_max" formatted="true">%1$s: w dowolnej chwili, maks. %2$d dziennie</string>
     <string name="also_self_module_max" formatted="true">%1$s: także w dowolnej chwili, maks. %2$d dziennie</string>
     <string name="action_for_study" formatted="true">%1$s, badanie „%2$s”</string>

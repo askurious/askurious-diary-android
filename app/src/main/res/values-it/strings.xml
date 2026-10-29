@@ -300,6 +300,12 @@
     <string name="sync_failed">Aggiornamento incompleto. Restano visibili le informazioni precedenti. Riprovi.</string>
     <string name="sync_failed_study">L’ultima volta non è stato possibile aggiornare questo studio. Le informazioni mostrate potrebbero non essere aggiornate.</string>
     <string name="transferring">Trasferimento delle risposte…</string>
+    <string name="self_none_left">Oggi non sono possibili altre segnalazioni. Domani potrà ricominciare.</string>
+    <plurals name="self_left">
+        <item quantity="one">Oggi è possibile ancora %d segnalazione</item>
+        <item quantity="many">Oggi sono possibili ancora %d segnalazioni</item>
+        <item quantity="other">Oggi sono possibili ancora %d segnalazioni</item>
+    </plurals>
     <string name="self_module_max" formatted="true">%1$s: quando vuole, al massimo %2$d al giorno</string>
     <string name="also_self_module_max" formatted="true">%1$s: anche quando vuole, al massimo %2$d al giorno</string>
     <string name="action_for_study" formatted="true">%1$s, studio «%2$s»</string>

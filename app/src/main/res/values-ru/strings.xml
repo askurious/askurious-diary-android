@@ -308,6 +308,13 @@
     <string name="sync_failed">Обновление не завершено. Показаны предыдущие сведения об исследовании. Попробуйте снова.</string>
     <string name="sync_failed_study">В прошлый раз это исследование не удалось обновить. Показанные сведения могут быть устаревшими.</string>
     <string name="transferring">Передача ответов…</string>
+    <string name="self_none_left">Сегодня больше нельзя отправить сообщение. Завтра можно снова.</string>
+    <plurals name="self_left">
+        <item quantity="one">Сегодня можно ещё %d сообщение</item>
+        <item quantity="few">Сегодня можно ещё %d сообщения</item>
+        <item quantity="many">Сегодня можно ещё %d сообщений</item>
+        <item quantity="other">Сегодня можно ещё %d сообщения</item>
+    </plurals>
     <string name="self_module_max" formatted="true">%1$s: в любое время, не более %2$d в день</string>
     <string name="also_self_module_max" formatted="true">%1$s: также в любое время, не более %2$d в день</string>
     <string name="action_for_study" formatted="true">%1$s, исследование «%2$s»</string>
