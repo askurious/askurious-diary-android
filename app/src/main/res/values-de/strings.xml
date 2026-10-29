@@ -289,6 +289,8 @@
     <string name="confirmation_time">Serverbestätigung: %1$s</string>
     <string name="sync_time">Letzte erfolgreiche Aktualisierung: %1$s</string>
     <string name="sync_failed">Aktualisierung unvollständig. Die bisherigen Studieninformationen bleiben sichtbar. Bitte erneut versuchen.</string>
+    <string name="sync_failed_study">Diese Studie konnte zuletzt nicht aktualisiert werden. Die Angaben hier sind vielleicht nicht mehr aktuell.</string>
+    <string name="transferring">Antworten werden übertragen …</string>
     <string name="refresh_studies">Studien aktualisieren</string>
     <string name="offline_ready">%1$s: offline bereit</string>
     <string name="offline_missing">%1$s: noch nicht offline bereit</string>

@@ -289,6 +289,8 @@
     <string name="confirmation_time">Serverbevestiging: %1$s</string>
     <string name="sync_time">Laatste geslaagde update: %1$s</string>
     <string name="sync_failed">Update onvolledig. De eerdere onderzoeksinformatie blijft zichtbaar. Probeer het opnieuw.</string>
+    <string name="sync_failed_study">Dit onderzoek kon de laatste keer niet worden bijgewerkt. Wat hier staat, is misschien niet meer actueel.</string>
+    <string name="transferring">Antwoorden worden overgedragen…</string>
     <string name="refresh_studies">Onderzoeken vernieuwen</string>
     <string name="offline_ready">%1$s: offline beschikbaar</string>
     <string name="offline_missing">%1$s: nog niet offline beschikbaar</string>

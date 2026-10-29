@@ -321,6 +321,8 @@
     <string name="confirmation_time">تأكيد الخادم: %1$s</string>
     <string name="sync_time">آخر تحديث ناجح: %1$s</string>
     <string name="sync_failed">التحديث غير مكتمل. لا تزال معلومات الدراسة السابقة معروضة. يُرجى المحاولة مجددًا.</string>
+    <string name="sync_failed_study">تعذّر تحديث هذه الدراسة في المرة الأخيرة. قد لا تكون المعلومات المعروضة هنا محدّثة.</string>
+    <string name="transferring">جارٍ نقل الإجابات…</string>
     <string name="refresh_studies">تحديث الدراسات</string>
     <string name="offline_ready">%1$s: متاح دون اتصال</string>
     <string name="offline_missing">%1$s: غير متاح دون اتصال بعد</string>

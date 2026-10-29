@@ -289,6 +289,8 @@
     <string name="confirmation_time">Sunucu onayı: %1$s</string>
     <string name="sync_time">Son başarılı güncelleme: %1$s</string>
     <string name="sync_failed">Güncelleme tamamlanmadı. Önceki araştırma bilgileri gösteriliyor. Lütfen tekrar deneyin.</string>
+    <string name="sync_failed_study">Bu araştırma son seferde güncellenemedi. Burada gösterilenler güncel olmayabilir.</string>
+    <string name="transferring">Yanıtlar aktarılıyor…</string>
     <string name="refresh_studies">Araştırmaları yenile</string>
     <string name="offline_ready">%1$s: çevrimdışı hazır</string>
     <string name="offline_missing">%1$s: henüz çevrimdışı hazır değil</string>

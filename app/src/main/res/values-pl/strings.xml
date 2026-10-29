@@ -305,6 +305,8 @@
     <string name="confirmation_time">Potwierdzenie serwera: %1$s</string>
     <string name="sync_time">Ostatnia udana aktualizacja: %1$s</string>
     <string name="sync_failed">Aktualizacja niepełna. Nadal widoczne są poprzednie informacje o badaniu. Proszę spróbować ponownie.</string>
+    <string name="sync_failed_study">Ostatnio nie udało się zaktualizować tego badania. Wyświetlane informacje mogą być nieaktualne.</string>
+    <string name="transferring">Przesyłanie odpowiedzi…</string>
     <string name="refresh_studies">Odśwież badania</string>
     <string name="offline_ready">%1$s: dostępne offline</string>
     <string name="offline_missing">%1$s: jeszcze niedostępne offline</string>

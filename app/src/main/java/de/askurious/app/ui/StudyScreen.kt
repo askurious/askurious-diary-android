@@ -107,7 +107,7 @@ internal fun MainActivity.StudyScreen(study: Study, onBack: () -> Unit, snackbar
     var confirmErase by rememberSaveable { mutableStateOf(false) }
     var confirmRemove by rememberSaveable { mutableStateOf(false) }
     var transmissions by rememberSaveable { mutableStateOf(false) }
-    var erasing by remember { mutableStateOf(false) }
+    val erasing = model.erasing == study.code
     var eraseError by rememberSaveable { mutableStateOf<String?>(null) }
     var editQuiet by rememberSaveable { mutableStateOf(false) }
     val today = study.today(real = studyNow(study))
@@ -123,8 +123,10 @@ internal fun MainActivity.StudyScreen(study: Study, onBack: () -> Unit, snackbar
                 Text(stringResource(R.string.limit_refused), style = MaterialTheme.typography.bodySmall)
                 TextButton(onClick = { model.clearRefused(study.code) }) { Text(stringResource(R.string.close)) }
             }
+            if (study.code in model.syncFailed) Message(stringResource(R.string.sync_failed_study), error = true)
             val n = model.waiting[study.code] ?: 0
-            if (n > 0) Message(pluralStringResource(R.plurals.answers_waiting, n, n))
+            if (model.transferring && n > 0) Message(stringResource(R.string.transferring))  // the dialog closed (AND-02)
+            else if (n > 0) Message(pluralStringResource(R.plurals.answers_waiting, n, n))
             if (n > 0 || hasStoredReceipts(study.code, model.waiting)) TextButton(onClick = { transmissions = true }) {
                 Text(stringResource(R.string.transmissions))
             }
@@ -247,11 +249,9 @@ internal fun MainActivity.StudyScreen(study: Study, onBack: () -> Unit, snackbar
             // keeping and deleting as equal choices, neither one pressed on the participant (B12)
             confirmButton = {
                 TextButton(enabled = !erasing, onClick = {
-                    erasing = true
                     // the question itself was the confirmation; the study stays after an error (its secret)
                     eraseError = null
                     model.erase(study) { e ->
-                        erasing = false
                         askErase = false
                         if (e == null) {
                             say(getString(R.string.erased_done, study.title))
@@ -319,10 +319,8 @@ internal fun MainActivity.StudyScreen(study: Study, onBack: () -> Unit, snackbar
             },
             confirmButton = {
                 TextButton(enabled = !erasing, onClick = {
-                    erasing = true
                     // the study stays after an error: its secret is the only way to try again
                     model.erase(study) { e ->
-                        erasing = false
                         confirmErase = false
                         if (e == null) {
                             say(getString(R.string.erased_done, study.title))

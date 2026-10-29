@@ -281,6 +281,8 @@
     <string name="confirmation_time">服务器确认时间：%1$s</string>
     <string name="sync_time">上次成功更新：%1$s</string>
     <string name="sync_failed">更新未完成。仍显示之前的研究信息。请重试。</string>
+    <string name="sync_failed_study">上次未能更新此研究。此处显示的信息可能已过时。</string>
+    <string name="transferring">正在传输回答…</string>
     <string name="refresh_studies">刷新研究</string>
     <string name="offline_ready">%1$s：可离线使用</string>
     <string name="offline_missing">%1$s：尚不可离线使用</string>

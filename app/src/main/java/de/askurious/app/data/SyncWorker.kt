@@ -389,6 +389,7 @@ object Sync {
             var offline = false
             var failed = false // a refusal of the server that will not change: shown, but no retry (audit 2026-10-22, F-08)
             var checked = false
+            val failedCodes = mutableSetOf<String>() // the studies the server refused to update (UI/UX audit 2026-10-29, AND-04)
             // answers of studies taken off the phone while the queue could not be read (T07-N-2)
             runCatching { AnswerQueue(context).retryForget() }
             val exits = PromptLog(context).exits()
@@ -406,14 +407,16 @@ object Sync {
                 } catch (e: CancellationException) {
                     throw e
                 } catch (e: ApiError) {
-                    if (e.transient) offline = true else failed = true
+                    if (e.transient) offline = true else { failed = true; failedCodes += code }
                 } catch (e: Exception) {
                     offline = true // retry unreadable storage and failed uploads too
                 }
             }
             if (!offline) lastAll = System.currentTimeMillis()
             val status = context.getSharedPreferences("sync_status", Context.MODE_PRIVATE).edit().putBoolean("failed", offline || failed)
-            if (!offline && checked) status.putLong("success", lastAll)
+                .putStringSet("failed_codes", failedCodes)
+            // "last successful update" only for an update of every study, not when one of them failed
+            if (!offline && !failed && checked) status.putLong("success", lastAll)
             status.apply()
             offline
         }

@@ -297,6 +297,8 @@
     <string name="confirmation_time">Confirmation du serveur : %1$s</string>
     <string name="sync_time">Dernière mise à jour réussie : %1$s</string>
     <string name="sync_failed">Mise à jour incomplète. Les informations précédentes restent affichées. Réessayez.</string>
+    <string name="sync_failed_study">Cette étude n’a pas pu être mise à jour la dernière fois. Les informations affichées ne sont peut-être plus à jour.</string>
+    <string name="transferring">Transfert des réponses…</string>
     <string name="refresh_studies">Actualiser les études</string>
     <string name="offline_ready">%1$s : disponible hors ligne</string>
     <string name="offline_missing">%1$s : pas encore disponible hors ligne</string>

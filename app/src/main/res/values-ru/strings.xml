@@ -305,6 +305,8 @@
     <string name="confirmation_time">Подтверждение сервера: %1$s</string>
     <string name="sync_time">Последнее успешное обновление: %1$s</string>
     <string name="sync_failed">Обновление не завершено. Показаны предыдущие сведения об исследовании. Попробуйте снова.</string>
+    <string name="sync_failed_study">В прошлый раз это исследование не удалось обновить. Показанные сведения могут быть устаревшими.</string>
+    <string name="transferring">Передача ответов…</string>
     <string name="refresh_studies">Обновить исследования</string>
     <string name="offline_ready">%1$s: доступно без сети</string>
     <string name="offline_missing">%1$s: пока недоступно без сети</string>
