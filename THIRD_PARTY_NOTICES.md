@@ -1,7 +1,7 @@
 # Third-party notices
 
 The Askurious diary app for Android contains the following libraries and one font; the licence stands with each entry.
-The full texts ship with the app and are shown under "About the app" › licence texts: the Apache License 2.0 (`app/src/main/res/raw/apache_license_2_0.txt`), the SIL Open Font License 1.1 of PT Serif (`app/src/main/res/raw/pt_serif_licence.txt`), and the NOTICE files of ZXing, Kotlin, kotlinx.coroutines and kotlinx.serialization (each at the version shipped) with the BSD 3-Clause licence of ThreeTen-bp (`app/src/main/res/raw/notices.txt`).
+The full texts ship with the app and are shown under "About the app" › licence texts, after the app's own EUPL-1.2 (`app/src/main/res/raw/eupl_licence.txt`, a copy of `LICENSE`; the same page links the source code): the Apache License 2.0 (`app/src/main/res/raw/apache_license_2_0.txt`), the SIL Open Font License 1.1 of PT Serif (`app/src/main/res/raw/pt_serif_licence.txt`), and the NOTICE files of ZXing, Kotlin, kotlinx.coroutines and kotlinx.serialization (each at the version shipped) with the BSD 3-Clause licence of ThreeTen-bp (`app/src/main/res/raw/notices.txt`).
 
 | Library | Artifacts | Version | Copyright | Licence |
 |---|---|---|---|---|

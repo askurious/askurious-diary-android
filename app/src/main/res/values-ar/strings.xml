@@ -90,6 +90,7 @@
     <string name="about_oss_title">برمجيات مفتوحة المصدر</string>
     <string name="about_oss_intro">يستخدم التطبيق هذه المكتبات وهذا الخط؛ والترخيص مذكور بجانب كلّ منها.</string>
     <string name="show_licence">عرض نصوص التراخيص</string>
+    <string name="source_code">الشيفرة المصدرية</string>
     <string name="notif_reminder">تذكير: لا يزال استبيان قصير بانتظارك</string>
     <string name="offline_saved">تم الحفظ. ستُرسل إجاباتك بمجرد اتصال الهاتف بالإنترنت.</string>
     <plurals name="answers_waiting">
@@ -182,6 +183,7 @@
     <string name="left_done">غادرت «%1$s».</string>
     <string name="removed_done">تمت إزالة «%1$s» من القائمة.</string>
     <string name="licence_texts">نصوص التراخيص</string>
+    <string name="licence_title_eupl">European Union Public Licence 1.2</string>
     <string name="licence_title_apache">Apache License 2.0</string>
     <string name="licence_title_font">SIL Open Font License 1.1 (الخط PT Serif)</string>
     <string name="licence_title_notices">إشعارات (NOTICE) ZXing وKotlin وkotlinx.coroutines وkotlinx.serialization، وترخيص BSD 3-Clause License لـ ThreeTen-bp</string>

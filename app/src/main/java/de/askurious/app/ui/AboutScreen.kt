@@ -186,6 +186,8 @@ fun AboutScreen(onBack: () -> Unit, onLicence: () -> Unit) {
 
             SectionTitle(stringResource(R.string.about_licence_title))
             Text(stringResource(R.string.about_copyright))
+            // EUPL-1.2 Art. 5: where the source code is; the licence text itself is the first one under show_licence
+            OutlinedButton(onClick = { open(SOURCE_CODE_URL) }) { Text(stringResource(R.string.source_code)) }
 
             SectionTitle(stringResource(R.string.about_oss_title))
             Text(stringResource(R.string.about_oss_intro))
@@ -197,8 +199,12 @@ fun AboutScreen(onBack: () -> Unit, onLicence: () -> Unit) {
     }
 }
 
+/** Where the source code of the app is offered (EUPL-1.2 Art. 5). */
+const val SOURCE_CODE_URL = "https://github.com/askurious/askurious-diary-android"
+
 /**
- * The licence texts of the libraries and the font, each under its title, readable at any width (audit A24): the
+ * The licence texts, each under its title, readable at any width (audit A24): the app's own EUPL-1.2 with its
+ * copyright and the parts not under it (the root LICENSE, copied to res/raw/eupl_licence.txt), the
  * Apache License 2.0, the SIL Open Font License 1.1 of PT Serif, and the NOTICE files of ZXing, Kotlin,
  * kotlinx.coroutines and kotlinx.serialization with the BSD 3-Clause License of ThreeTen-bp.
  */
@@ -207,6 +213,7 @@ fun LicenceScreen(onBack: () -> Unit) {
     val context = LocalContext.current
     val texts = remember {
         listOf(
+            R.string.licence_title_eupl to R.raw.eupl_licence,
             R.string.licence_title_apache to R.raw.apache_license_2_0,
             R.string.licence_title_font to R.raw.pt_serif_licence,
             R.string.licence_title_notices to R.raw.notices,
