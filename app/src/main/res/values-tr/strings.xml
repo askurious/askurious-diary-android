@@ -291,6 +291,10 @@
     <string name="sync_failed">Güncelleme tamamlanmadı. Önceki araştırma bilgileri gösteriliyor. Lütfen tekrar deneyin.</string>
     <string name="sync_failed_study">Bu araştırma son seferde güncellenemedi. Burada gösterilenler güncel olmayabilir.</string>
     <string name="transferring">Yanıtlar aktarılıyor…</string>
+    <string name="self_module_max" formatted="true">%1$s: istediğiniz zaman, günde en fazla %2$d</string>
+    <string name="also_self_module_max" formatted="true">%1$s: ayrıca istediğiniz zaman, günde en fazla %2$d</string>
+    <string name="action_for_study" formatted="true">%1$s, “%2$s” araştırması</string>
+    <string name="link_no_code">Bu bağlantıda katılım kodu yok. Araştırma belgelerinizdeki katılım kodunu girin.</string>
     <string name="refresh_studies">Araştırmaları yenile</string>
     <string name="offline_ready">%1$s: çevrimdışı hazır</string>
     <string name="offline_missing">%1$s: henüz çevrimdışı hazır değil</string>

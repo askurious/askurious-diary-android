@@ -299,6 +299,10 @@
     <string name="sync_failed">Atualização incompleta. As informações anteriores continuam visíveis. Tente novamente.</string>
     <string name="sync_failed_study">Não foi possível atualizar este estudo da última vez. O que aqui se mostra pode estar desatualizado.</string>
     <string name="transferring">A transferir respostas…</string>
+    <string name="self_module_max" formatted="true">%1$s: quando quiser, no máximo %2$d por dia</string>
+    <string name="also_self_module_max" formatted="true">%1$s: também quando quiser, no máximo %2$d por dia</string>
+    <string name="action_for_study" formatted="true">%1$s, estudo «%2$s»</string>
+    <string name="link_no_code">Esta ligação não contém um código de adesão. Introduza o código dos documentos do estudo.</string>
     <string name="refresh_studies">Atualizar estudos</string>
     <string name="offline_ready">%1$s: disponível offline</string>
     <string name="offline_missing">%1$s: ainda não disponível offline</string>

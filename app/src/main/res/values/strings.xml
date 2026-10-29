@@ -295,6 +295,10 @@
     <string name="sync_failed">Update incomplete. The previous study information is still shown. Please try again.</string>
     <string name="sync_failed_study">This study could not be updated last time. What is shown here may be out of date.</string>
     <string name="transferring">Transferring answers …</string>
+    <string name="self_module_max" formatted="true">%1$s: whenever you like, at most %2$d a day</string>
+    <string name="also_self_module_max" formatted="true">%1$s: also whenever you like, at most %2$d a day</string>
+    <string name="action_for_study" formatted="true">%1$s, study “%2$s”</string>
+    <string name="link_no_code">This link holds no join code. Type the join code from your study documents.</string>
     <string name="refresh_studies">Refresh studies</string>
     <string name="offline_ready">%1$s: available offline</string>
     <string name="offline_missing">%1$s: not yet available offline</string>

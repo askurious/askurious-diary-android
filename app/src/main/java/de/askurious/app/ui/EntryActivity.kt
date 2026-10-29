@@ -519,6 +519,20 @@ class EntryActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * Back from the system settings with the permission given: the banner asking for it goes by itself (UI/UX audit
+     * 2026-10-29, AND-03). The question asks again on its next try.
+     */
+    override fun onResume() {
+        super.onResume()
+        val needed = when (permissionNotice) {
+            R.string.permission_microphone -> listOf(Manifest.permission.RECORD_AUDIO)
+            R.string.permission_location -> listOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
+            else -> return
+        }
+        if (needed.any { ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED }) permissionNotice = null
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean(STATE_DONE, done)

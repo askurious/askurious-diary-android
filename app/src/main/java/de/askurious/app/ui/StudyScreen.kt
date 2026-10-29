@@ -149,7 +149,10 @@ internal fun MainActivity.StudyScreen(study: Study, onBack: () -> Unit, snackbar
                     BulletText(moduleText(m))
                     if (study.running && m.offline) Text(stringResource(if ((study.code to m.key) in model.offlineReady) R.string.offline_ready else R.string.offline_missing, m.name), style = MaterialTheme.typography.bodySmall)
                     // a timed module the participant may also start themselves
-                    if (m.selfStart != null) BulletText(stringResource(R.string.also_self_module, m.name))
+                    m.selfStart?.let { s ->
+                        BulletText(if (s.maxPerDay > 0) stringResource(R.string.also_self_module_max, m.name, s.maxPerDay)
+                            else stringResource(R.string.also_self_module, m.name))
+                    }
                 }
             }
             if (study.hasRandom) {
@@ -451,17 +454,28 @@ internal fun MainActivity.StudyNow(study: Study) {
         }
         // the modules the participant starts themselves, also timed ones that may be started on an event
         for (m in study.selfModules(study.dayIndex(today) ?: 0)) {
-            OutlinedButton(onClick = { startActivity(EntryActivity.intent(context, study.code, m.key)) }) {
-                Text(m.selfTrigger?.label?.ifBlank { null } ?: m.name)
+            val shown = m.selfTrigger?.label?.ifBlank { null } ?: m.name
+            // the visible label first, then the study: unambiguous for TalkBack and Voice Access across several cards
+            // (UI/UX audit 2026-10-29, AND-07)
+            val name = stringResource(R.string.action_for_study, shown, study.title)
+            OutlinedButton(onClick = { startActivity(EntryActivity.intent(context, study.code, m.key)) },
+                modifier = Modifier.semantics { contentDescription = name }) {
+                Text(shown)
             }
         }
     }
     if (state == StudyState.PENDING) {
-        Button(onClick = { startActivity(EntryActivity.intent(context, study.code, "entry")) }) { Text(stringResource(R.string.continue_entry)) }
+        val shown = stringResource(R.string.continue_entry)
+        val name = stringResource(R.string.action_for_study, shown, study.title)
+        Button(onClick = { startActivity(EntryActivity.intent(context, study.code, "entry")) },
+            modifier = Modifier.semantics { contentDescription = name }) { Text(shown) }
     }
     study.exit?.takeIf { it.open }?.let { exit ->
-        Button(onClick = { startActivity(EntryActivity.intent(context, study.code, EntryActivity.EXIT)) }) {
-            Text(exit.name.ifBlank { stringResource(R.string.exit_default) })
+        val shown = exit.name.ifBlank { stringResource(R.string.exit_default) }
+        val name = stringResource(R.string.action_for_study, shown, study.title)
+        Button(onClick = { startActivity(EntryActivity.intent(context, study.code, EntryActivity.EXIT)) },
+            modifier = Modifier.semantics { contentDescription = name }) {
+            Text(shown)
         }
         // the state line names the last day already when the study period is over (EXIT_OPEN)
         if (state != StudyState.EXIT_OPEN) exit.until?.let {
@@ -548,7 +562,9 @@ private fun Context.quietText(quiet: Quiet?): String {
 @Composable
 private fun moduleText(m: Module): String {
     val t = m.trigger
-    if (t is Trigger.Self) return stringResource(R.string.self_module, t.label.ifBlank { m.name })
+    // with its daily maximum, so the limit is known before a start is refused (UI/UX audit 2026-10-29, AND-05)
+    if (t is Trigger.Self) return if (t.maxPerDay > 0) stringResource(R.string.self_module_max, t.label.ifBlank { m.name }, t.maxPerDay)
+        else stringResource(R.string.self_module, t.label.ifBlank { m.name })
     val f = frequency(t) ?: return m.name
     val random = t is Trigger.Random
     return when {

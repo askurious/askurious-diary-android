@@ -283,6 +283,10 @@
     <string name="sync_failed">更新未完成。仍显示之前的研究信息。请重试。</string>
     <string name="sync_failed_study">上次未能更新此研究。此处显示的信息可能已过时。</string>
     <string name="transferring">正在传输回答…</string>
+    <string name="self_module_max" formatted="true">%1$s：随时可以，每天最多 %2$d 次</string>
+    <string name="also_self_module_max" formatted="true">%1$s：也可随时进行，每天最多 %2$d 次</string>
+    <string name="action_for_study" formatted="true">%1$s，研究“%2$s”</string>
+    <string name="link_no_code">此链接不含加入代码。请输入研究材料中的加入代码。</string>
     <string name="refresh_studies">刷新研究</string>
     <string name="offline_ready">%1$s：可离线使用</string>
     <string name="offline_missing">%1$s：尚不可离线使用</string>

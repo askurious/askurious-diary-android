@@ -299,6 +299,10 @@
     <string name="sync_failed">Mise à jour incomplète. Les informations précédentes restent affichées. Réessayez.</string>
     <string name="sync_failed_study">Cette étude n’a pas pu être mise à jour la dernière fois. Les informations affichées ne sont peut-être plus à jour.</string>
     <string name="transferring">Transfert des réponses…</string>
+    <string name="self_module_max" formatted="true">%1$s : quand vous voulez, au plus %2$d par jour</string>
+    <string name="also_self_module_max" formatted="true">%1$s : aussi quand vous voulez, au plus %2$d par jour</string>
+    <string name="action_for_study" formatted="true">%1$s, étude « %2$s »</string>
+    <string name="link_no_code">Ce lien ne contient aucun code de participation. Saisissez le code figurant dans les documents de l’étude.</string>
     <string name="refresh_studies">Actualiser les études</string>
     <string name="offline_ready">%1$s : disponible hors ligne</string>
     <string name="offline_missing">%1$s : pas encore disponible hors ligne</string>

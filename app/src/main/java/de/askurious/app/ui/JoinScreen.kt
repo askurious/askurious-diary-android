@@ -104,7 +104,8 @@ internal fun MainActivity.JoinScreen(initial: String, onDone: () -> Unit) {
 
     fun lookUp(c: String) {
         if (busy) return
-        val clean = joinCode(c) ?: return
+        // a pasted link without its code says so, as a scanned one does (UI/UX audit 2026-10-29, AND-06)
+        val clean = joinCode(c) ?: run { if (c.isNotBlank()) message = getString(R.string.link_no_code); return }
         scanUnusable = false
         val at = joinServer(c, BuildConfig.DEBUG) ?: Api.defaultServer
         code = clean
@@ -242,6 +243,8 @@ internal fun MainActivity.JoinScreen(initial: String, onDone: () -> Unit) {
                             val name = m.optString("name")
                             BulletText(
                                 when {
+                                    m.optString("trigger") == "self" && m.optInt("max_per_day", 0) > 0 ->
+                                        stringResource(R.string.self_module_max, name, m.optInt("max_per_day"))
                                     m.optString("trigger") == "self" -> stringResource(R.string.self_module, name)
                                     m.optString("trigger") == "random" && m.optDouble("per_day", 0.0) >= 1 ->
                                         Math.round(m.optDouble("per_day")).toInt().let { n -> pluralStringResource(R.plurals.random_per_day, n, name, n) }

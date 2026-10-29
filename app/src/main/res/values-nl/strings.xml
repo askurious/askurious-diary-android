@@ -291,6 +291,10 @@
     <string name="sync_failed">Update onvolledig. De eerdere onderzoeksinformatie blijft zichtbaar. Probeer het opnieuw.</string>
     <string name="sync_failed_study">Dit onderzoek kon de laatste keer niet worden bijgewerkt. Wat hier staat, is misschien niet meer actueel.</string>
     <string name="transferring">Antwoorden worden overgedragen…</string>
+    <string name="self_module_max" formatted="true">%1$s: wanneer u wilt, hoogstens %2$d per dag</string>
+    <string name="also_self_module_max" formatted="true">%1$s: ook wanneer u wilt, hoogstens %2$d per dag</string>
+    <string name="action_for_study" formatted="true">%1$s, onderzoek ‘%2$s’</string>
+    <string name="link_no_code">Deze link bevat geen deelnamecode. Voer de deelnamecode uit uw onderzoeksdocumenten in.</string>
     <string name="refresh_studies">Onderzoeken vernieuwen</string>
     <string name="offline_ready">%1$s: offline beschikbaar</string>
     <string name="offline_missing">%1$s: nog niet offline beschikbaar</string>
