@@ -232,7 +232,7 @@ No pinning. The servers use Let's Encrypt certificates whose keys are renewed ev
 
 ## Not yet
 
-The entry part without a connection, iOS.
+The entry part without a connection. An app for iOS is being developed and is not published yet.
 
 ## Open questionnaires and interruptions
 
@@ -276,3 +276,6 @@ RWTH Aachen University holds the rights in the code (§ 69b UrhG); the app is de
 It licenses the code under the European Union Public Licence 1.2 ([LICENSE](LICENSE), SPDX `EUPL-1.2`; the official German text in [LICENSE.de.txt](LICENSE.de.txt)); the files of others listed at the top of LICENSE keep their own licences.
 The names and logos of Askurious and POLLtergeist are not licensed under the EUPL.
 The libraries, the font and their licences: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md); the Gradle wrapper files (`gradlew`, `gradlew.bat`, `gradle/wrapper/`) are under the Apache License 2.0.
+
+Contributions: [CONTRIBUTING.md](CONTRIBUTING.md); code of conduct: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md); security issues: [SECURITY.md](SECURITY.md).
+To cite the app in research, cite Askurious and name the app: [How to cite](https://github.com/askurious/askurious#how-to-cite).
