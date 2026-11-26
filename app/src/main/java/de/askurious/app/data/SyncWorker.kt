@@ -130,8 +130,9 @@ object Sync {
      */
     fun merged(fetched: Study, stored: Study?, sentQuiet: QuietFrom?): Study? {
         if (stored == null || stored.secret != fetched.secret) return null
-        // the sound is the participant's choice on the phone; the server knows nothing of it
-        var fresh = fetched.copy(sound = stored.sound)
+        // the sound is the participant's choice on the phone; the server knows nothing of it. So is what the
+        // participant allowed this study's pages (microphone, location; SEC-02)
+        var fresh = fetched.copy(sound = stored.sound, allowMicrophone = stored.allowMicrophone, allowLocation = stored.allowLocation)
         val pending = stored.quietPending
         if (pending != null && pending != sentQuiet) fresh = fresh.copy(quietPending = pending)
         if (stored.status == "left" || stored.leavePending) fresh = fresh.copy(status = "left", leavePending = stored.leavePending)
@@ -243,9 +244,22 @@ object Sync {
         OfflinePages(context).dropStudy(code)
         PromptLog(context).removeStudy(code)
         TransmissionLog(context).remove(code)
+        // the study's code goes from the list of failed updates too (SEC-04)
+        runCatching { failedCodes(context).let { if (code in it) it.remove(code) } }
         Alarms.rearm(context)
         Shortcuts.update(context)
+        // what the WebView kept of an entry (cookies, web storage, cache) goes with the study, unless an entry of
+        // another study is open now: that one's session must stay (SEC-06)
+        de.askurious.app.ui.EntryActivity.clearWebData(context)
     }
+
+    /**
+     * The studies whose last update the server refused (UI/UX audit 2026-10-29, AND-04), sealed: as a plain set in
+     * sync_status.xml they showed which studies the person takes part in, and stayed after a study was removed
+     * (security audit 2026-11-26, SEC-04; the promise of F-01).
+     */
+    fun failedCodes(context: Context, sealer: Sealer = KeystoreSealer): SealedSet =
+        SealedSet(context.applicationContext.getSharedPreferences("sync_status", Context.MODE_PRIVATE), "failed_codes", sealer, "sync-failed")
 
     /**
      * Sends the queued answers of [old] before the participant joins the same study again (audit 2026-10-17, T7).
@@ -414,7 +428,7 @@ object Sync {
             }
             if (!offline) lastAll = System.currentTimeMillis()
             val status = context.getSharedPreferences("sync_status", Context.MODE_PRIVATE).edit().putBoolean("failed", offline || failed)
-                .putStringSet("failed_codes", failedCodes)
+            runCatching { failedCodes(context).set(failedCodes) }
             // "last successful update" only for an update of every study, not when one of them failed
             if (!offline && !failed && checked) status.putLong("success", lastAll)
             status.apply()

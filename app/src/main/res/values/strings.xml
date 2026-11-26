@@ -317,4 +317,15 @@
     <string name="quiet_same">Start and end must differ. To switch quiet hours off, use the switch “Use quiet hours”.</string>
     <string name="scan_no_code">This QR code holds no join code. Scan the code from your study documents or type the join code.</string>
     <string name="scan_again">Scan again</string>
+    <string name="consent_microphone_title">Allow this study to use the microphone?</string>
+    <string name="consent_microphone_text">A question of the study “%1$s” wants to record with the microphone. What you allow here counts only for this study. You can take it back on the study’s page at any time.</string>
+    <string name="consent_location_title">Allow this study to use your location?</string>
+    <string name="consent_location_text">A question of the study “%1$s” wants to read your location. What you allow here counts only for this study. You can take it back on the study’s page at any time.</string>
+    <string name="consent_deny">Don’t allow</string>
+    <string name="access_title">Allowed for questions</string>
+    <string name="access_microphone">Questions of this study may use the microphone.</string>
+    <string name="access_microphone_revoke">No longer allow the microphone</string>
+    <string name="access_location">Questions of this study may read your location.</string>
+    <string name="access_location_revoke">No longer allow the location</string>
+    <string name="answer_too_large">This answer is too large to be kept on the phone without a connection. Please shorten what you entered, or answer once you have a connection again.</string>
 </resources>

@@ -11,6 +11,9 @@ import java.time.ZoneId
 import java.util.UUID
 import java.io.IOException
 
+/** A filled form above [AnswerQueue.MAX_FORM_BYTES]: it is not kept, the entry says so (SEC-03). */
+class AnswerTooLargeException : IOException("Answer too large to keep")
+
 /**
  * Answers given without a connection (EntryActivity, offline page), waiting to be sent with POST /offline.
  * Kept in the app's private storage like the studies (no backup, not moved to a new phone) and only until the
@@ -27,7 +30,10 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
     // the studies with a refusal to show and those whose answers go once the queue can be read: sealed, not plain
     // sets of codes (audit 2026-10-22, F-01)
     private val refusedSet = SealedSet(prefs, REFUSED, sealer, "refused")
-    private val forgetSet = SealedSet(prefs, FORGET, sealer, "forget")
+    private val forgetSet = SealedSet(prefs, FORGET, sealer, "forget", fallbackPlain = true)
+    // the answers whose refusal notice was closed: their ids, sealed too (SEC-13; a plain set of earlier versions is
+    // read along and goes at the next write)
+    private val seenSet = SealedSet(prefs, SEEN, sealer, "refusals-seen")
 
     /**
      * One answer. [due] and [notified]: of the prompt, null for a module the participant started; [started]: the
@@ -106,6 +112,7 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
                 require(existing.study == study && existing.module == module && existing.due == due) { "Answer identity conflict" }
                 return@synchronized existing
             }
+            if (tooLarge(form)) throw AnswerTooLargeException()
             if (rows != null) return@synchronized rows.add(Item(id, study, module, due, notified, started, completed, version, form, moduleName = moduleName))
             val existing = all()
             existing.firstOrNull { it.id == id }?.let { return@synchronized it }
@@ -126,6 +133,7 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
     fun removeStudy(study: String): Unit = synchronized(SealedText.LOCK) {
         if (rows != null) rows.removeStudy(study) else save(all().filterNot { it.study == study })
         clearRefused(study)
+        pruneSeen()
         if (study in forgetLater()) forgetSet.remove(study)
     }
 
@@ -161,6 +169,8 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
     fun discardUnreadable(): Unit = synchronized(SealedText.LOCK) {
         if (rows != null) rows.discard() else text.remove(durable = true)
         runCatching { forgetSet.set(emptySet()) }
+        // the ids of answers that are gone now (SEC-13)
+        runCatching { seenSet.set(emptySet()) }
     }
 
     /** Stores [item] again in place of the one with its id (the time of a first refusal); nothing if it is gone. */
@@ -186,14 +196,24 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
      * The refused answers whose notice the participant closed ("Close" on the study card): their ids. The notice
      * stays away for them and comes back with the next refusal (UX audit 2026-10-16, B5).
      */
-    fun seenRefusals(): Set<String> = runCatching { prefs.getStringSet(SEEN, null)?.toSet() }.getOrNull() ?: emptySet()
+    fun seenRefusals(): Set<String> = runCatching { seenSet.get() }.getOrNull() ?: emptySet()
+
+    /** Drops the ids of answers no longer kept from [seenRefusals] (a study taken off the phone, SEC-13). */
+    private fun pruneSeen() {
+        runCatching {
+            val seen = seenSet.get()
+            if (seen.isEmpty()) return
+            val kept = all().map { it.id }.toSet()
+            if (!kept.containsAll(seen)) seenSet.set(seen intersect kept)
+        }
+    }
 
     /** Closes the notice of the refused answers of [study]; ids of answers no longer kept are dropped on the way. */
     fun dismissRefused(study: String): Unit = synchronized(SealedText.LOCK) {
         val items = all()
         val kept = items.map { it.id }.toSet()
         val now = items.filter { it.study == study && it.refusal != null }.map { it.id }
-        prefs.edit { putStringSet(SEEN, (seenRefusals() intersect kept) + now) }
+        seenSet.set((seenRefusals() intersect kept) + now)
         clearRefused(study)
     }
 
@@ -285,6 +305,15 @@ class AnswerQueue internal constructor(private val prefs: SharedPreferences, sea
         private const val REFUSED = "refused"
         private const val FORGET = "forget"
         private const val SEEN = "refusals_seen"
+
+        /**
+         * The largest filled form kept for sending, in bytes of its JSON text (UTF-8). Sealed and in Base64 a row
+         * stays well below the 2 MB a database cursor reads at once: a larger row was written but could never be read
+         * again, and with it the whole queue of every study (security audit 2026-11-26, SEC-03).
+         */
+        const val MAX_FORM_BYTES = 1024 * 1024
+
+        fun tooLarge(form: String): Boolean = form.toByteArray(Charsets.UTF_8).size > MAX_FORM_BYTES
 
         /** The server takes an answer up to 7 days after "started". */
         const val MAX_AGE_MS = 7L * 24 * 3600 * 1000

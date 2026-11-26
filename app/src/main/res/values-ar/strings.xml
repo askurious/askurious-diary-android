@@ -349,4 +349,15 @@
     <string name="quiet_same">يجب أن تختلف البداية عن النهاية. لإيقافها، استخدم مفتاح «استخدام ساعات الهدوء».</string>
     <string name="scan_no_code">لا يحتوي رمز QR هذا على رمز انضمام. امسح الرمز الموجود في مستندات دراستك أو أدخل رمز الانضمام.</string>
     <string name="scan_again">المسح مرة أخرى</string>
+    <string name="consent_microphone_title">هل تسمح لهذه الدراسة باستخدام الميكروفون؟</string>
+    <string name="consent_microphone_text">يريد أحد أسئلة الدراسة «%1$s» التسجيل بالميكروفون. ما تسمح به هنا يخص هذه الدراسة فقط، ويمكنك التراجع عنه في أي وقت من صفحة الدراسة.</string>
+    <string name="consent_location_title">هل تسمح لهذه الدراسة بمعرفة موقعك؟</string>
+    <string name="consent_location_text">يريد أحد أسئلة الدراسة «%1$s» معرفة موقعك. ما تسمح به هنا يخص هذه الدراسة فقط، ويمكنك التراجع عنه في أي وقت من صفحة الدراسة.</string>
+    <string name="consent_deny">عدم السماح</string>
+    <string name="access_title">مسموح به للأسئلة</string>
+    <string name="access_microphone">يمكن لأسئلة هذه الدراسة استخدام الميكروفون.</string>
+    <string name="access_microphone_revoke">إلغاء السماح بالميكروفون</string>
+    <string name="access_location">يمكن لأسئلة هذه الدراسة معرفة موقعك.</string>
+    <string name="access_location_revoke">إلغاء السماح بالموقع</string>
+    <string name="answer_too_large">هذه الإجابة أكبر من أن تُحفظ على الهاتف دون اتصال. يُرجى اختصار ما أدخلته، أو الإجابة عند توفر الاتصال من جديد.</string>
 </resources>

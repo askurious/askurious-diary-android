@@ -322,4 +322,15 @@
     <string name="quiet_same">El inicio y el final deben ser distintos. Para desactivarlas, use el interruptor «Usar horas de silencio».</string>
     <string name="scan_no_code">Este código QR no contiene ningún código de acceso. Escanee el código de los documentos de su estudio o introduzca el código de acceso.</string>
     <string name="scan_again">Volver a escanear</string>
+    <string name="consent_microphone_title">¿Permitir el micrófono a este estudio?</string>
+    <string name="consent_microphone_text">Una pregunta del estudio «%1$s» quiere grabar con el micrófono. Lo que permita aquí vale solo para este estudio. Puede retirarlo en cualquier momento en la página del estudio.</string>
+    <string name="consent_location_title">¿Permitir su ubicación a este estudio?</string>
+    <string name="consent_location_text">Una pregunta del estudio «%1$s» quiere consultar su ubicación. Lo que permita aquí vale solo para este estudio. Puede retirarlo en cualquier momento en la página del estudio.</string>
+    <string name="consent_deny">No permitir</string>
+    <string name="access_title">Permitido para preguntas</string>
+    <string name="access_microphone">Las preguntas de este estudio pueden usar el micrófono.</string>
+    <string name="access_microphone_revoke">Dejar de permitir el micrófono</string>
+    <string name="access_location">Las preguntas de este estudio pueden consultar su ubicación.</string>
+    <string name="access_location_revoke">Dejar de permitir la ubicación</string>
+    <string name="answer_too_large">Esta respuesta es demasiado grande para guardarla en el teléfono sin conexión. Acorte lo que ha introducido o responda cuando vuelva a tener conexión.</string>
 </resources>

@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
-    <base-config cleartextTrafficPermitted="false" />
+    <!-- certificateTransparency (read from Android 16 on, ignored before): a certificate counts only when it is in the
+         public logs, so one issued for a server of Askurious by mistake or by force is seen. No pinning: the servers'
+         certificates change every few weeks (security audit 2026-11-26, SEC-16) -->
+    <base-config cleartextTrafficPermitted="false">
+        <certificateTransparency enabled="true" />
+    </base-config>
 </network-security-config>

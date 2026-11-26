@@ -75,7 +75,12 @@ class PromptLog internal constructor(private val prefs: SharedPreferences, seale
     private fun JSONObject.entry(key: String, due: Long): JSONObject =
         optJSONObject(key) ?: JSONObject().put("due", due).put("kept", System.currentTimeMillis()).also { put(key, it) }
 
+    /**
+     * Changes the log. Not while the stored log cannot be opened because the Keystore fails (SEC-08): an empty log
+     * written over it lost what was notified and opened in every study. A log damaged for good starts anew.
+     */
     private fun change(block: (JSONObject) -> Unit) {
+        if (text.read().let { it.unreadable && !it.damaged }) return
         val all = load()
         block(all)
         val oldest = System.currentTimeMillis() - KEEP_MS

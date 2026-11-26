@@ -12,6 +12,8 @@ internal class MemoryPreferences {
         arrayOf(SharedPreferences::class.java)) { proxy, method, args ->
         when (method.name) {
             "getString" -> (values[args!![0] as String] ?: args[1]).also { afterRead?.invoke() }
+            // the marker of a sealed text (SealedText.MIGRATED)
+            "getBoolean" -> values[args!![0] as String]?.toBoolean() ?: args[1]
             "edit" -> editor()
             "hashCode" -> System.identityHashCode(proxy)
             "equals" -> proxy === args?.get(0)
@@ -26,6 +28,7 @@ internal class MemoryPreferences {
             arrayOf(SharedPreferences.Editor::class.java)) { proxy, method, args ->
             when (method.name) {
                 "putString" -> { changes[args!![0] as String] = args[1] as String; proxy }
+                "putBoolean" -> { changes[args!![0] as String] = (args[1] as Boolean).toString(); proxy }
                 "apply" -> { values.putAll(changes); null }
                 "commit" -> { values.putAll(changes); true }
                 else -> error("Unexpected editor call: ${method.name}")

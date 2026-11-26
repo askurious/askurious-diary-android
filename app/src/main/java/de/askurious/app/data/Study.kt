@@ -198,6 +198,14 @@ data class Study(
      * and kept only on the device (the server never sends it; Sync.merged keeps it).
      */
     val sound: Boolean = true,
+    /**
+     * The participant allowed the pages of this study the microphone or the location (asked by the app at the first
+     * question that needs it, taken back on the study's page). The phone's own permission counts for the whole app;
+     * without this, a study got what the participant had allowed another one (security audit 2026-11-26, SEC-02).
+     * Kept only on the device and read only from its own store: nothing a server sends sets them.
+     */
+    val allowMicrophone: Boolean = false,
+    val allowLocation: Boolean = false,
     val timezone: String? = null,
     val zoneHistory: List<ZoneFrom> = emptyList(),
     val contact: String = "",
@@ -310,6 +318,7 @@ data class Study(
         .put("open_end", openEnd)
         .put("self_date", selfDate ?: JSONObject.NULL)
         .put("sound", sound)
+        .put("allow_microphone", allowMicrophone).put("allow_location", allowLocation)
         .put("contact", contact)
         .put("completed_prompts", JSONArray(completedPrompts.toList()))
         .put("prompts_from", promptsFrom ?: JSONObject.NULL)
@@ -325,9 +334,10 @@ data class Study(
          * and a module that cannot be read is left out (the server may send something newer than this app knows); only
          * a missing "code" throws. The server sends no "server" either: [server] names it (the study's own, kept on the
          * phone), else the stored one counts, and a study stored before there was one has [Api.defaultServer]. "summary" and
-         * "open_end" come from the server; "sound" only from the phone (a server's answer has it on).
+         * "open_end" come from the server; "sound" only from the phone (a server's answer has it on). [stored]: the JSON
+         * is the phone's own stored copy; only then what the participant allowed the study is read.
          */
-        fun fromJson(o: JSONObject, secret: String = o.optString("secret"), server: String? = null): Study = Study(
+        fun fromJson(o: JSONObject, secret: String = o.optString("secret"), server: String? = null, stored: Boolean = false): Study = Study(
             code = o.getString("code"),
             secret = secret,
             title = o.optString("title"),
@@ -359,6 +369,9 @@ data class Study(
             openEnd = o.optBoolean("open_end", false),
             selfDate = o.optStringOrNull("self_date"),
             sound = o.optBoolean("sound", true),
+            // only from the phone's own store ([stored]), never from an answer of a server (SEC-02)
+            allowMicrophone = stored && o.optBoolean("allow_microphone", false),
+            allowLocation = stored && o.optBoolean("allow_location", false),
             contact = o.optString("contact").trim(),
             completedPrompts = o.optJSONArray("completed_prompts")?.let { a -> (0 until a.length()).map { a.optString(it) }.toSet() } ?: emptySet(),
             promptsFrom = if (o.isNull("prompts_from")) null else o.optLong("prompts_from", 0L).takeIf { it > 0 },

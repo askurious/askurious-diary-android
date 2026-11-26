@@ -304,4 +304,15 @@
     <string name="quiet_same">开始和结束时间必须不同。如要关闭，请使用“使用免打扰时段”开关。</string>
     <string name="scan_no_code">此二维码不包含加入码。请扫描研究资料中的二维码，或输入加入码。</string>
     <string name="scan_again">重新扫描</string>
+    <string name="consent_microphone_title">允许此研究使用麦克风吗？</string>
+    <string name="consent_microphone_text">研究“%1$s”的一个问题想使用麦克风录音。您在此处的允许仅适用于此研究，可随时在该研究的页面上撤回。</string>
+    <string name="consent_location_title">允许此研究获取您的位置吗？</string>
+    <string name="consent_location_text">研究“%1$s”的一个问题想获取您的位置。您在此处的允许仅适用于此研究，可随时在该研究的页面上撤回。</string>
+    <string name="consent_deny">不允许</string>
+    <string name="access_title">已允许问题使用</string>
+    <string name="access_microphone">此研究的问题可以使用麦克风。</string>
+    <string name="access_microphone_revoke">不再允许使用麦克风</string>
+    <string name="access_location">此研究的问题可以获取您的位置。</string>
+    <string name="access_location_revoke">不再允许获取位置</string>
+    <string name="answer_too_large">此回答过大，无法在没有网络连接时保存在手机上。请缩短您输入的内容，或在恢复连接后再作答。</string>
 </resources>

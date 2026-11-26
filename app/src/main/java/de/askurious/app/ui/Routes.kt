@@ -41,5 +41,5 @@ sealed interface Route {
  */
 val APP_LINK_HOSTS = listOf("askurious.de", "ask.askurious.de", "polltergeist.de", "ask.polltergeist.de")
 
-/** The join links the app opens, as in the manifest: the App Links of [APP_LINK_HOSTS] and askurious://join. */
-val JOIN_LINKS = APP_LINK_HOSTS.map { "https://$it/j/{code}" } + "askurious://join/{code}"
+/** The join links the app opens, as in the manifest: the App Links of [APP_LINK_HOSTS], nothing else (SEC-09). */
+val JOIN_LINKS = APP_LINK_HOSTS.map { "https://$it/j/{code}" }

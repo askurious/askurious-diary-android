@@ -310,7 +310,7 @@ class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         // the receiver is exported for these system broadcasts; anything else (an intent another app sends
         // directly) is ignored
-        if (intent.action !in ACTIONS) return
+        if (!accepted(intent.action, android.os.Build.VERSION.SDK_INT)) return
         val action = intent.action
         inBackground {
             runCatching { Alarms.rearm(context) }
@@ -324,13 +324,24 @@ class BootReceiver : BroadcastReceiver() {
         /** Whether the system broadcast [action] also starts a sync: a change of time zone or of the clock (AND-07). */
         fun syncs(action: String?): Boolean = action == Intent.ACTION_TIMEZONE_CHANGED || action == Intent.ACTION_TIME_CHANGED
 
+        /** The broadcast of the "Alarms & reminders" permission (API 31; AlarmManager.ACTION_SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED). */
+        const val EXACT_CHANGED = "android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED"
+
+        /**
+         * Whether the receiver acts on [action] on a phone with API level [sdk]: only the system's broadcasts it is
+         * registered for. The one of the "Alarms & reminders" permission exists from Android 12 (API 31); before, the
+         * system neither sends nor protects that name, so any app could send it and set the alarm anew again and
+         * again (security audit 2026-11-26, SEC-14).
+         */
+        fun accepted(action: String?, sdk: Int): Boolean =
+            action in ACTIONS && (action != EXACT_CHANGED || sdk >= android.os.Build.VERSION_CODES.S)
+
         private val ACTIONS = setOf(
             Intent.ACTION_BOOT_COMPLETED,
             Intent.ACTION_TIME_CHANGED,
             Intent.ACTION_TIMEZONE_CHANGED,
             Intent.ACTION_MY_PACKAGE_REPLACED,
-            // AlarmManager.ACTION_SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED (API 31; never sent before)
-            "android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED",
+            EXACT_CHANGED,
         )
     }
 }

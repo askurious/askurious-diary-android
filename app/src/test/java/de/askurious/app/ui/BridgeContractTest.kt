@@ -4,6 +4,7 @@ import android.webkit.JavascriptInterface
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -86,5 +87,13 @@ class BridgeContractTest {
         assertFalse(EntryActivity.offlinePassThrough("https"))
         assertFalse(EntryActivity.offlinePassThrough("http"))
         assertFalse(EntryActivity.offlinePassThrough(null))
+        // a kept file is taken as the type it names and tells no other site; one under /media/ that can hold script
+        // runs none (security audit 2026-11-26, SEC-07, SEC-10)
+        val script = EntryActivity.keptHeaders("/static/participant.js", "text/javascript")
+        assertEquals("nosniff", script["X-Content-Type-Options"])
+        assertEquals("no-referrer", script["Referrer-Policy"])
+        assertNull(script["Content-Security-Policy"])
+        assertTrue(EntryActivity.keptHeaders("/media/1/logo.svg", "image/svg+xml").getValue("Content-Security-Policy").contains("default-src 'none'"))
+        assertNull(EntryActivity.keptHeaders("/media/1/bild.png", "image/png")["Content-Security-Policy"])
     }
 }

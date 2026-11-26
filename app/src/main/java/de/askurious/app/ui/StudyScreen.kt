@@ -42,6 +42,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -76,6 +77,7 @@ import de.askurious.app.schedule.Prompt
 import de.askurious.app.schedule.Schedule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.Instant
 import java.time.LocalDate
@@ -173,6 +175,20 @@ internal fun MainActivity.StudyScreen(study: Study, onBack: () -> Unit, snackbar
                     stringResource(if (study.sound) R.string.sound_on_hint else R.string.sound_off_hint),
                     style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+            }
+
+            // what the participant allowed this study's questions (asked in the entry, EntryActivity.allowed): shown
+            // only while something is allowed, each with the way to take it back (SEC-02)
+            if (study.allowMicrophone || study.allowLocation) {
+                SectionTitle(stringResource(R.string.access_title))
+                if (study.allowMicrophone) {
+                    Text(stringResource(R.string.access_microphone))
+                    OutlinedButton(onClick = { model.revokeAccess(study, microphone = true) }) { Text(stringResource(R.string.access_microphone_revoke)) }
+                }
+                if (study.allowLocation) {
+                    Text(stringResource(R.string.access_location))
+                    OutlinedButton(onClick = { model.revokeAccess(study, microphone = false) }) { Text(stringResource(R.string.access_location_revoke)) }
+                }
             }
 
             // a home-screen shortcut per module the participant starts themselves
@@ -624,6 +640,8 @@ private fun ShortcutDialog(study: Study, module: Module, onDone: () -> Unit) {
     val fallback = stringResource(R.string.shortcut_default)
     var label by rememberSaveable { mutableStateOf(module.selfTrigger?.label?.ifBlank { null } ?: module.name.ifBlank { fallback }) }
     var failed by remember { mutableStateOf(false) }
+    var asking by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
     AlertDialog(
         onDismissRequest = onDone,
         title = { Text(stringResource(R.string.shortcut_add)) },
@@ -638,8 +656,14 @@ private fun ShortcutDialog(study: Study, module: Module, onDone: () -> Unit) {
             }
         },
         confirmButton = {
-            TextButton(enabled = label.isNotBlank(), onClick = {
-                if (Shortcuts.request(context, study, module.key, label)) onDone() else failed = true
+            TextButton(enabled = label.isNotBlank() && !asking, onClick = {
+                // the list of what the shortcuts stand for is sealed: written off the main thread (SEC-11)
+                asking = true
+                scope.launch {
+                    val ok = withContext(Dispatchers.IO) { Shortcuts.request(context, study, module.key, label) }
+                    asking = false
+                    if (ok) onDone() else failed = true
+                }
             }) { Text(stringResource(R.string.shortcut_create)) }
         },
         dismissButton = { TextButton(onClick = onDone) { Text(stringResource(R.string.cancel)) } },

@@ -23,14 +23,15 @@ class RoutesTest {
     }
 
     @Test
-    fun everyAppLinkNamesItsHostTheSchemeLinkNone() {
+    fun everyAppLinkNamesItsHost() {
         for (host in APP_LINK_HOSTS) {
             val pattern = JOIN_LINKS.single { it.startsWith("https://$host/") }
             assertEquals("https://$host", joinServer(link(pattern), allowHttp = false))
             assertTrue(pattern, isJoinLink(link(pattern)))
             assertTrue(pattern, Api.isKnown("https://$host"))
         }
-        assertNull(joinServer(link(JOIN_LINKS.last()), allowHttp = false))
+        // nothing but the App Links (security audit 2026-11-26, SEC-09: no scheme of the app's own)
+        assertEquals(APP_LINK_HOSTS.size, JOIN_LINKS.size)
     }
 
     @Test

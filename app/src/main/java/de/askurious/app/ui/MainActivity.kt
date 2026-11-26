@@ -202,16 +202,20 @@ class MainActivity : ComponentActivity() {
      */
     private fun report(intent: Intent) {
         if (intent.action != Shortcuts.ACTION_REPORT) return
-        val code = intent.getStringExtra(Shortcuts.EXTRA_STUDY) ?: return
-        val module = intent.getStringExtra(Shortcuts.EXTRA_MODULE)
+        // a new shortcut names only its random id, which the app's sealed list resolves; one pinned by an earlier
+        // version names the study and the module itself (security audit 2026-11-26, SEC-11)
+        val id = intent.getStringExtra(Shortcuts.EXTRA_ID)
+        val named = intent.getStringExtra(Shortcuts.EXTRA_STUDY)?.let { it to intent.getStringExtra(Shortcuts.EXTRA_MODULE) }
+        if (id == null && named == null) return
         val given = intent.getStringExtra(Shortcuts.EXTRA_TOKEN)
         lifecycleScope.launch {
             val (target, known) = withContext(Dispatchers.IO) {
-                if (!Shortcuts.trusted(given, Shortcuts.token(this@MainActivity))) return@withContext null to false
-                Shortcuts.target(this@MainActivity, code, module) to (StudyStore(this@MainActivity).get(code) != null)
+                if (!Shortcuts.trusted(given, Shortcuts.token(this@MainActivity))) return@withContext null to null
+                val (code, module) = (if (id != null) Shortcuts.resolve(this@MainActivity, id) else named) ?: return@withContext null to null
+                Shortcuts.target(this@MainActivity, code, module) to code.takeIf { StudyStore(this@MainActivity).get(it) != null }
             }
             if (target != null) startActivity(EntryActivity.intent(this@MainActivity, target.first, target.second))
-            else if (known) shortcutStudy = code
+            else if (known != null) shortcutStudy = known
         }
     }
 
@@ -219,6 +223,9 @@ class MainActivity : ComponentActivity() {
         super.onResume()
         model.reload()
         readPermissions()
+        // what an entry that was swiped away or ended by the system left in the WebView (its session cookie) goes
+        // now; nothing while an entry is open or waits in "Recents" (security audit 2026-11-26, SEC-06)
+        EntryActivity.clearWebData(this)
         // not while a sync runs, nor again within a few minutes (every return from an entry or a dialog resumes)
         model.syncIfDue()
     }
