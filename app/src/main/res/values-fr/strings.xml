@@ -322,4 +322,15 @@
     <string name="quiet_same">Le début et la fin doivent être différents. Pour désactiver les heures de calme, utilisez l’interrupteur « Utiliser des heures de calme ».</string>
     <string name="scan_no_code">Ce code QR ne contient aucun code d’accès. Scannez le code figurant dans les documents de votre étude ou saisissez le code d’accès.</string>
     <string name="scan_again">Scanner à nouveau</string>
+    <string name="consent_microphone_title">Autoriser le microphone pour cette étude ?</string>
+    <string name="consent_microphone_text">Une question de l’étude « %1$s » souhaite enregistrer avec le microphone. Ce que vous autorisez ici ne vaut que pour cette étude. Vous pouvez le retirer à tout moment sur la page de l’étude.</string>
+    <string name="consent_location_title">Autoriser votre position pour cette étude ?</string>
+    <string name="consent_location_text">Une question de l’étude « %1$s » souhaite consulter votre position. Ce que vous autorisez ici ne vaut que pour cette étude. Vous pouvez le retirer à tout moment sur la page de l’étude.</string>
+    <string name="consent_deny">Ne pas autoriser</string>
+    <string name="access_title">Autorisé pour les questions</string>
+    <string name="access_microphone">Les questions de cette étude peuvent utiliser le microphone.</string>
+    <string name="access_microphone_revoke">Ne plus autoriser le microphone</string>
+    <string name="access_location">Les questions de cette étude peuvent consulter votre position.</string>
+    <string name="access_location_revoke">Ne plus autoriser la position</string>
+    <string name="answer_too_large">Cette réponse est trop volumineuse pour être conservée sur le téléphone sans connexion. Veuillez raccourcir votre saisie ou répondre dès que vous aurez de nouveau une connexion.</string>
 </resources>

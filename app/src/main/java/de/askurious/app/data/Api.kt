@@ -70,14 +70,29 @@ object Api {
     /** The public information of a study, for the join screen. */
     suspend fun join(server: String, code: String): JSONObject {
         if (!isKnown(server)) throw ApiError(FOREIGN)
+        if (!validCode(code)) throw ApiError("unknown", 404)
         return call(server, "GET", "$BASE/join/${URLEncoder.encode(code, "UTF-8")}?lang=${lang()}")
     }
 
     /** Enrols this device. Returns {"secret", "url"}: the url opens the first questionnaire (consent, entry part). */
     suspend fun enrol(server: String, code: String): JSONObject {
         if (!isKnown(server)) throw ApiError(FOREIGN)
+        if (!validCode(code)) throw ApiError("unknown", 404)
         return call(server, "POST", "$BASE/enrol", JSONObject().put("code", code).put("lang", lang()))
     }
+
+    /**
+     * A join code as the server makes them: lowercase letters and digits, a test or invitation code with one hyphen.
+     * Anything else is no code and is not sent: ".." in the address of GET /join/<code> named another address of the
+     * server, and a text of any length went to it unasked (security audit 2026-11-26, SEC-09).
+     */
+    private val CODE = Regex("^[a-z0-9]{1,32}(-[a-z0-9]{1,32})?$")
+
+    fun validCode(code: String): Boolean = CODE.matches(code)
+
+    /** A module key as part of an address: no step up, no slash, not empty, at most 128 characters (SEC-09). */
+    fun validModule(module: String): Boolean = module.isNotEmpty() && module.length <= 128 && module != "." &&
+        !module.contains("..") && module.none { it == '/' || it == '\\' || it.code < 0x20 || it.code == 0x7f }
 
     /** The error of a join link of a server that is not one of [knownServers] (AN-1). */
     const val FOREIGN = "foreign_server"
@@ -110,8 +125,10 @@ object Api {
      * The page of [module] for answering without a connection: {"offline": false}, or {"offline": true, "html",
      * "version"}. The html is the participant page with absolute paths (/static/..., /media/...).
      */
-    suspend fun offlinePage(server: String, secret: String, module: String): JSONObject =
-        call(server, "POST", "$BASE/offline/${URLEncoder.encode(module, "UTF-8")}", JSONObject(), secret)
+    suspend fun offlinePage(server: String, secret: String, module: String): JSONObject {
+        if (!validModule(module)) throw ApiError("error", 400)
+        return call(server, "POST", "$BASE/offline/${URLEncoder.encode(module, "UTF-8")}", JSONObject(), secret)
+    }
 
     /** Sends one answer given without a connection (AnswerQueue.Item); see [AnswerQueue.fate] for the errors. */
     suspend fun offlineAnswer(server: String, secret: String, item: AnswerQueue.Item): JSONObject =
@@ -122,9 +139,13 @@ object Api {
      * without a connection. No secret: these files are the same for everybody. At most [MAX_FILE] bytes.
      */
     suspend fun download(server: String, path: String): Pair<ByteArray, String?> = withContext(Dispatchers.IO) {
+        if (!isKnown(server)) throw ApiError(FOREIGN)
         val conn = (URL(server + path).openConnection() as HttpURLConnection).apply {
             connectTimeout = 15_000
             readTimeout = 30_000
+            // a redirect is not followed (it may lead to any site) and counts as an error; nothing from a cache (SEC-05)
+            instanceFollowRedirects = false
+            useCaches = false
         }
         try {
             val code = conn.responseCode
@@ -203,6 +224,8 @@ object Api {
             "http" -> 80
             else -> -1
         }
+        // "https://server@elsewhere/" reads like the server and is another site: no user part at all (SEC-05)
+        if (uri.userInfo != null || base.userInfo != null) return false
         return uri.scheme.equals(base.scheme, ignoreCase = true) && uri.host != null &&
             uri.host.equals(base.host, ignoreCase = true) && port(uri) == port(base)
     }
@@ -211,8 +234,15 @@ object Api {
 
     private suspend fun call(server: String, method: String, path: String, body: JSONObject? = null, secret: String? = null): JSONObject =
         withContext(Dispatchers.IO) {
+            // every call, not only joining: a stored study whose server is no longer one of Askurious gets neither
+            // the secret nor anything else (security audit 2026-11-26, SEC-05)
+            if (!isKnown(server)) throw ApiError(FOREIGN)
             val conn = (URL(server + path).openConnection() as HttpURLConnection).apply {
                 requestMethod = method
+                // a redirect is not followed: it may lead to a site that is none of Askurious, and the answer of the
+                // API never is one; nothing is taken from a cache
+                instanceFollowRedirects = false
+                useCaches = false
                 connectTimeout = 15_000
                 readTimeout = 20_000
                 setRequestProperty("Accept", "application/json")

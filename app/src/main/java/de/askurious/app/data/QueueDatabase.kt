@@ -111,8 +111,19 @@ internal class QueueDatabase(context: Context, private val prefs: SharedPreferen
         }
     }
 
-    private fun insert(db: SQLiteDatabase, item: AnswerQueue.Item) {
+    /**
+     * The sealed row of [item]; an [AnswerTooLargeException] when it would be longer than a cursor reads ([MAX_BODY],
+     * SEC-03): written all the same, the row made every later read of the queue fail, for every study.
+     */
+    private fun sealedRow(item: AnswerQueue.Item): String {
+        if (AnswerQueue.tooLarge(item.form)) throw AnswerTooLargeException()
         val sealed = sealer.seal(item.toJson().toString(), "queue-row:${item.id}")
+        if (sealed.length > MAX_BODY) throw AnswerTooLargeException()
+        return sealed
+    }
+
+    private fun insert(db: SQLiteDatabase, item: AnswerQueue.Item) {
+        val sealed = sealedRow(item)
         val values = ContentValues().apply {
             put("id", item.id)
             put("study", tag("study", item.study))
@@ -126,7 +137,7 @@ internal class QueueDatabase(context: Context, private val prefs: SharedPreferen
     }
 
     private fun read(db: SQLiteDatabase, where: String? = null, args: Array<String>? = null): List<AnswerQueue.Item> =
-        db.query("answers", arrayOf("id", "body"), where, args, null, null, "rowid").use { cursor ->
+        db.query("answers", arrayOf("id", "body", "study", "module", "prompt"), where, args, null, null, "rowid").use { cursor ->
             buildList {
                 while (cursor.moveToNext()) {
                     val id = cursor.getString(0)
@@ -134,6 +145,12 @@ internal class QueueDatabase(context: Context, private val prefs: SharedPreferen
                         ?: throw IOException("Queued answer cannot be decrypted")
                     val item = AnswerQueue.Item.fromJson(JSONObject(plain))
                     if (item.id != id) throw IOException("Queued answer identity mismatch")
+                    // the index columns are not sealed with the row: a row filed under another study, module or
+                    // prompt than its own content names is not taken (security audit 2026-11-26, SEC-12)
+                    if (cursor.getString(2) != tag("study", item.study) || cursor.getString(3) != tag("module", item.module) ||
+                        cursor.getString(4) != tag("prompt", item.due?.toString() ?: "self")) {
+                        throw IOException("Queued answer index mismatch")
+                    }
                     add(item)
                 }
             }
@@ -177,7 +194,7 @@ internal class QueueDatabase(context: Context, private val prefs: SharedPreferen
                 require(item.id == id && item.study == previous.study && item.module == previous.module && item.due == previous.due)
                 if (item != previous) {
                     val values = ContentValues().apply {
-                        put("body", sealer.seal(item.toJson().toString(), "queue-row:$id"))
+                        put("body", sealedRow(item))
                         put("day", tag("day", Instant.ofEpochMilli(item.completed).atZone(ZoneOffset.UTC).toLocalDate().toString()))
                         put("start_day", startDay(item))
                     }
@@ -216,11 +233,19 @@ internal class QueueDatabase(context: Context, private val prefs: SharedPreferen
     }
 
     companion object {
+        /** The longest sealed row written: a cursor reads at most 2 MB of one row (CursorWindow). */
+        const val MAX_BODY = 1_800_000
+
         private var shared: SQLiteOpenHelper? = null
         private fun helper(context: Context): SQLiteOpenHelper = synchronized(SealedText.LOCK) {
             shared ?: object : SQLiteOpenHelper(context, "answers.db", null, 2,
                 DatabaseErrorHandler { throw IOException("Queue database corrupt; original retained") }) {
                 override fun onConfigure(db: SQLiteDatabase) {
+                    // no write-ahead log (the default from Android 9): what is deleted there is not overwritten by
+                    // secure_delete and stays in answers.db-wal until a later checkpoint. The queue is small; the
+                    // rollback journal is fast enough and is deleted after every transaction (SEC-12)
+                    db.disableWriteAheadLogging()
+                    db.rawQuery("PRAGMA journal_mode=DELETE", null).use { it.moveToFirst() }
                     db.rawQuery("PRAGMA secure_delete=ON", null).use { it.moveToFirst() }
                     db.rawQuery("PRAGMA synchronous=FULL", null).use { it.moveToFirst() }
                 }

@@ -81,13 +81,8 @@
                 <data android:host="ask.polltergeist.de" />
                 <data android:pathPrefix="/j/" />
             </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="askurious" />
-                <data android:host="join" />
-            </intent-filter>
+            <!-- no scheme of the app's own (askurious://join/<code>, security audit 2026-11-26, SEC-09): it cannot be
+                 verified, so another app could register it too and take the invitation codes sent with it -->
         </activity>
 
         <activity
@@ -101,6 +96,7 @@
         <activity
             android:name=".ui.ScanActivity"
             android:exported="false"
+            android:taskAffinity=""
             android:screenOrientation="fullSensor"
             android:stateNotNeeded="true"
             android:theme="@style/zxing_CaptureTheme"

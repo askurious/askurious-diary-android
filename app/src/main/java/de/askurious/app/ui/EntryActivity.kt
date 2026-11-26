@@ -118,7 +118,7 @@ import kotlin.coroutines.resume
  */
 class EntryActivity : ComponentActivity() {
     private val session: EntrySession by viewModels()
-    private var url: String? get() = session.url; set(value) { session.url = value; session.state["url"] = value }
+    private var url: String? get() = session.url; set(value) { session.url = value; session.keep(EntrySession.URL, value) }
     private var offline: OfflinePages.Page? get() = session.offline; set(value) { session.offline = value }
     private var error: String? get() = session.error; set(value) { session.error = value }
     private var saved: Boolean get() = session.saved; set(value) { session.saved = value }
@@ -173,6 +173,49 @@ class EntryActivity : ComponentActivity() {
     private var permissionNotice by mutableStateOf<Int?>(null)
     private var mediaRequest: PermissionRequest? = null
     private var locationRequest: Pair<String, GeolocationPermissions.Callback>? = null
+
+    /** What a question may ask the phone for; the participant allows each per study ([allowed]). */
+    private enum class Access { MICROPHONE, LOCATION }
+
+    /** The question "allow this study the microphone / the location?" that is open now, with what follows its answer. */
+    private class Consent(val access: Access, val decide: (Boolean) -> Unit)
+    private var consent by mutableStateOf<Consent?>(null)
+
+    /** A filled form too large to keep without a connection (SEC-03): a banner says so, the page stays open. */
+    private var tooLarge by mutableStateOf(false)
+
+    /**
+     * Whether the pages of this study may use [access], then [then]. The phone's permission counts for the whole app:
+     * once given for one study, every other study got the microphone and the exact location without a word. So the
+     * app asks once per study, naming it, before it hands a page anything, and keeps the answer with the study (taken
+     * back on the study's page; security audit 2026-11-26, SEC-02). "No" is not kept: the next question asks again.
+     */
+    private fun allowed(access: Access, then: (Boolean) -> Unit) {
+        val s = study ?: return then(false)
+        if (if (access == Access.MICROPHONE) s.allowMicrophone else s.allowLocation) return then(true)
+        // one question at a time: an earlier one still open is answered "no"
+        consent?.decide?.invoke(false)
+        consent = Consent(access, then)
+    }
+
+    /** The participant's answer to the open [consent]; "yes" is kept with the study, off the main thread. */
+    private fun decide(yes: Boolean) {
+        val asked = consent ?: return
+        consent = null
+        val s = study
+        if (!yes || s == null) return asked.decide(false)
+        val microphone = asked.access == Access.MICROPHONE
+        study = if (microphone) s.copy(allowMicrophone = true) else s.copy(allowLocation = true)
+        val app = applicationContext
+        val c = s.code
+        lifecycleScope.launch(Dispatchers.IO + kotlinx.coroutines.NonCancellable) {
+            runCatching {
+                val store = StudyStore(app)
+                store.get(c)?.let { store.update(if (microphone) it.copy(allowMicrophone = true) else it.copy(allowLocation = true)) }
+            }
+        }
+        asked.decide(true)
+    }
     private val permissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { grants ->
         mediaRequest?.let { request ->
             if (grants[Manifest.permission.RECORD_AUDIO] == true && trusted(request.origin.toString())) request.grant(arrayOf(PermissionRequest.RESOURCE_AUDIO_CAPTURE))
@@ -193,8 +236,19 @@ class EntryActivity : ComponentActivity() {
     private val fileChooser = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         val callback = session.fileCallback ?: return@registerForActivityResult
         session.fileCallback = null
-        // another app's answer: checked before the page gets it (PickedFiles)
-        callback.onReceiveValue(PickedFiles.checked(this, WebChromeClient.FileChooserParams.parseResult(result.resultCode, result.data)))
+        // another app's answer: checked before the page gets it (PickedFiles); the check opens each file, so off the
+        // main thread (SEC-15)
+        val picked = WebChromeClient.FileChooserParams.parseResult(result.resultCode, result.data)
+        val app = applicationContext
+        lifecycleScope.launch {
+            var checked: Array<Uri>? = null
+            // the page gets its answer also when the screen goes meanwhile (then none of the files)
+            try {
+                checked = withContext(Dispatchers.IO) { runCatching { PickedFiles.checked(app, picked) }.getOrNull() }
+            } finally {
+                callback.onReceiveValue(checked)
+            }
+        }
     }
     private fun trusted(address: String): Boolean = runCatching {
         val uri = java.net.URI(address)
@@ -206,8 +260,12 @@ class EntryActivity : ComponentActivity() {
             override fun onProgressChanged(view: WebView, newProgress: Int) { pageProgress = newProgress }
             override fun onPermissionRequest(request: PermissionRequest) { runOnUiThread {
                 if (!trusted(request.origin.toString()) || offline != null || PermissionRequest.RESOURCE_AUDIO_CAPTURE !in request.resources) { request.deny(); return@runOnUiThread }
-                if (ContextCompat.checkSelfPermission(this@EntryActivity, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) request.grant(arrayOf(PermissionRequest.RESOURCE_AUDIO_CAPTURE))
-                else { mediaRequest?.deny(); mediaRequest = request; permissions.launch(arrayOf(Manifest.permission.RECORD_AUDIO)) }
+                // first the participant's yes for this study (SEC-02), then the phone's permission
+                allowed(Access.MICROPHONE) { yes -> runCatching {
+                    if (!yes || isDestroyed) request.deny()
+                    else if (ContextCompat.checkSelfPermission(this@EntryActivity, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) request.grant(arrayOf(PermissionRequest.RESOURCE_AUDIO_CAPTURE))
+                    else { mediaRequest?.deny(); mediaRequest = request; permissions.launch(arrayOf(Manifest.permission.RECORD_AUDIO)) }
+                } }
             } }
             override fun onPermissionRequestCanceled(request: PermissionRequest) { if (mediaRequest == request) mediaRequest = null }
             // only for a page of the study's own server online (as the microphone); false: the WebView picks nothing
@@ -227,15 +285,23 @@ class EntryActivity : ComponentActivity() {
             }
             override fun onGeolocationPermissionsShowPrompt(origin: String, callback: GeolocationPermissions.Callback) {
                 if (!trusted(origin) || offline != null) { callback.invoke(origin, false, false); return }
-                if (ContextCompat.checkSelfPermission(this@EntryActivity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) callback.invoke(origin, true, false)
-                else { locationRequest = origin to callback; permissions.launch(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)) }
+                allowed(Access.LOCATION) { yes -> runCatching {
+                    if (!yes || isDestroyed) callback.invoke(origin, false, false)
+                    else if (ContextCompat.checkSelfPermission(this@EntryActivity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) callback.invoke(origin, true, false)
+                    else {
+                        // an earlier request still waiting for the phone's dialog gets its "no", not silence
+                        locationRequest?.let { it.second.invoke(it.first, false, false) }
+                        locationRequest = origin to callback
+                        permissions.launch(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION))
+                    }
+                } }
             }
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        restored = savedInstanceState != null && web == null && session.state.get<String>("draft") != null
+        restored = savedInstanceState != null && web == null && session.state.get<String>(EntrySession.DRAFT) != null
         session.activity = java.lang.ref.WeakReference(this)
         current = java.lang.ref.WeakReference(this)
         enableEdgeToEdge()
@@ -264,17 +330,29 @@ class EntryActivity : ComponentActivity() {
         // the stored study, the prompt log and the kept page are read off the main thread: they are opened with the
         // Keystore and read from files (audit 2026-10-18, AND-09); until then the screen shows the spinner
         val keptVersion = if (offline == null) session.state.get<String>("offline_version") else null
+        // the address and the draft of an entry the system ended meanwhile: sealed in the saved state, opened with
+        // the Keystore off the main thread, before the page is shown again (SEC-01)
+        val sealedUrl = if (session.url == null) session.state.get<String>(EntrySession.URL) else null
+        val sealedDraft = if (session.draft == null) session.state.get<String>(EntrySession.DRAFT) else null
         val app = applicationContext
         lifecycleScope.launch {
+            var keptUrl: String? = null
+            var keptDraft: String? = null
             val loaded = withContext(Dispatchers.IO) {
                 // no further exit notification (the server closes the questionnaire once answered); the one shown
                 // stays until the entry has opened (clearPrompt)
                 if (module == EXIT) runCatching { PromptLog(app).exitNotified(code) }
                 val s = StudyStore(app).get(code) ?: return@withContext null
+                keptUrl = sealedUrl?.let { runCatching { session.opened(EntrySession.URL, it) }.getOrNull() }
+                keptDraft = sealedDraft?.let { runCatching { session.opened(EntrySession.DRAFT, it) }.getOrNull() }
                 s to keptVersion?.let { version -> OfflinePages(app).page(code, module)?.takeIf { it.version == version } }
             }
             val (s, kept) = loaded ?: return@launch finish()
             server = s.server
+            if (session.draft == null) session.draft = keptDraft
+            if (keptDraft == null && sealedDraft != null) restored = false
+            // only an address of the study's own server, as when it came from the server
+            if (session.url == null && !done && !saved && error == null && keptUrl?.let { trusted(it) } == true) session.url = keptUrl
             if (offline == null && kept != null) offline = kept
             web?.let { it.webViewClient = if (offline != null) offlineClient(app) else onlineClient(); attachChrome(it) }
             study = s
@@ -311,6 +389,7 @@ class EntryActivity : ComponentActivity() {
                 // a WebView without the main-frame message channel gets no page of the server ([outdatedWebView])
                 if (!mainFrameBridgeSupported()) { outdatedWebView(); return@launch }
                 clearWebState()
+                webUsed(applicationContext, true)
                 url = address
             } catch (e: ApiError) {
                 // the kept page is read from the files directory: not on the main thread
@@ -484,6 +563,9 @@ class EntryActivity : ComponentActivity() {
             flush()
         }
         WebStorage.getInstance().deleteAllData()
+        // the pages the WebView kept in its cache go too, not only at the start of the next entry (SEC-06); without a
+        // WebView at hand the mark stays, and the app clears it when it is next opened ([clearWebData])
+        web?.let { runCatching { it.clearCache(true) }.onSuccess { webUsed(applicationContext, false) } }
     }
 
     /**
@@ -553,6 +635,7 @@ class EntryActivity : ComponentActivity() {
         // the WebView itself is destroyed when Compose lets it go (AndroidView onRelease, [release])
         mediaRequest?.deny(); mediaRequest = null
         locationRequest?.let { it.second.invoke(it.first, false, false) }; locationRequest = null
+        consent?.let { consent = null; runCatching { it.decide(false) } }
         (web?.parent as? ViewGroup)?.removeView(web)
         if (isFinishing) forgetWebState()
         if (session.activity?.get() === this) session.activity = null
@@ -589,7 +672,7 @@ class EntryActivity : ComponentActivity() {
     private fun finished() {
         if (done) return
         done = true
-        session.dirty = false; session.state["dirty"] = false; session.state.remove<String>("draft")
+        forgetDraft()
         val app = applicationContext
         val (c, m) = code to module
         // the log is sealed with the Keystore: written off the main thread (AND-09)
@@ -608,6 +691,9 @@ class EntryActivity : ComponentActivity() {
         if (done || saving) return
         // only a JSON object goes into the queue: the server takes nothing else
         val form = runCatching { JSONObject(json) }.getOrNull()?.toString() ?: return
+        // a form the queue could never read again is not kept; the page stays open and a banner says so (SEC-03)
+        if (AnswerQueue.tooLarge(form)) { tooLarge = true; return }
+        tooLarge = false
         val code = intent.getStringExtra(EXTRA_STUDY) ?: return
         val module = intent.getStringExtra(EXTRA_MODULE) ?: return
         val due = intent.getLongExtra(EXTRA_DUE, 0L).takeIf { it > 0 }
@@ -622,6 +708,9 @@ class EntryActivity : ComponentActivity() {
                 }
             } catch (e: kotlinx.coroutines.CancellationException) {
                 throw e
+            } catch (e: de.askurious.app.data.AnswerTooLargeException) {
+                tooLarge = true
+                return@launch
             } catch (e: Exception) {
                 // Keep the filled WebView open. A failed write must never show the saved screen. The banner above
                 // the page stays until the answer is saved; "Save again" sends the same form (UX audit 2026-10-16, B8)
@@ -633,6 +722,11 @@ class EntryActivity : ComponentActivity() {
             session.unsaved = null
             done = true
             saved = true
+            // the answer is in the queue: the draft of the page and its address go from the saved state (SEC-01; they
+            // stayed there in plain text, and "dirty" with them)
+            forgetDraft()
+            session.keep(EntrySession.URL, null)
+            session.state.remove<String>(EntrySession.PAGE)
             forgetWebState()
             // A scheduling failure cannot turn an already durable save into a failed save.
             runCatching { SyncWorker.sendSoon(this@EntryActivity) }
@@ -643,6 +737,8 @@ class EntryActivity : ComponentActivity() {
     @androidx.compose.runtime.Composable
     private fun EntryScreen(title: String, contact: String) {
         BackHandler { back() }
+        // no touch counts while another app's window lies over the questionnaire (Android 8 to 11; SEC-15)
+        GuardAgainstOverlays()
         Scaffold(bottomBar = {
             // the end page of the questionnaire was reached: "Done" closes the entry, the same as the X, but where the
             // thumb is and with the words of the end (B33)
@@ -676,6 +772,7 @@ class EntryActivity : ComponentActivity() {
                     actionEnabled = !saving, onAction = { offlineSubmitted(form) },
                 )
             }
+            if (tooLarge) Banner(stringResource(R.string.answer_too_large), error = true, onClose = { tooLarge = false })
             if (restored) Banner(stringResource(R.string.restored), onClose = { restored = false })
             permissionNotice?.let { notice ->
                 Banner(
@@ -715,6 +812,21 @@ class EntryActivity : ComponentActivity() {
                 }
             }
             }
+        }
+        consent?.let { asked ->
+            // the app's own question before a page of this study gets the microphone or the location (SEC-02); it
+            // names the study, and "no" is the answer to anything but the button
+            val microphone = asked.access == Access.MICROPHONE
+            AlertDialog(
+                onDismissRequest = { decide(false) },
+                title = { Text(stringResource(if (microphone) R.string.consent_microphone_title else R.string.consent_location_title)) },
+                text = {
+                    GuardAgainstOverlays()
+                    DialogText { Text(stringResource(if (microphone) R.string.consent_microphone_text else R.string.consent_location_text, title)) }
+                },
+                confirmButton = { TextButton(onClick = { decide(true) }) { Text(stringResource(R.string.allow)) } },
+                dismissButton = { TextButton(onClick = { decide(false) }) { Text(stringResource(R.string.consent_deny)) } },
+            )
         }
         if (askAbort) {
             AlertDialog(
@@ -796,6 +908,12 @@ class EntryActivity : ComponentActivity() {
             // no files and no content providers of the phone: the pages come from the server or from OfflinePages
             settings.allowFileAccess = false
             settings.allowContentAccess = false
+            // said outright, not left to the defaults (SEC-10): no cookies of other sites inside a page, and a page
+            // loaded over https loads nothing over http
+            CookieManager.getInstance().setAcceptThirdPartyCookies(this, false)
+            settings.mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_NEVER_ALLOW
+            // a touch counts only while no other app's window lies over the page (SEC-15)
+            filterTouchesWhenObscured = true
             // autofill services do not see (nor offer) what is typed into a questionnaire
             importantForAutofill = View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS
             settings.userAgentString = settings.userAgentString + " AskuriousDiary/1"
@@ -869,7 +987,9 @@ class EntryActivity : ComponentActivity() {
                 // opens in the browser
                 override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                     if (trusted(request.url.toString())) return false
-                    openOutside(request.url)
+                    // another site opens in another app only when the participant tapped a link of the page itself:
+                    // a script or a frame must not open the browser or the dialler by itself (SEC-10)
+                    if (request.isForMainFrame && request.hasGesture()) openOutside(request.url)
                     return true
                 }
 
@@ -927,16 +1047,17 @@ class EntryActivity : ComponentActivity() {
                     }
                     val path = (u.encodedPath ?: "") + (u.encodedQuery?.let { "?$it" } ?: "")
                     val kept = if (u.scheme == base.scheme && u.host == base.host && u.port == base.port && OfflinePages.servable(path)) {
-                        pages.file(server, path)
+                        // a kept file that cannot be read or opened is a missing one, never a crash of the page
+                        runCatching { pages.file(server, path) }.getOrNull()
                     } else {
                         null
                     }
                     if (kept == null) return WebResourceResponse("text/plain", "utf-8", 404, "Not Found", emptyMap(), ByteArrayInputStream(ByteArray(0)))
-                    val (file, type) = kept
+                    val (bytes, type) = kept
                     val mime = type.substringBefore(';').trim()
                     val charset = Regex("charset=([^;]+)", RegexOption.IGNORE_CASE).find(type)?.groupValues?.get(1)?.trim()
                         ?: if (mime.startsWith("text/")) "utf-8" else null
-                    return WebResourceResponse(mime, charset, file.inputStream())
+                    return WebResourceResponse(mime, charset, 200, "OK", keptHeaders(path, mime), ByteArrayInputStream(bytes))
                 }
 
                 override fun onPageFinished(view: WebView, url: String?) { attachDraft(view) }
@@ -954,14 +1075,14 @@ class EntryActivity : ComponentActivity() {
 
                 // links leave the app as on the online page; nothing loads in place of the kept page
                 override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
-                    if (request.url.host != base.host) openOutside(request.url)
+                    if (request.url.host != base.host && request.isForMainFrame && request.hasGesture()) openOutside(request.url)
                     return true
                 }
             }
     }
 
     private fun attachDraft(view: WebView) {
-        val draft = draftLiteral(session.state.get<String>("draft"))
+        val draft = draftLiteral(session.draft)
         view.evaluateJavascript("""
             (() => {
                 if (window.__askDraft) return; window.__askDraft = true;
@@ -993,22 +1114,30 @@ class EntryActivity : ComponentActivity() {
 
 
     private fun changed() { if (!done) { session.dirty = true; session.state["dirty"] = true } }
-    private fun draftPage(page: String) {
-        val previous = session.state.get<String>("page")
+    /** The draft of the open page goes, in memory and from the saved state, and nothing is unsent any more. */
+    private fun forgetDraft() {
+        session.dirty = false; session.state["dirty"] = false
+        session.draft = null; session.keep(EntrySession.DRAFT, null)
+    }
+
+    private fun draftPage(shown: String) {
+        // only a hash of the page (its address and field names) is kept, to tell a new page from the same one (SEC-01)
+        val page = EntrySession.hash(shown)
+        val previous = session.state.get<String>(EntrySession.PAGE)
         if (previous != null && previous != page) {
-            session.dirty = false; session.state["dirty"] = false; session.state.remove<String>("draft")
+            forgetDraft()
             // a further page of the questionnaire: closing asks from now on (B3); the restored answers were seen (B2)
             session.state["pages"] = (session.state.get<Int>("pages") ?: 0) + 1
             restored = false
         }
-        session.state["page"] = page
+        session.state[EntrySession.PAGE] = page
     }
     private fun draft(json: String) {
         if (done || json.length > 200_000) return
         // kept as the strictly written JSON text, never as the page sent it (org.json also takes unquoted words such as
         // alert(1)); it goes back into the page only as a string for JSON.parse ([draftLiteral], AND-04)
         val strict = runCatching { JSONObject(json).toString() }.getOrNull() ?: return
-        session.state["draft"] = strict; changed()
+        session.draft = strict; session.keep(EntrySession.DRAFT, strict); changed()
     }
 
     /**
@@ -1054,6 +1183,63 @@ class EntryActivity : ComponentActivity() {
 
         /** The entry shown now: only it may empty the cookies (a new entry may start before an old one is destroyed). */
         private var current: java.lang.ref.WeakReference<EntryActivity>? = null
+
+        private val background = java.util.concurrent.Executors.newSingleThreadExecutor()
+
+        /**
+         * Notes that the WebView holds something of an entry (its session cookie, pages in its cache), or that it was
+         * emptied: only a mark, written off the main thread. While it is set, [clearWebData] has something to do.
+         */
+        private fun webUsed(context: Context, used: Boolean) {
+            val app = context.applicationContext
+            background.execute { runCatching { app.getSharedPreferences(WEB_PREFS, Context.MODE_PRIVATE).edit().putBoolean(WEB_USED, used).apply() } }
+        }
+
+        private const val WEB_PREFS = "web"
+        private const val WEB_USED = "used"
+
+        /**
+         * Empties what the WebView keeps of entries (cookies, web storage, cache) when no entry is open or waiting in
+         * "Recents" (security audit 2026-11-26, SEC-06): an entry swiped away or ended by the system left its session
+         * cookie on the phone, since its screen never closed; and a study taken off the phone left what its last entry
+         * had kept. An entry that still has its screen or its task keeps its session: it opens again where it was.
+         * From any thread; nothing happens (and no WebView is loaded) while the mark of [webUsed] is not set.
+         */
+        fun clearWebData(context: Context) {
+            val app = context.applicationContext
+            background.execute {
+                val used = runCatching { app.getSharedPreferences(WEB_PREFS, Context.MODE_PRIVATE).getBoolean(WEB_USED, false) }.getOrDefault(false)
+                if (!used) return@execute
+                android.os.Handler(android.os.Looper.getMainLooper()).post {
+                    if (current?.get() != null || entryTaskOpen(app)) return@post
+                    runCatching {
+                        CookieManager.getInstance().apply { removeAllCookies(null); flush() }
+                        WebStorage.getInstance().deleteAllData()
+                        WebView(app).apply { clearCache(true); destroy() }
+                        webUsed(app, false)
+                    }
+                }
+            }
+        }
+
+        /** Whether a task of an entry exists (shown, in the background, or only listed in "Recents" after the process ended). */
+        private fun entryTaskOpen(context: Context): Boolean = runCatching {
+            val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as android.app.ActivityManager
+            manager.appTasks.any { it.taskInfo.baseIntent.component?.className == EntryActivity::class.java.name }
+        }.getOrDefault(true)
+
+        /**
+         * The headers of a kept file handed to the kept page (SEC-07, SEC-10): its type is taken as said, never
+         * guessed from its content, and nothing is told to another site. A picture or document under /media/ that can
+         * hold script (SVG, HTML) runs none and loads nothing when it is opened by itself.
+         */
+        fun keptHeaders(path: String, mime: String): Map<String, String> {
+            val headers = mutableMapOf("X-Content-Type-Options" to "nosniff", "Referrer-Policy" to "no-referrer")
+            val active = mime.equals("image/svg+xml", ignoreCase = true) || mime.startsWith("text/html", ignoreCase = true) ||
+                mime.contains("xml", ignoreCase = true)
+            if (path.startsWith("/media/") && active) headers["Content-Security-Policy"] = "default-src 'none'; style-src 'unsafe-inline'; sandbox"
+            return headers
+        }
 
         /** The WebViews with a message listener, to remove it before they are destroyed. */
         private val listening = java.util.Collections.newSetFromMap(java.util.WeakHashMap<WebView, Boolean>())

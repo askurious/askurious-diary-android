@@ -331,4 +331,15 @@
     <string name="quiet_same">Początek i koniec muszą się różnić. Aby je wyłączyć, prosimy użyć przełącznika „Używaj godzin ciszy”.</string>
     <string name="scan_no_code">Ten kod QR nie zawiera kodu dołączenia. Prosimy zeskanować kod z dokumentów badania lub wpisać kod dołączenia.</string>
     <string name="scan_again">Zeskanuj ponownie</string>
+    <string name="consent_microphone_title">Zezwolić temu badaniu na mikrofon?</string>
+    <string name="consent_microphone_text">Pytanie badania „%1$s” chce nagrywać mikrofonem. Udzielona tu zgoda dotyczy tylko tego badania. Można ją w każdej chwili cofnąć na stronie badania.</string>
+    <string name="consent_location_title">Zezwolić temu badaniu na lokalizację?</string>
+    <string name="consent_location_text">Pytanie badania „%1$s” chce odczytać lokalizację. Udzielona tu zgoda dotyczy tylko tego badania. Można ją w każdej chwili cofnąć na stronie badania.</string>
+    <string name="consent_deny">Nie zezwalaj</string>
+    <string name="access_title">Dozwolone dla pytań</string>
+    <string name="access_microphone">Pytania tego badania mogą używać mikrofonu.</string>
+    <string name="access_microphone_revoke">Cofnij zgodę na mikrofon</string>
+    <string name="access_location">Pytania tego badania mogą odczytywać lokalizację.</string>
+    <string name="access_location_revoke">Cofnij zgodę na lokalizację</string>
+    <string name="answer_too_large">Ta odpowiedź jest zbyt duża, aby zapisać ją w telefonie bez połączenia. Prosimy skrócić wprowadzone dane lub odpowiedzieć po odzyskaniu połączenia.</string>
 </resources>

@@ -313,4 +313,15 @@
     <string name="quiet_same">Begin en einde moeten verschillen. Gebruik de schakelaar ‘Rusttijden gebruiken’ om ze uit te zetten.</string>
     <string name="scan_no_code">Deze QR-code bevat geen deelnamecode. Scan de code uit uw onderzoeksdocumenten of voer de deelnamecode in.</string>
     <string name="scan_again">Opnieuw scannen</string>
+    <string name="consent_microphone_title">Dit onderzoek de microfoon toestaan?</string>
+    <string name="consent_microphone_text">Een vraag van het onderzoek ‘%1$s’ wil opnemen met de microfoon. Wat u hier toestaat, geldt alleen voor dit onderzoek. Op de pagina van het onderzoek trekt u het op elk moment weer in.</string>
+    <string name="consent_location_title">Dit onderzoek uw locatie toestaan?</string>
+    <string name="consent_location_text">Een vraag van het onderzoek ‘%1$s’ wil uw locatie opvragen. Wat u hier toestaat, geldt alleen voor dit onderzoek. Op de pagina van het onderzoek trekt u het op elk moment weer in.</string>
+    <string name="consent_deny">Niet toestaan</string>
+    <string name="access_title">Toegestaan voor vragen</string>
+    <string name="access_microphone">Vragen van dit onderzoek mogen de microfoon gebruiken.</string>
+    <string name="access_microphone_revoke">Microfoon niet meer toestaan</string>
+    <string name="access_location">Vragen van dit onderzoek mogen uw locatie opvragen.</string>
+    <string name="access_location_revoke">Locatie niet meer toestaan</string>
+    <string name="answer_too_large">Dit antwoord is te groot om zonder verbinding op de telefoon te bewaren. Kort uw invoer in of antwoord zodra u weer verbinding hebt.</string>
 </resources>

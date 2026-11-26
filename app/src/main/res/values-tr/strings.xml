@@ -313,4 +313,15 @@
     <string name="quiet_same">Başlangıç ve bitiş farklı olmalıdır. Kapatmak için “Sessiz saatleri kullan” anahtarını kullanın.</string>
     <string name="scan_no_code">Bu QR kodu katılım kodu içermiyor. Çalışma belgelerinizdeki kodu tarayın veya katılım kodunu girin.</string>
     <string name="scan_again">Yeniden tara</string>
+    <string name="consent_microphone_title">Bu çalışmaya mikrofon izni verilsin mi?</string>
+    <string name="consent_microphone_text">“%1$s” çalışmasının bir sorusu mikrofonla kayıt yapmak istiyor. Burada verdiğiniz izin yalnızca bu çalışma için geçerlidir. İzni çalışmanın sayfasından istediğiniz zaman geri alabilirsiniz.</string>
+    <string name="consent_location_title">Bu çalışmaya konum izni verilsin mi?</string>
+    <string name="consent_location_text">“%1$s” çalışmasının bir sorusu konumunuzu öğrenmek istiyor. Burada verdiğiniz izin yalnızca bu çalışma için geçerlidir. İzni çalışmanın sayfasından istediğiniz zaman geri alabilirsiniz.</string>
+    <string name="consent_deny">İzin verme</string>
+    <string name="access_title">Sorular için izin verilenler</string>
+    <string name="access_microphone">Bu çalışmanın soruları mikrofonu kullanabilir.</string>
+    <string name="access_microphone_revoke">Mikrofon iznini geri al</string>
+    <string name="access_location">Bu çalışmanın soruları konumunuzu öğrenebilir.</string>
+    <string name="access_location_revoke">Konum iznini geri al</string>
+    <string name="answer_too_large">Bu yanıt, bağlantı olmadan telefonda saklanamayacak kadar büyük. Lütfen girdiklerinizi kısaltın veya yeniden bağlantınız olduğunda yanıtlayın.</string>
 </resources>

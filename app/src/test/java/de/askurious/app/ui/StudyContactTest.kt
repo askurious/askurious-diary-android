@@ -11,6 +11,8 @@ class StudyContactTest {
         assertEquals("mailto:team@example.org", contactUri("mailto:team@example.org"))
     }
     @Test fun arbitrarySchemesAndFreeTextOnlyOfferCopy() {
+        // a web address only with https (security audit 2026-11-26, SEC-15)
+        assertNull(contactUri("http://example.org/contact"))
         for (text in listOf("javascript:alert(1)", "intent://example", "file:///private", "Team, room 12", "https://", "https://user:secret@example.org", "mailto:team@example.org?body=private")) {
             assertNull(text, contactUri(text))
         }

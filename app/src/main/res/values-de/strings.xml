@@ -313,4 +313,15 @@
     <string name="quiet_same">Anfang und Ende müssen verschieden sein. Zum Ausschalten nutzen Sie den Schalter „Ruhezeiten verwenden“.</string>
     <string name="scan_no_code">Dieser QR-Code enthält keinen Beitrittscode. Scannen Sie den Code aus Ihren Studienunterlagen oder geben Sie den Beitrittscode ein.</string>
     <string name="scan_again">Erneut scannen</string>
+    <string name="consent_microphone_title">Dieser Studie das Mikrofon erlauben?</string>
+    <string name="consent_microphone_text">Eine Frage der Studie „%1$s“ möchte mit dem Mikrofon aufnehmen. Was Sie hier erlauben, gilt nur für diese Studie. Auf der Seite der Studie nehmen Sie es jederzeit zurück.</string>
+    <string name="consent_location_title">Dieser Studie Ihren Standort erlauben?</string>
+    <string name="consent_location_text">Eine Frage der Studie „%1$s“ möchte Ihren Standort abfragen. Was Sie hier erlauben, gilt nur für diese Studie. Auf der Seite der Studie nehmen Sie es jederzeit zurück.</string>
+    <string name="consent_deny">Nicht erlauben</string>
+    <string name="access_title">Für Fragen erlaubt</string>
+    <string name="access_microphone">Fragen dieser Studie dürfen das Mikrofon verwenden.</string>
+    <string name="access_microphone_revoke">Mikrofon nicht mehr erlauben</string>
+    <string name="access_location">Fragen dieser Studie dürfen Ihren Standort abfragen.</string>
+    <string name="access_location_revoke">Standort nicht mehr erlauben</string>
+    <string name="answer_too_large">Diese Antwort ist zu groß, um sie ohne Verbindung auf dem Telefon zu speichern. Bitte kürzen Sie Ihre Eingaben oder antworten Sie, sobald Sie wieder eine Verbindung haben.</string>
 </resources>

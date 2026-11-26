@@ -60,7 +60,7 @@ class StudyStore internal constructor(private val prefs: SharedPreferences, priv
     private fun readPending(): List<Study> {
         val t = pending.read().text ?: return emptyList()
         val arr = runCatching { JSONArray(t) }.getOrNull() ?: return emptyList()
-        return (0 until arr.length()).mapNotNull { k -> arr.optJSONObject(k)?.let { o -> runCatching { Study.fromJson(o) }.getOrNull() } }
+        return (0 until arr.length()).mapNotNull { k -> arr.optJSONObject(k)?.let { o -> runCatching { Study.fromJson(o, stored = true) }.getOrNull() } }
     }
 
     /**
@@ -77,7 +77,7 @@ class StudyStore internal constructor(private val prefs: SharedPreferences, priv
         opened.text?.let { t ->
             val arr = runCatching { JSONArray(t) }.getOrNull() ?: return null
             for (k in 0 until arr.length()) {
-                arr.optJSONObject(k)?.let { o -> runCatching { Study.fromJson(o) }.getOrNull()?.let { studies += it } }
+                arr.optJSONObject(k)?.let { o -> runCatching { Study.fromJson(o, stored = true) }.getOrNull()?.let { studies += it } }
             }
         }
         val legacy = runCatching { prefs.getString(KEY, null) }.getOrNull()?.let { runCatching { JSONArray(it) }.getOrNull() }
@@ -88,7 +88,7 @@ class StudyStore internal constructor(private val prefs: SharedPreferences, priv
             val o = legacy.optJSONObject(k) ?: continue
             when (val plain = opened(o, sealer)) {
                 null -> kept += o
-                else -> runCatching { Study.fromJson(plain) }.getOrNull()?.let { s ->
+                else -> runCatching { Study.fromJson(plain, stored = true) }.getOrNull()?.let { s ->
                     moved = true
                     // the sealed list is the newer one
                     if (studies.none { it.code == s.code }) studies += s

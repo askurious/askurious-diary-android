@@ -331,4 +331,15 @@
     <string name="quiet_same">Начало и конец должны различаться. Чтобы отключить часы тишины, используйте переключатель «Использовать часы тишины».</string>
     <string name="scan_no_code">Этот QR-код не содержит кода участия. Отсканируйте код из материалов исследования или введите код участия.</string>
     <string name="scan_again">Сканировать снова</string>
+    <string name="consent_microphone_title">Разрешить этому исследованию микрофон?</string>
+    <string name="consent_microphone_text">Вопрос исследования «%1$s» хочет записать звук с микрофона. Разрешение действует только для этого исследования. Вы можете отозвать его в любое время на странице исследования.</string>
+    <string name="consent_location_title">Разрешить этому исследованию геопозицию?</string>
+    <string name="consent_location_text">Вопрос исследования «%1$s» хочет узнать Вашу геопозицию. Разрешение действует только для этого исследования. Вы можете отозвать его в любое время на странице исследования.</string>
+    <string name="consent_deny">Не разрешать</string>
+    <string name="access_title">Разрешено для вопросов</string>
+    <string name="access_microphone">Вопросы этого исследования могут использовать микрофон.</string>
+    <string name="access_microphone_revoke">Больше не разрешать микрофон</string>
+    <string name="access_location">Вопросы этого исследования могут узнавать Вашу геопозицию.</string>
+    <string name="access_location_revoke">Больше не разрешать геопозицию</string>
+    <string name="answer_too_large">Этот ответ слишком велик, чтобы сохранить его на телефоне без подключения. Сократите введённое или ответьте, когда подключение появится снова.</string>
 </resources>

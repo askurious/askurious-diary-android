@@ -103,6 +103,8 @@ class MainModel(app: Application) : AndroidViewModel(app) {
                 Triple(StudyStore(context).all(), items, queue.seenRefusals())
             }
             val unreadable = withContext(Dispatchers.IO) { StudyStore(context).unreadable() }
+            // sealed (SEC-04): opened off the main thread
+            val failedCodes = withContext(Dispatchers.IO) { runCatching { de.askurious.app.data.Sync.failedCodes(context).get() }.getOrDefault(emptySet()) }
             val ready = withContext(Dispatchers.IO) {
                 val pages = de.askurious.app.data.OfflinePages(context)
                 s.flatMap { study -> study.modules.filter { it.offline && pages.usable(study.code, it.key) != null }.map { study.code to it.key } }.toSet()
@@ -111,7 +113,7 @@ class MainModel(app: Application) : AndroidViewModel(app) {
             offlineReady = ready
             val status = context.getSharedPreferences("sync_status", android.content.Context.MODE_PRIVATE)
             syncState = status.getLong("success", 0) to status.getBoolean("failed", false)
-            syncFailed = status.getStringSet("failed_codes", null).orEmpty().toSet()
+            syncFailed = failedCodes
             studies = s
             studiesUnreadable = unreadable
             queueUnreadable = items == null
@@ -161,6 +163,20 @@ class MainModel(app: Application) : AndroidViewModel(app) {
     fun setQuiet(study: Study, quiet: Quiet?) {
         viewModelScope.launch {
             Sync.setQuiet(context, study, quiet)
+            reload()
+        }
+    }
+
+    /**
+     * Takes back what the participant allowed the pages of [study]: the microphone ([microphone]) or the location
+     * (security audit 2026-11-26, SEC-02). The next question that needs it asks again.
+     */
+    fun revokeAccess(study: Study, microphone: Boolean) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                val store = StudyStore(context)
+                store.get(study.code)?.let { store.update(if (microphone) it.copy(allowMicrophone = false) else it.copy(allowLocation = false)) }
+            }
             reload()
         }
     }
